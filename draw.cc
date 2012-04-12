@@ -60,16 +60,14 @@ void interface::draw()
 
 void player::spriteInit()
 {
-	int displacement;
-
-	if(sprite) displacement = sprite->w;
-	else displacement = collision.w;
 	/*Doing moves*/
 	sprite = pick->draw(facing);
 	if(facing == -1) {
-		if(sprite) displacement = spr.x += (displacement - sprite->w);
-		else displacement = spr.x += (displacement - collision.w);
+		if(sprite) spr.x = posX - sprite->w;
+	} else {
+		if(sprite) spr.x = posX;
 	}
+	if(sprite) spr.y = posY;
 }
 
 SDL_Surface * character::draw(int facing){

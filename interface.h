@@ -33,11 +33,10 @@ public:
 	player * p[2];
 	SDL_Surface *background, *screen;
 	SDL_Rect bg;
-	int grav;
-	int colorKey;
-	bool sAxis1[4], sAxis2[4];
-	bool fullscreen;
-	bool posEdge1[5], posEdge2[5];
+	int grav; 			//Gravitational constant. 
+	bool fullscreen;		//For use with later.
+	bool sAxis1[4], sAxis2[4];	//Initial input buffering.
+	bool posEdge1[5], posEdge2[5];	
 	bool negEdge1[5], negEdge2[5];
 	void readStick(SDL_Event&);
 	void readKey(SDL_Event&);

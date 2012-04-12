@@ -1,7 +1,6 @@
 #include "player.h"
 player::player()
 {
-
 	/*Initialize input containers*/
 	for(int i = 0; i < 30; i++)
 		inputBuffer[i] = 5;
@@ -96,18 +95,18 @@ void player::updateRects()
 			if(pick->cMove->yLock) deltaY = delta.y; else deltaY += delta.y;
 		}
 		for(int i = 0; i < hitComplexity; i++){
-			if(facing == -1) hitbox[i].x = spr.x + spr.w - hitbox[i].x - hitbox[i].w;
-			else hitbox[i].x += spr.x;
-			hitbox[i].y += spr.y;
+			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
+			else hitbox[i].x += posX;
+			hitbox[i].y += posY;
 		}
 		for(int i = 0; i < regComplexity; i++){
-			if(facing == -1) hitreg[i].x = spr.x + spr.w - hitreg[i].x - hitreg[i].w;
-			else hitreg[i].x += spr.x;
-			hitreg[i].y += spr.y;
+			if(facing == -1) hitreg[i].x = posX - hitreg[i].x - hitreg[i].w;
+			else hitreg[i].x += posX;
+			hitreg[i].y += posY;
 		}
-		if(facing == -1) collision.x = spr.x + spr.w - collision.x - collision.w;
-		else collision.x += spr.x;
-		collision.y += spr.y;
+		if(facing == -1) collision.x = posX - collision.x - collision.w;
+		else collision.x += posX;
+		collision.y += posY;
 	}
 }
 
@@ -159,9 +158,9 @@ void player::checkCorners(int floor, int left, int right)
 	/*Offset variables. I could do these calculations on the fly, but it's easier this way.
 	Essentially, this represents the offset between the sprite and the collision box, since
 	even though we're *checking* collision, we're still *moving* spr*/
-	int lOffset = spr.x - collision.x;
-	int rOffset = spr.x + spr.w - (collision.x + collision.w);
-	int bOffset = spr.y + spr.h - (collision.y + collision.h);
+	int lOffset = posX + collision.x;
+	int rOffset = posX - (collision.x + collision.w);
+	int bOffset = posY - (collision.y + collision.h);
 
 	if(collision.w == 0) printf("W problem\n");
 	if(collision.h == 0) printf("H problem\n");
@@ -173,7 +172,7 @@ void player::checkCorners(int floor, int left, int right)
 	Maybe check what's happening in updateRects() for that, or move::debugCollisionInit() is broken,
 	which is also a sprsibility (and one that may be better remedied by having a real move constructor).*/
 
-	if (spr.y + spr.h > floor){
+	if (collision.y + collision.h > floor){
 		if(pick->aerial == 1){
 			if(pick->cMove == pick->airBlock){
 				pick->standBlock->init(pick->airBlock->counter);
@@ -185,7 +184,7 @@ void player::checkCorners(int floor, int left, int right)
 			pick->aerial = 0;
 			deltaY = 0;
 		}
-		spr.y = floor - spr.h;
+		posY = floor - collision.h;
 	}
 
 	/*Walls, or "Left and Right" corners
@@ -196,12 +195,12 @@ void player::checkCorners(int floor, int left, int right)
 	if(collision.x <= left){
 		if(facing == 1) lCorner = 1;
 		if(collision.x < left) 
-			spr.x = left + lOffset;
+			posX = left + lOffset;
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(facing == -1) rCorner = 1;
 		if(collision.x + collision.w > right)
-			spr.x = right - collision.w - rOffset;
+			posX = right - collision.w - rOffset;
 	} else rCorner = 0;
 	updateRects(); //Update rectangles or the next collision check will be wrong.
 }
@@ -211,46 +210,46 @@ void player::resolveCollision(player * other)
 	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
 	bool displace = 0;
 	bool oDisplace = 0;
-	int lOffset = spr.x - collision.x;
-	int rOffset = spr.x + spr.w - (collision.x + collision.w);
-	int oLOffset = other->spr.x - other->collision.x;
-	int oROffset = other->spr.x + other->spr.w - (other->collision.x + other->collision.w);
+	int lOffset = posX - collision.x;
+	int rOffset = posX - (collision.x + collision.w);
+	int oLOffset = other->posX - other->collision.x;
+	int oROffset = other->posX - (other->collision.x + other->collision.w);
 
 
-	if(other->lCorner) spr.x = other->collision.x + other->collision.w + lOffset;
-	else if(other->rCorner) spr.x = other->collision.x - collision.w - rOffset;
-	else if(lCorner) other->spr.x = collision.x + collision.w + oLOffset;
-	else if(rCorner) other->spr.x = collision.x - other->collision.w - oROffset;
+	if(other->lCorner) posX = other->collision.x + other->collision.w + lOffset;
+	else if(other->rCorner) posX = other->collision.x - collision.w - rOffset;
+	else if(lCorner) other->posX = collision.x + collision.w + oLOffset;
+	else if(rCorner) other->posX = collision.x - other->collision.w - oROffset;
 	else {
 		if((!pick->aerial && !other->pick->aerial) || (pick->aerial && other->pick->aerial)){
 			if((facing == 1 && deltaX > 0) || (facing == -1 && deltaX < 0)) oDisplace = 1;
 			if((other->facing == 1 && other->deltaX > 0) || (other->facing == -1 && other->deltaX < 0)) displace = 1;
 			if(displace && !oDisplace) {
-				if(facing == 1) spr.x = other->collision.x - collision.w - rOffset;
-				else spr.x = other->collision.x + other->collision.w + lOffset;
+				if(facing == 1) posX = other->collision.x - collision.w - rOffset;
+				else posX = other->collision.x + other->collision.w + lOffset;
 			} else if (oDisplace && !displace) {
-				if(other->facing == 1) other->spr.x = collision.x - other->collision.w - oROffset;
-				else other->spr.x = collision.x + collision.w + oLOffset;
+				if(other->facing == 1) other->posX = collision.x - other->collision.w - oROffset;
+				else other->posX = collision.x + collision.w + oLOffset;
 			} else if (oDisplace && displace) { 
 				if(abs(deltaX) > abs(other->deltaX)){
-					spr.x += other->deltaX; 
+					posX += other->deltaX; 
 					updateRects();
-					if(other->facing == 1) other->spr.x = collision.x - other->collision.w - oROffset;
-					else other->spr.x = collision.x + collision.w + oLOffset;
+					if(other->facing == 1) other->posX = collision.x - other->collision.w - oROffset;
+					else other->posX = collision.x + collision.w + oLOffset;
 				} else {
-					other->spr.x += deltaX; 
+					other->posX += deltaX; 
 					other->updateRects();
-					if(facing == 1) spr.x = other->collision.x - collision.w - rOffset;
-					else spr.x = other->collision.x + other->collision.w + lOffset;
+					if(facing == 1) posX = other->collision.x - collision.w - rOffset;
+					else posX = other->collision.x + other->collision.w + lOffset;
 				}
 			}
 //*
 		} else if (pick->aerial && !other->pick->aerial) {
-			if(other->facing == 1) spr.x = other->collision.x + other->collision.w + lOffset;
-			else spr.x = other->collision.x - collision.w - rOffset;
+			if(other->facing == 1) posX = other->collision.x + other->collision.w + lOffset;
+			else posX = other->collision.x - collision.w - rOffset;
 		} else {
-			if(facing == 1) other->spr.x = collision.x + collision.w + oLOffset;
-			else other->spr.x = collision.x - other->collision.w - oROffset;
+			if(facing == 1) other->posX = collision.x + collision.w + oLOffset;
+			else other->posX = collision.x - other->collision.w - oROffset;
 //*/
 		}
 	}
@@ -262,8 +261,14 @@ void player::checkFacing(int maypole){
 	if(!pick->aerial){
 		if (lCorner) facing = 1;
 		else if (rCorner) facing = -1;
-		else if (spr.x < maypole && facing == -1) facing = 1;
-		else if (spr.x > maypole && facing == 1) facing = -1;
+		else if (posX < maypole && facing == -1) { 
+			facing = 1;
+			posX -= spr.w;
+		}
+		else if (posX > maypole && facing == 1) {
+			facing = -1;
+			posX += spr.w;
+		}
 	}
 }
 

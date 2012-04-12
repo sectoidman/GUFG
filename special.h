@@ -2,6 +2,6 @@
 class special : public move {
 public:
 	special(char*);
-	bool check(bool[], bool[], int);
+	bool check(bool[], bool[], int, int);
 	int chip;
 };

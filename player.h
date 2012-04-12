@@ -14,7 +14,8 @@ public:
 	SDL_Event input[10];    //Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
 	SDL_Surface * sprite;
 	character * pick;
-	int deltaX, deltaY;
+	int deltaX, deltaY; 
+	int posX, posY;
 	int rounds;
 	int facing;
 	int padding[490];   //More magic. Do not touch

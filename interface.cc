@@ -42,7 +42,6 @@ interface::interface()
 
 	/*Select characters.*/
 
-	colorKey = SDL_MapRGB(screen->format, 0, 255, 0); //Soon to be deprecated.
 	cSelectMenu();
 
 	/*Start a match*/
@@ -52,7 +51,6 @@ interface::interface()
 /*This functions sets things up for a new match. Initializes some things and draws the background*/
 void interface::matchInit()
 {
-	SDL_Surface * temp;
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	background = IMG_Load("Misc/BG1.png");
@@ -113,13 +111,12 @@ void interface::roundInit()
 	p[1]->facing = -1;
 	p[0]->spriteInit();
 	p[1]->spriteInit();
-	p[0]->spr.x = 700;
-	if(p[1]->sprite) p[1]->spr.x = 900 - p[1]->sprite->w;
-	else p[1]->spr.x = 900 - p[1]->collision.h;
-	if(p[0]->sprite) p[0]->spr.y = floor - p[0]->sprite->h;
-	else p[0]->spr.y = floor - p[0]->collision.h;
-	if(p[1]->sprite) p[1]->spr.y = floor - p[1]->sprite->h;
-	else p[1]->spr.y = floor - p[1]->collision.h;
+	p[0]->posX = 700;
+	p[1]->posX = 900;
+	p[0]->posY = floor - p[0]->pick->neutral->collision[0].h;
+	p[1]->posY = floor - p[1]->pick->neutral->collision[0].h;
+	p[0]->updateRects();
+	p[1]->updateRects();
 	draw();
 }
 
@@ -150,6 +147,7 @@ void interface::resolve()
 	p[0]->updateRects();
 	p[1]->updateRects();
 
+	//Note to self: Move all this delta stuff to a function.
 	p[0]->deltaX += p[0]->pick->volitionX*p[0]->facing;
 	p[0]->deltaY += p[0]->pick->volitionY;
 	p[1]->deltaX += p[1]->pick->volitionX*p[1]->facing;
@@ -164,12 +162,12 @@ void interface::resolve()
 	p[0]->pick->volitionY = 0;
 	
 	if(p[0]->pick->freeze < 1){
-		p[0]->spr.x += p[0]->deltaX;
-		p[0]->spr.y += p[0]->deltaY;
+		p[0]->posX += p[0]->deltaX;
+		p[0]->posY += p[0]->deltaY;
 	}
 	if(p[1]->pick->freeze < 1){
-		p[1]->spr.y += p[1]->deltaY;
-		p[1]->spr.x += p[1]->deltaX;
+		p[1]->posX += p[1]->deltaX;
+		p[1]->posY += p[1]->deltaY;
 	}
 
 	p[0]->updateRects();
@@ -178,8 +176,8 @@ void interface::resolve()
 	p[0]->enforceGravity(grav, floor);
 	p[1]->enforceGravity(grav, floor);
 
-	p[0]->checkFacing(p[1]->spr.x);
-	p[1]->checkFacing(p[0]->spr.x);
+	p[0]->checkFacing(p[1]->posX);
+	p[1]->checkFacing(p[0]->posX);
 
 //*
 	dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
@@ -258,10 +256,6 @@ void interface::resolve()
 	p[1]->spriteInit();
 	checkWin();
 	runTimer();
-	/*if(q) { bg.y += 3; bg.x += 8; }
-	else { bg.y -= 3; bg.x -= 8; }
-	if(bg.y >= 300) q = 0;
-	if(bg.y <= 0) q = 1;*/
 }
 
 /*Check if someone won*/
