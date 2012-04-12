@@ -1,4 +1,4 @@
-# 2012-03-11 - No Seriously guys, your makefile sucked.
+# 2012-04-11 - No Seriously guys, your makefile sucked.
 # 2012-04-11 - Fixed the Makefile.
 
 OBJS = \
@@ -14,7 +14,13 @@ OBJS = \
   draw.o \
   red.o
 
-CXXFLAGS = -g -O2 -Wno-write-strings `sdl-config --cflags`
+#using settings recomended from: http://schneide.wordpress.com/2009/03/09/make-friends-with-your-compiler/
+#comment out to turn off debugging
+CXXFLAGS = -O2 -Wno-write-strings `sdl-config --cflags` -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy -g
+
+#no debugging flags
+#CXXFLAGS = -O2 -Wno-write-strings `sdl-config --cflags`
+
 LDFLAGS = `sdl-config --libs` -lSDL_image -lm
 CC=g++
 
