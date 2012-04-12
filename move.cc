@@ -36,7 +36,6 @@ move::~move()
 void move::build(char * n)
 {
 	ifstream read;
-	//SDL_Surface * temp; //FIXME unused variable
 	int startup, active, recovery;
 	char fname[40];
 	char buffer[100];

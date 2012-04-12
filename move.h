@@ -48,8 +48,8 @@ public:
 	int stun;            //How much stun the move does
 
 	//Low, High, Air Block. Basically a 3-digit binary number expressed as an integer from 0-7.
-	//Digits from right to left: Blockable low, Blockable high, Blockable in the air, use a bitmask
-	//FIXME don't say bits "right to left" since you don't know the endianness, say "low to high" or "high to low" (which do you mean here anyway?)
+	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask
+
 	unsigned int blockMask;
 
 	//FIXME consider a union of bitfields like, so for readability if(block.bits.low) {} instead of bitmasking
