@@ -28,7 +28,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void checkWin();
-	int dragBG(int);
+	void dragBG(int);
 
 	player * p[2];
 	SDL_Surface *background, *screen;

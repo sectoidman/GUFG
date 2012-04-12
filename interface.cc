@@ -453,13 +453,11 @@ void interface::cSelectMenu()
 	p[1]->characterSelect(select2);
 }
 
-int interface::dragBG(int deltaX)
+void interface::dragBG(int deltaX)
 {
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > 800) bg.x = 800;
-
-	//FIXME what is this supposed to return?
 }
 
 interface::~interface()
