@@ -11,11 +11,18 @@ void interface::draw()
 	SDL_Rect bar1, bar2, meter1, meter2, rounds1[numRounds], rounds2[numRounds];
 	
 	if(p[0]->pick->health >= 0) bar1.w = p[0]->pick->health; else bar1.w = 1; 
-	if(p[0]->pick->health >= 0) bar2.w = p[1]->pick->health; else bar1.w = 1;
+	if(p[1]->pick->health >= 0) bar2.w = p[1]->pick->health; else bar2.w = 1;
 	
 	bar1.x = 50 + (300 - bar1.w); bar2.x = 450;
 	bar1.h = 5; bar2.h = 5;
 	bar1.y = 5; bar2.y = 5;
+	
+	if(p[0]->pick->meter >= 0) meter1.w = p[0]->pick->meter; else meter1.w = 1; 
+	if(p[1]->pick->meter >= 0) meter2.w = p[1]->pick->meter; else meter2.w = 1;
+	
+	meter1.x = 100 + (200 - meter1.w); meter2.x = 500;
+	meter1.h = 5; meter2.h = 5;
+	meter1.y = floor + 10; meter2.y = floor + 10;
 
 	for(int i = 0; i < numRounds; i++){
 		rounds1[i].y = 12; rounds1[i].w = 10; rounds1[i].h = 5;
@@ -51,7 +58,8 @@ void interface::draw()
 
 	SDL_FillRect(screen, &bar1, SDL_MapRGB(screen->format, 255, 0, 0));
 	SDL_FillRect(screen, &bar2, SDL_MapRGB(screen->format, 255, 0, 0));
-	
+	SDL_FillRect(screen, &meter1, SDL_MapRGB(screen->format, 0, 255, 0));
+	SDL_FillRect(screen, &meter2, SDL_MapRGB(screen->format, 0, 255, 0));
 	
 	SDL_UpdateRect(screen, 0, 0, 0, 0);
 	SDL_FreeSurface(back);

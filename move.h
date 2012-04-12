@@ -18,7 +18,7 @@ class move{
 public:
 	move();
 	move(char*);
-	~move();
+	virtual ~move();
 	void build(char *);
 	void execute();
 

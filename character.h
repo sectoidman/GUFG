@@ -12,7 +12,7 @@
 class character{
 public:
 	character();   //Load the entire character into memory
-	~character();  //Free stuff
+	virtual ~character();  //Free stuff
 
 	void initMoves();
 	moveTrie * head;

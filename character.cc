@@ -8,7 +8,6 @@ character::character()
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
 	name = "White";
-	moveTrie * curr;
 	move * temp;
 
 	/*Currently I'm using this as a test case for my move hooks*/

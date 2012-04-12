@@ -160,7 +160,6 @@ void player::checkCorners(int floor, int left, int right)
 	even though we're *checking* collision, we're still *moving* spr*/
 	int lOffset = posX + collision.x;
 	int rOffset = posX - (collision.x + collision.w);
-	int bOffset = posY - (collision.y + collision.h);
 
 	if(collision.w == 0) printf("W problem\n");
 	if(collision.h == 0) printf("H problem\n");
@@ -176,7 +175,7 @@ void player::checkCorners(int floor, int left, int right)
 		if(pick->aerial == 1){
 			if(pick->cMove == pick->airBlock){
 				pick->standBlock->init(pick->airBlock->counter);
-				pick->cMove == pick->standBlock;
+				pick->cMove = pick->standBlock;
 			} else { 
 				if(pick->cMove) pick->cMove->init();
 				pick->cMove = pick->neutral;

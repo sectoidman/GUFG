@@ -32,7 +32,6 @@ void moveTrie::insert(move * b)
 
 moveTrie * moveTrie::insert(int a, move * b)
 {
-	move * temp;
 	if(a < 10 && a > 0){
 		if(!child[a]) child[a] = new moveTrie(b);
 		else child[a]->insert(b);
