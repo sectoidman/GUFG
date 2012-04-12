@@ -11,8 +11,8 @@
 
 class character{
 public:
-	character(); 	//Load the entire character into memory
-	~character();	//Free stuff
+	character();   //Load the entire character into memory
+	~character();  //Free stuff
 
 	void initMoves();
 	moveTrie * head;
@@ -31,7 +31,7 @@ public:
 //	move * dash;
 //	move * brake;
 	move * walkBack;
-	hitstun * reel;	
+	hitstun * reel;
 	hitstun * fall;
 	hitstun * crouchBlock;
 	hitstun * standBlock;
@@ -46,10 +46,10 @@ public:
 	int rounds;
 	int volitionX;
 	int volitionY;
-	bool aerial;	
+	bool aerial;
 private:
 
-	int state; 	//The current state of the character. This might need to be more variables. We'll see.
+	int state;  //The current state of the character. This might need to be more variables. We'll see.
 
 
-};	
+};

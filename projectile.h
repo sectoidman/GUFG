@@ -3,7 +3,7 @@ class projectile {
 public:
 	projectile(char*);
 	~projectile();
-	
+
 	int owner;
 	SDL_Rect pos;
 	SDL_Surface * sprite;

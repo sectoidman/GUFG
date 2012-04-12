@@ -4,7 +4,7 @@ using namespace std;
 #include <fstream>
 #include <cstring>
 
-character::character() 
+character::character()
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
 	name = "White";
@@ -25,12 +25,12 @@ character::character()
 	head->insert(neutral);
 
 	walkBack = new utility("White/WB");
-	walkBack->tolerance = 0; walkBack->activation = 0; 
+	walkBack->tolerance = 0; walkBack->activation = 0;
 	walkBack->xLock = 1;
 	head->insert(4, walkBack);
 
 	walk = new utility("White/W");
-	walk->tolerance = 0; walk->activation = 0; 
+	walk->tolerance = 0; walk->activation = 0;
 	walk->xLock = 1;
 	head->insert(6, walk);
 
@@ -132,12 +132,12 @@ int character::takeHit(move * attack)
 			}
 			health -= attack->damage;
 			if(health < 0){
-				health = 0; 	//Healthbar can't go below 0;
+				health = 0; //Healthbar can't go below 0;
 				//Reckon other KO stuff;
 			}
 		}
 		volitionX -= attack->push;
-		attack->connect(); 	//Tell the attack it's connected.
+		attack->connect(); //Tell the attack it's connected.
 	}
 	freeze = attack->stun / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
  	return ct;
@@ -157,7 +157,8 @@ void character::initMoves()
 	while(read.get() != ':'); read.ignore();
 	read >> buffer;
 	sprintf(mvName, "%s/%s", name, buffer);
-	neutral = new move(mvName);/*
+	neutral = new move(mvName);
+	/*
 	while(read.peek() != '\n'){
 		switch (read.get()){
 		case ':':

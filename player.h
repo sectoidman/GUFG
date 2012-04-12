@@ -10,14 +10,14 @@ public:
 	player();
 	~player();
 
-	char * inputName[10];	//Input names. This is really just for housekeeping.
-	SDL_Event input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
+	char * inputName[10];   //Input names. This is really just for housekeeping.
+	SDL_Event input[10];    //Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
 	SDL_Surface * sprite;
 	character * pick;
 	int deltaX, deltaY;
 	int rounds;
 	int facing;
-	int padding[490];	//More magic. Do not touch
+	int padding[490];   //More magic. Do not touch
 	void init();
 	void keyConfig(int);
 	void characterSelect(int);
@@ -29,7 +29,7 @@ public:
 	SDL_Rect pos, *hitbox, *hitreg, collision, delta, lock;
 	int hitComplexity, regComplexity;
 	bool rCorner, lCorner;
-	
+
 	/*Helper functions for "resolve" tick*/
 	void updateRects();
 	int checkHit(player*);

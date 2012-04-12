@@ -6,10 +6,10 @@ red::red()
 	move * temp;
 	head = new moveTrie;
 	head->insert(new move("Red/A"));
-	head->fish[0]->xLock = 1; 
-	
+	head->fish[0]->xLock = 1;
+
 	initMoves();
-	
+
 	temp = new move("Red/JQ");
 	temp->activation = 0;
 	head->insert(7, temp);
@@ -22,5 +22,5 @@ red::red()
 	temp->activation = 0;
 	head->insert(8, temp);
 
-	cMove = neutral;	
+	cMove = neutral;
 }
