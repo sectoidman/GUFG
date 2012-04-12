@@ -99,9 +99,9 @@ void interface::roundInit()
 		sAxis2[i] = 0;
 	}
 	for(int i = 0; i < 5; i++){
-		posEdge1[i] = 0;
+		sprEdge1[i] = 0;
 		negEdge1[i] = 0;
-		posEdge2[i] = 0;
+		sprEdge2[i] = 0;
 		negEdge2[i] = 0;
 	}
 
@@ -113,13 +113,13 @@ void interface::roundInit()
 	p[1]->facing = -1;
 	p[0]->spriteInit();
 	p[1]->spriteInit();
-	p[0]->pos.x = 700;
-	if(p[1]->sprite) p[1]->pos.x = 900 - p[1]->sprite->w;
-	else p[1]->pos.x = 900 - p[1]->collision.h;
-	if(p[0]->sprite) p[0]->pos.y = floor - p[0]->sprite->h;
-	else p[0]->pos.y = floor - p[0]->collision.h;
-	if(p[1]->sprite) p[1]->pos.y = floor - p[1]->sprite->h;
-	else p[1]->pos.y = floor - p[1]->collision.h;
+	p[0]->spr.x = 700;
+	if(p[1]->sprite) p[1]->spr.x = 900 - p[1]->sprite->w;
+	else p[1]->spr.x = 900 - p[1]->collision.h;
+	if(p[0]->sprite) p[0]->spr.y = floor - p[0]->sprite->h;
+	else p[0]->spr.y = floor - p[0]->collision.h;
+	if(p[1]->sprite) p[1]->spr.y = floor - p[1]->sprite->h;
+	else p[1]->spr.y = floor - p[1]->collision.h;
 	draw();
 }
 
@@ -129,16 +129,16 @@ void interface::runTimer()
 	if(timer > 0) timer--;
 }
 
-/*Main function for a frame. This resolves character positions, background scrolling, and hitboxes*/
+/*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
-	p[0]->pushInput(sAxis1, posEdge1, negEdge1);
-	p[1]->pushInput(sAxis2, posEdge2, negEdge2);
+	p[0]->pushInput(sAxis1, sprEdge1, negEdge1);
+	p[1]->pushInput(sAxis2, sprEdge2, negEdge2);
 
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
 		1. Update to current rectangles. Since the actual step is part of the draw routine, this should happen first.
-		2. Figure out all deltas that should currently apply to sprite positions. Basically move the sprites to where
+		2. Figure out all deltas that should currently apply to sprite spritions. Basically move the sprites to where
 		   they'd be if there were no collision rules.
 		3. Check for things like hits and blocks. Enact all the effects of these, including stun, damage, etc.
 		4. Check for collision against the opponent or against boundaries such as the floor or the corners.
@@ -164,12 +164,12 @@ void interface::resolve()
 	p[0]->pick->volitionY = 0;
 	
 	if(p[0]->pick->freeze < 1){
-		p[0]->pos.x += p[0]->deltaX;
-		p[0]->pos.y += p[0]->deltaY;
+		p[0]->spr.x += p[0]->deltaX;
+		p[0]->spr.y += p[0]->deltaY;
 	}
 	if(p[1]->pick->freeze < 1){
-		p[1]->pos.y += p[1]->deltaY;
-		p[1]->pos.x += p[1]->deltaX;
+		p[1]->spr.y += p[1]->deltaY;
+		p[1]->spr.x += p[1]->deltaX;
 	}
 
 	p[0]->updateRects();
@@ -178,8 +178,8 @@ void interface::resolve()
 	p[0]->enforceGravity(grav, floor);
 	p[1]->enforceGravity(grav, floor);
 
-	p[0]->checkFacing(p[1]->pos.x);
-	p[1]->checkFacing(p[0]->pos.x);
+	p[0]->checkFacing(p[1]->spr.x);
+	p[1]->checkFacing(p[0]->spr.x);
 
 //*
 	dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
@@ -247,8 +247,8 @@ void interface::resolve()
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
-		posEdge1[i] = 0;
-		posEdge2[i] = 0;
+		sprEdge1[i] = 0;
+		sprEdge2[i] = 0;
 		negEdge1[i] = 0;
 		negEdge2[i] = 0;
 	}
@@ -320,9 +320,9 @@ void interface::readInput()
 			case SDL_JOYBUTTONDOWN:
 				for(int i = 4; i < 9; i++){
 					if(event.jbutton.which == p[0]->input[i].jbutton.which && event.jbutton.button == p[0]->input[i].jbutton.button)
-						posEdge1[i-4] = 1;
+						sprEdge1[i-4] = 1;
 					if(event.jbutton.which == p[1]->input[i].jbutton.which && event.jbutton.button == p[1]->input[i].jbutton.button)
-						posEdge2[i-4] = 1;
+						sprEdge2[i-4] = 1;
 				}
 				break;
 			case SDL_JOYBUTTONUP:
@@ -342,9 +342,9 @@ void interface::readInput()
 				}
 				for(int i = 4; i < 9; i++) {
 					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym)
-						posEdge1[i-4] = 1;
+						sprEdge1[i-4] = 1;
 					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym)
-						posEdge2[i-4] = 1;
+						sprEdge2[i-4] = 1;
 				}
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:

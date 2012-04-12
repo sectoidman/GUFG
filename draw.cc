@@ -23,7 +23,7 @@ void interface::draw()
 		rounds1[i].x = 340 - 12 * i; rounds2[i].x = 450 + 12 * i;
 	}
 
-	if(p[0]->sprite) SDL_BlitSurface(p[0]->sprite, NULL, back, &p[0]->pos);
+	if(p[0]->sprite) SDL_BlitSurface(p[0]->sprite, NULL, back, &p[0]->spr);
 	else {
 		SDL_FillRect(back, &p[0]->collision, SDL_MapRGB(screen->format, 255, 255, 255));
 		for(int i = 0; i < p[0]->regComplexity; i++)
@@ -31,7 +31,7 @@ void interface::draw()
 		for(int i = 0; i < p[0]->hitComplexity; i++)
 			SDL_FillRect(back, &p[0]->hitbox[i], SDL_MapRGB(screen->format, 255, 0, 0));
 	}
-	if(p[1]->sprite) SDL_BlitSurface(p[1]->sprite, NULL, back, &p[1]->pos);
+	if(p[1]->sprite) SDL_BlitSurface(p[1]->sprite, NULL, back, &p[1]->spr);
 	else{
 		SDL_FillRect(back, &p[1]->collision, SDL_MapRGB(screen->format, 255, 255, 255));
 		for(int i = 0; i < p[1]->regComplexity; i++)
@@ -67,8 +67,8 @@ void player::spriteInit()
 	/*Doing moves*/
 	sprite = pick->draw(facing);
 	if(facing == -1) {
-		if(sprite) displacement = pos.x += (displacement - sprite->w);
-		else displacement = pos.x += (displacement - collision.w);
+		if(sprite) displacement = spr.x += (displacement - sprite->w);
+		else displacement = spr.x += (displacement - collision.w);
 	}
 }
 
