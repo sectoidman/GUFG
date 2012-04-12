@@ -14,13 +14,13 @@
 class interface
 {
 public:
-	interface(); 		//Constructor!
+	interface();        //Constructor!
 	~interface();
 	/*Important interface functions that will remain interface functions*/
-	
-	void readInput();	//Reads input from players. 
-	void resolve();		//This will eventually resolve actions (Such as a move hitting a player.) With only one player, this is not currently possible.
-	void draw();		//This will eventually draw everything. Right now the drawing is done in the main loop.
+
+	void readInput();   //Reads input from players.
+	void resolve();     //This will eventually resolve actions (Such as a move hitting a player.) With only one player, this is not currently possible.
+	void draw();        //This will eventually draw everything. Right now the drawing is done in the main loop.
 	void runTimer();
 	void spriteInit();
 	void flip();
@@ -30,12 +30,12 @@ public:
 	void checkWin();
 	int dragBG(int);
 
-	player * p[2];	
+	player * p[2];
 	SDL_Surface *background, *screen;
 	SDL_Rect bg;
 	int grav;
 	int colorKey;
-	bool sAxis1[4], sAxis2[4]; 
+	bool sAxis1[4], sAxis2[4];
 	bool fullscreen;
 	bool posEdge1[5], posEdge2[5];
 	bool negEdge1[5], negEdge2[5];

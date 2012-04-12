@@ -112,9 +112,9 @@ void player::updateRects()
 }
 
 void player::enforceGravity(int grav, int floor)
-{	
-	if(collision.y + collision.h < floor && pick->aerial == 0) pick->aerial = 1; 
-	
+{
+	if(collision.y + collision.h < floor && pick->aerial == 0) pick->aerial = 1;
+
 	else if(pick->aerial && !pick->freeze) deltaY += grav;
 }
 
@@ -161,7 +161,7 @@ void player::checkCorners(int floor, int left, int right)
 	even though we're *checking* collision, we're still *moving* pos*/
 	int lOffset = pos.x - collision.x;
 	int rOffset = pos.x + pos.w - (collision.x + collision.w);
-	int bOffset = pos.y + pos.h - (collision.y + collision.h);	
+	int bOffset = pos.y + pos.h - (collision.y + collision.h);
 
 	if(collision.w == 0) printf("W problem\n");
 	if(collision.h == 0) printf("H problem\n");
@@ -252,7 +252,7 @@ void player::resolveCollision(player * other)
 			if(facing == 1) other->pos.x = collision.x + collision.w + oLOffset;
 			else other->pos.x = collision.x - other->collision.w - oROffset;
 //*/
-		}	
+		}
 	}
 	updateRects();
 	other->updateRects();
@@ -262,8 +262,8 @@ void player::checkFacing(int maypole){
 	if(!pick->aerial){
 		if (lCorner) facing = 1;
 		else if (rCorner) facing = -1;
-		else if (pos.x < maypole && facing == -1) facing = 1; 
-		else if (pos.x > maypole && facing == 1) facing = -1; 
+		else if (pos.x < maypole && facing == -1) facing = 1;
+		else if (pos.x > maypole && facing == 1) facing = -1;
 	}
 }
 

@@ -13,10 +13,11 @@ interface::interface()
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
 	screenHeight = 600;
-	bg.w = 1600;	//By background, I mean the thing the characters actually move on. Bigger than the screen.
+	bg.w = 1600;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 900;
 	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
-	wall = 25;	//The size of the offset at which characters start to scroll the background, and get stuck.
+	wall = 25;         //The size of the offset at which characters start to scroll the background, and get stuck.
+
 	/*Initialize SDL*/
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_Init(SDL_INIT_JOYSTICK);
@@ -49,7 +50,7 @@ interface::interface()
 }
 
 /*This functions sets things up for a new match. Initializes some things and draws the background*/
-void interface::matchInit() 
+void interface::matchInit()
 {
 	SDL_Surface * temp;
 	p[0]->rounds = 0;
@@ -135,12 +136,12 @@ void interface::resolve()
 	p[1]->pushInput(sAxis2, posEdge2, negEdge2);
 
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
-	the idea is to do the procedure as follows: 
+	the idea is to do the procedure as follows:
 		1. Update to current rectangles. Since the actual step is part of the draw routine, this should happen first.
-		2. Figure out all deltas that should currently apply to sprite positions. Basically move the sprites to where 
+		2. Figure out all deltas that should currently apply to sprite positions. Basically move the sprites to where
 		   they'd be if there were no collision rules.
 		3. Check for things like hits and blocks. Enact all the effects of these, including stun, damage, etc.
-		4. Check for collision against the opponent or against boundaries such as the floor or the corners. 
+		4. Check for collision against the opponent or against boundaries such as the floor or the corners.
 		   Haven't decided if there should be a cieling yet.
 		5. Apply any changes to deltas that need to be made before the next frame
 		6. Initialize sprites.
@@ -175,13 +176,13 @@ void interface::resolve()
 	p[1]->updateRects();
 	
 	p[0]->enforceGravity(grav, floor);
-	p[1]->enforceGravity(grav, floor);	
-	
+	p[1]->enforceGravity(grav, floor);
+
 	p[0]->checkFacing(p[1]->pos.x);
 	p[1]->checkFacing(p[0]->pos.x);
 
-//*	
-	dragBG(	p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + 
+//*
+	dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
 	p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall) );
 //*/
 	p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
@@ -457,6 +458,8 @@ int interface::dragBG(int deltaX)
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > 800) bg.x = 800;
+
+	//FIXME what is this supposed to return?
 }
 
 interface::~interface()

@@ -36,12 +36,12 @@ move::~move()
 void move::build(char * n)
 {
 	ifstream read;
-	SDL_Surface * temp;
+	//SDL_Surface * temp; //FIXME unused variable
 	int startup, active, recovery;
 	char fname[40];
 	char buffer[100];
 	sprintf(fname, "%s.mv", n);
-	name = n; 
+	name = n;
 	read.open(fname);
 	while(read.get() != ':'); read.ignore();
 	while(read.get() != ':'); read.ignore();
@@ -72,7 +72,7 @@ void move::build(char * n)
 	read >> lift;
 	while(read.get() != ':'); read.ignore();
 	read >> blockMask;
-	while(read.get() != ':'); read.ignore(); 
+	while(read.get() != ':'); read.ignore();
 	read >> blockState;
 
 	//Properties will be a bit more complicated, I'll add this later.
@@ -90,7 +90,7 @@ void move::build(char * n)
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
 		regComplexity[i] = 1;
-		for(int j = 0; j < strlen(buffer); j++){
+		for(unsigned int j = 0; j < strlen(buffer); j++){
 			if(buffer[j] == '\t') regComplexity[i]++;
 		}
 		hitreg[i] = new SDL_Rect[regComplexity[i]];
@@ -100,13 +100,13 @@ void move::build(char * n)
 			bb[j] = strtok(NULL, ", \n\t"); j++;
 			bb[j] = strtok(NULL, ", \n\t"); j++;
 			bb[j] = strtok(NULL, ", \n\t"); j++;
-			bb[j] = strtok(NULL, ", \n\t"); 
+			bb[j] = strtok(NULL, ", \n\t");
 		}
 		for(int j = 0; j < regComplexity[i]*4; j++){
-			hitreg[i][j/4].x = atoi(bb[j]); j++;	
-			hitreg[i][j/4].y = atoi(bb[j]); j++;	
-			hitreg[i][j/4].w = atoi(bb[j]); j++;	
-			hitreg[i][j/4].h = atoi(bb[j]);	
+			hitreg[i][j/4].x = atoi(bb[j]); j++;
+			hitreg[i][j/4].y = atoi(bb[j]); j++;
+			hitreg[i][j/4].w = atoi(bb[j]); j++;
+			hitreg[i][j/4].h = atoi(bb[j]);
 		}
 		while(read.get() != '$'); read.ignore(2);
 		read >> delta[i].x >> delta[i].y >> delta[i].w >> delta[i].h;
@@ -114,7 +114,7 @@ void move::build(char * n)
 			while(read.get() != '$'); read.ignore(2);
 			read.get(buffer, 100, '\n');
 			hitComplexity[i] = 1;
-			for(int j = 0; j < strlen(buffer); j++){
+			for(unsigned int j = 0; j < strlen(buffer); j++){
 				if(buffer[j] == '\t') hitComplexity[i]++;
 			}
 			hitbox[i] = new SDL_Rect[hitComplexity[i]];
@@ -124,19 +124,19 @@ void move::build(char * n)
 				rr[j] = strtok(NULL, ", \n\t"); j++;
 				rr[j] = strtok(NULL, ", \n\t"); j++;
 				rr[j] = strtok(NULL, ", \n\t"); j++;
-				rr[j] = strtok(NULL, ", \n\t"); 
+				rr[j] = strtok(NULL, ", \n\t");
 			}
 			for(int j = 0; j < hitComplexity[i]*4; j++){
-				hitbox[i][j/4].x = atoi(rr[j]); j++;	
-				hitbox[i][j/4].y = atoi(rr[j]); j++;	
-				hitbox[i][j/4].w = atoi(rr[j]); j++;	
-				hitbox[i][j/4].h = atoi(rr[j]);	
+				hitbox[i][j/4].x = atoi(rr[j]); j++;
+				hitbox[i][j/4].y = atoi(rr[j]); j++;
+				hitbox[i][j/4].w = atoi(rr[j]); j++;
+				hitbox[i][j/4].h = atoi(rr[j]);
 			}
 		} else {
 			hitComplexity[i] = 1;
 			hitbox[i] = new SDL_Rect[hitComplexity[1]];
 			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
-		}	
+		}
 	}
 
 	launch = 0;
@@ -184,7 +184,7 @@ bool move::check(bool pos[5], bool neg[5], int t, int f)
 		if(button[i] == 1){
 			if(!pos[i]) return 0;
 		}
-				
+
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
@@ -200,7 +200,7 @@ void move::pollRects(SDL_Rect &d, SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* 
 	r = new SDL_Rect[rc];
 	b = new SDL_Rect[hc];
 	d.x = delta[currentFrame].x; d.y = delta[currentFrame].y;
-	
+
 	c.x = collision[currentFrame].x; c.w = collision[currentFrame].w;
 	c.y = collision[currentFrame].y; c.h = collision[currentFrame].h;
 
@@ -215,7 +215,7 @@ void move::pollRects(SDL_Rect &d, SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* 
 			b[i].x = 0; b[i].w = 0;
 			b[i].y = 0; b[i].h = 0;
 		} else {
-			b[i].x = temphit[i].x; b[i].w = temphit[i].w; 
+			b[i].x = temphit[i].x; b[i].w = temphit[i].w;
 			b[i].y = temphit[i].y; b[i].h = temphit[i].h;
 		}
 	}
@@ -229,7 +229,7 @@ bool move::operator>(move * x)
 	else{
 		if(x->cFlag == 1){
 			if(allowed & cState) return 1;
-		} else if(this != x) { /*Moves can't cancel into themselves without connecting. 
+		} else if(this != x) { /*Moves can't cancel into themselves without connecting.
 					I put this in place mainly to allow neutral states to
 					loop without re-triggering. Perhaps there's a better way.
 					If this causes problems, we'll revisit it*/
