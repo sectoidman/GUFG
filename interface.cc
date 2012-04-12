@@ -99,9 +99,9 @@ void interface::roundInit()
 		sAxis2[i] = 0;
 	}
 	for(int i = 0; i < 5; i++){
-		sprEdge1[i] = 0;
+		posEdge1[i] = 0;
 		negEdge1[i] = 0;
-		sprEdge2[i] = 0;
+		posEdge2[i] = 0;
 		negEdge2[i] = 0;
 	}
 
@@ -132,8 +132,8 @@ void interface::runTimer()
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
-	p[0]->pushInput(sAxis1, sprEdge1, negEdge1);
-	p[1]->pushInput(sAxis2, sprEdge2, negEdge2);
+	p[0]->pushInput(sAxis1, posEdge1, negEdge1);
+	p[1]->pushInput(sAxis2, posEdge2, negEdge2);
 
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -247,8 +247,8 @@ void interface::resolve()
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
-		sprEdge1[i] = 0;
-		sprEdge2[i] = 0;
+		posEdge1[i] = 0;
+		posEdge2[i] = 0;
 		negEdge1[i] = 0;
 		negEdge2[i] = 0;
 	}
@@ -320,9 +320,9 @@ void interface::readInput()
 			case SDL_JOYBUTTONDOWN:
 				for(int i = 4; i < 9; i++){
 					if(event.jbutton.which == p[0]->input[i].jbutton.which && event.jbutton.button == p[0]->input[i].jbutton.button)
-						sprEdge1[i-4] = 1;
+						posEdge1[i-4] = 1;
 					if(event.jbutton.which == p[1]->input[i].jbutton.which && event.jbutton.button == p[1]->input[i].jbutton.button)
-						sprEdge2[i-4] = 1;
+						posEdge2[i-4] = 1;
 				}
 				break;
 			case SDL_JOYBUTTONUP:
@@ -342,9 +342,9 @@ void interface::readInput()
 				}
 				for(int i = 4; i < 9; i++) {
 					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym)
-						sprEdge1[i-4] = 1;
+						posEdge1[i-4] = 1;
 					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym)
-						sprEdge2[i-4] = 1;
+						posEdge2[i-4] = 1;
 				}
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
