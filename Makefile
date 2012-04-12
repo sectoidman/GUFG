@@ -1,81 +1,54 @@
-# 4/5/2012 - Cleaned up makefile, added 'all' and 'clobber' targets.
+# 2012-04-11 - Fixed the Makefile.
 
-#Environment
-
-MKDIR=mkdir
-CP=cp
-RM=rm
-GREP=grep
-NM=nm
-CC=gcc
-CCC=g++
-CXX=g++
-AS=as
-
-# Macros
-CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Beta
-CND_DISTDIR=
-CND_BUILDDIR=
-
-# Object Files
 OBJS = \
-	keytest.o \
-  	interface.o \
-  	move.o \
-  	moveTrie.o \
-	hitstun.o \
-	character.o \
-	player.o \
-	draw.o \
-	red.o
+  aux.o \
+  utility.cc \
+  keytest.o \
+  interface.o \
+  move.o \
+  character.o \
+  hitstun.o \
+  trie.o \
+  player.o \
+  draw.o \
+  red.o
 
-# CC Compiler Flags
-CCFLAGS = -g -O2 -Wno-write-strings `sdl-config --cflags`
-CXXFLAGS = -g -O2 -Wno-write-strings `sdl-config --cflags`
+FLAGS = -g -O2 -Wno-write-strings `sdl-config --cflags`
 
-# Link Libraries and Options
-LIBS = `sdl-config --libs` -lSDL -lSDL_image 
+LIBS = `sdl-config --libs` -lSDL_image
 
-# Header Files (all)
-ALL_HEAD = interface.h move.h character.h player.h red.h hitstun.h special.h trie.h projectile.h utility.h aux.h
-
-# Source Files (all)
-ALL_SRC = keytest.cc interface.cc move.cc special.cc character.cc player.cc draw.cc red.cc hitstun.cc trie.cc utility.cc aux.cc
-
-# Build Targets
 all: keytest
 
-keytest: $(ALL_HEAD) $(ALL_SRC)
-	$(CXX) -o keytest $(ALL_SRC) $(CXXFLAGS) $(LIBS)
+keytest: $(OBJS)
+	g++ -o keytest $(OBJS) $(FLAGS) $(LIBS)
 
-keytest.o: $(ALL_SRC) $(ALL_HEAD)
-	$(CXX) -c keytest.cc $(CXXFLAGS)
+keytest.o:
+	g++ -c keytest.cc $(FLAGS)
 
-interface.o: interface.h interface.cc player.h player.cc character.h character.cc
-	$(CXX) -c interface.cc $(CXXFLAGS)
+interface.o:
+	g++ -c interface.cc $(FLAGS)
 
-move.o: move.h move.cc moveTrie.h moveTrie.cc
-	$(CXX) -c move.cc moveTrie.cc $(CXXFLAGS)
+move.o:
+	g++ -c move.cc $(FLAGS)
 
-character.o: character.h character.cc move.h move.cc hitstun.h hitstun.cc 
-	$(CXX) -c character.cc $(CXXFLAGS)
+character.o:
+	g++ -c character.cc $(FLAGS)
 
-player.o: player.h player.cc character.h character.cc
-	$(CXX) -c player.cc $(CXXFLAGS)
+player.o:
+	g++ -c player.cc $(FLAGS)
 
-draw.o: draw.cc player.h interface.h
-	$(CXX) -c draw.cc $(CXXFLAGS)
+draw.o:
+	g++ -c draw.cc $(FLAGS)
 
-red.o: red.h red.cc character.h character.cc
-	$(CXX) -c red.cc $(CXXFLAGS)
+red.o:
+	g++ -c red.cc $(FLAGS)
 
-hitstun.o: hitstun.h hitstun.cc move.h move.cc special.h special.cc
-	$(CXX) -c hitstun.cc special.cc $(CXXFLAGS)
+aux.o:
+	g++ -c aux.cc $(FLAGS)
+
+utility.o:
+	g++ -c utility.cc $(FLAGS)
 
 # -f Is needed to avoid errors with missing files.
 clean:
-	$(RM) -f *.o
-
-clobber:
-	$(RM) -f keytest *.o
+	rm -f keytest *.o
