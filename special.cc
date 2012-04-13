@@ -6,8 +6,6 @@ special::special(char * n)
 	int r = strlen(name);
 	xLock = 0;
 	yLock = 0;
-	tolerance = 30;
-	activation = 30;
 	init();
 }
 

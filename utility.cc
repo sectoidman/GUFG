@@ -3,8 +3,6 @@ utility::utility(char * n)
 {
 	build(n);
 	init();
-	tolerance = 30;
-	activation = 30;
 	xLock = 0;
 	yLock = 0;
 }

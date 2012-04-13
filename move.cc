@@ -12,8 +12,6 @@ move::move(char * n)
 	init();
 	xLock = 0;
 	yLock = 0;
-	tolerance = 30;
-	activation = 30;
 }
 
 move::~move()
@@ -41,7 +39,6 @@ void move::build(char * n)
 	char buffer[100];
 	sprintf(fname, "%s.mv", n);
 	name = n;
-	printf("%s:\n", fname);
 	read.open(fname);
 	while(read.get() != ':'); read.ignore();
 	while(read.get() != ':'); read.ignore();
@@ -85,7 +82,6 @@ void move::build(char * n)
 
 	for(int i = 0; i < frames; i++)
 	{
-		printf("%i:\n", i);
 		while(read.get() != '$'); read.ignore(2);
 		read >> collision[i].x >> collision[i].y >> collision[i].w >> collision[i].h;
 		while(read.get() != '$'); read.ignore(2);
@@ -96,15 +92,14 @@ void move::build(char * n)
 		}
 		hitreg[i] = new SDL_Rect[regComplexity[i]];
 		char * bb[regComplexity[i]*4];
-		bb[0] = strtok(buffer, ",\n\t\s ");
+		bb[0] = strtok(buffer, ",\n\t ");
 		for(int j = 1; j < regComplexity[i]*4; j++){
-			bb[j] = strtok(NULL, ", \s\n\t"); j++;
-			bb[j] = strtok(NULL, ", \s\n\t"); j++;
-			bb[j] = strtok(NULL, ", \s\n\t"); j++;
-			bb[j] = strtok(NULL, ", \s\n\t");
+			bb[j] = strtok(NULL, ", \n\t"); j++;
+			bb[j] = strtok(NULL, ", \n\t"); j++;
+			bb[j] = strtok(NULL, ", \n\t"); j++;
+			bb[j] = strtok(NULL, ", \n\t");
 		}
 		for(int j = 0; j < regComplexity[i]*4; j++){
-			printf("RC: %i\n", regComplexity[i]);
 			hitreg[i][j/4].x = atoi(bb[j]); j++;
 			hitreg[i][j/4].y = atoi(bb[j]); j++;
 			hitreg[i][j/4].w = atoi(bb[j]); j++;
@@ -121,12 +116,12 @@ void move::build(char * n)
 			}
 			hitbox[i] = new SDL_Rect[hitComplexity[i]];
 			char* rr[hitComplexity[i]*4];
-			rr[0] = strtok(buffer, ",\s\n\t ");
+			rr[0] = strtok(buffer, ",\n\t ");
 			for(int j = 1; j < hitComplexity[i]*4; j++){
-				rr[j] = strtok(NULL, ", \s\n\t"); j++;
-				rr[j] = strtok(NULL, ", \s\n\t"); j++;
-				rr[j] = strtok(NULL, ", \s\n\t"); j++;
-				rr[j] = strtok(NULL, ", \s\n\t");
+				rr[j] = strtok(NULL, ", \n\t"); j++;
+				rr[j] = strtok(NULL, ", \n\t"); j++;
+				rr[j] = strtok(NULL, ", \n\t"); j++;
+				rr[j] = strtok(NULL, ", \n\t");
 			}
 			for(int j = 0; j < hitComplexity[i]*4; j++){
 				hitbox[i][j/4].x = atoi(rr[j]); j++;
@@ -230,13 +225,11 @@ bool move::operator>(move * x)
 	if(frames == 0 || x->frames == 0) return 0;
 	else{
 		if(x->cFlag == 1){
-			printf("%i vs. %i\n", allowed, cState);
 			if(allowed & x->cState) return 1;
 		} else if(this != x) { /*Moves can't cancel into themselves without connecting.
 					I put this in place mainly to allow neutral states to
 					loop without re-triggering. Perhaps there's a better way.
 					If this causes problems, we'll revisit it*/
-			printf("%i vs. %i\n", allowed, state);
 			if(allowed & x->state) return 1;
 		}
 	}
