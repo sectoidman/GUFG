@@ -18,7 +18,7 @@ public:
 	int posX, posY;
 	int rounds;
 	int facing;
-	int padding[490];   //More magic. Do not touch
+	int padding[400];   //More magic. Do not touch
 	void init();
 	void keyConfig(int);
 	void characterSelect(int);
