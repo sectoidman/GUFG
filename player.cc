@@ -158,7 +158,7 @@ void player::checkCorners(int floor, int left, int right)
 	/*Offset variables. I could do these calculations on the fly, but it's easier this way.
 	Essentially, this represents the offset between the sprite and the collision box, since
 	even though we're *checking* collision, we're still *moving* spr*/
-	int lOffset = posX + collision.x;
+	int lOffset = posX - collision.x;
 	int rOffset = posX - (collision.x + collision.w);
 
 	if(collision.w == 0) printf("W problem\n");
@@ -198,8 +198,9 @@ void player::checkCorners(int floor, int left, int right)
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(facing == -1) rCorner = 1;
-		if(collision.x + collision.w > right)
-			posX = right - collision.w - rOffset;
+		if(collision.x + collision.w > right){
+			posX = right + rOffset;
+		}
 	} else rCorner = 0;
 	updateRects(); //Update rectangles or the next collision check will be wrong.
 }
