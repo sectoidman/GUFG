@@ -7,6 +7,8 @@ red::red()
 	head = new moveTrie;
 	head->insert(new move("Red/A"));
 	head->fish[0]->xLock = 1;
+	head->insert(new move("Red/C"));
+	head->fish[1]->xLock = 1;
 
 	initMoves();
 
