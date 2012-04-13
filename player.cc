@@ -217,39 +217,39 @@ void player::resolveCollision(player * other)
 
 
 	if(other->lCorner) posX = other->collision.x + other->collision.w + lOffset;
-	else if(other->rCorner) posX = other->collision.x - collision.w - rOffset;
+	else if(other->rCorner) posX = other->collision.x + rOffset;
 	else if(lCorner) other->posX = collision.x + collision.w + oLOffset;
-	else if(rCorner) other->posX = collision.x - other->collision.w - oROffset;
+	else if(rCorner) other->posX = collision.x + oROffset;
 	else {
 		if((!pick->aerial && !other->pick->aerial) || (pick->aerial && other->pick->aerial)){
 			if((facing == 1 && deltaX > 0) || (facing == -1 && deltaX < 0)) oDisplace = 1;
 			if((other->facing == 1 && other->deltaX > 0) || (other->facing == -1 && other->deltaX < 0)) displace = 1;
 			if(displace && !oDisplace) {
-				if(facing == 1) posX = other->collision.x - collision.w - rOffset;
+				if(facing == 1) posX = other->collision.x + rOffset;
 				else posX = other->collision.x + other->collision.w + lOffset;
 			} else if (oDisplace && !displace) {
-				if(other->facing == 1) other->posX = collision.x - other->collision.w - oROffset;
+				if(other->facing == 1) other->posX = collision.x + oROffset;
 				else other->posX = collision.x + collision.w + oLOffset;
 			} else if (oDisplace && displace) { 
 				if(abs(deltaX) > abs(other->deltaX)){
 					posX += other->deltaX; 
 					updateRects();
-					if(other->facing == 1) other->posX = collision.x - other->collision.w - oROffset;
+					if(other->facing == 1) other->posX = collision.x + oROffset;
 					else other->posX = collision.x + collision.w + oLOffset;
 				} else {
 					other->posX += deltaX; 
 					other->updateRects();
-					if(facing == 1) posX = other->collision.x - collision.w - rOffset;
+					if(facing == 1) posX = other->collision.x + rOffset;
 					else posX = other->collision.x + other->collision.w + lOffset;
 				}
 			}
 //*
 		} else if (pick->aerial && !other->pick->aerial) {
 			if(other->facing == 1) posX = other->collision.x + other->collision.w + lOffset;
-			else posX = other->collision.x - collision.w - rOffset;
+			else posX = other->collision.x + rOffset;
 		} else {
 			if(facing == 1) other->posX = collision.x + collision.w + oLOffset;
-			else other->posX = collision.x - other->collision.w - oROffset;
+			else other->posX = collision.x + oROffset;
 //*/
 		}
 	}
@@ -274,7 +274,8 @@ void player::checkFacing(int maypole){
 
 int player::dragBG(int left, int right)
 {
-	if(collision.x < left || collision.x + collision.w > right) return deltaX;
+	if(collision.x < left) return collision.x - left;
+	else if (collision.x + collision.w > right) return (collision.x + collision.w) - right;
 	else return 0;
 }
 

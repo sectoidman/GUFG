@@ -176,9 +176,13 @@ void interface::resolve()
 	p[0]->enforceGravity(grav, floor);
 	p[1]->enforceGravity(grav, floor);
 
-	p[0]->checkFacing(p[1]->posX);
-	p[1]->checkFacing(p[0]->posX);
-
+	int m[2];
+	for(int i = 0; i < 2; i++){
+		if(p[i]->facing == -1) m[i] = p[i]->collision.x;
+		else m[i] = p[i]->collision.x + p[i]->collision.w;
+	}
+	p[0]->checkFacing(m[1]);
+	p[1]->checkFacing(m[0]);
 //*
 	dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
 	p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall) );
@@ -189,6 +193,7 @@ void interface::resolve()
 	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
 		p[0]->resolveCollision(p[1]);
 	}
+	
 	if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall) combo2 = 0;
 	if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall) combo1 = 0;
 
