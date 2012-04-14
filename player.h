@@ -8,6 +8,7 @@
 class player{
 public:
 	player();
+	player(int);
 	~player();
 
 	char * inputName[10];   //Input names. This is really just for housekeeping.
@@ -19,7 +20,8 @@ public:
 	int rounds;
 	int facing;
 	int padding[400];   //More magic. Do not touch
-	void init();
+	void writeConfig();
+	bool readConfig() {return 0;} //For now
 	void keyConfig(int);
 	void characterSelect(int);
 	void pushInput(bool*, bool*, bool*);
@@ -42,5 +44,7 @@ public:
 	int dragBG(int, int);
 	void checkCorners(int, int, int);
 private:
-	int inputBuffer[29];
+	int ID;
+	int inputBuffer[30];
+	void init();
 };

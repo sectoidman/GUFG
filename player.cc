@@ -1,6 +1,17 @@
 #include "player.h"
 player::player()
 {
+	init();
+}
+
+player::player(int id)
+{
+	init();
+	ID = id;
+}
+
+void player::init()
+{
 	/*Initialize input containers*/
 	for(int i = 0; i < 30; i++)
 		inputBuffer[i] = 5;
@@ -17,11 +28,7 @@ player::player()
 	inputName[8] = "E";
 	inputName[9] = "Start";
 
-	/*Set up ALL the inputs*/
-	for(int i = 0; i < 9; i++){
-		printf("Please enter a command for %s\n", inputName[i]);
-		keyConfig(i);
-	}
+	if(!readConfig()) writeConfig();
 
 	/*Set up the sprite*/
 
@@ -30,6 +37,17 @@ player::player()
 	deltaY = 0;
 	regComplexity = 0;
 	hitComplexity = 0;
+	lCorner = 0;
+	rCorner = 0;
+}
+
+void player::writeConfig()
+{
+	/*Set up ALL the inputs*/
+	for(int i = 0; i < 9; i++){
+		printf("Please enter a command for %s\n", inputName[i]);
+		keyConfig(i);
+	}
 }
 
 void player::keyConfig(int curr)
@@ -289,7 +307,7 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
 	inputBuffer[0] = temp;
 
-	for(int i = 30; i > 0; i--){
+	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];
 	}
 

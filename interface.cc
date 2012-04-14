@@ -31,10 +31,10 @@ interface::interface()
 		SDL_JoystickOpen(i);
 	/*Initialize players.*/
 	printf("Player 1:\n"); //Print statement, a temporary measure.
-	p[0] = new player;
+	p[0] = new player(1);
 
 	printf("Player 2:\n");
-	p[1] = new player;
+	p[1] = new player(2);
 
 	/*Game and round end conditions*/
 	gameover = 0;
