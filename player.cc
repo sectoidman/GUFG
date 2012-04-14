@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <iostream>
+#include <SDL/SDL.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <fstream>
+using namespace std;
 #include "player.h"
 player::player()
 {
@@ -6,8 +13,8 @@ player::player()
 
 player::player(int id)
 {
-	init();
 	ID = id;
+	init();
 }
 
 void player::init()
@@ -41,52 +48,99 @@ void player::init()
 	rCorner = 0;
 }
 
-void player::writeConfig()
+bool player::readConfig()
 {
-	/*Set up ALL the inputs*/
-	for(int i = 0; i < 9; i++){
-		printf("Please enter a command for %s\n", inputName[i]);
-		keyConfig(i);
+	char fname[30];
+	sprintf(fname, "Misc/.p%i.conf", ID);
+	ifstream read;
+	read.open(fname);
+	if(read.fail()) {
+		read.close();
+		return 0;
+	}
+	else{
+		char * token;
+		char buffer[30];
+		for(int i = 0; i < 10; i++){
+			read.get(buffer, 30, ':'); read.ignore(); 
+			input[i].type = atoi(buffer);
+			read.ignore();
+			read.get(buffer, 30, '\n'); read.ignore();
+			switch (input[i].type){
+			case SDL_JOYAXISMOTION:
+				token = strtok(buffer, " \n");
+				input[i].jaxis.which = atoi(token);
+				token = strtok(NULL, " \n");
+				input[i].jaxis.axis = atoi(token);
+				token = strtok(NULL, " \n");
+				input[i].jaxis.value = atoi(token);
+				break;
+			case SDL_JOYBUTTONDOWN:
+				token = strtok(buffer, " \n");
+				input[i].jbutton.which = atoi(token);
+				token = strtok(NULL, " \n");
+				input[i].jbutton.button = atoi(token);
+				break;
+			case SDL_KEYDOWN:
+				token = strtok(buffer, " \n");	
+				input[i].key.keysym.sym = (SDLKey)atoi(token);
+				break;
+			default:
+				break;
+			}
+		}
+		read.close();
+		return 1;
 	}
 }
 
-void player::keyConfig(int curr)
+void player::writeConfig()
 {
-	/*Set up dummy event*/
+	char fname[30];
+	printf("Player %i:\n", ID);
+	sprintf(fname, "Misc/.p%i.conf", ID);
+	ofstream write;
 	SDL_Event temp; 
+	write.open(fname);
+	/*Set up ALL the inputs*/
+	for(int i = 0; i < 10; i++){
+		printf("Please enter a command for %s\n", inputName[i]);
+		/*Set up dummy event*/
 
-	/*Flag for breaking the loop*/
-	bool configFlag = 0;
+		/*Flag for breaking the loop*/
+		bool configFlag = 0;
 
-	while(SDL_PollEvent(&temp));
-	/*Run a simple event poll*/
-	while (configFlag == 0){
-		if (SDL_PollEvent(&temp)) {
-			switch (temp.type) {
-			case SDL_JOYAXISMOTION:
-				if(temp.jaxis.value != 0)
-				{
-					input[curr] = temp;
-					printf("Set to Joystick %i axis %i value %i\n", temp.jaxis.which, temp.jaxis.axis, temp.jaxis.value);
+		while(SDL_PollEvent(&temp));
+		while (configFlag == 0){
+			if (SDL_PollEvent(&temp)) {
+				switch (temp.type) {
+				case SDL_JOYAXISMOTION:
+					if(temp.jaxis.value != 0){
+						input[i] = temp;
+						write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value << "\n";
+						printf("Set to Joystick %i axis %i value %i\n", input[i].jaxis.which, input[i].jaxis.axis, input[i].jaxis.value);
+						configFlag = 1;
+					}
+					break;
+				case SDL_JOYBUTTONDOWN:
+					input[i] = temp;
+					write << (int)temp.type << " : " << (int)temp.jbutton.which << " " << (int)temp.jbutton.button << "\n";
+					printf("Set to Joystick %i button %i\n", input[i].jbutton.which, input[i].jbutton.button);
 					configFlag = 1;
+					break;
+				case SDL_KEYDOWN:
+					input[i] = temp;
+					write << (int)temp.type << " : " << (int)temp.key.keysym.sym << "\n";
+					printf("Set to keyboard %s\n", SDL_GetKeyName(input[i].key.keysym.sym));
+					configFlag = 1;
+					break;
+				default: 
+					break;
 				}
-				break;
-			case SDL_JOYBUTTONDOWN:
-				input[curr] = temp;
-				printf("Set to Joystick %i button %i\n", temp.jbutton.which, temp.jbutton.button);
-				configFlag = 1;
-				break;
-			case SDL_KEYDOWN:
-				input[curr] = temp;
-				printf("Set to keyboard %s\n", SDL_GetKeyName(input[curr].key.keysym.sym));
-				configFlag = 1;
-				break;
-			default: 
-				break;
-
 			}
 		}
 	}
+	write.close();
 }
 
 void player::characterSelect(int i)

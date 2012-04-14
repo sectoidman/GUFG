@@ -21,8 +21,7 @@ public:
 	int facing;
 	int padding[400];   //More magic. Do not touch
 	void writeConfig();
-	bool readConfig() {return 0;} //For now
-	void keyConfig(int);
+	bool readConfig();
 	void characterSelect(int);
 	void pushInput(bool*, bool*, bool*);
 	int colorkey;

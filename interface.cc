@@ -24,22 +24,21 @@ interface::interface()
 	/*WM stuff*/
 	SDL_WM_SetCaption("GUFG", "GUFG");
 	screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, 0);
-	SDL_ShowCursor(SDL_DISABLE);
+//	SDL_ShowCursor(SDL_DISABLE);
 
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
 	/*Initialize players.*/
-	printf("Player 1:\n"); //Print statement, a temporary measure.
 	p[0] = new player(1);
-
-	printf("Player 2:\n");
 	p[1] = new player(2);
 
 	/*Game and round end conditions*/
 	gameover = 0;
 	numRounds = 2;
 
+	SDL_Event temp;
+	while(SDL_PollEvent(&temp));
 	/*Select characters.*/
 
 	cSelectMenu();
