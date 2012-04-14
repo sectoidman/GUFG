@@ -32,19 +32,19 @@ void interface::draw()
 
 	if(p[0]->sprite) SDL_BlitSurface(p[0]->sprite, NULL, back, &p[0]->spr);
 	else {
-		SDL_FillRect(back, &p[0]->collision, SDL_MapRGB(screen->format, 255, 255, 255));
+		SDL_FillRect(back, &p[0]->collision, SDL_MapRGB(back->format, 255, 255, 255));
 		for(int i = 0; i < p[0]->regComplexity; i++)
-			SDL_FillRect(back, &p[0]->hitreg[i], SDL_MapRGB(screen->format, 0, 255, 0));
+			SDL_FillRect(back, &p[0]->hitreg[i], SDL_MapRGB(back->format, 0, 255, 0));
 		for(int i = 0; i < p[0]->hitComplexity; i++)
-			SDL_FillRect(back, &p[0]->hitbox[i], SDL_MapRGB(screen->format, 255, 0, 0));
+			SDL_FillRect(back, &p[0]->hitbox[i], SDL_MapRGB(back->format, 255, 0, 0));
 	}
 	if(p[1]->sprite) SDL_BlitSurface(p[1]->sprite, NULL, back, &p[1]->spr);
 	else{
-		SDL_FillRect(back, &p[1]->collision, SDL_MapRGB(screen->format, 255, 255, 255));
+		SDL_FillRect(back, &p[1]->collision, SDL_MapRGB(back->format, 255, 255, 255));
 		for(int i = 0; i < p[1]->regComplexity; i++)
-			SDL_FillRect(back, &p[1]->hitreg[i], SDL_MapRGB(screen->format, 0, 255, 0));
+			SDL_FillRect(back, &p[1]->hitreg[i], SDL_MapRGB(back->format, 0, 255, 0));
 		for(int i = 0; i < p[1]->hitComplexity; i++)
-			SDL_FillRect(back, &p[1]->hitbox[i], SDL_MapRGB(screen->format, 255, 0, 0));
+			SDL_FillRect(back, &p[1]->hitbox[i], SDL_MapRGB(back->format, 255, 0, 0));
 	}
 	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 	SDL_BlitSurface(back, &bg, screen, NULL);
