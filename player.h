@@ -24,7 +24,6 @@ public:
 	bool readConfig();
 	void characterSelect(int);
 	void pushInput(bool*, bool*, bool*);
-	int colorkey;
 	void draw();
 	void spriteInit();
 
