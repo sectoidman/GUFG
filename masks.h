@@ -17,7 +17,7 @@ struct cf{
 	bool special:1;
 	bool super:1;
 	bool block:1;
-	bool burst:1;
+	bool tech:1;
 	bool misc1:1;
 	bool misc2:1;
 	bool misc3:1;
