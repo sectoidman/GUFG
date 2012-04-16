@@ -1,5 +1,6 @@
 #include "move.h"
 
+
 move::move()
 {
 	name = NULL;
@@ -68,9 +69,9 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read >> lift;
 	while(read.get() != ':'); read.ignore();
-	read >> blockMask;
+	read >> blockMask.i;
 	while(read.get() != ':'); read.ignore();
-	read >> blockState;
+	read >> blockState.i;
 
 	//Properties will be a bit more complicated, I'll add this later.
 	collision = new SDL_Rect[frames];
