@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include "aux.h"
+#include "masks.h"
 
 using namespace std;
 
@@ -50,21 +51,8 @@ public:
 	//Low, High, Air Block. Basically a 3-digit binary number expressed as an integer from 0-7.
 	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask
 
-	unsigned int blockMask;
-
-	//FIXME consider a union of bitfields like, so for readability if(block.bits.low) {} instead of bitmasking
-	#ifdef False
-	union {
-		unsigned int mask,
-		struct {
-			bool low: 1,
-			bool high: 1,
-			bool 
-			
-
-		} bits;
-	} block;
-	#endif
+	blockField blockMask, blockState;
+	//Partner to the blockmask. This variable is the move's actual "guard state." Usually it will only be one of the three.
 
 	bool cFlag;
 	unsigned int state;
@@ -72,8 +60,6 @@ public:
 	int currentFrame;    //The frame that is currently running.
 	int frames;          //Number of frames.
 	
-	unsigned int blockState;//Partner to the blockmask. This variable is the move's actual "guard state." Usually it will only be one of the three.
-	//FIXME Same advice as for
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
