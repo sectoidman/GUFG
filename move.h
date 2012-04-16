@@ -39,8 +39,6 @@ public:
 	void connect();
 	SDL_Surface * draw(int, bool);
 
-	unsigned int allowed;//The state in which the move is allowed. Depending on how we handle states, this may need to be an array of states or something.
-	bool xLock, yLock;
 	int push;            //How much pushback the move does
 	int lift;            //How much the move lifts an aerial opponent.
 	bool launch;         //Whether or not the move launches on hit
@@ -53,10 +51,13 @@ public:
 
 	blockField blockMask, blockState;
 	//Partner to the blockmask. This variable is the move's actual "guard state." Usually it will only be one of the three.
-
+	cancelField State, CState, Allowed;
 	bool cFlag;
 	unsigned int state;
 	unsigned int cState;
+	unsigned int allowed;//The state in which the move is allowed. Depending on how we handle states, this may need to be an array of states or something.
+	
+	bool xLock, yLock;
 	int currentFrame;    //The frame that is currently running.
 	int frames;          //Number of frames.
 	

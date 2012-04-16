@@ -1,8 +1,8 @@
 Name: C
 Buffer: 30 : 30
 Frames: 33 : 10 : 3 : 20 
-Check: 3 
-State: 16 : 24
+Check: 5 
+State: 256 : 504
 Damage: 35
 Stun: 16
 Push: 10

@@ -1,8 +1,8 @@
 Name: A
 Buffer: 30 : 30
 Frames: 10 : 3 : 3 : 4 
-Check: 3 
-State: 16 : 30
+Check: 5 
+State: 256 : 510
 Damage: 7
 Stun: 10
 Push: 1

@@ -56,10 +56,13 @@ void move::build(char * n)
 	read >> recovery;
 	while(read.get() != ':'); read.ignore();
 	read >> allowed;
+	Allowed.i = allowed;
 	while(read.get() != ':'); read.ignore();
 	read >> state;
+	State.i = state;
 	while(read.get() != ':'); read.ignore();
 	read >> cState;
+	CState.i = cState;
 	while(read.get() != ':'); read.ignore();
 	read >> damage;
 	while(read.get() != ':'); read.ignore();

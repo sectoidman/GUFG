@@ -1,8 +1,8 @@
 Name: D
 Buffer: 30 : 30
 Frames: 1 : 1 : 0 : 0 
-Check: 3
-State: 16 : 30
+Check: 15
+State: 256 : 509
 Damage: 0
 Stun: 0
 Push: 0
