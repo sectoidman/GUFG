@@ -147,28 +147,7 @@ void interface::resolve()
 	p[1]->updateRects();
 
 	//Note to self: Move all this delta stuff to a function.
-	p[0]->deltaX += p[0]->pick->volitionX*p[0]->facing;
-	p[0]->deltaY += p[0]->pick->volitionY;
-	p[1]->deltaX += p[1]->pick->volitionX*p[1]->facing;
-	p[1]->deltaY += p[1]->pick->volitionY;
 	
-	if(p[0]->lCorner || p[0]->rCorner) p[1]->deltaX += p[0]->pick->volitionX*p[1]->facing;
-	if(p[1]->lCorner || p[1]->rCorner) p[0]->deltaX += p[1]->pick->volitionX*p[0]->facing;
-	
-	p[1]->pick->volitionX = 0;
-	p[1]->pick->volitionY = 0;
-	p[0]->pick->volitionX = 0;
-	p[0]->pick->volitionY = 0;
-	
-	if(p[0]->pick->freeze < 1){
-		p[0]->posX += p[0]->deltaX;
-		p[0]->posY += p[0]->deltaY;
-	}
-	if(p[1]->pick->freeze < 1){
-		p[1]->posX += p[1]->deltaX;
-		p[1]->posY += p[1]->deltaY;
-	}
-
 	p[0]->updateRects();
 	p[1]->updateRects();
 	
@@ -239,14 +218,6 @@ void interface::resolve()
 	if(hit2) temp2->init();
 	if(hit1) temp1->init();
 
-	if(!p[0]->pick->aerial){
-		if(p[0]->pick->cMove == p[0]->pick->neutral)
-			p[0]->deltaX = 0;
-	}
-	if(!p[1]->pick->aerial){
-		if(p[1]->pick->cMove == p[1]->pick->neutral)
-			p[1]->deltaX = 0;
-	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
 		posEdge1[i] = 0;
