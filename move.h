@@ -61,7 +61,7 @@ public:
 	int currentFrame;//The frame that is currently running.
 	int currentHit;
 	int cFlag;
-	int * firstActive;
+	int * totalStartup;
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];

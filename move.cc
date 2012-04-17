@@ -35,13 +35,15 @@ move::~move()
 void move::build(char * n)
 {
 	ifstream read;
-	int startup, active, recovery;
+	int startup, recovery, countFrames = -1;
 	char fname[40];
 	char buffer[100];
 	sprintf(fname, "%s.mv", n);
-	name = n;
 	read.open(fname);
+	
 	while(read.get() != ':'); read.ignore();
+	name = n;
+	
 	while(read.get() != ':'); read.ignore();
 	read >> tolerance;
 	while(read.get() != ':'); read.ignore();
@@ -54,15 +56,23 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read >> frames;
 	
-	if(hits > 0){
+	if(hits > 0) totalStartup = new int[hits];
+	int active[hits];
+
+	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> startup;
+		countFrames += startup;
+		totalStartup[i] = countFrames;
+		printf("%s: %i\n", name, totalStartup[i]);
 		while(read.get() != ':'); read.ignore();
-		read >> active;
+		read >> active[i];
+		countFrames += active[i];
 	}
  
 	while(read.get() != ':'); read.ignore();
 	read >> recovery;
+
 	while(read.get() != ':'); read.ignore();
 	read >> allowed.i;
 
@@ -73,12 +83,16 @@ void move::build(char * n)
 
 	while(read.get() != ':'); read.ignore();
 	read >> damage;
+
 	while(read.get() != ':'); read.ignore();
 	read >> stun;
+
 	while(read.get() != ':'); read.ignore();
 	read >> push;
+
 	while(read.get() != ':'); read.ignore();
 	read >> lift;
+
 	while(read.get() != ':'); read.ignore();
 	read >> blockMask.i;
 	while(read.get() != ':'); read.ignore();
@@ -91,6 +105,8 @@ void move::build(char * n)
 	hitreg = new SDL_Rect*[frames];
 	regComplexity = new int[frames];
 	delta = new SDL_Rect[frames];
+
+	currentHit = 0;
 
 	for(int i = 0; i < frames; i++)
 	{
@@ -120,7 +136,7 @@ void move::build(char * n)
 		while(read.get() != '$'); read.ignore(2);
 		read >> delta[i].x >> delta[i].y >> delta[i].w >> delta[i].h;
 		if(hits > 0){
-			if(i >= startup && i < startup+active){
+			if(i > totalStartup[currentHit] && i <= totalStartup[currentHit]+active[currentHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
 				hitComplexity[i] = 1;
@@ -130,18 +146,21 @@ void move::build(char * n)
 				hitbox[i] = new SDL_Rect[hitComplexity[i]];
 				char* rr[hitComplexity[i]*4];
 				rr[0] = strtok(buffer, ",\n\t ");
+	
 				for(int j = 1; j < hitComplexity[i]*4; j++){
 					rr[j] = strtok(NULL, ", \n\t"); j++;
 					rr[j] = strtok(NULL, ", \n\t"); j++;
 					rr[j] = strtok(NULL, ", \n\t"); j++;
 					rr[j] = strtok(NULL, ", \n\t");
 				}
+	
 				for(int j = 0; j < hitComplexity[i]*4; j++){
 					hitbox[i][j/4].x = atoi(rr[j]); j++;
 					hitbox[i][j/4].y = atoi(rr[j]); j++;
 					hitbox[i][j/4].w = atoi(rr[j]); j++;
 					hitbox[i][j/4].h = atoi(rr[j]);
 				}
+				if(i == totalStartup[currentHit]+active[currentHit]) currentHit++;
 			} else {
 				hitComplexity[i] = 1;
 				hitbox[i] = new SDL_Rect[hitComplexity[1]];
