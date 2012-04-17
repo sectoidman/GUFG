@@ -70,7 +70,6 @@ void move::build(char * n)
 		read >> startup;
 		countFrames += startup;
 		totalStartup[i] = countFrames;
-		printf("%s: %i\n", name, totalStartup[i]);
 		while(read.get() != ':'); read.ignore();
 		read >> active[i];
 		countFrames += active[i];
@@ -86,9 +85,6 @@ void move::build(char * n)
 		while(read.get() != ':'); read.ignore();
 		read >>	state[i].i;
 	}
-
-
-
 	
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
