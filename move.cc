@@ -256,7 +256,7 @@ void move::init()
 
 void move::connect()
 {
-	cFlag = 1;
+	cFlag++;
 }
 
 void move::blockSuccess(int st)
