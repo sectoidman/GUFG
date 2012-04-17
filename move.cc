@@ -29,6 +29,7 @@ move::~move()
 	if(hitComplexity) delete [] hitComplexity;
 	if(regComplexity) delete [] regComplexity;
 	if(delta) delete [] delta;
+	if(state) delete [] state;
 }
 
 void move::build(char * n)
@@ -39,6 +40,7 @@ void move::build(char * n)
 	char buffer[100];
 	sprintf(fname, "%s.mv", n);
 	name = n;
+	state = new cancelField[2];
 	read.open(fname);
 	while(read.get() != ':'); read.ignore();
 	while(read.get() != ':'); read.ignore();
@@ -58,9 +60,9 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read >> allowed.i;
 	while(read.get() != ':'); read.ignore();
-	read >>	state.i;
+	read >>	state[0].i;
 	while(read.get() != ':'); read.ignore();
-	read >>	cState.i;
+	read >>	state[1].i;
 	while(read.get() != ':'); read.ignore();
 	read >> damage;
 	while(read.get() != ':'); read.ignore();
@@ -226,12 +228,12 @@ bool move::operator>(move * x)
 	if(frames == 0 || x->frames == 0) return 0;
 	else{
 		if(x->cFlag == 1){
-			if(allowed.i & x->cState.i) return 1;
+			if(allowed.i & x->state[1].i) return 1;
 		} else if(this != x) { /*Moves can't cancel into themselves without connecting.
-					I put this in place mainly to allow neutral states to
+					I put this in place mainly to allow neutral state[0]s to
 					loop without re-triggering. Perhaps there's a better way.
 					If this causes problems, we'll revisit it*/
-			if(allowed.i & x->state.i) return 1;
+			if(allowed.i & x->state[0].i) return 1;
 		}
 	}
 	return 0;

@@ -53,7 +53,7 @@ public:
 
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
-	cancelField state, cState, allowed;
+	cancelField *state, allowed;
 	
 	bool xLock, yLock;
 	int currentFrame;//The frame that is currently running.
