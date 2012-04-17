@@ -97,7 +97,7 @@ int character::takeHit(move * attack)
 	int ct = 0;
 	/*Damage scaling logic will factor into this later*/
 	if(attack->cFlag <= attack->currentHit){
-		if(cMove->blockState.i & attack->blockMask.i){
+		if(cMove->blockState.i & attack->blockMask[attack->currentHit].i){
 		/*Do blocking stuff. Specifically, we need to put the player in
 		block stun, a state in which they're frozen in the last block animation until blockstun ends.
 		During blockstun, generally the option available to everyone is to switch blocks, so as not
@@ -109,7 +109,6 @@ int character::takeHit(move * attack)
 		*/
 			cMove->blockSuccess(attack->stun[attack->currentHit]);
 			printf("Block!\n");
-			attack->connect();
 		}
 		else{
 		/*Do hitstun stuff. Specifically, the player needs to be put in a "hitstun" state for a number

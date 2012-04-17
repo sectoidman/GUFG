@@ -30,6 +30,12 @@ move::~move()
 	if(regComplexity) delete [] regComplexity;
 	if(delta) delete [] delta;
 	if(state) delete [] state;
+	if(blockMask) delete [] blockMask;
+	if(lift) delete [] lift;
+	if(damage) delete [] damage;
+	if(stun) delete [] stun;
+	if(totalStartup) delete [] totalStartup;
+	if(push) delete [] push;
 }
 
 void move::build(char * n)
@@ -59,9 +65,12 @@ void move::build(char * n)
 	if(hits > 0) {
 		totalStartup = new int[hits];
 		damage = new int[hits];
-		stun = new int[hits];
-		push = new int[hits];
-		lift = new int[hits];
+		stun = new int[hits]; 
+		push = new int[hits]; 
+		lift = new int[hits]; 
+		blockMask = new blockField[hits]; 
+	} else {
+		blockMask = NULL; lift = NULL; push = NULL; stun = NULL; damage = NULL; totalStartup = NULL;
 	}
 	int active[hits];
 
@@ -89,19 +98,28 @@ void move::build(char * n)
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> damage[i];
-
+	}
+	
+	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> stun[i];
-
+	}
+	
+	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> push[i];
+	}
 
+	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> lift[i];
 	}
 
-	while(read.get() != ':'); read.ignore();
-	read >> blockMask.i;
+	for(int i = 0; i < hits; i++){
+		while(read.get() != ':'); read.ignore();
+		read >> blockMask[i].i;
+	}
+
 	while(read.get() != ':'); read.ignore();
 	read >> blockState.i;
 

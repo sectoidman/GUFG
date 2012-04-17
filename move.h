@@ -50,7 +50,7 @@ public:
 	//Low, High, Air Block. Basically a 3-digit binary number expressed as an integer from 0-7.
 	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask
 
-	blockField blockMask, blockState;
+	blockField *blockMask, blockState;
 
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 

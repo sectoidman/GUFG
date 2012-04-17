@@ -8,7 +8,8 @@ Damage: 7
 Stun: 10
 Push: 1
 Lift: 3
-Block: 3 : 4
+Blockable: 3 
+Blocks: 0
 Properties:  
 #0 
 $C	5 0 55 150
