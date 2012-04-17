@@ -160,12 +160,6 @@ void player::updateRects()
 {
 	if(pick->cMove != NULL) {
 		pick->cMove->pollRects(delta, collision, hitreg, regComplexity, hitbox, hitComplexity);
-		if(!pick->freeze){
-			if(pick->cMove->xLock) deltaX = delta.x*facing; else deltaX += delta.x*facing;
-		}
-		if(!pick->aerial){
-			if(pick->cMove->yLock) deltaY = delta.y; else deltaY += delta.y;
-		}
 		for(int i = 0; i < hitComplexity; i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
@@ -186,7 +180,7 @@ void player::enforceGravity(int grav, int floor)
 {
 	if(collision.y + collision.h < floor && pick->aerial == 0) pick->aerial = 1;
 
-	else if(pick->aerial && !pick->freeze) deltaY += grav;
+//	else if(pick->aerial && !pick->freeze) deltaY += grav;
 }
 
 void player::checkBlocking()
@@ -253,7 +247,6 @@ void player::checkCorners(int floor, int left, int right)
 				pick->cMove = pick->neutral;
 			}
 			pick->aerial = 0;
-			deltaY = 0;
 		}
 		posY = floor - collision.h;
 	}
