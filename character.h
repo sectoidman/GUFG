@@ -11,17 +11,18 @@
 
 class character{
 public:
-	character();   //Load the entire character into memory
-	virtual ~character();  //Free stuff
+	character();		//Load the entire character into memory. This should happen once per player per match.
+	virtual ~character();	//Free stuff
 
-	void initMoves();
-	moveTrie * head;
-	moveTrie * airHead;
+	void initMoves();	//This will *eventually* be the function that parses the character constructor file.
+	moveTrie * head;	//Trie for ground moves
+	moveTrie * airHead;	//Trie for air moves
 
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
-	SDL_Surface * draw(int);
-	int takeHit(move *);
-	void prepHooks(int[], bool[], bool[]);
+	SDL_Surface * draw(int);//Pass sprite information up.
+	virtual int takeHit(move *);	//Handle taking hits.
+	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
+	//BRB prepping my hooks
 
 	move * neutral;
 	move * walk;
@@ -46,10 +47,9 @@ public:
 	int rounds;
 	int volitionX;
 	int volitionY;
-	bool aerial;
+	bool aerial; 		//Flags whether the character is considered "in the air"
 private:
 
-	int state;  //The current state of the character. This might need to be more variables. We'll see.
-
+	int state; 
 
 };

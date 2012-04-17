@@ -21,9 +21,8 @@ public:
 	void readInput();   //Reads input from players.
 	void resolve();     //This will eventually resolve actions (Such as a move hitting a player.) With only one player, this is not currently sprsible.
 	void draw();        //This will eventually draw everything. Right now the drawing is done in the main loop.
-	void runTimer();
-	void spriteInit();
-	void flip();
+	void runTimer();    //Runs the timer. Currently just a decrementer wrapper.
+	void spriteInit();  //Initializes the sprite for drawing
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();

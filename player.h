@@ -17,7 +17,7 @@ public:
 	character * pick;
 	int deltaX, deltaY; 
 	int posX, posY;
-	int rounds;
+	int rounds;		//How many rounds has this player won this match?
 	int facing;
 	int padding[400];   //More magic. Do not touch
 	void writeConfig();
