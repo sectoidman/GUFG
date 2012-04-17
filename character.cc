@@ -18,6 +18,9 @@ character::character()
 	temp = new move("White/D");
 	head->insert(temp);
 	airHead = new moveTrie(temp);
+	
+	head->insert(new move("White/B"));
+	head->fish[0]->xLock = 1;
 
 	neutral = new utility("White/NS");
 	neutral->tolerance = 0; neutral->activation = 0;
