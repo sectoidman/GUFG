@@ -56,11 +56,12 @@ public:
 	cancelField *state, allowed;
 	
 	bool xLock, yLock;
-	int currentFrame;//The frame that is currently running.
 	int frames;	 //Number of frames.
+	int hits;
+	int currentFrame;//The frame that is currently running.
+	int currentHit;
 	int cFlag;
 	int * firstActive;
-	int hits;
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
