@@ -1,13 +1,13 @@
 Name: B
 Buffer: 30 : 30
 Hits: 2
-Frames: 20 : 5 : 2 : 5 : 2 : 6
+Frames: 20 : 5 : 2 : 5 : 4 : 4
 Check: 5
 State: 256 : 506 : 508
-Damage: 12  : 9
-Stun: 10  : 10
-Push: 1  : 5
-Lift: 3  : 10
+Damage: 12 : 9
+Stun: 10 : 10
+Push: 1 : 5
+Lift: 3 : 10
 Blockable: 3 : 6
 Blocks : 0
 Properties: 
@@ -75,10 +75,12 @@ $A	45 65 30 30
 $C	5 0 55 150
 $R	5 0 55 150
 $D	0 0 0 0
+$A	55 55 40 25
 #15
 $C	5 0 55 150
 $R	5 0 55 150
 $D	0 0 0 0
+$A	60 45 50 20
 #16
 $C	5 0 55 150
 $R	5 0 55 150
