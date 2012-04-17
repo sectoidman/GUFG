@@ -15,4 +15,5 @@ class summon : public special {
 public:
 	projectile * payload;
 	projectile * spawnProjectile();
+	int spawnFrame;
 };
