@@ -244,7 +244,7 @@ void move::pollRects(SDL_Rect &d, SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* 
 	}
 	SDL_Rect * temphit = hitbox[currentFrame];
 	for(int i = 0; i < hc; i++){
-		if(cFlag) {
+		if(cFlag > currentHit) {
 			b[i].x = 0; b[i].w = 0;
 			b[i].y = 0; b[i].h = 0;
 		} else {
@@ -259,28 +259,21 @@ bool move::operator>(move * x)
 {
 	if(x == NULL) return 1;
 	if(frames == 0 || x->frames == 0) return 0;
-	else{
-		if(x->cFlag == 1){
-			if(allowed.i & x->state[1].i) return 1;
-		} else if(this != x) { /*Moves can't cancel into themselves without connecting.
-					I put this in place mainly to allow neutral state[0]s to
-					loop without re-triggering. Perhaps there's a better way.
-					If this causes problems, we'll revisit it*/
-			if(allowed.i & x->state[0].i) return 1;
-		}
-	}
+	else if(allowed.i & x->state[x->cFlag].i) return 1;
 	return 0;
 }
 
 void move::step()
 {
 	currentFrame++;
+	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
 }
 
 void move::init()
 {
 	cFlag = 0;
 	currentFrame = 0;
+	currentHit = 0;
 }
 
 void move::connect()
