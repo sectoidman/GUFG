@@ -27,11 +27,11 @@ struct cf{
 
 typedef union {
 	unsigned int i;
-	cf c;
+	cf b;
 } cancelField;
 
 typedef union {
 	unsigned int i;
-	bf c; 
+	bf b; 
 } blockField;
 

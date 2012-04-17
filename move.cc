@@ -4,7 +4,6 @@
 move::move()
 {
 	name = NULL;
-	state = 0;
 }
 
 move::move(char * n)
@@ -55,14 +54,11 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read >> recovery;
 	while(read.get() != ':'); read.ignore();
-	read >> allowed;
-	Allowed.i = allowed;
+	read >> allowed.i;
 	while(read.get() != ':'); read.ignore();
-	read >> state;
-	State.i = state;
+	read >>	state.i;
 	while(read.get() != ':'); read.ignore();
-	read >> cState;
-	CState.i = cState;
+	read >>	cState.i;
 	while(read.get() != ':'); read.ignore();
 	read >> damage;
 	while(read.get() != ':'); read.ignore();
@@ -180,7 +176,6 @@ void move::build(char * n)
 bool move::check(bool pos[5], bool neg[5], int t, int f)
 {
 	//if(meter < cost) return 0;
-//	if(state != allowedState) return 0;
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
 			if(!pos[i]) return 0;
@@ -229,12 +224,12 @@ bool move::operator>(move * x)
 	if(frames == 0 || x->frames == 0) return 0;
 	else{
 		if(x->cFlag == 1){
-			if(allowed & x->cState) return 1;
+			if(allowed.i & x->cState.i) return 1;
 		} else if(this != x) { /*Moves can't cancel into themselves without connecting.
 					I put this in place mainly to allow neutral states to
 					loop without re-triggering. Perhaps there's a better way.
 					If this causes problems, we'll revisit it*/
-			if(allowed & x->state) return 1;
+			if(allowed.i & x->state.i) return 1;
 		}
 	}
 	return 0;

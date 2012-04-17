@@ -50,17 +50,15 @@ public:
 	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask
 
 	blockField blockMask, blockState;
-	//Partner to the blockmask. This variable is the move's actual "guard state." Usually it will only be one of the three.
-	cancelField State, CState, Allowed;
-	bool cFlag;
-	unsigned int state;
-	unsigned int cState;
-	unsigned int allowed;//The state in which the move is allowed. Depending on how we handle states, this may need to be an array of states or something.
+
+	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
+
+	cancelField state, cState, allowed;
 	
 	bool xLock, yLock;
 	int currentFrame;    //The frame that is currently running.
 	int frames;          //Number of frames.
-	
+	bool cFlag;	
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
