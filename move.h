@@ -56,9 +56,11 @@ public:
 	cancelField state, cState, allowed;
 	
 	bool xLock, yLock;
-	int currentFrame;    //The frame that is currently running.
-	int frames;          //Number of frames.
-	bool cFlag;	
+	int currentFrame;//The frame that is currently running.
+	int frames;	 //Number of frames.
+	int cFlag;
+	int * firstActive;
+	int hits;
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
