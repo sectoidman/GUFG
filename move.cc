@@ -40,7 +40,6 @@ void move::build(char * n)
 	char buffer[100];
 	sprintf(fname, "%s.mv", n);
 	name = n;
-	state = new cancelField[2];
 	read.open(fname);
 	while(read.get() != ':'); read.ignore();
 	while(read.get() != ':'); read.ignore();
@@ -49,6 +48,9 @@ void move::build(char * n)
 	read >> activation;
 	while(read.get() != ':'); read.ignore();
 	read >> hits;
+
+	state = new cancelField[hits+1];
+
 	while(read.get() != ':'); read.ignore();
 	read >> frames;
 	while(read.get() != ':'); read.ignore();
@@ -59,10 +61,12 @@ void move::build(char * n)
 	read >> recovery;
 	while(read.get() != ':'); read.ignore();
 	read >> allowed.i;
-	while(read.get() != ':'); read.ignore();
-	read >>	state[0].i;
-	while(read.get() != ':'); read.ignore();
-	read >>	state[1].i;
+
+	for(int i = 0; i < hits+1; i++){
+		while(read.get() != ':'); read.ignore();
+		read >>	state[i].i;
+	}
+
 	while(read.get() != ':'); read.ignore();
 	read >> damage;
 	while(read.get() != ':'); read.ignore();
