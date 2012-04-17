@@ -26,7 +26,7 @@ character::character()
 	neutral->tolerance = 0; neutral->activation = 0;
 	head->insert(neutral);
 
-	walkBack = new utility("White/WB");
+	walkBack = new utility("White/WQ");
 	walkBack->tolerance = 0; walkBack->activation = 0;
 	walkBack->xLock = 1;
 	head->insert(4, walkBack);
