@@ -39,12 +39,13 @@ public:
 	void connect();
 	SDL_Surface * draw(int, bool);
 
-	int push;            //How much pushback the move does
-	int lift;            //How much the move lifts an aerial opponent.
 	bool launch;         //Whether or not the move launches on hit
 
-	int damage;          //How much damage the move does
-	int stun;            //How much stun the move does
+	//Properties of a hit. These will only exist for moves that hit.
+	int *damage;          //How much damage the move does
+	int *stun;            //How much stun the move does
+	int *push;            //How much pushback the move does
+	int *lift;            //How much the move lifts an aerial opponent.
 
 	//Low, High, Air Block. Basically a 3-digit binary number expressed as an integer from 0-7.
 	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask

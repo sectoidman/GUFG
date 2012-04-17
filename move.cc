@@ -56,7 +56,13 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read >> frames;
 	
-	if(hits > 0) totalStartup = new int[hits];
+	if(hits > 0) {
+		totalStartup = new int[hits];
+		damage = new int[hits];
+		stun = new int[hits];
+		push = new int[hits];
+		lift = new int[hits];
+	}
 	int active[hits];
 
 	for(int i = 0; i < hits; i++){
@@ -81,17 +87,22 @@ void move::build(char * n)
 		read >>	state[i].i;
 	}
 
-	while(read.get() != ':'); read.ignore();
-	read >> damage;
 
-	while(read.get() != ':'); read.ignore();
-	read >> stun;
 
-	while(read.get() != ':'); read.ignore();
-	read >> push;
+	
+	for(int i = 0; i < hits; i++){
+		while(read.get() != ':'); read.ignore();
+		read >> damage[i];
 
-	while(read.get() != ':'); read.ignore();
-	read >> lift;
+		while(read.get() != ':'); read.ignore();
+		read >> stun[i];
+
+		while(read.get() != ':'); read.ignore();
+		read >> push[i];
+
+		while(read.get() != ':'); read.ignore();
+		read >> lift[i];
+	}
 
 	while(read.get() != ':'); read.ignore();
 	read >> blockMask.i;

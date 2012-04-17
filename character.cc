@@ -93,7 +93,7 @@ int character::takeHit(move * attack)
 	cMove->init();
 	int ct = 0;
 	/*Damage scaling logic will factor into this later*/
-	if(!attack->cFlag){
+	if(attack->cFlag <= attack->currentHit){
 		if(cMove->blockState.i & attack->blockMask.i){
 		/*Do blocking stuff. Specifically, we need to put the player in
 		block stun, a state in which they're frozen in the last block animation until blockstun ends.
@@ -104,7 +104,7 @@ int character::takeHit(move * attack)
 		for what should be obvious reasons. In MOST games, characters remain throw-invuln for a few frames after
 		coming out of blockstun.
 		*/
-			cMove->blockSuccess(attack->stun);
+			cMove->blockSuccess(attack->stun[attack->currentHit]);
 			printf("Block!\n");
 			attack->connect();
 		}
@@ -122,23 +122,23 @@ int character::takeHit(move * attack)
 			if(cMove == reel || cMove == fall) ct++;
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
-				volitionY -= attack->lift;
-				fall->init(attack->stun);
+				volitionY -= attack->lift[attack->currentHit];
+				fall->init(attack->stun[attack->currentHit]);
 				cMove = fall;
 			} else {
-				reel->init(attack->stun);
+				reel->init(attack->stun[attack->currentHit]);
 				cMove = reel;
 			}
-			health -= attack->damage;
+			health -= attack->damage[attack->currentHit];
 			if(health < 0){
 				health = 0; //Healthbar can't go below 0;
 				//Reckon other KO stuff;
 			}
 		}
-		volitionX -= attack->push;
+		volitionX -= attack->push[attack->currentHit];
 		attack->connect(); //Tell the attack it's connected.
 	}
-	freeze = attack->stun / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
+	freeze = attack->stun[attack->currentHit] / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
  	return ct;
 	/*Eventually the plan is to have this return a combo count. This not only allows us to display a counter and do whatever scaling/combo 
 	mitigation we want to, but also allows us to do things like pushback ramping during blockstrings*/
