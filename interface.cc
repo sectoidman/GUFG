@@ -73,20 +73,12 @@ void interface::roundInit()
 		p[i]->sprite = NULL;
 	}
 
-	if(p[0]->pick->cMove != p[0]->pick->neutral) {
-		if(p[0]->pick->cMove) p[0]->pick->cMove->init();
-		p[0]->pick->neutral->init();
-	}
-
-	if(p[0]->pick->cMove != p[0]->pick->neutral && p[0]->pick->cMove) {
-		p[0]->pick->cMove->init();
-		p[0]->pick->cMove = p[0]->pick->neutral;
-	}
-
-	if(p[1]->pick->cMove != p[1]->pick->neutral && p[1]->pick->cMove) {
-		if(p[1]->pick->cMove) p[1]->pick->cMove->init();
-		p[1]->pick->neutral->init();
-		p[1]->pick->cMove = p[1]->pick->neutral;
+	for(int i = 0; i < 2; i++){
+		if(p[0]->pick->cMove != p[i]->pick->neutral) {
+			if(p[i]->pick->cMove) p[i]->pick->cMove->init();
+			p[i]->pick->neutral->init();
+			p[i]->pick->cMove = p[i]->pick->neutral;
+		}
 	}
 
 	
