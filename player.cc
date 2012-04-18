@@ -368,7 +368,6 @@ void player::pullVolition()
 	SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
 	for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
 		if(temp[i].x || temp[i].y){
-			printf("Vector: %i %i %i %i added\n", temp[i].x, temp[i].y, temp[i].w, temp[i].h);
 			addVector(temp[i]);
 		}
 	}
@@ -391,6 +390,7 @@ void player::addVector(SDL_Rect &v)
 	temp[i].h = v.h;
 	if(momentumComplexity > 0) delete [] momentum;
 	momentum = temp;
+	printf("Vector: %i %i %i %i added at slot %i\n", temp[i].x, temp[i].y, temp[i].w, temp[i].h, i);
 	momentumComplexity++;
 }
 
@@ -409,4 +409,5 @@ void player::removeVector(int n)
 	}
 	delete [] momentum;
 	momentum = temp;
+	momentumComplexity--;
 }

@@ -247,6 +247,10 @@ void interface::checkWin()
 			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
 			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
 		}
+		p[0]->momentumComplexity = 0;
+		p[1]->momentumComplexity = 0;
+		if(p[0]->momentum) delete [] p[0]->momentum;
+		if(p[1]->momentum) delete [] p[1]->momentum;
 		if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
 			delete p[0]->pick;
 			delete p[1]->pick;
