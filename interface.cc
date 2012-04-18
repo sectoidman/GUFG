@@ -62,7 +62,6 @@ void interface::roundInit()
 {
 	bg.x = 400;
 	bg.y = 300;
-<<<<<<< HEAD
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->pick->health = 300;
