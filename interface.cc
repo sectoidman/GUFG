@@ -68,8 +68,6 @@ void interface::roundInit()
 		p[i]->pick->meter = 0;
 		p[i]->deltaX = 0;
 		p[i]->deltaY = 0;
-		//p[i]->pick->volitionX = 0; // not used anymore?
-		//p[i]->pick->volitionY = 0;
 		p[i]->sprite = NULL;
 	}
 
@@ -144,7 +142,6 @@ void interface::resolve()
 	p[1]->updateRects();
 	p[0]->pullVolition();
 	p[1]->pullVolition();
-	//Note to self: Move all this delta stuff to a function.
 	
 	p[0]->updateRects();
 	p[1]->updateRects();
