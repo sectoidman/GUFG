@@ -74,7 +74,7 @@ void interface::roundInit()
 	}
 
 	for(int i = 0; i < 2; i++){
-		if(p[0]->pick->cMove != p[i]->pick->neutral) {
+		if(p[i]->pick->cMove != p[i]->pick->neutral) {
 			if(p[i]->pick->cMove) p[i]->pick->cMove->init();
 			p[i]->pick->neutral->init();
 			p[i]->pick->cMove = p[i]->pick->neutral;
