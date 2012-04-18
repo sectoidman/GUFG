@@ -26,8 +26,9 @@ public:
 	void pushInput(bool*, bool*, bool*);
 	void draw();
 	void spriteInit();
+	void pullVolition();
 
-	SDL_Rect spr, *hitbox, *hitreg, collision, delta, lock;
+	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
 	int hitComplexity, regComplexity;
 	bool rCorner, lCorner;
 

@@ -28,6 +28,7 @@ move::~move()
 	if(hitreg) delete [] hitreg;
 	if(hitComplexity) delete [] hitComplexity;
 	if(regComplexity) delete [] regComplexity;
+	if(deltaComplexity) delete [] deltaComplexity;
 	if(delta) delete [] delta;
 	if(state) delete [] state;
 	if(blockMask) delete [] blockMask;
@@ -129,7 +130,8 @@ void move::build(char * n)
 	hitComplexity = new int[frames];
 	hitreg = new SDL_Rect*[frames];
 	regComplexity = new int[frames];
-	delta = new SDL_Rect[frames];
+	delta = new SDL_Rect*[frames];
+	deltaComplexity = new int[frames];
 
 	currentHit = 0;
 
@@ -159,7 +161,26 @@ void move::build(char * n)
 			hitreg[i][j/4].h = atoi(bb[j]);
 		}
 		while(read.get() != '$'); read.ignore(2);
-		read >> delta[i].x >> delta[i].y >> delta[i].w >> delta[i].h;
+		read.get(buffer, 100, '\n');
+		deltaComplexity[i] = 1;
+		for(unsigned int j = 0; j < strlen(buffer); j++){
+			if(buffer[j] == '\t') regComplexity[i]++;
+		}
+		delta[i] = new SDL_Rect[deltaComplexity[i]];
+		char * dd[deltaComplexity[i]*4];
+		dd[0] = strtok(buffer, ",\n\t ");
+		for(int j = 1; j < deltaComplexity[i]*4; j++){
+			dd[j] = strtok(NULL, ", \n\t"); j++;
+			dd[j] = strtok(NULL, ", \n\t"); j++;
+			dd[j] = strtok(NULL, ", \n\t"); j++;
+			dd[j] = strtok(NULL, ", \n\t");
+		}
+		for(int j = 0; j < deltaComplexity[i]*4; j++){
+			delta[i][j/4].x = atoi(dd[j]); j++;
+			delta[i][j/4].y = atoi(dd[j]); j++;
+			delta[i][j/4].w = atoi(dd[j]); j++;
+			delta[i][j/4].h = atoi(dd[j]);
+		}
 		if(hits > 0){
 			if(i > totalStartup[currentHit] && i <= totalStartup[currentHit]+active[currentHit]){
 				while(read.get() != '$'); read.ignore(2);
@@ -249,7 +270,7 @@ bool move::check(bool pos[5], bool neg[5], int t, int f)
 	return 1;
 }
 
-void move::pollRects(SDL_Rect &d, SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
+void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 {
 	if(rc > 0) delete [] r;
 	if(hc > 0) delete [] b;
@@ -257,7 +278,6 @@ void move::pollRects(SDL_Rect &d, SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* 
 	hc = hitComplexity[currentFrame];
 	r = new SDL_Rect[rc];
 	b = new SDL_Rect[hc];
-	d.x = delta[currentFrame].x; d.y = delta[currentFrame].y;
 
 	c.x = collision[currentFrame].x; c.w = collision[currentFrame].w;
 	c.y = collision[currentFrame].y; c.h = collision[currentFrame].h;

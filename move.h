@@ -32,7 +32,7 @@ public:
 	virtual void blockSuccess(int);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
-	void pollRects(SDL_Rect&, SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
+	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
 	bool operator>(move*); //Cancel allowed check. Essentially: is move Lvalue allowed given the current state of move Rvalue?
 	void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step();
@@ -81,9 +81,10 @@ public:
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the move per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
-	SDL_Rect * delta;       //Same but for position on the screen.
+	SDL_Rect ** delta;       //Same but for position on the screen.
 	int * hitComplexity;
 	int * regComplexity;
+	int * deltaComplexity;
 	SDL_Surface **sprite, **fSprite;
 };
 

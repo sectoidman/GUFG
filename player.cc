@@ -159,7 +159,7 @@ void player::characterSelect(int i)
 void player::updateRects()
 {
 	if(pick->cMove != NULL) {
-		pick->cMove->pollRects(delta, collision, hitreg, regComplexity, hitbox, hitComplexity);
+		pick->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity);
 		for(int i = 0; i < hitComplexity; i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
@@ -359,4 +359,8 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 	}
 
 	pick->prepHooks(inputBuffer, down, up);
+}
+
+void player::pullVolition()
+{
 }
