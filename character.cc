@@ -67,8 +67,6 @@ character::character()
 	health = 300;
 	meter = 0;
 	rounds = 0;
-	volitionX = 0;
-	volitionY = 0;
 	aerial = 0;
 	freeze = 0;
 }
@@ -124,7 +122,7 @@ int character::takeHit(move * attack)
 			if(cMove == reel || cMove == fall) ct++;
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
-				volitionY -= attack->lift[attack->currentHit];
+//FIXME				volitionY -= attack->lift[attack->currentHit];
 				fall->init(attack->stun[attack->currentHit]);
 				cMove = fall;
 			} else {
@@ -137,7 +135,7 @@ int character::takeHit(move * attack)
 				//Reckon other KO stuff;
 			}
 		}
-		volitionX -= attack->push[attack->currentHit];
+//FIXME		volitionX -= attack->push[attack->currentHit];
 		attack->connect(); //Tell the attack it's connected.
 	}
 	freeze = attack->stun[attack->currentHit] / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter

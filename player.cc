@@ -44,6 +44,8 @@ void player::init()
 	deltaY = 0;
 	regComplexity = 0;
 	hitComplexity = 0;
+	momentumComplexity = 0;
+	momentum = NULL;
 	lCorner = 0;
 	rCorner = 0;
 }
@@ -159,13 +161,7 @@ void player::characterSelect(int i)
 void player::updateRects()
 {
 	if(pick->cMove != NULL) {
-		pick->cMove->pollRects(delta, collision, hitreg, regComplexity, hitbox, hitComplexity);
-		if(!pick->freeze){
-			if(pick->cMove->xLock) deltaX = delta.x*facing; else deltaX += delta.x*facing;
-		}
-		if(!pick->aerial){
-			if(pick->cMove->yLock) deltaY = delta.y; else deltaY += delta.y;
-		}
+		pick->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity);
 		for(int i = 0; i < hitComplexity; i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
@@ -182,11 +178,31 @@ void player::updateRects()
 	}
 }
 
+void player::combineDelta()
+{
+	for(int i = 0; i < momentumComplexity; i++){
+		deltaX += momentum[i].x;
+		deltaY += momentum[i].y;
+		if(momentum[i].w <= 0) {
+			removeVector(i);
+			i--;
+		}
+		else momentum[i].w--;
+	}
+	posX += deltaX;
+	posY += deltaY;
+	updateRects();
+}
+
 void player::enforceGravity(int grav, int floor)
 {
-	if(collision.y + collision.h < floor && pick->aerial == 0) pick->aerial = 1;
+	SDL_Rect g; g.x = 0; g.y = 3; g.w = 0; g.h = 0;
 
-	else if(pick->aerial && !pick->freeze) deltaY += grav;
+	if(collision.y + collision.h < floor && pick->aerial == 0){
+		pick->aerial = 1;
+	}
+
+	else if(pick->aerial && !pick->freeze) addVector(g);
 }
 
 void player::checkBlocking()
@@ -254,6 +270,7 @@ void player::checkCorners(int floor, int left, int right)
 			}
 			pick->aerial = 0;
 			deltaY = 0;
+			deltaX = 0;
 		}
 		posY = floor - collision.h;
 	}
@@ -366,4 +383,46 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 	}
 
 	pick->prepHooks(inputBuffer, down, up);
+}
+
+void player::pullVolition()
+{
+	SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
+	for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
+		if(temp[i].x || temp[i].y){
+			addVector(temp[i]);
+		}
+	}
+}
+
+void player::addVector(SDL_Rect &v)
+{
+	int i;
+	SDL_Rect * temp;
+	temp = new SDL_Rect[momentumComplexity+1];
+	for(i = 0; i < momentumComplexity; i++){
+		temp[i].x = momentum[i].x;
+		temp[i].y = momentum[i].y;
+		temp[i].w = momentum[i].w;
+		temp[i].h = momentum[i].h;
+	}
+	temp[i].x = v.x*facing;
+	temp[i].y = v.y;
+	temp[i].w = v.w;
+	temp[i].h = v.h;
+	if(momentumComplexity > 0) delete [] momentum;
+	momentum = temp;
+	momentumComplexity++;
+}
+
+void player::removeVector(int n)
+{
+	if(momentumComplexity < 0 || !momentum) return;
+	for(int i = n; i < momentumComplexity-1; i++){
+		momentum[i].x = momentum[i+1].x;
+		momentum[i].y = momentum[i+1].y;
+		momentum[i].w = momentum[i+1].w;
+		momentum[i].h = momentum[i+1].h;
+	}
+	momentumComplexity--;
 }

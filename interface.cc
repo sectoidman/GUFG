@@ -70,6 +70,7 @@ void interface::roundInit()
 	p[1]->deltaX = 0;
 	p[0]->deltaY = 0;
 	p[1]->deltaY = 0;
+<<<<<<< HEAD
 	p[0]->pick->volitionX = 0;
 	p[1]->pick->volitionX = 0;
 	p[0]->pick->volitionY = 0;
@@ -77,6 +78,10 @@ void interface::roundInit()
 	if(p[0]->pick->cMove != p[0]->pick->neutral){
 		if(p[0]->pick->cMove) p[0]->pick->cMove->init();
 		p[0]->pick->neutral->init();
+=======
+	if(p[0]->pick->cMove != p[0]->pick->neutral && p[0]->pick->cMove){
+		p[0]->pick->cMove->init();
+>>>>>>> origin/testing
 		p[0]->pick->cMove = p[0]->pick->neutral;
 	}
 	if(p[1]->pick->cMove != p[1]->pick->neutral && p[1]->pick->cMove){
@@ -147,33 +152,16 @@ void interface::resolve()
 
 	p[0]->updateRects();
 	p[1]->updateRects();
-
+	p[0]->pullVolition();
+	p[1]->pullVolition();
 	//Note to self: Move all this delta stuff to a function.
-	p[0]->deltaX += p[0]->pick->volitionX*p[0]->facing;
-	p[0]->deltaY += p[0]->pick->volitionY;
-	p[1]->deltaX += p[1]->pick->volitionX*p[1]->facing;
-	p[1]->deltaY += p[1]->pick->volitionY;
 	
-	if(p[0]->lCorner || p[0]->rCorner) p[1]->deltaX += p[0]->pick->volitionX*p[1]->facing;
-	if(p[1]->lCorner || p[1]->rCorner) p[0]->deltaX += p[1]->pick->volitionX*p[0]->facing;
-	
-	p[1]->pick->volitionX = 0;
-	p[1]->pick->volitionY = 0;
-	p[0]->pick->volitionX = 0;
-	p[0]->pick->volitionY = 0;
-	
-	if(p[0]->pick->freeze < 1){
-		p[0]->posX += p[0]->deltaX;
-		p[0]->posY += p[0]->deltaY;
-	}
-	if(p[1]->pick->freeze < 1){
-		p[1]->posX += p[1]->deltaX;
-		p[1]->posY += p[1]->deltaY;
-	}
-
 	p[0]->updateRects();
 	p[1]->updateRects();
-	
+
+	p[0]->combineDelta();
+	p[1]->combineDelta();
+		
 	p[0]->enforceGravity(grav, floor);
 	p[1]->enforceGravity(grav, floor);
 
@@ -194,6 +182,9 @@ void interface::resolve()
 	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
 		p[0]->resolveCollision(p[1]);
 	}
+	
+	if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
+	if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 	
 	if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall) combo2 = 0;
 	if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall) combo1 = 0;
@@ -241,14 +232,6 @@ void interface::resolve()
 	if(hit2) temp2->init();
 	if(hit1) temp1->init();
 
-	if(!p[0]->pick->aerial){
-		if(p[0]->pick->cMove == p[0]->pick->neutral)
-			p[0]->deltaX = 0;
-	}
-	if(!p[1]->pick->aerial){
-		if(p[1]->pick->cMove == p[1]->pick->neutral)
-			p[1]->deltaX = 0;
-	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
 		posEdge1[i] = 0;
@@ -281,6 +264,10 @@ void interface::checkWin()
 			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
 			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
 		}
+		p[0]->momentumComplexity = 0;
+		p[1]->momentumComplexity = 0;
+		if(p[0]->momentum) delete [] p[0]->momentum;
+		if(p[1]->momentum) delete [] p[1]->momentum;
 		if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
 			delete p[0]->pick;
 			delete p[1]->pick;
