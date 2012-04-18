@@ -178,11 +178,31 @@ void player::updateRects()
 	}
 }
 
+void player::combineDelta()
+{
+	for(int i = 0; i < momentumComplexity; i++){
+		deltaX += momentum[i].x;
+		deltaY += momentum[i].y;
+		if(momentum[i].w <= 0) {
+			removeVector(i);
+			i--;
+		}
+		else momentum[i].w--;
+	}
+	posX += deltaX;
+	posY += deltaY;
+	updateRects();
+}
+
 void player::enforceGravity(int grav, int floor)
 {
-	if(collision.y + collision.h < floor && pick->aerial == 0) pick->aerial = 1;
+	SDL_Rect g; g.x = 0; g.y = 3; g.w = 0; g.h = 0;
 
-//	else if(pick->aerial && !pick->freeze) deltaY += grav;
+	if(collision.y + collision.h < floor && pick->aerial == 0){
+		pick->aerial = 1;
+	}
+
+	else if(pick->aerial && !pick->freeze) addVector(g);
 }
 
 void player::checkBlocking()
@@ -249,6 +269,8 @@ void player::checkCorners(int floor, int left, int right)
 				pick->cMove = pick->neutral;
 			}
 			pick->aerial = 0;
+			deltaY = 0;
+			deltaX = 0;
 		}
 		posY = floor - collision.h;
 	}
@@ -390,24 +412,17 @@ void player::addVector(SDL_Rect &v)
 	temp[i].h = v.h;
 	if(momentumComplexity > 0) delete [] momentum;
 	momentum = temp;
-	printf("Vector: %i %i %i %i added at slot %i\n", temp[i].x, temp[i].y, temp[i].w, temp[i].h, i);
 	momentumComplexity++;
 }
 
 void player::removeVector(int n)
 {
 	if(momentumComplexity < 0 || !momentum) return;
-	int offset = 0;
-	SDL_Rect * temp;
-	temp = new SDL_Rect[momentumComplexity-1];
-	for(int i = 0; i < momentumComplexity; i++){
-		if(i == n) offset++;
-		temp[i-offset].x = momentum[i].x;
-		temp[i-offset].y = momentum[i].y;
-		temp[i-offset].w = momentum[i].w;
-		temp[i-offset].h = momentum[i].h;
+	for(int i = n; i < momentumComplexity-1; i++){
+		momentum[i].x = momentum[i+1].x;
+		momentum[i].y = momentum[i+1].y;
+		momentum[i].w = momentum[i+1].w;
+		momentum[i].h = momentum[i+1].h;
 	}
-	delete [] momentum;
-	momentum = temp;
 	momentumComplexity--;
 }
