@@ -88,8 +88,9 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-int character::takeHit(move * attack)
+int character::takeHit(character * attacker)
 {
+	move *attack = attacker->cMove;
 	/*All the important logic like blocking and stuff will go here later.*/
 	cMove->init();
 	int ct = 0;

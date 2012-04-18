@@ -20,7 +20,7 @@ public:
 
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	SDL_Surface * draw(int);//Pass sprite information up.
-	virtual int takeHit(move *);	//Handle taking hits.
+	virtual int takeHit(character *);	//Handle taking hits.
 	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
 	//BRB prepping my hooks
 
