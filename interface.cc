@@ -141,7 +141,8 @@ void interface::resolve()
 
 	p[0]->updateRects();
 	p[1]->updateRects();
-
+	p[0]->pullVolition();
+	p[1]->pullVolition();
 	//Note to self: Move all this delta stuff to a function.
 	
 	p[0]->updateRects();

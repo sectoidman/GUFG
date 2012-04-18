@@ -48,6 +48,6 @@ private:
 	int ID;
 	int inputBuffer[30];
 	void init();
-	void addVector(SDL_Rect);
+	void addVector(SDL_Rect&);
 	void removeVector(int);
 };

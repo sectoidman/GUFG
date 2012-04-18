@@ -365,10 +365,16 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 
 void player::pullVolition()
 {
-	
+	SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
+	for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
+		if(temp[i].x || temp[i].y){
+			printf("Vector: %i %i %i %i added\n", temp[i].x, temp[i].y, temp[i].w, temp[i].h);
+			addVector(temp[i]);
+		}
+	}
 }
 
-void player::addVector(SDL_Rect v)
+void player::addVector(SDL_Rect &v)
 {
 	int i;
 	SDL_Rect * temp;
@@ -379,7 +385,7 @@ void player::addVector(SDL_Rect v)
 		temp[i].w = momentum[i].w;
 		temp[i].h = momentum[i].h;
 	}
-	temp[i].x = v.x;
+	temp[i].x = v.x*facing;
 	temp[i].y = v.y;
 	temp[i].w = v.w;
 	temp[i].h = v.h;
