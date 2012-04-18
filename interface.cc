@@ -62,27 +62,34 @@ void interface::roundInit()
 {
 	bg.x = 400;
 	bg.y = 300;
-	p[0]->pick->health = 300;
-	p[1]->pick->health = 300;
-	p[0]->pick->meter = 0;
-	p[1]->pick->meter = 0;
-	p[0]->deltaX = 0;
-	p[1]->deltaX = 0;
-	p[0]->deltaY = 0;
-	p[1]->deltaY = 0;
-	if(p[0]->pick->cMove != p[0]->pick->neutral){
+<<<<<<< HEAD
+	
+	for (int i = 0; i < 2; i++) {
+		p[i]->pick->health = 300;
+		p[i]->pick->meter = 0;
+		p[i]->deltaX = 0;
+		p[i]->deltaY = 0;
+		//p[i]->pick->volitionX = 0; // not used anymore?
+		//p[i]->pick->volitionY = 0;
+		p[i]->sprite = NULL;
+	}
+
+	if(p[0]->pick->cMove != p[0]->pick->neutral) {
 		if(p[0]->pick->cMove) p[0]->pick->cMove->init();
 		p[0]->pick->neutral->init();
+	}
+
+	if(p[0]->pick->cMove != p[0]->pick->neutral && p[0]->pick->cMove) {
+		p[0]->pick->cMove->init();
 		p[0]->pick->cMove = p[0]->pick->neutral;
 	}
-	if(p[1]->pick->cMove != p[1]->pick->neutral){
+
+	if(p[1]->pick->cMove != p[1]->pick->neutral && p[1]->pick->cMove) {
 		if(p[1]->pick->cMove) p[1]->pick->cMove->init();
 		p[1]->pick->neutral->init();
 		p[1]->pick->cMove = p[1]->pick->neutral;
 	}
 
-	p[0]->sprite = NULL;
-	p[1]->sprite = NULL;
 	
 	/*Background color, temporary until we have backgrounds*/
 	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
@@ -106,14 +113,15 @@ void interface::roundInit()
 	timer = 5824;
 	p[0]->facing = 1;
 	p[1]->facing = -1;
-	p[0]->spriteInit();
-	p[1]->spriteInit();
 	p[0]->posX = 700;
 	p[1]->posX = 900;
-	p[0]->posY = floor - p[0]->pick->neutral->collision[0].h;
-	p[1]->posY = floor - p[1]->pick->neutral->collision[0].h;
-	p[0]->updateRects();
-	p[1]->updateRects();
+	
+	for (int i = 0; i < 2; i++) {
+		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
+		p[i]->spriteInit();
+		p[i]->updateRects();
+	}
+
 	draw();
 }
 
