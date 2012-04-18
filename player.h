@@ -29,7 +29,7 @@ public:
 	void pullVolition();
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
-	int hitComplexity, regComplexity;
+	int hitComplexity, regComplexity, momentumComplexity;
 	bool rCorner, lCorner;
 
 	/*Helper functions for "resolve" tick*/
@@ -42,8 +42,12 @@ public:
 	void checkFacing(int);
 	int dragBG(int, int);
 	void checkCorners(int, int, int);
+	void combineDelta();
+
 private:
 	int ID;
 	int inputBuffer[30];
 	void init();
+	void addVector(SDL_Rect);
+	void removeVector(int);
 };

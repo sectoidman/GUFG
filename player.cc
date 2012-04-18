@@ -44,6 +44,8 @@ void player::init()
 	deltaY = 0;
 	regComplexity = 0;
 	hitComplexity = 0;
+	momentumComplexity = 0;
+	momentum = NULL;
 	lCorner = 0;
 	rCorner = 0;
 }
@@ -363,4 +365,42 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 
 void player::pullVolition()
 {
+	
+}
+
+void player::addVector(SDL_Rect v)
+{
+	int i;
+	SDL_Rect * temp;
+	temp = new SDL_Rect[momentumComplexity+1];
+	for(i = 0; i < momentumComplexity; i++){
+		temp[i].x = momentum[i].x;
+		temp[i].y = momentum[i].y;
+		temp[i].w = momentum[i].w;
+		temp[i].h = momentum[i].h;
+	}
+	temp[i].x = v.x;
+	temp[i].y = v.y;
+	temp[i].w = v.w;
+	temp[i].h = v.h;
+	if(momentumComplexity > 0) delete [] momentum;
+	momentum = temp;
+	momentumComplexity++;
+}
+
+void player::removeVector(int n)
+{
+	if(momentumComplexity < 0 || !momentum) return;
+	int offset = 0;
+	SDL_Rect * temp;
+	temp = new SDL_Rect[momentumComplexity-1];
+	for(int i = 0; i < momentumComplexity; i++){
+		if(i == n) offset++;
+		temp[i-offset].x = momentum[i].x;
+		temp[i-offset].y = momentum[i].y;
+		temp[i-offset].w = momentum[i].w;
+		temp[i-offset].h = momentum[i].h;
+	}
+	delete [] momentum;
+	momentum = temp;
 }
