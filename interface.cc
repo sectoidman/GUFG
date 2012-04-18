@@ -70,21 +70,12 @@ void interface::roundInit()
 	p[1]->deltaX = 0;
 	p[0]->deltaY = 0;
 	p[1]->deltaY = 0;
-<<<<<<< HEAD
-	p[0]->pick->volitionX = 0;
-	p[1]->pick->volitionX = 0;
-	p[0]->pick->volitionY = 0;
-	p[1]->pick->volitionY = 0;
 	if(p[0]->pick->cMove != p[0]->pick->neutral){
 		if(p[0]->pick->cMove) p[0]->pick->cMove->init();
 		p[0]->pick->neutral->init();
-=======
-	if(p[0]->pick->cMove != p[0]->pick->neutral && p[0]->pick->cMove){
-		p[0]->pick->cMove->init();
->>>>>>> origin/testing
 		p[0]->pick->cMove = p[0]->pick->neutral;
 	}
-	if(p[1]->pick->cMove != p[1]->pick->neutral && p[1]->pick->cMove){
+	if(p[1]->pick->cMove != p[1]->pick->neutral){
 		if(p[1]->pick->cMove) p[1]->pick->cMove->init();
 		p[1]->pick->neutral->init();
 		p[1]->pick->cMove = p[1]->pick->neutral;
