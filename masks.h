@@ -25,6 +25,15 @@ struct cf{
 	bool misc5:1;
 };
 
+struct effect{
+	bool otherCMove:1;
+	bool character:1;
+	bool otherCharacter:1;
+	bool player:1;
+	bool otherPlayer:1;
+	bool interface:1;
+}
+
 typedef union {
 	unsigned int i;
 	cf b;
@@ -34,4 +43,9 @@ typedef union {
 	unsigned int i;
 	bf b; 
 } blockField;
+
+typedef union{
+	unsigned int i;
+	effect b;
+} effectHook;
 
