@@ -146,11 +146,14 @@ void interface::resolve()
 	p[0]->updateRects();
 	p[1]->updateRects();
 
-	p[0]->combineDelta();
-	p[1]->combineDelta();
-		
-	p[0]->enforceGravity(grav, floor);
-	p[1]->enforceGravity(grav, floor);
+	if(!p[0]->pick->freeze){
+		p[0]->combineDelta();
+		p[0]->enforceGravity(grav, floor);
+	}
+	if(!p[1]->pick->freeze){
+		p[1]->combineDelta();
+		p[1]->enforceGravity(grav, floor);
+	}
 
 	int m[2];
 	for(int i = 0; i < 2; i++){
@@ -186,17 +189,25 @@ void interface::resolve()
 	bool hit1 = 0;
 	bool hit2 = 0;
 
+	SDL_Rect v; 
+
 	/*This loop checks for hits. Eventually this might be a function*/
 	for(int i = 0; i < p[1]->regComplexity; i++){
 		for(int j = 0; j < p[0]->hitComplexity; j++){
 			if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
 				if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
-					combo1 += p[1]->pick->takeHit(p[0]->pick);
+					combo1 += p[1]->pick->takeHit(p[0]->pick, v);
 					if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
 					p[0]->pick->freeze = temp1->stun[temp1->currentHit] / 2;
 					hit2 = 1;
 					i = p[1]->regComplexity;
 					j = p[0]->hitComplexity;
+					v.w = 1; v.h = 0;
+					p[1]->momentumComplexity = 0;
+					p[1]->addVector(v);
+					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
+					else v.x = -combo1;
+					p[0]->addVector(v);
 				}
 			}
 
@@ -206,12 +217,18 @@ void interface::resolve()
 		for(int j = 0; j < p[1]->hitComplexity; j++){
 			if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
 				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
-					combo2 += p[0]->pick->takeHit(p[1]->pick);
+					combo2 += p[0]->pick->takeHit(p[1]->pick, v);
 					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
 					p[1]->pick->freeze = temp2->stun[temp1->currentHit] / 2;
 					hit1 = 1;
 					i = p[0]->regComplexity;
 					j = p[1]->hitComplexity;
+					v.w = 1; v.h = 0;
+					p[0]->momentumComplexity = 0;
+					p[0]->addVector(v);
+					if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
+					else v.x = -combo2;
+					p[1]->addVector(v);
 				}
 			}
 		}

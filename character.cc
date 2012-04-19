@@ -88,7 +88,7 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-int character::takeHit(character * attacker)
+int character::takeHit(character * attacker, SDL_Rect &pushVector)
 {
 	move *attack = attacker->cMove;
 	/*All the important logic like blocking and stuff will go here later.*/
@@ -124,6 +124,7 @@ int character::takeHit(character * attacker)
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
 //FIXME				volitionY -= attack->lift[attack->currentHit];
+				pushVector.y = -(attack->lift[attack->currentHit]);
 				fall->init(attack->stun[attack->currentHit]);
 				cMove = fall;
 			} else {
@@ -137,6 +138,7 @@ int character::takeHit(character * attacker)
 			}
 		}
 //FIXME		volitionX -= attack->push[attack->currentHit];
+		pushVector.x = -(attack->push[attack->currentHit]);
 		attack->connect(); //Tell the attack it's connected.
 	}
 	freeze = attack->stun[attack->currentHit] / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
