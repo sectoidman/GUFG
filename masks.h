@@ -32,7 +32,7 @@ struct effect{
 	bool player:1;
 	bool otherPlayer:1;
 	bool interface:1;
-}
+};
 
 typedef union {
 	unsigned int i;

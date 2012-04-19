@@ -65,7 +65,7 @@ void interface::roundInit()
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->pick->health = 300;
-		p[i]->pick->meter = 0;
+		p[i]->pick->meter = 28;
 		p[i]->deltaX = 0;
 		p[i]->deltaY = 0;
 		p[i]->sprite = NULL;
