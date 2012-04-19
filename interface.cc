@@ -207,6 +207,7 @@ void interface::resolve()
 					p[1]->addVector(v);
 					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
 					else v.x = -combo1;
+					v.y = 0;
 					p[0]->addVector(v);
 				}
 			}
@@ -228,6 +229,7 @@ void interface::resolve()
 					p[0]->addVector(v);
 					if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
 					else v.x = -combo2;
+					v.y = 0;
 					p[1]->addVector(v);
 				}
 			}
