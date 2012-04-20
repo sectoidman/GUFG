@@ -197,5 +197,6 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 		cMove = bMove;
 		bMove = NULL;
 	}
+
 }
 

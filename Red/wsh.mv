@@ -1,0 +1,16 @@
+Name: Dash
+Buffer: 4 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 65537
+State: 65536
+Blocks: 0
+Properties: 
+#0 
+$C	5 0 55 150
+$R	5 0 55 150
+$D	3 0 5 0
+#0 
+$C	5 0 55 150
+$R	5 0 55 150
+$D	5 0 3 0

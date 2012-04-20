@@ -23,6 +23,7 @@ struct cf{
 	bool misc3:1;
 	bool misc4:1;
 	bool misc5:1;
+	bool dash:1;
 };
 
 typedef union {
