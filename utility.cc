@@ -16,6 +16,5 @@ bool utility::check(bool pos[5], bool neg[5], int t, int f)
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(tolerance > 1 && tolerance < 30) printf("%s: %i, %i - %i, %i\n", name, tolerance, activation, t, f);
 	return 1;
 }

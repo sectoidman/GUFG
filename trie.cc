@@ -69,16 +69,16 @@ move * moveTrie::moveHook(int inputBuffer[30], int i, int f, bool pos[5], bool n
 	for(j = i; j < 30; j++){
 		test = child[inputBuffer[j]];
 		if(test != NULL){
-			if (f < 0) result = test->moveHook(inputBuffer, j+1, j, pos, neg, c);
-			else result = test->moveHook(inputBuffer, j+1, f, pos, neg, c);
-			if(result != NULL) return result;
+			if (f < 0) result = test->moveHook(inputBuffer, j, j, pos, neg, c);
+			else result = test->moveHook(inputBuffer, j, f, pos, neg, c);
+			if(result != NULL) return result; 
 		}
 	}
 	if(occupants != 0){ 
-		for(int i = 0; i < occupants; i++){
-			if(fish[i]->check(pos, neg, i, f) == 1){
-				if((*fish[i]) > c){
-					return fish[i];
+		for(int k = 0; k < occupants; k++){
+			if(fish[k]->check(pos, neg, i, f) == 1){
+				if((*fish[k]) > c){
+					return fish[k];
 				}
 			}
 		}
