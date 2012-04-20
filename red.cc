@@ -18,12 +18,17 @@ red::red()
 	head->insert(6, new utility("Red/W"));
 	head->insert(4, new utility("Red/WQ"));
 	temp = new utility("Red/wsh");
+
 	t = head->insert(6, temp);
 	t = t->insert(5);
 	t = t->insert(6);
 	t->insert(temp);
 	
-
+	temp = new utility("Red/qsh");
+	t = head->insert(4);
+	t = t->insert(5);
+	t = t->insert(4);
+	t->insert(temp);
 
 	temp = new move("Red/JQ");
 	temp->activation = 0;
