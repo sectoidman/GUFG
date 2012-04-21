@@ -123,7 +123,6 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector)
 			if(cMove == reel || cMove == fall) ct++;
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
-//FIXME				volitionY -= attack->lift[attack->currentHit];
 				pushVector.y = -(attack->lift[attack->currentHit]);
 				fall->init(attack->stun[attack->currentHit]);
 				cMove = fall;
@@ -137,7 +136,6 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector)
 				//Reckon other KO stuff;
 			}
 		}
-//FIXME		volitionX -= attack->push[attack->currentHit];
 		pushVector.x = -(attack->push[attack->currentHit]);
 		attack->connect(); //Tell the attack it's connected.
 	}
