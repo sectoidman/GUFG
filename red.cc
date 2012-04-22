@@ -7,9 +7,8 @@ red::red()
 	moveTrie * t;
 	head = new moveTrie;
 	head->insert(new move("Red/A"));
-	head->fish[0]->xLock = 1;
 	head->insert(new move("Red/C"));
-	head->fish[1]->xLock = 1;
+	head->insert(new special("Red/-D"));
 
 	delete neutral;
 	neutral = new utility("Red/NS");

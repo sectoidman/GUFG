@@ -12,6 +12,7 @@ OBJS = \
   trie.o \
   player.o \
   draw.o \
+  special.o \
   red.o
 
 #using settings recomended from: http://schneide.wordpress.com/2009/03/09/make-friends-with-your-compiler/
