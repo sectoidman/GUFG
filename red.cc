@@ -8,7 +8,9 @@ red::red()
 	head = new moveTrie;
 	head->insert(new move("Red/A"));
 	head->insert(new move("Red/C"));
-	head->insert(new special("Red/-D"));
+	t = head->insert(6);
+	t = t->insert(3);
+	head->insert(2, new special("Red/236D"));
 
 	delete neutral;
 	neutral = new utility("Red/NS");

@@ -3,9 +3,6 @@
 special::special(char * n)
 {
 	build(n);
-	int r = strlen(name);
-	xLock = 0;
-	yLock = 0;
 	init();
 }
 
