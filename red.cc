@@ -7,6 +7,7 @@ red::red()
 	moveTrie * t;
 	head = new moveTrie;
 	head->insert(new move("Red/A"));
+	head->insert(new move("Red/B"));
 	head->insert(new move("Red/C"));
 	t = head->insert(6);
 	t = t->insert(3);

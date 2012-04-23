@@ -2,10 +2,10 @@ Name: C
 Buffer: 30 : 30
 Hits: 1
 Frames: 33 : 10 : 3 : 20
-Check: 5 
-State: 256 : 496
+Check: 17 
+State: 256 : 480
 Damage: 35
-Stun: 16
+Stun: 17
 Push: 10
 Lift: 8
 Blockable: 3 
@@ -13,7 +13,7 @@ Blocks: 0
 Properties:  
 #0 
 $C	5 0 55 150
-$R	5 0 55 150
+$R	5 0 57 150
 $D	0 0 0 0
 #1
 $C	5 0 55 150
