@@ -88,8 +88,9 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-int character::takeHit(move * attack)
+int character::takeHit(character * attacker, SDL_Rect &pushVector)
 {
+	move *attack = attacker->cMove;
 	/*All the important logic like blocking and stuff will go here later.*/
 	cMove->init();
 	int ct = 0;
@@ -122,7 +123,7 @@ int character::takeHit(move * attack)
 			if(cMove == reel || cMove == fall) ct++;
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
-//FIXME				volitionY -= attack->lift[attack->currentHit];
+				pushVector.y = -(attack->lift[attack->currentHit]);
 				fall->init(attack->stun[attack->currentHit]);
 				cMove = fall;
 			} else {
@@ -135,7 +136,7 @@ int character::takeHit(move * attack)
 				//Reckon other KO stuff;
 			}
 		}
-//FIXME		volitionX -= attack->push[attack->currentHit];
+		pushVector.x = -(attack->push[attack->currentHit]);
 		attack->connect(); //Tell the attack it's connected.
 	}
 	freeze = attack->stun[attack->currentHit] / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
@@ -171,11 +172,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 	move * t = NULL;
 	if (cMove == NULL) {
 		if(aerial) cMove = /*air*/neutral;
-		else {
-			if(inputBuffer[0] == 4) cMove = walkBack;
-			else if(inputBuffer[0] == 6) cMove = walk;
-			else cMove = neutral;
-		}
+		else cMove = neutral;
 	}
 	
 	if(aerial) t = airHead->moveHook(inputBuffer, 0, -1, down, up, cMove);
@@ -194,5 +191,6 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 		cMove = bMove;
 		bMove = NULL;
 	}
+
 }
 

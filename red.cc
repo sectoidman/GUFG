@@ -4,13 +4,32 @@ red::red()
 	name = "Red";
 	delete head;
 	move * temp;
+	moveTrie * t;
 	head = new moveTrie;
 	head->insert(new move("Red/A"));
-	head->fish[0]->xLock = 1;
 	head->insert(new move("Red/C"));
-	head->fish[1]->xLock = 1;
+	t = head->insert(6);
+	t = t->insert(3);
+	head->insert(2, new special("Red/236D"));
 
-	initMoves();
+	delete neutral;
+	neutral = new utility("Red/NS");
+	head->insert(neutral);
+
+	head->insert(6, new utility("Red/W"));
+	head->insert(4, new utility("Red/WQ"));
+	temp = new utility("Red/wsh");
+
+	t = head->insert(6, temp);
+	t = t->insert(5);
+	t = t->insert(6);
+	t->insert(temp);
+	
+	temp = new utility("Red/qsh");
+	t = head->insert(4);
+	t = t->insert(5);
+	t = t->insert(4);
+	t->insert(temp);
 
 	temp = new move("Red/JQ");
 	temp->activation = 0;

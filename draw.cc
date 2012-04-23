@@ -22,7 +22,7 @@ void interface::draw()
 	
 	meter1.x = 100 + (200 - meter1.w); meter2.x = 500;
 	meter1.h = 5; meter2.h = 5;
-	meter1.y = floor + 10; meter2.y = floor + 10;
+	meter1.y = 580; meter2.y = 580;
 
 	for(int i = 0; i < numRounds; i++){
 		rounds1[i].y = 12; rounds1[i].w = 10; rounds1[i].h = 5;

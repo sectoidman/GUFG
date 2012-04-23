@@ -43,11 +43,11 @@ public:
 	int dragBG(int, int);
 	void checkCorners(int, int, int);
 	void combineDelta();
+	void addVector(SDL_Rect&);
 
 private:
 	int ID;
 	int inputBuffer[30];
 	void init();
-	void addVector(SDL_Rect&);
 	void removeVector(int);
 };
