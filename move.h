@@ -55,7 +55,11 @@ public:
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
 	cancelField *state, allowed;
-	
+
+	//Hooks for touching other things in more upper layers, like interface or player
+
+	virtual void touch(void*) {}
+		
 	bool xLock, yLock;
 	int frames;	 //Number of frames.
 	int hits;
