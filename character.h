@@ -25,15 +25,10 @@ public:
 	//BRB prepping my hooks
 
 	move * neutral;
-	move * walk;
-	move * jump;
-	move * fJump;
-	move * bJump;
-//	move * dash;
-//	move * brake;
-	move * walkBack;
+	move * crouch;
 	hitstun * reel;
 	hitstun * fall;
+	hitstun * crouchReel;
 	hitstun * crouchBlock;
 	hitstun * standBlock;
 	hitstun * airBlock;

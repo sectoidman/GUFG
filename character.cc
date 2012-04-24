@@ -13,53 +13,28 @@ character::character()
 	/*Currently I'm using this as a test case for my move hooks*/
 
 	head = new moveTrie(new move("White/A"));
-	head->fish[0]->xLock = 1;
 
 	temp = new move("White/D");
 	head->insert(temp);
 	airHead = new moveTrie(temp);
 	
 	head->insert(new move("White/B"));
-	head->fish[0]->xLock = 1;
-
 	neutral = new utility("White/NS");
-	neutral->tolerance = 0; neutral->activation = 0;
 	head->insert(neutral);
 
-	walkBack = new utility("White/WQ");
-	walkBack->tolerance = 0; walkBack->activation = 0;
-	walkBack->xLock = 1;
-	head->insert(4, walkBack);
-
-	walk = new utility("White/W");
-	walk->tolerance = 0; walk->activation = 0;
-	walk->xLock = 1;
-	head->insert(6, walk);
+	head->insert(4, new utility("White/WQ"));
+	head->insert(6, new utility("White/W"));
 
 	reel = new hitstun("White/H");
-	reel->xLock = 1; reel->yLock = 1;
-
 	fall = new hitstun("White/UT");
 
 	airBlock = new hitstun("White/BA");
-
 	standBlock = new hitstun("White/BH");
-	standBlock->xLock = 1;
-	
 	crouchBlock = new hitstun("White/BL");
-	crouchBlock->xLock = 1;
-
-	temp = new utility("White/JQ");
-	temp->activation = 0;
-	head->insert(7, temp);
-
-	temp = new utility("White/JF");
-	temp->activation = 0;
-	head->insert(9, temp);
-
-	temp = new utility("White/JN");
-	temp->activation = 0;
-	head->insert(8, temp);
+	
+	head->insert(8, new utility("White/JN"));
+	head->insert(7, new utility("White/JQ"));
+	head->insert(9, new utility("White/JF"));
 	
 	cMove = neutral;
 	bMove = NULL;
@@ -76,8 +51,6 @@ character::~character()
 {
 	delete head;
 	delete neutral;
-	delete walk;
-	delete walkBack;
 	delete reel;
 	delete fall;
 	delete crouchBlock;
