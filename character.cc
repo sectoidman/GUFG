@@ -94,6 +94,7 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 	/*All the important logic like blocking and stuff will go here later.*/
 	cMove->init();
 	int ct = 0;
+	int dmg;
 	/*Damage scaling logic will factor into this later*/
 	if(attack->cFlag <= attack->currentHit){
 		if(cMove->blockState.i & attack->blockMask[attack->currentHit].i){
@@ -130,7 +131,13 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 				reel->init(attack->stun[attack->currentHit]);
 				cMove = reel;
 			}
-			health -= (attack->damage[attack->currentHit] - combo);
+
+			//This will probably change, but it's the simplest possible damage scaling algorithm
+			dmg = (attack->damage[attack->currentHit] - combo);
+
+			//This won't change. Minimum damage per hit is 1.
+			if(dmg <= 0) dmg = 1;
+			health -= dmg;
 			if(health < 0){
 				health = 0; //Healthbar can't go below 0;
 				//Reckon other KO stuff;
