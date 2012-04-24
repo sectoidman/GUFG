@@ -1,4 +1,4 @@
-Name: NS
+Name: NC
 Buffer: 0 : 0
 Hits: 0
 Frames: 2 : 2
@@ -7,10 +7,10 @@ State: 511
 Blocks: 0
 Properties: 
 #0 
-$C	5 0 55 150
-$R	5 0 55 150
+$C	5 75 65 75
+$R	5 75 65 75
 $D	0 0 0 0
 #0 
-$C	5 0 55 150
-$R	5 0 55 150
+$C	5 75 65 75
+$R	5 75 65 75
 $D	0 0 0 0
