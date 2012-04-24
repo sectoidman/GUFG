@@ -196,7 +196,7 @@ void interface::resolve()
 		for(int j = 0; j < p[0]->hitComplexity; j++){
 			if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
 				if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
-					combo1 += p[1]->pick->takeHit(p[0]->pick, v);
+					combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
 					if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
 					p[0]->pick->freeze = temp1->stun[temp1->currentHit] / 2;
 					hit2 = 1;
@@ -206,7 +206,7 @@ void interface::resolve()
 					p[1]->momentumComplexity = 0;
 					p[1]->addVector(v);
 					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
-					else v.x = -combo1;
+					else v.x = -combo1*2;
 					v.y = 0;
 					p[0]->addVector(v);
 				}
@@ -218,7 +218,7 @@ void interface::resolve()
 		for(int j = 0; j < p[1]->hitComplexity; j++){
 			if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
 				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
-					combo2 += p[0]->pick->takeHit(p[1]->pick, v);
+					combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
 					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
 					p[1]->pick->freeze = temp2->stun[temp1->currentHit] / 2;
 					hit1 = 1;
@@ -228,7 +228,7 @@ void interface::resolve()
 					p[0]->momentumComplexity = 0;
 					p[0]->addVector(v);
 					if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
-					else v.x = -combo2;
+					else v.x = -combo2*2;
 					v.y = 0;
 					p[1]->addVector(v);
 				}

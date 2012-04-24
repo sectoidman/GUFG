@@ -88,7 +88,7 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-int character::takeHit(character * attacker, SDL_Rect &pushVector)
+int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 {
 	move *attack = attacker->cMove;
 	/*All the important logic like blocking and stuff will go here later.*/
@@ -124,13 +124,13 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector)
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
 				pushVector.y = -(attack->lift[attack->currentHit]);
-				fall->init(attack->stun[attack->currentHit]);
+				fall->init(attack->stun[attack->currentHit] - combo);
 				cMove = fall;
 			} else {
 				reel->init(attack->stun[attack->currentHit]);
 				cMove = reel;
 			}
-			health -= attack->damage[attack->currentHit];
+			health -= (attack->damage[attack->currentHit] * (100.0 - ((float)combo)/100.0));
 			if(health < 0){
 				health = 0; //Healthbar can't go below 0;
 				//Reckon other KO stuff;
