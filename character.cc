@@ -130,7 +130,7 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 				reel->init(attack->stun[attack->currentHit]);
 				cMove = reel;
 			}
-			health -= (attack->damage[attack->currentHit] * (100.0 - ((float)combo)/100.0));
+			health -= (attack->damage[attack->currentHit] - combo);
 			if(health < 0){
 				health = 0; //Healthbar can't go below 0;
 				//Reckon other KO stuff;
