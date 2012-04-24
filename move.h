@@ -28,7 +28,6 @@ public:
 	//Do other stuff sometimes.
 	void execute(move *);
 	virtual bool check(bool[], bool[], int, int); //Check to see if the move is possible right now.
-	void setTolerance(int);
 	virtual void blockSuccess(int);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
