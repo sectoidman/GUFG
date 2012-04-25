@@ -270,9 +270,9 @@ void player::checkCorners(int floor, int left, int right)
 //				pick->cMove = pick->neutral;
 			}
 			pick->aerial = 0;
-			deltaY = 0;
 			deltaX = 0;
 		}
+		deltaY = 0;
 		posY = floor - collision.h;
 	}
 
