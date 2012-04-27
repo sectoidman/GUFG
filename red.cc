@@ -9,7 +9,10 @@ red::red()
 	head->insert(new move("Red/A"));
 	head->insert(new move("Red/B"));
 	head->insert(new move("Red/C"));
-	head->insert(2, new move("Red/2A"));
+	temp = new move("Red/2A");
+	head->insert(2, temp);
+	head->insert(3, temp);
+	head->insert(1, temp);
 	t = head->insert(6);
 	t = t->insert(3);
 	t->insert(2, new special("Red/236D"));
