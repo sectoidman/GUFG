@@ -9,9 +9,10 @@ red::red()
 	head->insert(new move("Red/A"));
 	head->insert(new move("Red/B"));
 	head->insert(new move("Red/C"));
+	head->insert(2, new move("Red/2A"));
 	t = head->insert(6);
 	t = t->insert(3);
-	head->insert(2, new special("Red/236D"));
+	t->insert(2, new special("Red/236D"));
 
 	delete neutral;
 	neutral = new utility("Red/NS");
