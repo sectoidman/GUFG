@@ -275,6 +275,7 @@ void player::checkCorners(int floor, int left, int right)
 		deltaY = 0;
 		posY = floor - collision.h;
 	}
+	updateRects();
 
 	/*Walls, or "Left and Right" corners
 
@@ -351,15 +352,16 @@ void player::checkFacing(int maypole){
 	if(!pick->aerial){
 		if (lCorner) facing = 1;
 		else if (rCorner) facing = -1;
-		else if (posX < maypole && facing == -1) { 
+		else if (posX < maypole) { 
+			if(facing == -1) posX -= spr.w;
 			facing = 1;
-			posX -= spr.w;
 		}
-		else if (posX > maypole && facing == 1) {
+		else if (posX > maypole) {
+			if(facing == 1) posX += spr.w;
 			facing = -1;
-			posX += spr.w;
 		}
 	}
+	updateRects();
 }
 
 int player::dragBG(int left, int right)

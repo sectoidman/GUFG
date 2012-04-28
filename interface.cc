@@ -160,6 +160,8 @@ void interface::resolve()
 		if(p[i]->facing == -1) m[i] = p[i]->collision.x;
 		else m[i] = p[i]->collision.x + p[i]->collision.w;
 	}
+	p[0]->checkFacing(p[1]->posX);
+	p[1]->checkFacing(p[0]->posX);
 	p[0]->checkFacing(m[1]);
 	p[1]->checkFacing(m[0]);
 //*
