@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 #include <cmath>
-#include "aux.h"
+#include "auxil.h"
 
 using namespace std;
 
