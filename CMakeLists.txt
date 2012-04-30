@@ -16,6 +16,7 @@ set (gufg_VERSION_PATCH 1)
 set (SOURCES 	keytest.cc 
 		auxil.cc 
 		character.cc 
+		buildchar.cc
 		draw.cc 
 		hitstun.cc
 		interface.cc 

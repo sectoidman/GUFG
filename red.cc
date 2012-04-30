@@ -3,6 +3,7 @@ red::red()
 {
 	name = "Red";
 	delete head;
+	build(name);
 	move * temp;
 	moveTrie * t;
 	head = new moveTrie;

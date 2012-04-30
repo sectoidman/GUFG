@@ -127,28 +127,6 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 	mitigation we want to, but also allows us to do things like pushback ramping during blockstrings*/
 }
 
-void character::initMoves()
-{
-	char fname[30];
-	char buffer[30];
-	char mvName[30];
-	ifstream read;
-	
-	sprintf(fname, "%s/%s.ch", name, name);
-	read.open(fname);
-	while(read.get() != ':'); read.ignore();
-	read >> buffer;
-	sprintf(mvName, "%s/%s", name, buffer);
-	neutral = new move(mvName);
-	/*
-	while(read.peek() != '\n'){
-		switch (read.get()){
-		case ':':
-			break;
-		}
-	}*/
-}
-
 void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 {
 	move * t = NULL;
