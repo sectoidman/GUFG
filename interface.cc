@@ -207,8 +207,10 @@ void interface::resolve()
 					v.w = 1; v.h = 0;
 					p[1]->momentumComplexity = 0;
 					p[1]->addVector(v);
-					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
-					else v.x = -combo1*2;
+					if(!p[0]->pick->aerial){
+						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
+						else v.x = -combo1*2;
+					} else v.x = 0;
 					v.y = 0;
 					p[0]->addVector(v);
 				}
@@ -229,8 +231,11 @@ void interface::resolve()
 					v.w = 1; v.h = 0;
 					p[0]->momentumComplexity = 0;
 					p[0]->addVector(v);
-					if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
-					else v.x = -combo2*2;
+					if(p[1]->pick->aerial) v.x = 0; 
+					else {
+						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
+						else v.x = -combo2*2;
+					}
 					v.y = 0;
 					p[1]->addVector(v);
 				}

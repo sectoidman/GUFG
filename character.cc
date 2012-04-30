@@ -47,7 +47,7 @@ character::character()
 }
 
 character::~character()
-//Character destructor. Might not need this if we aren't working with any dynamic memory, but it might be worthwhile to have.
+	//Character destructor. Might not need this if we aren't working with any dynamic memory, but it might be worthwhile to have.
 {
 	delete head;
 	delete neutral;
@@ -116,7 +116,9 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 				//Reckon other KO stuff;
 			}
 		}
-		pushVector.x = -(attack->push[attack->currentHit]);
+		if(aerial) pushVector.x = -(attack->push[attack->currentHit]/5);
+		else pushVector.x = -(attack->push[attack->currentHit]);
+		
 		attack->connect(); //Tell the attack it's connected.
 	}
 	freeze = attack->stun[attack->currentHit] / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
