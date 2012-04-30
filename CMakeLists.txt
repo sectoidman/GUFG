@@ -13,18 +13,18 @@ set (gufg_VERSION_MAJOR 0)
 set (gufg_VERSION_MINOR 0)
 set (gufg_VERSION_PATCH 1)
 
-set (SOURCES keytest.cc 
-	     aux.cc 
-	     character.cc 
-	     draw.cc 
-	     hitstun.cc 
-	     interface.cc 
-             move.cc 
-             player.cc 
-             red.cc 
-             special.cc 
-             trie.cc 
-             utility.cc)
+set (SOURCES 	keytest.cc 
+		aux.cc 
+		character.cc 
+		draw.cc 
+		hitstun.cc
+		interface.cc 
+		move.cc 
+		player.cc 
+		red.cc 
+		special.cc 
+		trie.cc 
+		utility.cc)
 
 set (CMAKE_CXX_FLAGS "-O2 -Wno-write-strings -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy")
 
