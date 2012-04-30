@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include "aux.h"
+#include "auxil.h"
 #include "masks.h"
 
 using namespace std;

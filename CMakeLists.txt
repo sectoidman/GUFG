@@ -14,7 +14,7 @@ set (gufg_VERSION_MINOR 0)
 set (gufg_VERSION_PATCH 1)
 
 set (SOURCES 	keytest.cc 
-		aux.cc 
+		auxil.cc 
 		character.cc 
 		draw.cc 
 		hitstun.cc
