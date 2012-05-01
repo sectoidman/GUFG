@@ -21,12 +21,13 @@ void moveTrie::insert(move * b)
 {
 	int i;
 	move ** temp;
-	occupants++;
-	temp = new move*[occupants];
-	for(i = 0; i < occupants-1; i++){
+	temp = new move*[occupants+1];
+	for(i = 0; i < occupants; i++){
 		temp[i] = fish[i];
 	}
 	temp[i] = b;
+	occupants++;
+	if(fish) delete [] fish;
 	fish = temp;
 }
 

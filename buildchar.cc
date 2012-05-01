@@ -11,66 +11,65 @@ using namespace std;
 void character::build(char* n)
 {
 	char buffer[101];
+	char buffer2[101];
 	char name[51];
 	char moveName[151];
-	char type[20];
-	char * trie = 0;
-	char * head = "(ground)";
-	char * air = "(aerial)";
+	char type;
+	moveTrie * t = NULL;
+	move * m = NULL;
 	char component;
 	bool commentFlag;
 	char * token;
+	int q;
 	ifstream read; 
-	sprintf(buffer, "%s.ch", n);
+	sprintf(buffer, "%s/%s.ch", n, n);
 	
 	read.open(buffer);
 	assert(!read.fail());
 	read.get(name, 50); read.ignore(100, '\n');
 	while(!read.eof()){
 		commentFlag = 0;
-		strcpy(type, "Normal");
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
-		switch(buffer[0]){
-		case '#': 
-		case '\0':
+		type = buffer[0];
+		if(type == '#' || type == '\0')
 			commentFlag = 1;
-			break;
-		case '%':
-			strcpy(type, "Special");
-			break;
-		case '-':
-			strcpy(type, "Utility");
-			break;
-		default:
-			strcpy(type, "Normal");
-			break;
-		}
 		if(!commentFlag){
-			token = strtok(buffer, " \t-%");
+			strcpy(buffer2, buffer);
+			token = strtok(buffer, " \t-%\n");
 			sprintf(moveName, "%s/%s", name, token);
-			printf("%s (%s)\n", moveName, type);
-			printf ("Hooks: ");
+			switch(type){
+			case '%':
+				m = new special(moveName);
+				break;
+			case '-':
+				m = new utility(moveName);
+				break;
+			default:
+				m = new move(moveName);
+				break;	
+			}
+			token = strtok(buffer2, " \t-%\n");
 			while (token){
-				token = strtok(NULL, " \t=-%");
+				token = strtok(NULL, " \t=-%\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
-						trie = head;
+						t = head;
 						break;
 					case 'a':
-						trie = air;
+						t = airHead;
 						break;
 					default:
 						break;
 					}
 					for(int i = strlen(token)-1; i > 0; i--){
 						component = token[i];
-						printf("%i", atoi(&component));
+						q = atoi(&component);
+						t = t->insert(q);
 					}
-					printf("%s ", trie);
+					t->insert(m);
 				}
 			}
-			printf("\n");
 		}
 	}
 	read.close();	

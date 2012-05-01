@@ -28,7 +28,7 @@ public:
 	moveTrie * insert(int);
 	moveTrie * insert(int, move*);
 	void insert(move *);
-private:
 	int occupants;
+private:
 	int * button;
 };

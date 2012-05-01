@@ -3,10 +3,10 @@ red::red()
 {
 	name = "Red";
 	delete head;
-	build(name);
-	move * temp;
-	moveTrie * t;
 	head = new moveTrie;
+	build(name);
+/*	move * temp;
+	moveTrie * t;
 	head->insert(new move("Red/A"));
 	head->insert(new move("Red/B"));
 	head->insert(new move("Red/C"));
@@ -17,11 +17,11 @@ red::red()
 	t = head->insert(6);
 	t = t->insert(3);
 	t->insert(2, new special("Red/236D"));
-
+*/
 	delete neutral;
 	neutral = new utility("Red/NS");
 	head->insert(neutral);
-
+/*
 	head->insert(6, new utility("Red/W"));
 	head->insert(4, new utility("Red/WQ"));
 	temp = new utility("Red/wsh");
@@ -48,6 +48,6 @@ red::red()
 	temp = new move("Red/JN");
 	temp->activation = 0;
 	head->insert(8, temp);
-
+*/
 	cMove = neutral;
 }
