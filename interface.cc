@@ -194,6 +194,7 @@ void interface::resolve()
 	SDL_Rect v; 
 
 	/*This loop checks for hits. Eventually this might be a function*/
+
 	for(int i = 0; i < p[1]->regComplexity; i++){
 		for(int j = 0; j < p[0]->hitComplexity; j++){
 			if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
@@ -231,11 +232,10 @@ void interface::resolve()
 					v.w = 1; v.h = 0;
 					p[0]->momentumComplexity = 0;
 					p[0]->addVector(v);
-					if(p[1]->pick->aerial) v.x = 0; 
-					else {
+					if(!p[1]->pick->aerial){
 						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
 						else v.x = -combo2*2;
-					}
+					} else v.x = 0;
 					v.y = 0;
 					p[1]->addVector(v);
 				}
@@ -259,6 +259,7 @@ void interface::resolve()
 	checkWin();
 	runTimer();
 }
+
 
 /*Check if someone won*/
 void interface::checkWin()

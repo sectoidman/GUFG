@@ -1,11 +1,15 @@
 Name: H
 Buffer: 0 : 0
 Hits: 0
-Frames: 1 : 1
+Frames: 2 : 2
 Check: 0
 State: 0
 Blocks: 0
 Properties: 
+#0 
+$C	5 0 55 150
+$R	5 0 55 150
+$D	0 0 0 0
 #0 
 $C	5 0 55 150
 $R	5 0 55 150
