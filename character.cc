@@ -25,7 +25,7 @@ character::character()
 	head->insert(4, new utility("White/WQ"));
 	head->insert(6, new utility("White/W"));
 
-	reel = new hitstun("White/H");
+	reel = new hitstun("White/HS");
 	fall = new hitstun("White/UT");
 
 	airBlock = new hitstun("White/BA");
