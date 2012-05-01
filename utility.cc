@@ -3,8 +3,6 @@ utility::utility(char * n)
 {
 	build(n);
 	init();
-	xLock = 0;
-	yLock = 0;
 }
 
 bool utility::check(bool pos[5], bool neg[5], int t, int f)

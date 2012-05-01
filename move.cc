@@ -10,8 +10,6 @@ move::move(char * n)
 {
 	build(n);
 	init();
-	xLock = 0;
-	yLock = 0;
 }
 
 move::~move()
