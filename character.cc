@@ -121,7 +121,7 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 		
 		attack->connect(); //Tell the attack it's connected.
 	}
-	freeze = attack->stun[attack->currentHit] / 2; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
+	freeze = 10 + attack->stun[attack->currentHit] / 10; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
  	return ct;
 	/*Eventually the plan is to have this return a combo count. This not only allows us to display a counter and do whatever scaling/combo 
 	mitigation we want to, but also allows us to do things like pushback ramping during blockstrings*/
