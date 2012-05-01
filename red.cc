@@ -1,13 +1,23 @@
-#include "red.h"
+#include "interface.h"
 red::red()
 {
 	name = "Red";
 	delete head;
+	delete neutral;
+//	delete crouch;
+	delete standBlock;
+	delete crouchBlock;
+	delete airBlock;
+	delete reel;
+	delete fall;
+//	delete crouchReel;
 	head = new moveTrie;
 	build(name);
 	
-	delete neutral;
-	neutral = new utility("Red/NS");
-	head->insert(neutral);
 	cMove = neutral;
+}
+
+void red::touch(void * target)
+{
+	((interface*)target)->timer+=290;
 }
