@@ -201,7 +201,7 @@ void interface::resolve()
 				if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
 					combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
 					if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
-					p[0]->pick->freeze = temp1->stun[temp1->currentHit] / 2;
+					p[0]->pick->freeze = 10 + temp1->stun[temp1->currentHit] / 10;
 					hit2 = 1;
 					i = p[1]->regComplexity;
 					j = p[0]->hitComplexity;
@@ -225,7 +225,7 @@ void interface::resolve()
 				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
 					combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
 					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
-					p[1]->pick->freeze = temp2->stun[temp1->currentHit] / 2;
+					p[1]->pick->freeze = 10 + temp2->stun[temp1->currentHit] / 10;
 					hit1 = 1;
 					i = p[0]->regComplexity;
 					j = p[1]->hitComplexity;

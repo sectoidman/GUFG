@@ -73,4 +73,34 @@ void character::build(char* n)
 		}
 	}
 	read.close();	
+
+	sprintf(buffer, "%s/NS", name);
+	neutral = new utility(buffer);
+	head->insert(neutral);
+	
+/*	sprintf(buffer, "%s/NL", name);
+	crouch = new utility(buffer);
+	head->insert(2, neutral);
+
+	sprintf(buffer, "%s/NJ", name);
+	airNeutral = new utility(buffer);
+	airHead->insert(neutral);
+*/
+	sprintf(buffer, "%s/HS", name);
+	reel = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/UT", name);
+	fall = new hitstun(buffer);
+
+/*	sprintf(buffer, "%s/HL", name);
+	crouchReel = new hitstun(buffer);
+*/
+	sprintf(buffer, "%s/BH", name);
+	standBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BL", name);
+	crouchBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BA", name);
+	airBlock = new hitstun(buffer);	
 }

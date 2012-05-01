@@ -1,4 +1,5 @@
 #include "move.h"
+#include <assert.h>
 
 
 move::move()
@@ -45,6 +46,7 @@ void move::build(char * n)
 	char buffer[100];
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
+	assert(!read.fail());
 	
 	while(read.get() != ':'); read.ignore();
 	name = n;

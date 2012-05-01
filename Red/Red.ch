@@ -10,4 +10,5 @@ Red
 A = h
 B = h
 C = h
+2A = h2
 %236D = h236
