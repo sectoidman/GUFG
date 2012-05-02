@@ -46,7 +46,7 @@ public:
 
 //testing variables;
 	bool q;
-private:
 	int timer;
+private:
 	int screenHeight, screenWidth, floor, wall;
 };

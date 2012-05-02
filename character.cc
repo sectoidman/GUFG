@@ -51,12 +51,13 @@ character::~character()
 {
 	delete head;
 	delete neutral;
+	//delete crouch;
 	delete reel;
 	delete fall;
+	//delete crouchReel;
 	delete crouchBlock;
 	delete standBlock;
 	delete airBlock;
-	//Empty for now
 }
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/

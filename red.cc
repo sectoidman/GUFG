@@ -1,4 +1,4 @@
-#include "red.h"
+#include "interface.h"
 red::red()
 {
 	name = "Red";
@@ -15,4 +15,9 @@ red::red()
 	build(name);
 	
 	cMove = neutral;
+}
+
+void red::touch(void * target)
+{
+	((interface*)target)->timer+=290;
 }

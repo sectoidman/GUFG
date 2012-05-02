@@ -2,4 +2,5 @@
 class red : public character{
 public:
 	red();
+	void touch(void*);
 };
