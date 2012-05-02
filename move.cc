@@ -211,12 +211,12 @@ void move::build(char * n)
 				if(i == totalStartup[currentHit]+active[currentHit]) currentHit++;
 			} else {
 				hitComplexity[i] = 1;
-				hitbox[i] = new SDL_Rect[hitComplexity[1]];
+				hitbox[i] = new SDL_Rect[1];
 				hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
 			}
 		} else {
 			hitComplexity[i] = 1;
-			hitbox[i] = new SDL_Rect[hitComplexity[1]];
+			hitbox[i] = new SDL_Rect[1];
 			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
 		}
 	}
