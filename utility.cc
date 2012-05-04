@@ -16,3 +16,16 @@ bool utility::check(bool pos[5], bool neg[5], int t, int f)
 	if(f > activation) return 0;
 	return 1;
 }
+
+looping::looping(char * n)
+{
+	build(n);
+	init();
+}
+
+void looping::step()
+{
+	currentFrame++;
+	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
+	if(currentFrame >= frames) init();
+}
