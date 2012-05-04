@@ -6,7 +6,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include "utility.h"
+#include "looping.h"
 #include <stdio.h>
 
 class character{

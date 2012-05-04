@@ -186,7 +186,7 @@ void character::build(char* n)
 			commentFlag = 1;
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
-			token = strtok(buffer, " \t-%\n");
+			token = strtok(buffer, " \t-@%\n");
 			sprintf(moveName, "%s/%s", name, token);
 			switch(type){
 			case '%':
@@ -195,13 +195,16 @@ void character::build(char* n)
 			case '-':
 				m = new utility(moveName);
 				break;
+			case '@':
+				m = new looping(moveName);
+				break;
 			default:
 				m = new move(moveName);
 				break;	
 			}
-			token = strtok(buffer2, " \t-%\n");
+			token = strtok(buffer2, " \t-%@\n");
 			while (token){
-				token = strtok(NULL, " \t=-%\n");
+				token = strtok(NULL, " \t=-@%\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -226,7 +229,7 @@ void character::build(char* n)
 	read.close();	
 
 	sprintf(buffer, "%s/NS", name);
-	neutral = new utility(buffer);
+	neutral = new looping(buffer);
 	head->insert(neutral);
 	
 /*	sprintf(buffer, "%s/NL", name);
