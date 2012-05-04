@@ -5,7 +5,8 @@ Red
 -JQ = h7
 -W = h6
 -WQ = h4
--wsh = h5656 h6 h3656
+@wsh = h5656 h3656
+-slide = h5 h4 h1
 -qsh = h5454 
 A = h
 B = h

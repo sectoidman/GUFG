@@ -305,7 +305,10 @@ bool move::operator>(move * x)
 	if(x->state[x->cFlag].i == 0) return 0;
 	if(x == NULL) return 1;
 	if(frames == 0 || x->frames == 0) return 0;
-	else if(allowed.i & x->state[x->cFlag].i) return 1;
+	else if(allowed.i & x->state[x->cFlag].i){
+		if(x->cFlag == 0 && x == this) return 0;
+		else return 1;
+	}
 	return 0;
 }
 
