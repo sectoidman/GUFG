@@ -28,7 +28,8 @@ public:
 	void cSelectMenu();
 	void checkWin();
 	void dragBG(int);
-
+	void unitCollision();
+	
 	player * p[2];
 	SDL_Surface *background, *screen;
 	SDL_Rect bg;

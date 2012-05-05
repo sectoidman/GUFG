@@ -253,12 +253,6 @@ void player::checkCorners(int floor, int left, int right)
 	if(collision.h == 0) printf("H problem\n");
 	/*Floor, or "Bottom corner"*/
 
-	/*Currently this is done just with spr, but it needs to use collision, since
-	spr is just the sprite, and our collision boxes won't always be a rectangle circumscribing
-	the sprite. But something's broken about collision rects at the moment that makes that not work.
-	Maybe check what's happening in updateRects() for that, or move::debugCollisionInit() is broken,
-	which is also a sprsibility (and one that may be better remedied by having a real move constructor).*/
-
 	if (collision.y + collision.h > floor){
 		if(pick->aerial == 1){
 			if(pick->cMove == pick->airBlock){
