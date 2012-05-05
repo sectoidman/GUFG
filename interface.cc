@@ -487,10 +487,10 @@ void interface::unitCollision()
 	int middle = (right->collision.x + left->collision.x + left->collision.w)/2;
 
 	if(left->lCorner) right->posX = left->collision.x + left->collision.w + rLOffset;
-	else if(right->rCorner) left->posX = right->collision.x - lROffset;
+	else if(right->rCorner) left->posX = right->collision.x + lROffset;
 	else {
 		right->posX = middle + right->collision.w + rROffset;
-		left->posX = middle - left->collision.w - lLOffset;
+		left->posX = middle - left->collision.w + lLOffset;
 	}
 	right->updateRects();
 	left->updateRects();
