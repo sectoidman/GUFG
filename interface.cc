@@ -475,7 +475,6 @@ void interface::unitCollision()
 	if(p[0]->posX > p[1]->posX){ right = p[0]; left = p[1]; }
 	else if(p[0]->posX < p[1]->posX) { right = p[1]; left = p[0]; }
 	else {
-		printf("Woahnow\n");
 		if(p[1]->facing == 1) { right = p[0]; left = p[1]; }
 		else { right = p[1]; left = p[0]; }
 	}
@@ -491,6 +490,17 @@ void interface::unitCollision()
 	else {
 		right->posX = middle + right->collision.w + rROffset;
 		left->posX = middle - left->collision.w + lLOffset;
+		right->updateRects();
+		left->updateRects();
+		if(left->collision.x < wall){ 
+			left->posX = wall + lLOffset; 
+			left->lCorner = true;
+			right->posX = left->collision.x + left->collision.w + rLOffset;
+		} else if (right->collision.x + right->collision.w > bg.w - wall) {
+			right->posX = bg.w - wall + rROffset;
+			right->rCorner = true;
+			left->posX = right->collision.x + lROffset;
+		}
 	}
 	right->updateRects();
 	left->updateRects();
