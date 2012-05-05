@@ -253,12 +253,6 @@ void player::checkCorners(int floor, int left, int right)
 	if(collision.h == 0) printf("H problem\n");
 	/*Floor, or "Bottom corner"*/
 
-	/*Currently this is done just with spr, but it needs to use collision, since
-	spr is just the sprite, and our collision boxes won't always be a rectangle circumscribing
-	the sprite. But something's broken about collision rects at the moment that makes that not work.
-	Maybe check what's happening in updateRects() for that, or move::debugCollisionInit() is broken,
-	which is also a sprsibility (and one that may be better remedied by having a real move constructor).*/
-
 	if (collision.y + collision.h > floor){
 		if(pick->aerial == 1){
 			if(pick->cMove == pick->airBlock){
@@ -294,58 +288,6 @@ void player::checkCorners(int floor, int left, int right)
 		}
 	} else rCorner = 0;
 	updateRects(); //Update rectangles or the next collision check will be wrong.
-}
-
-void player::resolveCollision(player * other)
-{
-	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
-	bool displace = 0;
-	bool oDisplace = 0;
-	int lOffset = posX - collision.x;
-	int rOffset = posX - (collision.x + collision.w);
-	int oLOffset = other->posX - other->collision.x;
-	int oROffset = other->posX - (other->collision.x + other->collision.w);
-
-
-	if(other->lCorner) posX = other->collision.x + other->collision.w + lOffset;
-	else if(other->rCorner) posX = other->collision.x + rOffset;
-	else if(lCorner) other->posX = collision.x + collision.w + oLOffset;
-	else if(rCorner) other->posX = collision.x + oROffset;
-	else {
-		if((!pick->aerial && !other->pick->aerial) || (pick->aerial && other->pick->aerial)){
-			if((facing == 1 && deltaX > 0) || (facing == -1 && deltaX < 0)) oDisplace = 1;
-			if((other->facing == 1 && other->deltaX > 0) || (other->facing == -1 && other->deltaX < 0)) displace = 1;
-			if(displace && !oDisplace) {
-				if(facing == 1) posX = other->collision.x + rOffset;
-				else posX = other->collision.x + other->collision.w + lOffset;
-			} else if (oDisplace && !displace) {
-				if(other->facing == 1) other->posX = collision.x + oROffset;
-				else other->posX = collision.x + collision.w + oLOffset;
-			} else if (oDisplace && displace) { 
-				if(abs(deltaX) > abs(other->deltaX)){
-					posX += other->deltaX; 
-					updateRects();
-					if(other->facing == 1) other->posX = collision.x + oROffset;
-					else other->posX = collision.x + collision.w + oLOffset;
-				} else {
-					other->posX += deltaX; 
-					other->updateRects();
-					if(facing == 1) posX = other->collision.x + rOffset;
-					else posX = other->collision.x + other->collision.w + lOffset;
-				}
-			}
-//*
-		} else if (pick->aerial && !other->pick->aerial) {
-			if(other->facing == 1) posX = other->collision.x + other->collision.w + lOffset;
-			else posX = other->collision.x + rOffset;
-		} else {
-			if(facing == 1) other->posX = collision.x + collision.w + oLOffset;
-			else other->posX = collision.x + oROffset;
-//*/
-		}
-	}
-	updateRects();
-	other->updateRects();
 }
 
 void player::checkFacing(int maypole){

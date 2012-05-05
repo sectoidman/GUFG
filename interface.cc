@@ -172,7 +172,7 @@ void interface::resolve()
 	p[1]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 	
 	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
-		p[0]->resolveCollision(p[1]);
+		unitCollision();
 	}
 	
 	if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
@@ -468,3 +468,40 @@ interface::~interface()
 	SDL_Quit();
 }
 
+void interface::unitCollision()
+{
+	player *right, *left;
+	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
+	if(p[0]->posX > p[1]->posX){ right = p[0]; left = p[1]; }
+	else if(p[0]->posX < p[1]->posX) { right = p[1]; left = p[0]; }
+	else {
+		if(p[1]->facing == 1) { right = p[0]; left = p[1]; }
+		else { right = p[1]; left = p[0]; }
+	}
+	
+	int rLOffset = right->posX - right->collision.x;
+	int rROffset = right->posX - (right->collision.x + right->collision.w);
+	int lLOffset = left->posX - left->collision.x;
+	int lROffset = left->posX - (left->collision.x + left->collision.w);
+	int middle = (right->collision.x + left->collision.x + left->collision.w)/2;
+
+	if(left->lCorner) right->posX = left->collision.x + left->collision.w + rLOffset;
+	else if(right->rCorner) left->posX = right->collision.x + lROffset;
+	else {
+		right->posX = middle + right->collision.w + rROffset;
+		left->posX = middle - left->collision.w + lLOffset;
+		right->updateRects();
+		left->updateRects();
+		if(left->collision.x < wall){ 
+			left->posX = wall + lLOffset; 
+			left->lCorner = true;
+			right->posX = left->collision.x + left->collision.w + rLOffset;
+		} else if (right->collision.x + right->collision.w > bg.w - wall) {
+			right->posX = bg.w - wall + rROffset;
+			right->rCorner = true;
+			left->posX = right->collision.x + lROffset;
+		}
+	}
+	right->updateRects();
+	left->updateRects();
+}

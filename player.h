@@ -35,8 +35,6 @@ public:
 	/*Helper functions for "resolve" tick*/
 	void updateRects();
 	int checkHit(player*);
-	void resolveCollision(player*);
-	void conserveMomentum();
 	void enforceGravity(int, int);
 	void checkBlocking();
 	void checkFacing(int);
