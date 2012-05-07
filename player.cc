@@ -152,6 +152,9 @@ void player::characterSelect(int i)
 	case 1:
 		pick = new red;
 		break;
+	case 2:
+		pick = new yellow;
+		break;
 	default:
 		pick = new character;
 		break;

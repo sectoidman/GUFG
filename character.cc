@@ -14,6 +14,7 @@ character::character()
 	name = "White";
 	move * temp;
 
+
 	/*Currently I'm using this as a test case for my move hooks*/
 
 	head = new moveTrie(new move("White/A"));
@@ -39,10 +40,9 @@ character::character()
 	head->insert(8, new utility("White/JN"));
 	head->insert(7, new utility("White/JQ"));
 	head->insert(9, new utility("White/JF"));
-	
+
 	cMove = neutral;
 	bMove = NULL;
-	
 	health = 300;
 	meter = 0;
 	rounds = 0;

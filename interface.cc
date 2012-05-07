@@ -430,10 +430,10 @@ void interface::cSelectMenu()
 				if(event.jaxis.which == p[1]->input[3].jaxis.which && event.jaxis.axis == p[1]->input[3].jaxis.axis && event.jaxis.value == p[1]->input[3].jaxis.value && !selectFlag2) select2++;
 				break;
 			}
-			if(select2 > numChars) select2 = 1;
-			if(select1 > numChars) select1 = 1;
-			if(select1 < 1) select1 = numChars;
-			if(select2 < 1) select2 = numChars;
+			if(select2 > numChars) select2 = 0;
+			if(select1 > numChars) select1 = 0;
+			if(select1 < 0) select1 = numChars;
+			if(select2 < 0) select2 = numChars;
 			sprintf(base1, "Misc/P1Select%i.png", select1);
 			sprintf(base2, "Misc/P2Select%i.png", select2);
 			cursor1 = aux::load_image(base1);
