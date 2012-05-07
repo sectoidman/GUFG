@@ -20,8 +20,7 @@ public:
 	move();
 	move(char*);
 	virtual ~move();
-	void build(char *);
-	void execute();
+	virtual void build(char *);
 
 	//Okay so, hopefully the idea here is that we can init()
 	//the move we're cancelling out of in the usual case, and, well
