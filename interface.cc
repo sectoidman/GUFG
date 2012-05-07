@@ -499,8 +499,6 @@ void interface::unitCollision()
 	else {
 		right->posX = middle + right->collision.w + rROffset;
 		left->posX = middle - left->collision.w + lLOffset;
-		right->updateRects();
-		left->updateRects();
 	}
 	right->updateRects();
 	left->updateRects();
