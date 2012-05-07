@@ -1,4 +1,4 @@
-#include "hitstun.h"
+#include "move.h"
 
 void hitstun::init(int n)
 {
