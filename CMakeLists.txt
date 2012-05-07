@@ -21,7 +21,8 @@ set (SOURCES 	keytest.cc
 		interface.cc 
 		move.cc 
 		player.cc 
-		red.cc 
+		red.cc
+		yellow.cc 
 		special.cc 
 		trie.cc 
 		utility.cc)
