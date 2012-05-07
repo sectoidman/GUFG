@@ -35,6 +35,13 @@ struct effect{
 	bool interface:1;
 };
 
+struct pf{
+	bool crouch:1;
+	bool launch:1;
+	bool elasticX:1;
+	bool elasticY:1;
+};
+
 typedef union {
 	unsigned int i;
 	cf b;
@@ -50,3 +57,7 @@ typedef union{
 	effect b;
 } effectHook;
 
+typedef union{
+	unsigned int i;
+	pf b;
+} properties;

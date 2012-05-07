@@ -487,20 +487,20 @@ void interface::unitCollision()
 
 	if(left->lCorner) right->posX = left->collision.x + left->collision.w + rLOffset;
 	else if(right->rCorner) left->posX = right->collision.x + lROffset;
+	else if(middle - left->collision.w < 25) {
+		left->posX = 25 + lLOffset;
+		right->posX = left->collision.x + left->collision.w + rLOffset;
+		left->lCorner = true;
+	} else if (middle + right->collision.w > 1575) {
+		right->posX = 1575 + rROffset;
+		left->posX = right->collision.x + lROffset;
+		right->rCorner = true;
+	}
 	else {
 		right->posX = middle + right->collision.w + rROffset;
 		left->posX = middle - left->collision.w + lLOffset;
 		right->updateRects();
 		left->updateRects();
-		if(left->collision.x < wall){ 
-			left->posX = wall + lLOffset; 
-			left->lCorner = true;
-			right->posX = left->collision.x + left->collision.w + rLOffset;
-		} else if (right->collision.x + right->collision.w > bg.w - wall) {
-			right->posX = bg.w - wall + rROffset;
-			right->rCorner = true;
-			left->posX = right->collision.x + lROffset;
-		}
 	}
 	right->updateRects();
 	left->updateRects();
