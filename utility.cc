@@ -1,4 +1,4 @@
-#include "utility.h"
+#include "move.h"
 utility::utility(char * n)
 {
 	build(n);

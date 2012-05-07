@@ -1,4 +1,4 @@
-#include "special.h"
+#include "move.h"
 
 special::special(char * n)
 {

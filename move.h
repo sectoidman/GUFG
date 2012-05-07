@@ -6,14 +6,8 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include <cstring>
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
 #include "auxil.h"
 #include "masks.h"
-
-using namespace std;
 
 class move{
 public:
@@ -91,3 +85,64 @@ public:
 	SDL_Surface **sprite, **fSprite;
 };
 
+class hitstun : public move {
+public:
+	void init(int);
+	int counter;
+	void step();
+	void blockSuccess(int);
+	hitstun();
+	hitstun(char *, int);
+	hitstun(char *);
+};
+
+class special : public move {
+public:
+	special(char*);
+	bool check(bool[], bool[], int, int);
+	int chip;
+};
+
+class utility : public move {
+public:
+	utility() {}
+	utility(char *);
+	bool check(bool[], bool[], int, int);
+};
+
+class looping : public utility {
+public:
+	looping(char*);
+	void step();
+};
+
+class airMove : public move {
+public:
+	void build (char *);
+	void land(move *&);
+	move * landing;
+};
+
+class airSpecial : public airMove, public special {
+public:
+	int type;
+};
+
+class projectile {
+public:
+	projectile(char*);
+	~projectile();
+
+	int owner;
+	SDL_Rect pos;
+	SDL_Surface * sprite;
+	move * go;
+	move * spawn;
+};
+
+class summon : public special {
+public:
+	projectile * payload;
+	projectile * spawnProjectile();
+	int spawnFrame;
+};

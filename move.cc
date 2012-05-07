@@ -1,6 +1,10 @@
+#include <cstring>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
 #include "move.h"
 #include <assert.h>
-
+using namespace std;
 
 move::move()
 {

@@ -1,4 +1,4 @@
-#include "aerial.h"
+#include "move.h"
 void airMove::land(move *& c)
 {
 	init();
