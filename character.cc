@@ -159,12 +159,12 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 
 }
 
-void character::build(char* n)
+void character::build(const char* n)
 {
 	char buffer[101];
 	char buffer2[101];
-	char name[51];
 	char moveName[151];
+	char name[51];
 	char type;
 	moveTrie * t = NULL;
 	move * m = NULL;

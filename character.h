@@ -14,7 +14,7 @@ public:
 	character();		//Load the entire character into memory. This should happen once per player per match.
 	virtual ~character();	//Free stuff
 
-	void build(char*);	//This will *eventually* be the function that parses the character constructor file.
+	void build(const char*);	//This will *eventually* be the function that parses the character constructor file.
 	moveTrie * head;	//Trie for ground moves
 	moveTrie * airHead;	//Trie for air moves
 
