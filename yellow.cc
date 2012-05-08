@@ -2,6 +2,7 @@
 yellow::yellow(){
 	name = "Yellow";
 	delete head;
+	delete airHead;
 	delete neutral;
 //	delete crouch;
 	delete standBlock;
@@ -11,6 +12,7 @@ yellow::yellow(){
 	delete fall;
 //	delete crouchReel;
 	head = new moveTrie;
+	airHead = new moveTrie;
 	build(name);
 	
 	cMove = neutral;

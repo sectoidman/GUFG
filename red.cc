@@ -3,6 +3,7 @@ red::red()
 {
 	name = "Red";
 	delete head;
+	delete airHead;
 	delete neutral;
 //	delete crouch;
 	delete standBlock;
@@ -11,6 +12,8 @@ red::red()
 	delete reel;
 	delete fall;
 //	delete crouchReel;
+	
+	airHead = new moveTrie;
 	head = new moveTrie;
 	build(name);
 	
