@@ -1,48 +1,11 @@
-#include <cstring>
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
 #include "move.h"
-#include <assert.h>
-using namespace std;
-
-move::move()
+void airMove::land(move *& c)
 {
-	name = NULL;
-}
-
-move::move(char * n)
-{
-	build(n);
 	init();
+	c = landing;
 }
 
-move::~move()
-{
-	if(!this) return;
-/*	for(int i = 0; i < frames; i++){
-		if(sprite[i] != NULL) SDL_FreeSurface(sprite[i]);
-		if(fSprite[i] != NULL) SDL_FreeSurface(fSprite[i]);
-	}*/
-	if(sprite) delete [] sprite;
-	if(fSprite) delete [] fSprite;
-	if(collision) delete [] collision;
-	if(hitbox) delete [] hitbox;
-	if(hitreg) delete [] hitreg;
-	if(hitComplexity) delete [] hitComplexity;
-	if(regComplexity) delete [] regComplexity;
-	if(deltaComplexity) delete [] deltaComplexity;
-	if(delta) delete [] delta;
-	if(state) delete [] state;
-	if(blockMask) delete [] blockMask;
-	if(lift) delete [] lift;
-	if(damage) delete [] damage;
-	if(stun) delete [] stun;
-	if(totalStartup) delete [] totalStartup;
-	if(push) delete [] push;
-}
-
-void move::build(char * n)
+void airMove::build(char * n)
 {
 	ifstream read;
 	int startup, recovery, countFrames = -1;
@@ -224,8 +187,11 @@ void move::build(char * n)
 			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
 		}
 	}
-	read.close();
+
+	//Stuff that defines the landing recovery of a move will go here.
+	//Haven't yet decided how the syntax for that works.
 	
+	read.close();
 	for(int i = 0; i < 5; i++)
 		button[i] = 0;
 	int r = strlen(name);
@@ -260,88 +226,3 @@ void move::build(char * n)
 		fSprite[i] = aux::load_image(fname);
 	}
 }
-
-bool move::check(bool pos[5], bool neg[5], int t, int f)
-{
-	//if(meter < cost) return 0;
-	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
-			if(!pos[i]) return 0;
-		}
-
-	}
-	if(t > tolerance) return 0;
-	if(f > activation) return 0;
-	return 1;
-}
-
-void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
-{
-	if(rc > 0) delete [] r;
-	if(hc > 0) delete [] b;
-	rc = regComplexity[currentFrame];
-	hc = hitComplexity[currentFrame];
-	r = new SDL_Rect[rc];
-	b = new SDL_Rect[hc];
-
-	c.x = collision[currentFrame].x; c.w = collision[currentFrame].w;
-	c.y = collision[currentFrame].y; c.h = collision[currentFrame].h;
-
-	SDL_Rect * tempreg = hitreg[currentFrame];
-	for(int i = 0; i < rc; i++){
-		r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
-		r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
-	}
-	SDL_Rect * temphit = hitbox[currentFrame];
-	for(int i = 0; i < hc; i++){
-		if(cFlag > currentHit) {
-			b[i].x = 0; b[i].w = 0;
-			b[i].y = 0; b[i].h = 0;
-		} else {
-			b[i].x = temphit[i].x; b[i].w = temphit[i].w;
-			b[i].y = temphit[i].y; b[i].h = temphit[i].h;
-		}
-	}
-}
-
-
-bool move::operator>(move * x)
-{
-	if(x->state[x->cFlag].i == 0) return 0;
-	if(x == NULL) return 1;
-	if(frames == 0 || x->frames == 0) return 0;
-	else if(allowed.i & x->state[x->cFlag].i){
-		if(x->cFlag == 0 && x == this) return 0;
-		else return 1;
-	}
-	return 0;
-}
-
-void move::step()
-{
-	currentFrame++;
-	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
-}
-
-void move::init()
-{
-	cFlag = 0;
-	currentFrame = 0;
-	currentHit = 0;
-}
-
-void move::connect()
-{
-	cFlag++;
-}
-
-void move::blockSuccess(int st)
-{
-	return;
-}
-
-void move::execute(move * last)
-{
-	last->init();
-}
-
