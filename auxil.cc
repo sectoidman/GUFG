@@ -225,3 +225,27 @@ bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 	if(a.x + a.w - b.x < 0 || b.x + b.w - a.x < 0) return 0;
 	return 1;
 }
+
+int aux::defineRectArray(char * definition, SDL_Rect *& array)
+{
+	int complexity = 1;
+	for(unsigned int j = 0; j < strlen(definition); j++){
+		if(definition[j] == '\t') complexity++;
+	}
+	array = new SDL_Rect[complexity];
+	char * bb[complexity*4];
+	bb[0] = strtok(definition, ",\n\t ");
+	for(int j = 1; j < complexity*4; j++){
+		bb[j] = strtok(NULL, ", \n\t"); j++;
+		bb[j] = strtok(NULL, ", \n\t"); j++;
+		bb[j] = strtok(NULL, ", \n\t"); j++;
+		bb[j] = strtok(NULL, ", \n\t");
+	}
+	for(int j = 0; j < complexity*4; j++){
+		array[j/4].x = atoi(bb[j]); j++;
+		array[j/4].y = atoi(bb[j]); j++;
+		array[j/4].w = atoi(bb[j]); j++;
+		array[j/4].h = atoi(bb[j]);
+	}
+	return complexity;
+}
