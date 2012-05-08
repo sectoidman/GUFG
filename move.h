@@ -124,6 +124,7 @@ public:
 	airMove(char*);
 	void build (char *);
 	void land(move *&);
+	void setLR(move *);
 	move * landing;
 };
 
@@ -170,3 +171,7 @@ public:
 };
 
 class airSummon : public airMove, public summon {
+public:
+	airSummon() {}
+	airSummon(char*);
+};
