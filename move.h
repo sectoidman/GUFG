@@ -118,6 +118,7 @@ public:
 
 class airMove : public move {
 public:
+	airMove(char*);
 	void build (char *);
 	void land(move *&);
 	move * landing;

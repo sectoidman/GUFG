@@ -25,6 +25,7 @@ set (SOURCES 	keytest.cc
 		yellow.cc 
 		special.cc 
 		trie.cc 
+		aerial.cc
 		utility.cc)
 
 set (CMAKE_CXX_FLAGS "-O2 -Wno-write-strings -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy")

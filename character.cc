@@ -198,6 +198,9 @@ void character::build(const char* n)
 			case '@':
 				m = new looping(moveName);
 				break;
+			case 'j':
+				m = new airMove(moveName);
+				break;	
 			default:
 				m = new move(moveName);
 				break;	

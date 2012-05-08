@@ -263,6 +263,7 @@ void player::checkCorners(int floor, int left, int right)
 				pick->cMove = pick->standBlock;
 			} else { 
 				if(pick->cMove) pick->cMove->land(pick->cMove);
+				if(!pick->cMove) pick->cMove = pick->neutral;
 //				if(pick->cMove) pick->cMove->init();
 //				pick->cMove = pick->neutral;
 			}
