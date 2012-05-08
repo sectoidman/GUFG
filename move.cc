@@ -141,8 +141,7 @@ void move::build(char * n)
 
 	currentHit = 0;
 
-	for(int i = 0; i < frames; i++)
-	{
+	for(int i = 0; i < frames; i++){
 		while(read.get() != '$'); read.ignore(2);
 		read >> collision[i].x >> collision[i].y >> collision[i].w >> collision[i].h;
 		while(read.get() != '$'); read.ignore(2);
