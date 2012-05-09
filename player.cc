@@ -267,6 +267,7 @@ void player::checkCorners(int floor, int left, int right)
 //				if(pick->cMove) pick->cMove->init();
 //				pick->cMove = pick->neutral;
 			}
+			updateRects();
 			pick->aerial = 0;
 			deltaX = 0;
 		}
