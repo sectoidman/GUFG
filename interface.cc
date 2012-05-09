@@ -203,8 +203,10 @@ void interface::resolve()
 					hit2 = 1;
 					i = p[1]->regComplexity;
 					j = p[0]->hitComplexity;
+					p[0]->checkFacing(m[1]);
 					v.w = 1; v.h = 0;
 					p[1]->momentumComplexity = 0;
+					p[1]->deltaX = 0; p[1]->deltaY = 0;
 					p[1]->addVector(v);
 					if(!p[0]->pick->aerial){
 						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
@@ -227,8 +229,10 @@ void interface::resolve()
 					hit1 = 1;
 					i = p[0]->regComplexity;
 					j = p[1]->hitComplexity;
+					p[1]->checkFacing(m[0]);
 					v.w = 1; v.h = 0;
 					p[0]->momentumComplexity = 0;
+					p[0]->deltaX = 0; p[0]->deltaY = 0;
 					p[0]->addVector(v);
 					if(!p[1]->pick->aerial){
 						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
