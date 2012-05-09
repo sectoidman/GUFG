@@ -24,6 +24,7 @@ public:
 	//BRB prepping my hooks
 
 	move * neutral;
+	move * airNeutral;
 	move * crouch;
 	hitstun * reel;
 	hitstun * fall;

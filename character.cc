@@ -238,11 +238,11 @@ void character::build(const char* n)
 /*	sprintf(buffer, "%s/NL", name);
 	crouch = new utility(buffer);
 	head->insert(2, neutral);
-
-	sprintf(buffer, "%s/NJ", name);
-	airNeutral = new utility(buffer);
-	airHead->insert(neutral);
 */
+	sprintf(buffer, "%s/NJ", name);
+	airNeutral = new airLooping(buffer);
+	airHead->insert(airNeutral);
+
 	sprintf(buffer, "%s/HS", name);
 	reel = new hitstun(buffer);
 	
