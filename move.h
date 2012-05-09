@@ -87,46 +87,63 @@ public:
 
 class hitstun : public move {
 public:
+	hitstun() {}
 	void init(int);
 	int counter;
 	void step();
 	void blockSuccess(int);
-	hitstun();
 	hitstun(char *, int);
 	hitstun(char *);
 };
 
-class special : public move {
+class special : virtual public move {
 public:
+	special() {}
 	special(char*);
 	bool check(bool[], bool[], int, int);
 	int chip;
 };
 
-class utility : public move {
+class utility : virtual public move {
 public:
 	utility() {}
 	utility(char *);
 	bool check(bool[], bool[], int, int);
 };
 
-class looping : public utility {
+class looping : virtual public utility {
 public:
+	looping() {}
 	looping(char*);
 	void step();
 };
 
-class airMove : public move {
+class airMove : virtual public move {
 public:
+	airMove() {}
 	airMove(char*);
 	void build (char *);
 	void land(move *&);
+	void setLR(move *);
 	move * landing;
 };
 
 class airSpecial : public airMove, public special {
 public:
-	int type;
+	airSpecial() {}
+	airSpecial(char*);
+};
+
+class airUtility : public airMove, public utility {
+public:
+	airUtility() {}
+	airUtility(char*);
+};
+
+class airLooping : public airMove, public looping {
+public:
+	airLooping() {}
+	airLooping(char*);
 };
 
 class projectile {
@@ -134,16 +151,27 @@ public:
 	projectile(char*);
 	~projectile();
 
-	int owner;
-	SDL_Rect pos;
-	SDL_Surface * sprite;
-	move * go;
-	move * spawn;
+	int ID;
+	int posX, posY;
+	
+	int hitComplexity, regComplexity, momentumComplexity;
+	SDL_Rect *momentum, *hitbox, *hitreg, collision, spr;
+
+	SDL_Surface *sprite;
+	move *cMove;
 };
 
-class summon : public special {
+class summon : virtual public special {
 public:
+	summon() {}
+	summon(char*);
 	projectile * payload;
 	projectile * spawnProjectile();
 	int spawnFrame;
+};
+
+class airSummon : public airMove, public summon {
+public:
+	airSummon() {}
+	airSummon(char*);
 };

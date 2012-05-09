@@ -141,77 +141,20 @@ void move::build(char * n)
 
 	currentHit = 0;
 
-	for(int i = 0; i < frames; i++)
-	{
+	for(int i = 0; i < frames; i++){
 		while(read.get() != '$'); read.ignore(2);
 		read >> collision[i].x >> collision[i].y >> collision[i].w >> collision[i].h;
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
-		regComplexity[i] = 1;
-		for(unsigned int j = 0; j < strlen(buffer); j++){
-			if(buffer[j] == '\t') regComplexity[i]++;
-		}
-		hitreg[i] = new SDL_Rect[regComplexity[i]];
-		char * bb[regComplexity[i]*4];
-		bb[0] = strtok(buffer, ",\n\t ");
-		for(int j = 1; j < regComplexity[i]*4; j++){
-			bb[j] = strtok(NULL, ", \n\t"); j++;
-			bb[j] = strtok(NULL, ", \n\t"); j++;
-			bb[j] = strtok(NULL, ", \n\t"); j++;
-			bb[j] = strtok(NULL, ", \n\t");
-		}
-		for(int j = 0; j < regComplexity[i]*4; j++){
-			hitreg[i][j/4].x = atoi(bb[j]); j++;
-			hitreg[i][j/4].y = atoi(bb[j]); j++;
-			hitreg[i][j/4].w = atoi(bb[j]); j++;
-			hitreg[i][j/4].h = atoi(bb[j]);
-		}
+		regComplexity[i] = aux::defineRectArray(buffer, hitreg[i]);
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
-		deltaComplexity[i] = 1;
-		for(unsigned int j = 0; j < strlen(buffer); j++){
-			if(buffer[j] == '\t') regComplexity[i]++;
-		}
-		delta[i] = new SDL_Rect[deltaComplexity[i]];
-		char * dd[deltaComplexity[i]*4];
-		dd[0] = strtok(buffer, ",\n\t ");
-		for(int j = 1; j < deltaComplexity[i]*4; j++){
-			dd[j] = strtok(NULL, ", \n\t"); j++;
-			dd[j] = strtok(NULL, ", \n\t"); j++;
-			dd[j] = strtok(NULL, ", \n\t"); j++;
-			dd[j] = strtok(NULL, ", \n\t");
-		}
-		for(int j = 0; j < deltaComplexity[i]*4; j++){
-			delta[i][j/4].x = atoi(dd[j]); j++;
-			delta[i][j/4].y = atoi(dd[j]); j++;
-			delta[i][j/4].w = atoi(dd[j]); j++;
-			delta[i][j/4].h = atoi(dd[j]);
-		}
+		deltaComplexity[i] = aux::defineRectArray(buffer, delta[i]);
 		if(hits > 0){
 			if(i > totalStartup[currentHit] && i <= totalStartup[currentHit]+active[currentHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
-				hitComplexity[i] = 1;
-				for(unsigned int j = 0; j < strlen(buffer); j++){
-					if(buffer[j] == '\t') hitComplexity[i]++;
-				}
-				hitbox[i] = new SDL_Rect[hitComplexity[i]];
-				char* rr[hitComplexity[i]*4];
-				rr[0] = strtok(buffer, ",\n\t ");
-	
-				for(int j = 1; j < hitComplexity[i]*4; j++){
-					rr[j] = strtok(NULL, ", \n\t"); j++;
-					rr[j] = strtok(NULL, ", \n\t"); j++;
-					rr[j] = strtok(NULL, ", \n\t"); j++;
-					rr[j] = strtok(NULL, ", \n\t");
-				}
-	
-				for(int j = 0; j < hitComplexity[i]*4; j++){
-					hitbox[i][j/4].x = atoi(rr[j]); j++;
-					hitbox[i][j/4].y = atoi(rr[j]); j++;
-					hitbox[i][j/4].w = atoi(rr[j]); j++;
-					hitbox[i][j/4].h = atoi(rr[j]);
-				}
+				hitComplexity[i] = aux::defineRectArray(buffer, hitbox[i]);
 				if(i == totalStartup[currentHit]+active[currentHit]) currentHit++;
 			} else {
 				hitComplexity[i] = 1;
