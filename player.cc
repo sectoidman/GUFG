@@ -373,3 +373,8 @@ void player::removeVector(int n)
 	}
 	momentumComplexity--;
 }
+
+void player::takeHit(player * attacker, move * attack)
+{
+
+}

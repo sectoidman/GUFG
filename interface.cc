@@ -203,7 +203,6 @@ void interface::resolve()
 					hit2 = 1;
 					i = p[1]->regComplexity;
 					j = p[0]->hitComplexity;
-					p[0]->checkFacing(m[1]);
 					v.w = 1; v.h = 0;
 					p[1]->momentumComplexity = 0;
 					p[1]->deltaX = 0; p[1]->deltaY = 0;
@@ -214,6 +213,7 @@ void interface::resolve()
 					} else v.x = 0;
 					v.y = 0;
 					p[0]->addVector(v);
+					p[0]->checkFacing(m[1]);
 				}
 			}
 
@@ -225,11 +225,10 @@ void interface::resolve()
 				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
 					combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
 					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
-					p[1]->pick->freeze = 10 + temp2->stun[temp1->currentHit] / 10;
+					p[1]->pick->freeze = 10 + temp2->stun[temp2->currentHit] / 10;
 					hit1 = 1;
 					i = p[0]->regComplexity;
 					j = p[1]->hitComplexity;
-					p[1]->checkFacing(m[0]);
 					v.w = 1; v.h = 0;
 					p[0]->momentumComplexity = 0;
 					p[0]->deltaX = 0; p[0]->deltaY = 0;
@@ -240,6 +239,7 @@ void interface::resolve()
 					} else v.x = 0;
 					v.y = 0;
 					p[1]->addVector(v);
+					p[1]->checkFacing(m[0]);
 				}
 			}
 		}
