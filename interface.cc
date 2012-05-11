@@ -176,8 +176,8 @@ void interface::resolve()
 	if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 	if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 	
-	if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall) combo2 = 0;
-	if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall) combo1 = 0;
+	if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo2 = 0;
+	if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo1 = 0;
 
 	if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
 	if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();

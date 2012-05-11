@@ -55,10 +55,10 @@ character::~character()
 {
 	delete head;
 	delete neutral;
-	//delete crouch;
+	delete crouch;
 	delete reel;
 	delete fall;
-	//delete crouchReel;
+	delete crouchReel;
 	delete crouchBlock;
 	delete standBlock;
 	delete airBlock;
@@ -99,15 +99,20 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 		easily referred to as a "Tech." Therefore, while falling state persists until they hit the ground, there's an amount of
 		"untechable" time associated with any move that hits them. This is not functionally different from hitstun in any other way.
 		*/
-			if(cMove == reel || cMove == fall) ct++;
+			if(cMove == reel || cMove == fall || cMove == crouchReel) ct++;
 			if(!aerial && attack->launch) aerial = 1;
 			if(aerial){
 				pushVector.y = -(attack->lift[attack->currentHit]);
 				fall->init(attack->stun[attack->currentHit] - combo);
 				cMove = fall;
 			} else {
-				reel->init(attack->stun[attack->currentHit]);
-				cMove = reel;
+				if(cMove == crouch || cMove == crouchReel){
+					crouchReel->init(attack->stun[attack->currentHit]+1);
+					cMove = crouchReel;
+				} else {
+					reel->init(attack->stun[attack->currentHit]);
+					cMove = reel;
+				}
 			}
 
 			//This will probably change, but it's the simplest possible damage scaling algorithm
@@ -122,6 +127,8 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 			}
 		}
 		if(aerial) pushVector.x = -(attack->push[attack->currentHit]/5);
+		else if (cMove == crouchReel) pushVector.x = -(attack->push[attack->currentHit]);
+		
 		else pushVector.x = -(attack->push[attack->currentHit]);
 		
 		attack->connect(); //Tell the attack it's connected.
@@ -165,7 +172,7 @@ void character::build(const char* n)
 	char buffer2[101];
 	char moveName[151];
 	char name[51];
-	char type;
+	char type[2];
 	moveTrie * t = NULL;
 	move * m = NULL;
 	char component;
@@ -181,22 +188,27 @@ void character::build(const char* n)
 	while(!read.eof()){
 		commentFlag = 0;
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
-		type = buffer[0];
-		if(type == '#' || type == '\0')
+		type[0] = buffer[0];
+		type[1] = buffer[1];
+		
+		if(type[0] == '#' || type[0] == '\0')
 			commentFlag = 1;
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
 			token = strtok(buffer, " \t-@%\n");
 			sprintf(moveName, "%s/%s", name, token);
-			switch(type){
+			switch(type[0]){
 			case '%':
-				m = new special(moveName);
+				if(type[1] == 'j') m = new airSpecial(moveName);
+				else m = new special(moveName);
 				break;
 			case '-':
-				m = new utility(moveName);
+				if(type[1] == 'j') m = new airUtility(moveName);
+				else m = new utility(moveName);
 				break;
 			case '@':
-				m = new looping(moveName);
+				if(type[1] == 'j') m = new airLooping(moveName);
+				else m = new looping(moveName);
 				break;
 			case 'j':
 				m = new airMove(moveName);
@@ -235,10 +247,12 @@ void character::build(const char* n)
 	neutral = new looping(buffer);
 	head->insert(neutral);
 	
-/*	sprintf(buffer, "%s/NL", name);
+	sprintf(buffer, "%s/NL", name);
 	crouch = new utility(buffer);
-	head->insert(2, neutral);
-*/
+	head->insert(2, crouch);
+	head->insert(3, crouch);
+	head->insert(1, crouch);
+
 	sprintf(buffer, "%s/NJ", name);
 	airNeutral = new airLooping(buffer);
 	airHead->insert(airNeutral);
@@ -249,9 +263,9 @@ void character::build(const char* n)
 	sprintf(buffer, "%s/UT", name);
 	fall = new hitstun(buffer);
 
-/*	sprintf(buffer, "%s/HL", name);
+	sprintf(buffer, "%s/HL", name);
 	crouchReel = new hitstun(buffer);
-*/
+
 	sprintf(buffer, "%s/BH", name);
 	standBlock = new hitstun(buffer);
 	

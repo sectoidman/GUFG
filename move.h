@@ -131,7 +131,7 @@ public:
 class airSpecial : public airMove, public special {
 public:
 	airSpecial() {}
-	airSpecial(char*);
+	airSpecial(char* n) {build(n); init();}
 };
 
 class airUtility : public airMove, public utility {
