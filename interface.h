@@ -29,7 +29,6 @@ public:
 	void checkWin();
 	void dragBG(int);
 	void unitCollision();
-	void resolveHits();
 	
 	player * p[2];
 	SDL_Surface *background, *screen;
