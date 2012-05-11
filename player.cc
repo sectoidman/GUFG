@@ -264,8 +264,9 @@ void player::checkCorners(int floor, int left, int right)
 				if(pick->cMove) pick->cMove->land(pick->cMove);
 				if(!pick->cMove) pick->cMove = pick->neutral;
 			}
-			updateRects();
 			pick->aerial = 0; 
+			updateRects();
+			hOffset = posY - (collision.y);
 			deltaX = 0;
 		}
 		deltaY = 0;
