@@ -44,6 +44,7 @@ move::~move()
 
 void move::build(char * n)
 {
+	cost = 0;
 	ifstream read;
 	int startup, recovery, countFrames = -1;
 	char fname[40];
