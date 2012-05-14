@@ -8,7 +8,7 @@
 void interface::draw()
 {
 	SDL_Surface * back = SDL_DisplayFormatAlpha(background);
-	SDL_Rect bar1, bar2, meter1, meter2, rounds1[numRounds], rounds2[numRounds];
+	SDL_Rect bar1, bar2, rounds1[numRounds], rounds2[numRounds];
 	
 	if(p[0]->pick->health >= 0) bar1.w = p[0]->pick->health; else bar1.w = 1; 
 	if(p[1]->pick->health >= 0) bar2.w = p[1]->pick->health; else bar2.w = 1;
@@ -17,13 +17,7 @@ void interface::draw()
 	bar1.h = 5; bar2.h = 5;
 	bar1.y = 5; bar2.y = 5;
 	
-	if(p[0]->pick->meter >= 0) meter1.w = p[0]->pick->meter; else meter1.w = 1; 
-	if(p[1]->pick->meter >= 0) meter2.w = p[1]->pick->meter; else meter2.w = 1;
 	
-	meter1.x = 100 + (200 - meter1.w); meter2.x = 500;
-	meter1.h = 5; meter2.h = 5;
-	meter1.y = 580; meter2.y = 580;
-
 	for(int i = 0; i < numRounds; i++){
 		rounds1[i].y = 12; rounds1[i].w = 10; rounds1[i].h = 5;
 		rounds2[i].y = 12; rounds2[i].w = 10; rounds2[i].h = 5;
@@ -58,8 +52,10 @@ void interface::draw()
 
 	SDL_FillRect(screen, &bar1, SDL_MapRGB(screen->format, 255, 0, 0));
 	SDL_FillRect(screen, &bar2, SDL_MapRGB(screen->format, 255, 0, 0));
-	SDL_FillRect(screen, &meter1, SDL_MapRGB(screen->format, 0, 255, 0));
-	SDL_FillRect(screen, &meter2, SDL_MapRGB(screen->format, 0, 255, 0));
+	
+	for(int i = 0; i < 2; i++){
+		p[i]->pick->drawMeters(screen, i);
+	}
 	
 	SDL_UpdateRect(screen, 0, 0, 0, 0);
 	SDL_FreeSurface(back);
@@ -78,7 +74,8 @@ void player::spriteInit()
 	if(sprite) spr.y = posY;
 }
 
-SDL_Surface * character::draw(int facing){
+SDL_Surface * character::draw(int facing)
+{
 	SDL_Surface * temp;
 	if(freeze < 0) freeze = 0;
 	temp = cMove->draw(facing, freeze);
@@ -88,6 +85,17 @@ SDL_Surface * character::draw(int facing){
 		cMove = NULL;
 	}
 	return temp;
+}
+
+void character::drawMeters(SDL_Surface *& screen, int ID)
+{	
+	SDL_Rect m;
+	if(meter >= 0) m.w = meter; else m.w = 1; 
+	if(ID == 0) m.x = 100 + (200 - m.w); 
+	else m.x = 500;
+	m.h = 5; m.y = 580;
+	
+	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, 0, 255, 0));
 }
 
 SDL_Surface * move::draw(int facing, bool freeze)
