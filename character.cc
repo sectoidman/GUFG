@@ -43,6 +43,8 @@ character::character()
 	
 	cMove = neutral;
 	bMove = NULL;
+
+	meter = new int[1];
 }
 
 character::~character()
@@ -57,6 +59,7 @@ character::~character()
 	delete crouchBlock;
 	delete standBlock;
 	delete airBlock;
+	delete [] meter;
 }
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
@@ -273,7 +276,7 @@ void character::build(const char* n)
 
 void character::init(){
 	health = 300;
-	meter = 0;
+	meter[0] = 0;
 	rounds = 0;
 	aerial = 0;
 	freeze = 0;

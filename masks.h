@@ -34,9 +34,14 @@ struct effect{
 	bool otherPlayer:1;
 	bool interface:1;
 };
-
-struct pf{
+	
+struct gpf{
 	bool crouch:1;
+	bool dropVectors:1;
+	bool dropDelta:1;
+};
+
+struct hpf{
 	bool launch:1;
 	bool elasticX:1;
 	bool elasticY:1;
@@ -59,5 +64,10 @@ typedef union{
 
 typedef union{
 	unsigned int i;
-	pf b;
+	hpf b;
 } properties;
+
+typedef union{
+	unsigned int i;
+	gpf b;
+} status;

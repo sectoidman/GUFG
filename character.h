@@ -41,7 +41,7 @@ public:
 
 	int freeze;
 	int health;
-	int meter;
+	int * meter;
 	int rounds;
 	SDL_Rect * volition;
 	bool aerial; 		//Flags whether the character is considered "in the air"

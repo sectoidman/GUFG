@@ -64,7 +64,8 @@ public:
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
 	char * name;
-	int cost;
+	int * cost;
+	int * gain;
 
 	//Tolerance refers to the individual size of the input buffer allowed for this move.
 	//Default is 30 (The entire input buffer)

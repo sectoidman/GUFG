@@ -5,13 +5,16 @@ red::red()
 	delete head;
 	delete airHead;
 	delete neutral;
-//	delete crouch;
+	delete crouch;
 	delete standBlock;
 	delete crouchBlock;
 	delete airBlock;
 	delete reel;
 	delete fall;
-//	delete crouchReel;
+	delete crouchReel;
+	delete [] meter;
+	
+	meter = new int[2];
 	
 	airHead = new moveTrie;
 	head = new moveTrie;
@@ -26,18 +29,18 @@ void red::touch(void * target)
 }
 
 void red::tick(){
-	if(cancelMeter < 528) cancelMeter++;
+	if(meter[1] < 528) meter[1]++;
 }
 
 void red::drawMeters(SDL_Surface *& screen, int ID)
 {
 	character::drawMeters(screen, ID);
 	SDL_Rect c1, c2;
-	if(cancelMeter >= 0){
-		c1.w = cancelMeter/2; 
+	if(meter[1] >= 0){
+		c1.w = meter[1]/2; 
 	} else c1.w = 1; 
-	if(cancelMeter > 264){
-		c1.w = 132; c2.w = (cancelMeter - 264)/2;
+	if(meter[1] > 264){
+		c1.w = 132; c2.w = (meter[1] - 264)/2;
 	} else c2.w = 0;
 	if(ID == 0){
 		c1.x = 134; 
@@ -57,5 +60,5 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 void red::init()
 {
 	character::init();
-	cancelMeter = 528;
+	meter[1] = 528;
 }
