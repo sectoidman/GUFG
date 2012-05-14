@@ -5,13 +5,13 @@ red::red()
 	delete head;
 	delete airHead;
 	delete neutral;
-	delete crouch;
+//	delete crouch;
 	delete standBlock;
 	delete crouchBlock;
 	delete airBlock;
 	delete reel;
 	delete fall;
-	delete crouchReel;
+//	delete crouchReel;
 	delete [] meter;
 	
 	meter = new int[2];
