@@ -1,5 +1,5 @@
 Name: Crouch animation
-Buffer: 0 : 0
+Buffer: 2 : 0
 Hits: 0
 Frames: 1 : 1
 Check: 1
@@ -7,6 +7,6 @@ State: 511
 Blocks: 0
 Properties: 
 #0 
-$C	5 40 55 110
-$R	5 40 55 110
+$C	5 25 60 125
+$R	5 25 60 125
 $D	0 0 0 0

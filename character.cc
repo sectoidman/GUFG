@@ -245,7 +245,7 @@ void character::build(const char* n)
 
 	sprintf(buffer, "%s/NS", name);
 	neutral = new looping(buffer);
-	head->insert(neutral);
+	head->insert(5, neutral);
 	
 	sprintf(buffer, "%s/NL", name);
 	crouch = new utility(buffer);
