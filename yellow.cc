@@ -17,3 +17,4 @@ yellow::yellow(){
 	
 	cMove = neutral;
 }
+

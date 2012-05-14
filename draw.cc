@@ -91,8 +91,8 @@ void character::drawMeters(SDL_Surface *& screen, int ID)
 {	
 	SDL_Rect m;
 	if(meter >= 0) m.w = meter; else m.w = 1; 
-	if(ID == 0) m.x = 100 + (200 - m.w); 
-	else m.x = 500;
+	if(ID == 0) m.x = 100; 
+	else m.x = 500 + (200 - m.w);
 	m.h = 5; m.y = 580;
 	
 	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, 0, 255, 0));

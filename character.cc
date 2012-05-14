@@ -40,14 +40,9 @@ character::character()
 	head->insert(8, new utility("White/JN"));
 	head->insert(7, new utility("White/JQ"));
 	head->insert(9, new utility("White/JF"));
-
+	
 	cMove = neutral;
 	bMove = NULL;
-	health = 300;
-	meter = 0;
-	rounds = 0;
-	aerial = 0;
-	freeze = 0;
 }
 
 character::~character()
@@ -274,4 +269,12 @@ void character::build(const char* n)
 	
 	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);	
+}
+
+void character::init(){
+	health = 300;
+	meter = 0;
+	rounds = 0;
+	aerial = 0;
+	freeze = 0;
 }

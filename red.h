@@ -3,5 +3,8 @@ class red : public character{
 public:
 	red();
 	void touch(void*);
-	int cancelmeter;
+	int cancelMeter;
+	void drawMeters(SDL_Surface *&, int);
+	void tick();
+	void init();
 };

@@ -64,8 +64,7 @@ void interface::roundInit()
 	bg.y = 300;
 	
 	for (int i = 0; i < 2; i++) {
-		p[i]->pick->health = 300;
-		p[i]->pick->meter = 0;
+		p[i]->pick->init();
 		p[i]->deltaX = 0;
 		p[i]->deltaY = 0;
 		p[i]->sprite = NULL;
@@ -206,6 +205,7 @@ void interface::resolve()
 					v.w = 1; v.h = 0;
 					p[1]->momentumComplexity = 0;
 					p[1]->deltaX = 0; p[1]->deltaY = 0;
+					if(p[0]->rCorner || p[0]->lCorner) v.x += -combo1*2;
 					p[1]->addVector(v);
 					if(!p[0]->pick->aerial){
 						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
@@ -232,6 +232,7 @@ void interface::resolve()
 					v.w = 1; v.h = 0;
 					p[0]->momentumComplexity = 0;
 					p[0]->deltaX = 0; p[0]->deltaY = 0;
+					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo2*2;
 					p[0]->addVector(v);
 					if(!p[1]->pick->aerial){
 						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
@@ -260,6 +261,8 @@ void interface::resolve()
 	p[1]->spriteInit();
 	checkWin();
 	runTimer();
+	for(int i = 0; i < 2; i++)
+		p[i]->pick->tick();
 }
 
 
