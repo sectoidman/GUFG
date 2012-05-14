@@ -19,8 +19,8 @@ public:
 	//Okay so, hopefully the idea here is that we can init()
 	//the move we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
-	void execute(move *);
-	virtual bool check(bool[], bool[], int, int); //Check to see if the move is possible right now.
+	virtual void execute(move *, int *&);
+	virtual bool check(bool[], bool[], int, int, int[]); //Check to see if the move is possible right now.
 	virtual void blockSuccess(int);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
@@ -64,7 +64,7 @@ public:
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
 	char * name;
-	int * cost;
+	int cost;
 	int * gain;
 
 	//Tolerance refers to the individual size of the input buffer allowed for this move.
@@ -101,7 +101,7 @@ class special : virtual public move {
 public:
 	special() {}
 	special(char*);
-	bool check(bool[], bool[], int, int);
+	bool check(bool[], bool[], int, int, int*);
 	int chip;
 };
 
@@ -109,7 +109,7 @@ class utility : virtual public move {
 public:
 	utility() {}
 	utility(char *);
-	bool check(bool[], bool[], int, int);
+	bool check(bool[], bool[], int, int, int*);
 };
 
 class looping : virtual public utility {

@@ -204,7 +204,7 @@ void move::build(char * n)
 	}
 }
 
-bool move::check(bool pos[5], bool neg[5], int t, int f)
+bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[])
 {
 	//if(meter < cost) return 0;
 	for(int i = 0; i < 5; i++){
@@ -215,6 +215,7 @@ bool move::check(bool pos[5], bool neg[5], int t, int f)
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
+	if(cost > resource[0]) return 0;
 	return 1;
 }
 
@@ -283,7 +284,7 @@ void move::blockSuccess(int st)
 	return;
 }
 
-void move::execute(move * last)
+void move::execute(move * last, int *& resource)
 {
 	last->init();
 }

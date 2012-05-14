@@ -145,19 +145,19 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 		else cMove = neutral;
 	}
 	
-	if(aerial) t = airHead->moveHook(inputBuffer, 0, -1, down, up, cMove);
-	else t = head->moveHook(inputBuffer, 0, -1, down, up, cMove);
+	if(aerial) t = airHead->moveHook(inputBuffer, 0, -1, meter, down, up, cMove);
+	else t = head->moveHook(inputBuffer, 0, -1, meter, down, up, cMove);
 
 	if(t != NULL){
 		if(freeze > 0){
 			if(bMove == NULL || (*t) > bMove) bMove = t;
 		} 
 		else {
-			t->execute(cMove);
+			t->execute(cMove, meter);
 			cMove = t;
 		}
 	} else if (bMove != NULL && freeze <= 0) {
-		bMove->execute(cMove);
+		bMove->execute(cMove, meter);
 		cMove = bMove;
 		bMove = NULL;
 	}

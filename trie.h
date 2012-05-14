@@ -22,7 +22,7 @@ public:
 	moveTrie(move*);
 	moveTrie(move*, char*);
 	~moveTrie();
-	move * moveHook(int[40], int, int, bool[5], bool[5], move *);
+	move * moveHook(int[40], int, int, int*, bool[5], bool[5], move *);
 	moveTrie * child[10];
 	move ** fish;       //Because it's what a hook catches! Okay, this name probably needs to change.
 	moveTrie * insert(int);
