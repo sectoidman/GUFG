@@ -1,4 +1,4 @@
-/*Some SDL-related utility functions written by Ashley Fisher, c. 2012, for project "srpg".
+/*Some SDL-related utility functions written by Ashley Fisher, c. 2012, for project "picoclash".
  *Used in project "GUFG" with her permission
  */
 

@@ -200,6 +200,7 @@ void character::build(const char* n)
 			m = createMove(type, moveName);
 			token = strtok(buffer2, " \t-%@$\n");
 			while (token){
+				token = NULL;
 				token = strtok(NULL, " \t=-@%$\n");
 				if(token) {
 					switch (token[0]){
