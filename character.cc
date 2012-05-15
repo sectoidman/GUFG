@@ -195,12 +195,12 @@ void character::build(const char* n)
 			commentFlag = 1;
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
-			token = strtok(buffer, " \t-@%\n");
+			token = strtok(buffer, " \t-@%$\n");
 			sprintf(moveName, "%s/%s", name, token);
 			m = createMove(type, moveName);
 			token = strtok(buffer2, " \t-%@$\n");
 			while (token){
-				token = strtok(NULL, " \t$=-@%\n");
+				token = strtok(NULL, " \t=-@%$\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -210,11 +210,16 @@ void character::build(const char* n)
 						t = airHead;
 						break;
 					default:
+						printf("??\n");
 						break;
 					}
 					for(int i = strlen(token)-1; i > 0; i--){
 						component = token[i];
-						q = atoi(&component);
+						q = atoi(&component);// % 10;
+						if(q > 10) { 
+//							printf("%s : %s\n", token, &component);
+							q = q % 10;
+						}
 						t = t->insert(q);
 					}
 					t->insert(m);

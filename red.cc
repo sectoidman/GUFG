@@ -34,6 +34,7 @@ void red::tick(){
 
 void red::drawMeters(SDL_Surface *& screen, int ID)
 {
+	int color1, color2;
 	character::drawMeters(screen, ID);
 	SDL_Rect c1, c2;
 	if(meter[1] >= 0){
@@ -52,9 +53,12 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 	}
 	c1.h = 5; c2.h = 5;
 	c1.y = 587; c2.y = 587;
-	
-	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, 255));
-	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, 255, 0, 255)); 
+	if(meter[1] >= 264) color1 = 255;
+	else color1 = 127;
+	if(meter[1] >= 528) color2 = 255;
+	else color2 = 127;
+	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
+	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
 void red::init()
