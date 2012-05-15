@@ -175,8 +175,8 @@ void character::build(const char* n)
 	char type[2];
 	moveTrie * t = NULL;
 	move * m = NULL;
-	char component;
 	bool commentFlag;
+	char component[2];
 	char * token;
 	int q;
 	ifstream read; 
@@ -198,7 +198,7 @@ void character::build(const char* n)
 			token = strtok(buffer, " \t-@%$\n");
 			sprintf(moveName, "%s/%s", name, token);
 			m = createMove(type, moveName);
-			token = strtok(buffer2, " \t-%@$\n");
+			strtok(buffer2, " \t-%@$\n");
 			while (token){
 				token = NULL;
 				token = strtok(NULL, " \t=-@%$\n");
@@ -215,10 +215,9 @@ void character::build(const char* n)
 						break;
 					}
 					for(int i = strlen(token)-1; i > 0; i--){
-						component = token[i];
-						q = atoi(&component);// % 10;
+						sprintf(component, "%c\0", token[i]);
+						q = atoi(component);// % 10;
 						if(q > 10) { 
-//							printf("%s : %s\n", token, &component);
 							q = q % 10;
 						}
 						t = t->insert(q);
