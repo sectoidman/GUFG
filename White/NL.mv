@@ -1,10 +1,10 @@
-Name: BL
+Name: NL
 Buffer: 0 : 0
 Hits: 0
 Frames: 1 : 1
-Check: 513
-State: 512
-Blocks: 1
+Check: 1
+State: 511
+Blocks: 0
 Properties: 
 #0 
 $C	5 60 70 90

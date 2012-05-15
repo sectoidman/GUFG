@@ -99,7 +99,7 @@ public:
 
 class special : virtual public move {
 public:
-	special() {}
+	special() {} 
 	special(char*);
 	bool check(bool[], bool[], int, int, int*);
 	int chip;
@@ -175,4 +175,13 @@ class airSummon : public airMove, public summon {
 public:
 	airSummon() {}
 	airSummon(char*);
+};
+
+class redCancel : public special{
+public:
+	redCancel();
+	~redCancel();
+	redCancel(char* n);
+	bool check(bool[], bool[], int, int, int*);
+	void execute(move*, int*&);
 };

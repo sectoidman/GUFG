@@ -5,13 +5,13 @@ red::red()
 	delete head;
 	delete airHead;
 	delete neutral;
-//	delete crouch;
+	delete crouch;
 	delete standBlock;
 	delete crouchBlock;
 	delete airBlock;
 	delete reel;
 	delete fall;
-//	delete crouchReel;
+	delete crouchReel;
 	delete [] meter;
 	
 	meter = new int[2];
@@ -62,3 +62,61 @@ void red::init()
 	character::init();
 	meter[1] = 528;
 }
+
+move * red::createMove(char * type, char * moveName)
+{
+	move * m;
+	switch(type[0]){
+	case '%':
+		if(type[1] == 'j') m = new airSpecial(moveName);
+		else m = new special(moveName);
+		break;
+	case '-':
+		if(type[1] == 'j') m = new airUtility(moveName);
+		else m = new utility(moveName);
+		break;
+	case '@':
+		if(type[1] == 'j') m = new airLooping(moveName);
+		else m = new looping(moveName);
+		break;
+	case '$':
+		m = new redCancel(moveName);
+		break;
+	case 'j':
+		m = new airMove(moveName);
+		break;	
+	default:
+		m = new move(moveName);
+		break;	
+	}
+	return m;
+}
+
+redCancel::redCancel(char* n) 
+{ 
+	build(n); 
+	init();
+}
+
+bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
+{
+	for(int i = 0; i < 5; i++){
+		if(button[i] == 1){
+			if(!pos[i] && !neg[i]) return 0;
+		}
+	}
+	if(t > tolerance) return 0;
+	if(f > activation) return 0;
+	if(resource[0] < cost) return 0;
+	if(resource[1] < 264) return 0;
+	return 1;
+}
+
+void redCancel::execute(move * last, int *& resource)
+{
+	last->init();
+	resource[1] -= 264;
+}
+
+redCancel::~redCancel() {}
+

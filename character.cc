@@ -25,6 +25,7 @@ character::character()
 	
 	head->insert(new move("White/B"));
 	neutral = new utility("White/NS");
+	crouch = new looping("White/NL");
 	head->insert(neutral);
 
 	head->insert(4, new utility("White/WQ"));
@@ -32,6 +33,7 @@ character::character()
 
 	reel = new hitstun("White/HS");
 	fall = new hitstun("White/UT");
+	crouchReel = new hitstun("White/HL");
 
 	airBlock = new hitstun("White/BA");
 	standBlock = new hitstun("White/BH");
@@ -195,29 +197,10 @@ void character::build(const char* n)
 			strcpy(buffer2, buffer);
 			token = strtok(buffer, " \t-@%\n");
 			sprintf(moveName, "%s/%s", name, token);
-			switch(type[0]){
-			case '%':
-				if(type[1] == 'j') m = new airSpecial(moveName);
-				else m = new special(moveName);
-				break;
-			case '-':
-				if(type[1] == 'j') m = new airUtility(moveName);
-				else m = new utility(moveName);
-				break;
-			case '@':
-				if(type[1] == 'j') m = new airLooping(moveName);
-				else m = new looping(moveName);
-				break;
-			case 'j':
-				m = new airMove(moveName);
-				break;	
-			default:
-				m = new move(moveName);
-				break;	
-			}
-			token = strtok(buffer2, " \t-%@\n");
+			m = createMove(type, moveName);
+			token = strtok(buffer2, " \t-%@$\n");
 			while (token){
-				token = strtok(NULL, " \t=-@%\n");
+				token = strtok(NULL, " \t$=-@%\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -280,4 +263,30 @@ void character::init(){
 	rounds = 0;
 	aerial = 0;
 	freeze = 0;
+}
+
+move * character::createMove(char * type, char * moveName)
+{
+	move * m;
+	switch(type[0]){
+	case '%':
+		if(type[1] == 'j') m = new airSpecial(moveName);
+		else m = new special(moveName);
+		break;
+	case '-':
+		if(type[1] == 'j') m = new airUtility(moveName);
+		else m = new utility(moveName);
+		break;
+	case '@':
+		if(type[1] == 'j') m = new airLooping(moveName);
+		else m = new looping(moveName);
+		break;
+	case 'j':
+		m = new airMove(moveName);
+		break;	
+	default:
+		m = new move(moveName);
+		break;	
+	}
+	return m;
 }
