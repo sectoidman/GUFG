@@ -40,6 +40,7 @@ move::~move()
 	if(stun) delete [] stun;
 	if(totalStartup) delete [] totalStartup;
 	if(push) delete [] push;
+	if(gain) delete [] gain;
 }
 
 void move::build(char * n)
@@ -64,6 +65,7 @@ void move::build(char * n)
 	read >> hits;
 
 	state = new cancelField[hits+1];
+	gain = new int[hits+1];
 
 	while(read.get() != ':'); read.ignore();
 	read >> frames;
@@ -120,12 +122,17 @@ void move::build(char * n)
 		while(read.get() != ':'); read.ignore();
 		read >> lift[i];
 	}
+	
+	for(int i = 0; i < hits+1; i++){
+		while(read.get() != ':'); read.ignore();
+		read >>	gain[i];
+	}
 
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> blockMask[i].i;
 	}
-
+	
 	while(read.get() != ':'); read.ignore();
 	read >> blockState.i;
 
@@ -262,8 +269,12 @@ bool move::operator>(move * x)
 	return 0;
 }
 
-void move::step()
+void move::step(int *& resource)
 {
+	if(currentFrame == 0){
+		if(resource[0] + gain[0] < 200) resource[0] += gain[0];
+		else resource[0] = 200;
+	}
 	currentFrame++;
 	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
 }
@@ -275,9 +286,11 @@ void move::init()
 	currentHit = 0;
 }
 
-void move::connect()
+void move::connect(int *& resource)
 {
 	cFlag++;
+	if(resource[0] + gain[cFlag] < 200) resource[0] += gain[cFlag];
+	else resource[0] = 200; 
 }
 
 void move::blockSuccess(int st)
@@ -287,6 +300,7 @@ void move::blockSuccess(int st)
 
 void move::execute(move * last, int *& resource)
 {
+	resource[0] -= cost;
 	last->init();
 }
 

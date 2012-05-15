@@ -131,7 +131,7 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 		
 		else pushVector.x = -(attack->push[attack->currentHit]);
 		
-		attack->connect(); //Tell the attack it's connected.
+		attack->connect(attacker->meter); //Tell the attack it's connected.
 	}
 	freeze = 10 + attack->stun[attack->currentHit] / 10; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
  	return ct;

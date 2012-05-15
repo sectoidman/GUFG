@@ -118,8 +118,8 @@ bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
 
 void redCancel::execute(move * last, int *& resource)
 {
-	last->init();
 	resource[1] -= 264;
+	move::execute(last, resource);
 }
 
 redCancel::~redCancel() {}

@@ -24,9 +24,8 @@ looping::looping(char * n)
 	init();
 }
 
-void looping::step()
+void looping::step(int *& resource)
 {
-	currentFrame++;
-	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
+	move::step(resource);
 	if(currentFrame >= frames) init();
 }

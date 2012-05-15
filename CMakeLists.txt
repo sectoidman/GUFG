@@ -28,7 +28,7 @@ set (SOURCES 	keytest.cc
 		aerial.cc
 		utility.cc)
 
-set (CMAKE_CXX_FLAGS "-O2 -Wno-write-strings -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy")
+set (CMAKE_CXX_FLAGS "-O2 -Wno-write-strings -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy -Wno-format-contains-nul")
 
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)

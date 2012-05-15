@@ -78,7 +78,7 @@ SDL_Surface * character::draw(int facing)
 {
 	SDL_Surface * temp;
 	if(freeze < 0) freeze = 0;
-	temp = cMove->draw(facing, freeze);
+	temp = cMove->draw(facing, freeze, meter);
 	if(freeze > 0) freeze--;
 	if(cMove->currentFrame == cMove->frames){
 		cMove->init();
@@ -98,12 +98,12 @@ void character::drawMeters(SDL_Surface *& screen, int ID)
 	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, 0, 255, 0));
 }
 
-SDL_Surface * move::draw(int facing, bool freeze)
+SDL_Surface * move::draw(int facing, bool freeze, int *& meter)
 {
 	SDL_Surface * temp;
 	if(facing == -1) temp = fSprite[currentFrame];
 	else temp = sprite[currentFrame];
 	if(freeze == 0) 
-		step();
+		step(meter);
 	return temp;
 }

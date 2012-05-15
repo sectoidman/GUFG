@@ -8,6 +8,7 @@ Damage: 31
 Stun: 16
 Push: 24
 Lift: 8
+Gain: 0 : 5
 Blockable: 3 
 Blocks: 0
 Properties:  

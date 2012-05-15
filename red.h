@@ -9,3 +9,11 @@ public:
 	void init();
 };
 
+class redCancel : public special{
+public:
+	redCancel();
+	~redCancel();
+	redCancel(char* n);
+	bool check(bool[], bool[], int, int, int*);
+	void execute(move *, int *&);
+};

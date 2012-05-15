@@ -27,10 +27,10 @@ public:
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
 	bool operator>(move*); //Cancel allowed check. Essentially: is move Lvalue allowed given the current state of move Rvalue?
 	void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
-	virtual void step();
+	virtual void step(int *&);
 	virtual void land(move *&) {}
-	void connect();
-	SDL_Surface * draw(int, bool);
+	virtual void connect(int *&);
+	SDL_Surface * draw(int, bool, int *&);
 
 	bool launch;         //Whether or not the move launches on hit
 
@@ -91,7 +91,7 @@ public:
 	hitstun() {}
 	void init(int);
 	int counter;
-	void step();
+	void step(int *&);
 	void blockSuccess(int);
 	hitstun(char *, int);
 	hitstun(char *);
@@ -116,7 +116,7 @@ class looping : virtual public utility {
 public:
 	looping() {}
 	looping(char*);
-	void step();
+	void step(int *&);
 };
 
 class airMove : virtual public move {
@@ -177,11 +177,3 @@ public:
 	airSummon(char*);
 };
 
-class redCancel : public special{
-public:
-	redCancel();
-	~redCancel();
-	redCancel(char* n);
-	bool check(bool[], bool[], int, int, int*);
-	void execute(move*, int*&);
-};

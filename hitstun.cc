@@ -1,11 +1,11 @@
 #include "move.h"
 
 void hitstun::init(int n)
-{
+{	
 	counter = n;
 }
 
-void hitstun::step()
+void hitstun::step(int *& resource)
 {
 	if(counter <= 0) currentFrame++;
 	else counter--;
