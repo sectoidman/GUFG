@@ -125,8 +125,9 @@ public:
 	airMove(char*);
 	void build (char *);
 	void land(move *&);
-	void setLR(move *);
 	move * landing;
+private:
+	void setLR(move *);
 };
 
 class airSpecial : public airMove, public special {
@@ -177,3 +178,11 @@ public:
 	airSummon(char*);
 };
 
+class super : virtual public special {
+public:
+	super() {}
+	super(char*);
+	int superFreeze;
+private:
+	void defineSuperFreeze();
+};
