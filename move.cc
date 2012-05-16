@@ -136,8 +136,20 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read >> blockState.i;
 
-	//Properties will be a bit more complicated, I'll add this later.
+	while(read.get() != ':'); read.ignore();
+	read.getline(buffer, 100);
 	launch = 0;
+	for(unsigned int i = 0; i < strlen(buffer); i++){
+		switch(buffer[i]){
+		case '^': 
+			launch = 1;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	//Properties will be a bit more complicated, I'll add this later.
 	
 	collision = new SDL_Rect[frames];
 	hitbox = new SDL_Rect*[frames];
