@@ -52,7 +52,7 @@ public:
 	//Hooks for touching other things in more upper layers, like interface or player
 
 	virtual void touch(void*) {}
-		
+	
 	bool xLock, yLock;
 	int frames;	 //Number of frames.
 	int hits;
