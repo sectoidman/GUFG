@@ -5,6 +5,7 @@
  */
 
 #include "interface.h"
+#include <math.h>
 void interface::draw()
 {
 	SDL_Surface * back = SDL_DisplayFormatAlpha(background);
@@ -64,6 +65,12 @@ void interface::draw()
 
 void player::spriteInit()
 {
+	int realPosY = collision.y;
+	for(int i = 0; i < hitComplexity; i++)
+		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
+	for(int i = 0; i < regComplexity; i++)
+		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
+	
 	/*Doing moves*/
 	sprite = pick->draw(facing);
 	if(facing == -1) {
@@ -71,7 +78,7 @@ void player::spriteInit()
 	} else {
 		if(sprite) spr.x = posX;
 	}
-	if(sprite) spr.y = posY;
+	if(sprite) spr.y = realPosY;
 }
 
 SDL_Surface * character::draw(int facing)
