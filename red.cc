@@ -19,8 +19,8 @@ red::red()
 	airHead = new moveTrie;
 	head = new moveTrie;
 	build(name);
-	
-	cMove = neutral;
+
+	init();	
 }
 
 void red::touch(void * target)

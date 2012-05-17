@@ -268,6 +268,8 @@ void character::init(){
 	rounds = 0;
 	aerial = 0;
 	freeze = 0;
+	jumpOptions = 2;
+	cMove = neutral;
 }
 
 move * character::createMove(char * type, char * moveName)

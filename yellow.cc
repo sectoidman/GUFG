@@ -15,6 +15,10 @@ yellow::yellow(){
 	airHead = new moveTrie;
 	build(name);
 	
-	cMove = neutral;
 }
 
+void yellow::init()
+{
+	character::init();
+	jumpOptions = 3;
+}

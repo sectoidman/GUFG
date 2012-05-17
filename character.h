@@ -44,6 +44,7 @@ public:
 	int health;
 	int * meter;
 	int rounds;
+	int jumpOptions;
 	SDL_Rect * volition;
 	bool aerial; 		//Flags whether the character is considered "in the air"
 private:
