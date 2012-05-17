@@ -335,6 +335,11 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 
 void player::pullVolition()
 {
+	if(pick->cMove->stop){
+		deltaX = 0; deltaY = 0;
+		if(pick->cMove->currentFrame == 0 && pick->cMove->stop == 2)
+			momentumComplexity = 0;
+	}
 	SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
 	for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
 		if(temp[i].x || temp[i].y){

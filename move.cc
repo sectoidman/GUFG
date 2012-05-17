@@ -139,10 +139,17 @@ void move::build(char * n)
 	while(read.get() != ':'); read.ignore();
 	read.getline(buffer, 100);
 	launch = 0;
+	stop = 0;
 	for(unsigned int i = 0; i < strlen(buffer); i++){
 		switch(buffer[i]){
 		case '^': 
 			launch = 1;
+			break;
+		case 's':
+			stop = 1;
+			break;
+		case 'S': 
+			stop = 2;
 			break;
 		default:
 			break;
