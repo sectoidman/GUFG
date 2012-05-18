@@ -183,9 +183,14 @@ void player::updateRects()
 
 void player::combineDelta()
 {
+	int top = 0;
+	for(int i = 0; i < momentumComplexity; i++)
+		if(momentum[i].h > top) top = momentum[i].h;
 	for(int i = 0; i < momentumComplexity; i++){
-		deltaX += momentum[i].x;
-		deltaY += momentum[i].y;
+		if(momentum[i].h >= top){
+			deltaX += momentum[i].x;
+			deltaY += momentum[i].y;
+		}
 		if(momentum[i].w <= 0) {
 			removeVector(i);
 			i--;
