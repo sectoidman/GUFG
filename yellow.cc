@@ -20,5 +20,11 @@ yellow::yellow(){
 void yellow::init()
 {
 	character::init();
-	jumpOptions = 3;
+	meter[2] = 2;
+}
+
+void yellow::tick()
+{
+	character::tick();
+	if(!aerial) meter[2] = 2;
 }
