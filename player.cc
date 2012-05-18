@@ -345,6 +345,7 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 
 void player::pullVolition()
 {
+	int top;
 	if(pick->cMove->stop){
 		deltaX = 0; deltaY = 0;
 		if(pick->cMove->currentFrame == 0 && pick->cMove->stop == 2)
