@@ -46,7 +46,7 @@ character::character()
 	cMove = neutral;
 	bMove = NULL;
 
-	meter = new int[1];
+	meter = new int[3];
 }
 
 character::~character()
