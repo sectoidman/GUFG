@@ -11,7 +11,7 @@ Lift: 6
 Gain: 0 : 2
 Blockable: 3 
 Blocks: 0
-Properties: 
+Properties: c
 #0 
 $C	5 50 55 100
 $R	5 50 65 100

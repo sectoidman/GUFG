@@ -183,14 +183,10 @@ void player::updateRects()
 
 void player::combineDelta()
 {
-	int top = 0;
-	for(int i = 0; i < momentumComplexity; i++)
-		if(momentum[i].h > top) top = momentum[i].h;
 	for(int i = 0; i < momentumComplexity; i++){
-		if(momentum[i].h >= top){
-			deltaX += momentum[i].x;
-			deltaY += momentum[i].y;
-		}
+		deltaX += momentum[i].x;
+		deltaY += momentum[i].y;
+
 		if(momentum[i].w <= 0) {
 			removeVector(i);
 			i--;
@@ -345,16 +341,22 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 
 void player::pullVolition()
 {
-	int top;
+	int top = 0;
+	for(int i = 0; i < momentumComplexity; i++)
+		if(momentum[i].h > top) top = momentum[i].h;
 	if(pick->cMove->stop){
-		deltaX = 0; deltaY = 0;
-		if(pick->cMove->currentFrame == 0 && pick->cMove->stop == 2)
-			momentumComplexity = 0;
+		if(pick->cMove->currentFrame == 0){ 
+			deltaX = 0; deltaY = 0;
+			if(pick->cMove->stop == 2)
+				momentumComplexity = 0;
+		}
 	}
 	SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
 	for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
-		if(temp[i].x || temp[i].y){
-			addVector(temp[i]);
+		if(temp[i].x || temp[i].y || temp[i].h){
+			if(temp[i].h >= top || top == 0){
+				addVector(temp[i]);
+			}
 		}
 	}
 }

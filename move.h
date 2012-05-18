@@ -34,6 +34,7 @@ public:
 
 	bool launch;         //Whether or not the move launches on hit
 	int stop;
+	bool crouch; 
 
 	//Properties of a hit. These will only exist for moves that hit.
 	int *damage;          //How much damage the move does
