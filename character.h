@@ -23,7 +23,7 @@ public:
 	virtual int takeHit(character *, SDL_Rect&, int);	//Handle taking hits.
 	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
 	virtual void init();
-	virtual void tick() {}
+	virtual void tick();
 	virtual move * createMove(char*, char*);
 	//BRB prepping my hooks
 

@@ -265,10 +265,11 @@ void character::build(const char* n)
 void character::init(){
 	health = 300;
 	meter[0] = 0;
+	meter[1] = 1;
+	meter[2] = 1;
 	rounds = 0;
 	aerial = 0;
 	freeze = 0;
-	jumpOptions = 2;
 	cMove = neutral;
 }
 
@@ -296,4 +297,12 @@ move * character::createMove(char * type, char * moveName)
 		break;	
 	}
 	return m;
+}
+
+void character::tick()
+{
+	if(!aerial){
+		meter[1] = 1;
+		meter[2] = 1;
+	}
 }

@@ -110,7 +110,7 @@ class utility : virtual public move {
 public:
 	utility() {}
 	utility(char *);
-	bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int*);
 };
 
 class looping : virtual public utility {
@@ -141,6 +141,8 @@ class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
 	airUtility(char*);
+	bool check(bool[], bool[], int, int, int*);
+	virtual void execute(move *, int *&);	
 };
 
 class airLooping : public airMove, public looping {

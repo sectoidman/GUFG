@@ -29,6 +29,7 @@ void red::touch(void * target)
 }
 
 void red::tick(){
+	character::tick();
 	if(meter[3] < 528) meter[3]++;
 	if(meter[4] > 0) meter[4]--;
 }
@@ -120,6 +121,8 @@ bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
 
 void redCancel::execute(move * last, int *& resource)
 {
+	resource[1] = 1;
+	resource[2] = 1;
 	resource[3] -= 264;
 	resource[4] = 10;
 	move::execute(last, resource);
