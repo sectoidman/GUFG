@@ -112,7 +112,7 @@ bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
 	if(resource[0] < cost) return 0;
-	if(resource[1] < 264) return 0;
+	if(resource[1] < 274) return 0;
 	return 1;
 }
 

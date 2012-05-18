@@ -488,7 +488,9 @@ void interface::unitCollision()
 	int rROffset = right->posX - (right->collision.x + right->collision.w);
 	int lLOffset = left->posX - left->collision.x;
 	int lROffset = left->posX - (left->collision.x + left->collision.w);
+	int dOffset = (left->deltaX - right->deltaX) % 2;
 	int middle = (right->collision.x + left->collision.x + left->collision.w)/2;
+	if(abs(left->deltaX) > abs(right->deltaX)) middle += dOffset;
 
 	if(left->lCorner) right->posX = left->collision.x + left->collision.w + rLOffset;
 	else if(right->rCorner) left->posX = right->collision.x + lROffset;
