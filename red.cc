@@ -14,7 +14,7 @@ red::red()
 	delete crouchReel;
 	delete [] meter;
 	
-	meter = new int[2];
+	meter = new int[5];
 	
 	airHead = new moveTrie;
 	head = new moveTrie;
@@ -29,7 +29,8 @@ void red::touch(void * target)
 }
 
 void red::tick(){
-	if(meter[1] < 528) meter[1]++;
+	if(meter[3] < 528) meter[3]++;
+	if(meter[4] > 0) meter[4]--;
 }
 
 void red::drawMeters(SDL_Surface *& screen, int ID)
@@ -37,11 +38,11 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 	int color1, color2;
 	character::drawMeters(screen, ID);
 	SDL_Rect c1, c2;
-	if(meter[1] >= 0){
-		c1.w = meter[1]/2; 
+	if(meter[3] >= 0){
+		c1.w = meter[3]/2; 
 	} else c1.w = 1; 
-	if(meter[1] > 264){
-		c1.w = 132; c2.w = (meter[1] - 264)/2;
+	if(meter[3] > 264){
+		c1.w = 132; c2.w = (meter[3] - 264)/2;
 	} else c2.w = 0;
 	if(ID == 0){
 		c1.x = 134; 
@@ -53,9 +54,9 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 	}
 	c1.h = 5; c2.h = 5;
 	c1.y = 587; c2.y = 587;
-	if(meter[1] >= 264) color1 = 255;
+	if(meter[3] >= 264 && meter[4] < 1) color1 = 255;
 	else color1 = 127;
-	if(meter[1] >= 528) color2 = 255;
+	if(meter[3] >= 528 && meter[4] < 1) color2 = 255;
 	else color2 = 127;
 	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
 	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
@@ -64,7 +65,8 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 void red::init()
 {
 	character::init();
-	meter[1] = 528;
+	meter[3] = 528;
+	meter[4] = 0;
 }
 
 move * red::createMove(char * type, char * moveName)
@@ -112,13 +114,14 @@ bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
 	if(resource[0] < cost) return 0;
-	if(resource[1] < 274) return 0;
+	if(resource[3] < 264 || resource[4] > 0) return 0;
 	return 1;
 }
 
 void redCancel::execute(move * last, int *& resource)
 {
-	resource[1] -= 264;
+	resource[3] -= 264;
+	resource[4] = 10;
 	move::execute(last, resource);
 }
 

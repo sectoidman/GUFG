@@ -154,11 +154,6 @@ void interface::resolve()
 		p[1]->enforceGravity(grav, floor);
 	}
 
-	int m[2];
-	for(int i = 0; i < 2; i++){
-		if(p[i]->facing == -1) m[i] = p[i]->collision.x;
-		else m[i] = p[i]->collision.x + p[i]->collision.w;
-	}
 	if(p[0]->pick->cMove->state[p[0]->pick->cMove->cFlag].i & 1) p[0]->checkFacing(p[1]);
 	if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1) p[1]->checkFacing(p[0]);
 //*
