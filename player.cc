@@ -293,18 +293,23 @@ void player::checkCorners(int floor, int left, int right)
 	updateRects(); //Update rectangles or the next collision check will be wrong.
 }
 
-void player::checkFacing(int maypole){
-	if(!pick->aerial){
-		if (lCorner) facing = 1;
-		else if (rCorner) facing = -1;
-		else if (posX < maypole) { 
-			if(facing == -1) posX -= spr.w;
-			facing = 1;
-		}
-		else if (posX > maypole) {
-			if(facing == 1) posX += spr.w;
-			facing = -1;
-		}
+void player::checkFacing(player * other){
+	int comparison, midpoint;
+	midpoint = collision.x + collision.w/2;
+	comparison = other->collision.x + other->collision.w/2;
+	if(other->posX < posX) comparison += collision.w % 2; 
+	else {
+		midpoint += collision.w % 2;
+	}
+	if (lCorner) facing = 1;
+	else if (rCorner) facing = -1;
+	else if (midpoint < comparison){
+		if(facing == -1) posX -= spr.w;
+		facing = 1;
+	}
+	else if (midpoint > comparison){
+		if(facing == 1) posX += spr.w;
+		facing = -1;
 	}
 	updateRects();
 }

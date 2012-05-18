@@ -38,7 +38,7 @@ public:
 	int checkHit(player*);
 	void enforceGravity(int, int);
 	void checkBlocking();
-	void checkFacing(int);
+	void checkFacing(player*);
 	int dragBG(int, int);
 	void checkCorners(int, int, int);
 	void combineDelta();
