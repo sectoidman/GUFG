@@ -106,8 +106,8 @@ int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
 				fall->init(attack->stun[attack->currentHit] - combo);
 				cMove = fall;
 			} else {
-				if(cMove == crouch || cMove == crouchReel){
-					crouchReel->init(attack->stun[attack->currentHit]+1);
+				if(cMove->crouch){
+					crouchReel->init(attack->stun[attack->currentHit]+2);
 					cMove = crouchReel;
 				} else {
 					reel->init(attack->stun[attack->currentHit]);

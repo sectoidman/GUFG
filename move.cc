@@ -139,6 +139,7 @@ void move::build(char * n)
 	read.getline(buffer, 100);
 	launch = 0;
 	stop = 0;
+	crouch = 0;
 	for(unsigned int i = 0; i < strlen(buffer); i++){
 		switch(buffer[i]){
 		case '^': 
@@ -149,6 +150,9 @@ void move::build(char * n)
 			break;
 		case 'S': 
 			stop = 2;
+			break;
+		case 'c':
+			crouch = 1;
 			break;
 		default:
 			break;
