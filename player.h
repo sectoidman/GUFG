@@ -27,6 +27,7 @@ public:
 	void draw();
 	void spriteInit();
 	void pullVolition();
+	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void takeHit(player*, move*);
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;

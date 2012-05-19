@@ -397,3 +397,52 @@ void player::takeHit(player * attacker, move * attack)
 {
 
 }
+
+void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *& negEdge)
+{
+	bool type = 0;
+	for(int i = 0; i < 10; i++)
+		if(input[i].type == event.type) type = 1;
+	if(!type) return;
+	switch(event.type){
+	case SDL_JOYAXISMOTION:
+		for(int i = 0; i < 4; i++){
+			if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
+				sAxis[i] = 1;
+			if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == 0)
+				sAxis[i] = 0;
+		}
+		break;
+	case SDL_JOYBUTTONDOWN:
+		for(int i = 4; i < 9; i++){
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button)
+				posEdge[i-4] = 1;
+		}
+		break;
+	case SDL_JOYBUTTONUP:
+		for(int i = 4; i < 9; i++){
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button)
+				negEdge[i-4] = 1;
+		}
+		break;
+	case SDL_KEYDOWN:
+		for(int i = 0; i < 4; i++) {
+			if(event.key.keysym.sym == input[i].key.keysym.sym) 
+				sAxis[i] = 1;
+		}
+		for(int i = 4; i < 9; i++) {
+			if(event.key.keysym.sym == input[i].key.keysym.sym)
+				posEdge[i-4] = 1;
+		}
+	case SDL_KEYUP:
+		for(int i = 0; i < 4; i++){
+			if(event.key.keysym.sym == input[i].key.keysym.sym)
+				sAxis[i] = 0;
+		}
+		for(int i = 4; i < 9; i++){
+			if(event.key.keysym.sym == input[i].key.keysym.sym)
+				negEdge[i-4] = 1;
+		}
+		break;
+	}
+}

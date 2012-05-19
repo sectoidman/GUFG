@@ -30,8 +30,13 @@ interface::interface()
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
 	/*Initialize players.*/
-	p[0] = new player(1);
-	p[1] = new player(2);
+	for(int i = 0; i < 2; i++){
+		p[i] = new player(i+1);
+
+		sAxis[i] = new bool[4];
+		posEdge[i] = new bool[5];
+		negEdge[i] = new bool[5];
+	}
 
 	/*Game and round end conditions*/
 	gameover = 0;
@@ -85,14 +90,14 @@ void interface::roundInit()
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
 	{
-		sAxis1[i] = 0;
-		sAxis2[i] = 0;
+		sAxis[0][i] = 0;
+		sAxis[1][i] = 0;
 	}
 	for(int i = 0; i < 5; i++){
-		posEdge1[i] = 0;
-		negEdge1[i] = 0;
-		posEdge2[i] = 0;
-		negEdge2[i] = 0;
+		posEdge[0][i] = 0;
+		negEdge[0][i] = 0;
+		posEdge[1][i] = 0;
+		negEdge[1][i] = 0;
 	}
 
 	combo1 = 0;
@@ -122,8 +127,8 @@ void interface::runTimer()
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
-	p[0]->pushInput(sAxis1, posEdge1, negEdge1);
-	p[1]->pushInput(sAxis2, posEdge2, negEdge2);
+	p[0]->pushInput(sAxis[0], posEdge[0], negEdge[0]);
+	p[1]->pushInput(sAxis[1], posEdge[1], negEdge[1]);
 
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -247,10 +252,10 @@ void interface::resolve()
 
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
-		posEdge1[i] = 0;
-		posEdge2[i] = 0;
-		negEdge1[i] = 0;
-		negEdge2[i] = 0;
+		posEdge[0][i] = 0;
+		posEdge[1][i] = 0;
+		negEdge[0][i] = 0;
+		negEdge[1][i] = 0;
 	}
 
 	/*Draw the sprites*/
@@ -301,74 +306,22 @@ void interface::readInput()
 	for(int i = 0; i < 20; i++){
 		if (SDL_PollEvent(&event)){
 			/*Do stuff with event*/
+			for(int i = 0; i < 2; i++)
+				p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
 			switch (event.type){
 			/*Kill handler*/
 			case SDL_QUIT:
 				gameover = 1;
 				break;
 				/*Keyboard handler. Maybe I'll optimize such that the knows if it even needs to check this (EG if sticks are used)*/
-			case SDL_JOYAXISMOTION:
-				for(int i = 0; i < 4; i++){
-					if(event.jaxis.which == p[0]->input[i].jaxis.which && event.jaxis.axis == p[0]->input[i].jaxis.axis && event.jaxis.value == p[0]->input[i].jaxis.value)
-						sAxis1[i] = 1;
-					if(event.jaxis.which == p[1]->input[i].jaxis.which && event.jaxis.axis == p[1]->input[i].jaxis.axis && event.jaxis.value == p[1]->input[i].jaxis.value)
-						sAxis2[i] = 1;
-					if(event.jaxis.which == p[0]->input[i].jaxis.which && event.jaxis.axis == p[0]->input[i].jaxis.axis && event.jaxis.value == 0)
-						sAxis1[i] = 0;
-					if(event.jaxis.which == p[1]->input[i].jaxis.which && event.jaxis.axis == p[1]->input[i].jaxis.axis && event.jaxis.value == 0)
-						sAxis2[i] = 0;
-				}
-				break;
-			case SDL_JOYBUTTONDOWN:
-				for(int i = 4; i < 9; i++){
-					if(event.jbutton.which == p[0]->input[i].jbutton.which && event.jbutton.button == p[0]->input[i].jbutton.button)
-						posEdge1[i-4] = 1;
-					if(event.jbutton.which == p[1]->input[i].jbutton.which && event.jbutton.button == p[1]->input[i].jbutton.button)
-						posEdge2[i-4] = 1;
-				}
-				break;
-			case SDL_JOYBUTTONUP:
-				for(int i = 4; i < 9; i++){
-					if(event.jbutton.which == p[0]->input[i].jbutton.which && event.jbutton.button == p[0]->input[i].jbutton.button)
-						negEdge1[i-4] = 1;
-					if(event.jbutton.which == p[1]->input[i].jbutton.which && event.jbutton.button == p[1]->input[i].jbutton.button)
-						negEdge2[i-4] = 1;
-				}
-				break;
 			case SDL_KEYDOWN:
-				for(int i = 0; i < 4; i++) {
-					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym) 
-						sAxis1[i] = 1;
-					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym) 
-						sAxis2[i] = 1;
-				}
-				for(int i = 4; i < 9; i++) {
-					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym)
-						posEdge1[i-4] = 1;
-					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym)
-						posEdge2[i-4] = 1;
-				}
 				switch (event.key.keysym.sym) {
-				case SDLK_ESCAPE:
 				case SDLK_q:
+				case SDLK_ESCAPE:
 					gameover = 1;
 					break;
 				default:
 					break;
-				}
-				break;
-			case SDL_KEYUP:
-				for(int i = 0; i < 4; i++){
-					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym)
-						sAxis1[i] = 0;
-					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym)
-						sAxis2[i] = 0;
-				}
-				for(int i = 4; i < 9; i++){
-					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym)
-						negEdge1[i-4] = 1;
-					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym)
-						negEdge2[i-4] = 1;
 				}
 				break;
 			}
@@ -421,7 +374,7 @@ void interface::cSelectMenu()
 				}
 				break;
 			case SDL_JOYBUTTONDOWN:
-				for(int i = 4; i < 9; i++){
+				for(int i = 6; i < 9; i++){
 					if(event.jbutton.which == p[0]->input[i].jbutton.which && event.jbutton.button == p[0]->input[i].jbutton.button) selectFlag1 = 1;
 					if(event.jbutton.which == p[1]->input[i].jbutton.which && event.jbutton.button == p[1]->input[i].jbutton.button) selectFlag2 = 1;
 				}

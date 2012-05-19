@@ -35,11 +35,9 @@ public:
 	SDL_Rect bg;
 	int grav; 			//Gravitational constant. 
 	bool fullscreen;		//For use with later.
-	bool sAxis1[4], sAxis2[4];	//Initial input buffering.
-	bool posEdge1[5], posEdge2[5];	
-	bool negEdge1[5], negEdge2[5];
-	void readStick(SDL_Event&);
-	void readKey(SDL_Event&);
+	bool * sAxis[2];		//Initial input buffering.
+	bool * posEdge[2];	
+	bool * negEdge[2];
 	int combo1;
 	int combo2;
 	int numRounds;
