@@ -76,9 +76,11 @@ move * moveTrie::moveHook(int inputBuffer[30], int i, int f, int * r, bool pos[5
 	}
 	if(occupants != 0){ 
 		for(int k = 0; k < occupants; k++){
-			if(fish[k]->check(pos, neg, i, f, r) == 1){
-				if((*fish[k]) > c){
-					return fish[k];
+			if(fish[k]){
+				if(fish[k]->check(pos, neg, i, f, r) == 1){
+					if((*fish[k]) > c){
+						return fish[k];
+					}
 				}
 			}
 		}

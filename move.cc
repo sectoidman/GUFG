@@ -281,9 +281,8 @@ void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 
 bool move::operator>(move * x)
 {
-	if(x->state[x->cFlag].i == 0) return 0;
+	printf("%s\n", name);
 	if(x == NULL) return 1;
-	if(frames == 0 || x->frames == 0) return 0;
 	else if(allowed.i & x->state[x->cFlag].i){
 		if(x->cFlag == 0 && x == this) return 0;
 		else return 1;
