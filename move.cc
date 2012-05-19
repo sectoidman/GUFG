@@ -40,6 +40,7 @@ move::~move()
 	if(totalStartup) delete [] totalStartup;
 	if(push) delete [] push;
 	if(gain) delete [] gain;
+	if(name) delete [] name;
 }
 
 void move::build(char * n)
@@ -49,13 +50,15 @@ void move::build(char * n)
 	int startup, recovery, countFrames = -1;
 	char fname[40];
 	char buffer[100];
+
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
 	
 	while(read.get() != ':'); read.ignore();
-	name = n;
-	
+	name = new char[strlen(n)+1];	
+	sprintf(name, "%s", n);
+
 	while(read.get() != ':'); read.ignore();
 	read >> tolerance;
 	while(read.get() != ':'); read.ignore();
@@ -281,7 +284,6 @@ void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 
 bool move::operator>(move * x)
 {
-	printf("%s\n", name);
 	if(x == NULL) return 1;
 	else if(allowed.i & x->state[x->cFlag].i){
 		if(x->cFlag == 0 && x == this) return 0;
