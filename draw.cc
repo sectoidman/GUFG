@@ -97,12 +97,16 @@ SDL_Surface * character::draw(int facing)
 void character::drawMeters(SDL_Surface *& screen, int ID)
 {	
 	SDL_Rect m;
+	int R = 0, G = 255, B = 0;
 	if(meter[0] >= 0) m.w = meter[0]; else m.w = 1; 
 	if(ID == 0) m.x = 100; 
 	else m.x = 500 + (200 - m.w);
 	m.h = 5; m.y = 580;
+
+	if(m.w < 100) R = 191;
+	else if(m.w < 200) B = 255;
 	
-	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, 0, 255, 0));
+	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, R, G, B));
 }
 
 SDL_Surface * move::draw(int facing, bool freeze, int *& meter)

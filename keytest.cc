@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	/*Spawn the interface*/
 	interface game;
 	int rounds = 2;
-	int count = 0;
+//	int count = 0;
 	if(argc > 1) rounds = atoi(argv[1]);
 	if(rounds > 0 && rounds < 10) game.numRounds = rounds;
 
