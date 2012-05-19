@@ -90,6 +90,7 @@ bool player::readConfig()
 			default:
 				break;
 			}
+//			printf("Type?: %i\n", input[i].type);
 		}
 		read.close();
 		return 1;
@@ -400,47 +401,47 @@ void player::takeHit(player * attacker, move * attack)
 
 void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *& negEdge)
 {
-	bool type = 0;
-	for(int i = 0; i < 10; i++)
-		if(input[i].type == event.type) type = 1;
-	if(!type) return;
+//	printf("Player %i read event of type %i:\n", ID, event.type);
 	switch(event.type){
 	case SDL_JOYAXISMOTION:
 		for(int i = 0; i < 4; i++){
-			if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
-				sAxis[i] = 1;
-			if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == 0)
-				sAxis[i] = 0;
+			if(input[i].type == SDL_JOYAXISMOTION){
+				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
+					sAxis[i] = 1;
+				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == 0)
+					sAxis[i] = 0;
+			}
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
 		for(int i = 4; i < 9; i++){
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button)
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				posEdge[i-4] = 1;
 		}
 		break;
 	case SDL_JOYBUTTONUP:
 		for(int i = 4; i < 9; i++){
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button)
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				negEdge[i-4] = 1;
 		}
 		break;
 	case SDL_KEYDOWN:
 		for(int i = 0; i < 4; i++) {
-			if(event.key.keysym.sym == input[i].key.keysym.sym) 
+			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN) 
 				sAxis[i] = 1;
 		}
 		for(int i = 4; i < 9; i++) {
-			if(event.key.keysym.sym == input[i].key.keysym.sym)
+			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
 				posEdge[i-4] = 1;
 		}
+		break;
 	case SDL_KEYUP:
 		for(int i = 0; i < 4; i++){
-			if(event.key.keysym.sym == input[i].key.keysym.sym)
+			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 9; i++){
-			if(event.key.keysym.sym == input[i].key.keysym.sym)
+			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
 				negEdge[i-4] = 1;
 		}
 		break;
