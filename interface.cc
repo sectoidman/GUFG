@@ -387,6 +387,9 @@ interface::~interface()
 	SDL_FreeSurface(selectScreen);
 	SDL_FreeSurface(cursor[0]);
 	SDL_FreeSurface(cursor[1]);
+	if(select[0]) delete p[0]->pick;
+	if(select[1]) delete p[1]->pick;
+	delete p[1]->pick;
 	delete p[0];
 	delete p[1];
 	SDL_Quit();

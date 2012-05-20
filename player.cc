@@ -323,11 +323,6 @@ int player::dragBG(int left, int right)
 	else return 0;
 }
 
-player::~player(){
-	SDL_FreeSurface(sprite);
-	delete pick;
-}
-
 void player::pushInput(bool axis[4], bool down[5], bool up[5])
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
@@ -447,3 +442,5 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 		break;
 	}
 }
+
+player::~player(){}
