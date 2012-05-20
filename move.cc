@@ -50,6 +50,7 @@ void move::build(char * n)
 	int startup, recovery, countFrames = -1;
 	char fname[40];
 	char buffer[100];
+	buffer[0] = '\0';
 
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
@@ -140,6 +141,8 @@ void move::build(char * n)
 
 	while(read.get() != ':'); read.ignore();
 	read.getline(buffer, 100);
+/*Debug*/
+//	printf("%s properties: %s\n", name, buffer);
 	launch = 0;
 	stop = 0;
 	crouch = 0;

@@ -229,23 +229,23 @@ bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 int aux::defineRectArray(char * definition, SDL_Rect *& array)
 {
 	int complexity = 1;
-	for(unsigned int j = 0; j < strlen(definition); j++){
-		if(definition[j] == '\t') complexity++;
+	for(unsigned int i = 0; i < strlen(definition); i++){
+		if(definition[i] == '\t') complexity++;
 	}
 	array = new SDL_Rect[complexity];
-	char * bb[complexity*4];
-	bb[0] = strtok(definition, ",\n\t ");
-	for(int j = 1; j < complexity*4; j++){
-		bb[j] = strtok(NULL, ", \n\t"); j++;
-		bb[j] = strtok(NULL, ", \n\t"); j++;
-		bb[j] = strtok(NULL, ", \n\t"); j++;
-		bb[j] = strtok(NULL, ", \n\t");
+	char * coordinate[complexity*4];
+	coordinate[0] = strtok(definition, ",\n\t ");
+	for(int i = 1; i < complexity*4; i++){
+		coordinate[i] = strtok(NULL, ", \n\t"); i++;
+		coordinate[i] = strtok(NULL, ", \n\t"); i++;
+		coordinate[i] = strtok(NULL, ", \n\t"); i++;
+		coordinate[i] = strtok(NULL, ", \n\t");
 	}
-	for(int j = 0; j < complexity*4; j++){
-		array[j/4].x = atoi(bb[j]); j++;
-		array[j/4].y = atoi(bb[j]); j++;
-		array[j/4].w = atoi(bb[j]); j++;
-		array[j/4].h = atoi(bb[j]);
+	for(int i = 0; i < complexity*4; i++){
+		array[i/4].x = atoi(coordinate[i]); i++;
+		array[i/4].y = atoi(coordinate[i]); i++;
+		array[i/4].w = atoi(coordinate[i]); i++;
+		array[i/4].h = atoi(coordinate[i]);
 	}
 	return complexity;
 }

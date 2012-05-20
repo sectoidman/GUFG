@@ -25,6 +25,5 @@ int main(int argc, char* argv[])
 		while(SDL_GetTicks() % 17 != 1);
 		game.readInput();
 		game.resolve();
-		while(SDL_GetTicks() % 17 != 0);
 	}
 }
