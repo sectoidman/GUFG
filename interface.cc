@@ -33,12 +33,22 @@ interface::interface()
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
-		sAxis[i] = new bool[4] {0, 0, 0, 0};
-		posEdge[i] = new bool[5] {0, 0, 0, 0, 0};
-		negEdge[i] = new bool[5] {0, 0, 0, 0, 0};
+		sAxis[i] = new bool[4];
+		posEdge[i] = new bool[5]; 
+		negEdge[i] = new bool[5];
 		sprintf(buffer, "Misc/P%iSelect0.png", i+1);
 		cursor[i] = aux::load_image(buffer);
 		counter[i] = 0;
+	}
+	for(int i = 0; i < 5; i++){
+		posEdge[0][i] = 0;
+		posEdge[1][i] = 0;
+		negEdge[0][i] = 0;
+		negEdge[1][i] = 0;
+		if(i < 4){
+			sAxis[0][i] = 0;
+			sAxis[1][i] = 0;
+		}
 	}
 
 	/*Game and round end conditions*/
@@ -119,7 +129,6 @@ void interface::roundInit()
 		p[i]->spriteInit();
 		p[i]->updateRects();
 	}
-
 	draw();
 }
 
@@ -257,11 +266,11 @@ void interface::resolve()
 		/*Draw the sprites*/
 		p[0]->spriteInit();
 		p[1]->spriteInit();
-		checkWin();
-		runTimer();
+		draw();
 		for(int i = 0; i < 2; i++)
 			p[i]->pick->tick();
-		draw();
+		checkWin();
+		runTimer();
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
