@@ -10,6 +10,7 @@
 #include <math.h>
 interface::interface()
 {
+	char buffer[50];
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
 	screenHeight = 600;
@@ -32,10 +33,12 @@ interface::interface()
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
-
-		sAxis[i] = new bool[4];
-		posEdge[i] = new bool[5];
-		negEdge[i] = new bool[5];
+		sAxis[i] = new bool[4] {0, 0, 0, 0};
+		posEdge[i] = new bool[5] {0, 0, 0, 0, 0};
+		negEdge[i] = new bool[5] {0, 0, 0, 0, 0};
+		sprintf(buffer, "Misc/P%iSelect0.png", i+1);
+		cursor[i] = aux::load_image(buffer);
+		counter[i] = 0;
 	}
 
 	/*Game and round end conditions*/
@@ -45,8 +48,8 @@ interface::interface()
 	SDL_Event temp;
 	while(SDL_PollEvent(&temp));
 	/*Select characters.*/
-
-	cSelectMenu();
+	selectScreen = aux::load_image("Misc/Select.png");
+	wheel.x = 100; wheel.y = 0;
 
 	/*Start a match*/
 	matchInit();
@@ -55,11 +58,13 @@ interface::interface()
 /*This functions sets things up for a new match. Initializes some things and draws the background*/
 void interface::matchInit()
 {
+	select[0] = 0;
+	select[1] = 0;
+	printf("Please select a character:\n");
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	background = IMG_Load("Misc/BG1.png");
 	q = 0;
-	roundInit();
 }
 
 /*Sets stuff up for a new round. This initializes the characters, the timer, and the background.*/
@@ -127,8 +132,9 @@ void interface::runTimer()
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
-	p[0]->pushInput(sAxis[0], posEdge[0], negEdge[0]);
-	p[1]->pushInput(sAxis[1], posEdge[1], negEdge[1]);
+	if(!select[0] || !select[1]) cSelectMenu(); else {
+		p[0]->pushInput(sAxis[0], posEdge[0], negEdge[0]);
+		p[1]->pushInput(sAxis[1], posEdge[1], negEdge[1]);
 
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -142,114 +148,121 @@ void interface::resolve()
 		6. Initialize sprites.
 	*/
 
-	p[0]->updateRects();
-	p[1]->updateRects();
-	p[0]->pullVolition();
-	p[1]->pullVolition();
+		p[0]->updateRects();
+		p[1]->updateRects();
+		p[0]->pullVolition();
+		p[1]->pullVolition();
 	
-	p[0]->updateRects();
-	p[1]->updateRects();
+		p[0]->updateRects();
+		p[1]->updateRects();
 
-	if(!p[0]->pick->freeze){
-		p[0]->combineDelta();
-		p[0]->enforceGravity(grav, floor);
-	}
-	if(!p[1]->pick->freeze){
-		p[1]->combineDelta();
-		p[1]->enforceGravity(grav, floor);
-	}
-
-	if(p[0]->pick->cMove->state[p[0]->pick->cMove->cFlag].i & 1 && p[0]->pick->cMove != p[0]->pick->airNeutral) 
-		p[0]->checkFacing(p[1]);
-	if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1 && p[1]->pick->cMove != p[1]->pick->airNeutral) 
-		p[1]->checkFacing(p[0]);
-//*
-	dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
-	p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall) );
-//*/
-	p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
-	p[1]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
-	
-	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
-		unitCollision();
-	}
-	
-	if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
-	if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
-	
-	if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo2 = 0;
-	if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo1 = 0;
-
-	if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
-	if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
-
-	//Check if moves hit. This will probably be a function at some point
-
-	move * temp1 = p[0]->pick->cMove;
-	move * temp2 = p[1]->pick->cMove;
-	bool hit1 = 0;
-	bool hit2 = 0;
-
-	SDL_Rect v; 
-
-	/*This loop checks for hits. Eventually this might be a function*/
-
-	for(int i = 0; i < p[1]->regComplexity; i++){
-		for(int j = 0; j < p[0]->hitComplexity; j++){
-			if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
-				if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
-					combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
-					if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
-					p[0]->pick->freeze = 10 + temp1->stun[temp1->currentHit] / 10;
-					hit2 = 1;
-					i = p[1]->regComplexity;
-					j = p[0]->hitComplexity;
-					v.w = 1; v.h = 0;
-					p[1]->momentumComplexity = 0;
-					p[1]->deltaX = 0; p[1]->deltaY = 0;
-					if(p[0]->rCorner || p[0]->lCorner) v.x += -combo1*2;
-					p[1]->addVector(v);
-					if(!p[0]->pick->aerial){
-						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
-						else v.x = -combo1*2;
-					} else v.x = 0;
-					v.y = 0;
-					p[0]->addVector(v);
-					p[0]->checkFacing(p[1]);
-				}
-			}
-
+		if(!p[0]->pick->freeze){
+			p[0]->combineDelta();
+			p[0]->enforceGravity(grav, floor);
 		}
-	}
-	for(int i = 0; i < p[0]->regComplexity; i++){
-		for(int j = 0; j < p[1]->hitComplexity; j++){
-			if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
-				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
-					combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
-					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
-					p[1]->pick->freeze = 10 + temp2->stun[temp2->currentHit] / 10;
-					hit1 = 1;
-					i = p[0]->regComplexity;
-					j = p[1]->hitComplexity;
-					v.w = 1; v.h = 0;
-					p[0]->momentumComplexity = 0;
-					p[0]->deltaX = 0; p[0]->deltaY = 0;
-					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo2*2;
-					p[0]->addVector(v);
-					if(!p[1]->pick->aerial){
-						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
-						else v.x = -combo2*2;
-					} else v.x = 0;
-					v.y = 0;
-					p[1]->addVector(v);
-					p[1]->checkFacing(p[0]);
+		if(!p[1]->pick->freeze){
+			p[1]->combineDelta();
+			p[1]->enforceGravity(grav, floor);
+		}
+
+		if(p[0]->pick->cMove->state[p[0]->pick->cMove->cFlag].i & 1 && p[0]->pick->cMove != p[0]->pick->airNeutral) 
+			p[0]->checkFacing(p[1]);
+		if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1 && p[1]->pick->cMove != p[1]->pick->airNeutral) 
+			p[1]->checkFacing(p[0]);
+		
+		dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
+			p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall) );
+		p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+		p[1]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+		
+		if (aux::checkCollision(p[0]->collision, p[1]->collision)){
+			unitCollision();
+		}
+		
+		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
+		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
+	
+		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo2 = 0;
+		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo1 = 0;
+	
+		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
+		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
+	
+		//Check if moves hit. This will probably be a function at some point
+	
+		move * temp1 = p[0]->pick->cMove;
+		move * temp2 = p[1]->pick->cMove;
+		bool hit1 = 0;
+		bool hit2 = 0;
+
+		SDL_Rect v; 
+
+/*This loop checks for hits. Eventually this might be a function*/
+
+		for(int i = 0; i < p[1]->regComplexity; i++){
+			for(int j = 0; j < p[0]->hitComplexity; j++){
+				if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
+					if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
+						combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
+						if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
+						p[0]->pick->freeze = 10 + temp1->stun[temp1->currentHit] / 10;
+						hit2 = 1;
+						i = p[1]->regComplexity;
+						j = p[0]->hitComplexity;
+						v.w = 1; v.h = 0;
+						p[1]->momentumComplexity = 0;
+						p[1]->deltaX = 0; p[1]->deltaY = 0;
+						if(p[0]->rCorner || p[0]->lCorner) v.x += -combo1*2;
+						p[1]->addVector(v);
+						if(!p[0]->pick->aerial){
+							if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
+							else v.x = -combo1*2;
+						} else v.x = 0;
+						v.y = 0;
+						p[0]->addVector(v);
+						p[0]->checkFacing(p[1]);
+					}
 				}
 			}
 		}
-	}
-	if(hit2) temp2->init();
-	if(hit1) temp1->init();
+		for(int i = 0; i < p[0]->regComplexity; i++){
+			for(int j = 0; j < p[1]->hitComplexity; j++){
+				if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
+					if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
+						combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
+						if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
+						p[1]->pick->freeze = 10 + temp2->stun[temp2->currentHit] / 10;
+						hit1 = 1;
+						i = p[0]->regComplexity;
+						j = p[1]->hitComplexity;
+						v.w = 1; v.h = 0;
+						p[0]->momentumComplexity = 0;
+						p[0]->deltaX = 0; p[0]->deltaY = 0;
+						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo2*2;
+						p[0]->addVector(v);
+						if(!p[1]->pick->aerial){
+							if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
+							else v.x = -combo2*2;
+						} else v.x = 0;
+						v.y = 0;
+						p[1]->addVector(v);
+						p[1]->checkFacing(p[0]);
+					}
+				}
+			}
+		}
+		if(hit2) temp2->init();
+		if(hit1) temp1->init();
 
+		/*Draw the sprites*/
+		p[0]->spriteInit();
+		p[1]->spriteInit();
+		checkWin();
+		runTimer();
+		for(int i = 0; i < 2; i++)
+			p[i]->pick->tick();
+		draw();
+	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
 		posEdge[0][i] = 0;
@@ -258,13 +271,6 @@ void interface::resolve()
 		negEdge[1][i] = 0;
 	}
 
-	/*Draw the sprites*/
-	p[0]->spriteInit();
-	p[1]->spriteInit();
-	checkWin();
-	runTimer();
-	for(int i = 0; i < 2; i++)
-		p[i]->pick->tick();
 }
 
 
@@ -291,7 +297,6 @@ void interface::checkWin()
 		if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
 			delete p[0]->pick;
 			delete p[1]->pick;
-			cSelectMenu();
 			matchInit();
 		}
 		else roundInit();
@@ -334,78 +339,38 @@ void interface::readInput()
 void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
-	printf("Please select a character:\n");
 	int numChars = 2;
-	SDL_Event event;
-	SDL_Surface *selectScreen = aux::load_image("Misc/Select.png");
-	SDL_Surface *cursor1, *cursor2;
-	int select1, select2;
-	select1 = 1;
-	select2 = 2;
-	SDL_Rect wheel;
-	wheel.x = 100; wheel.y = 0;
-	char base1[40];
-	char base2[40];
-	bool selectFlag1 = 0;
-	bool selectFlag2 = 0;
+	char base[2][40];
 
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 100, 100, 100));
-	SDL_BlitSurface(selectScreen, NULL, screen, &wheel);
-	SDL_UpdateRect(screen, 0, 0, 0, 0);
-
-
-	while(!selectFlag1 || !selectFlag2){
-		if (SDL_PollEvent(&event)){
-			switch(event.type){
-			case SDL_KEYDOWN:
-				if(event.key.keysym.sym == p[0]->input[2].key.keysym.sym && !selectFlag1) select1--;
-				if(event.key.keysym.sym == p[0]->input[3].key.keysym.sym && !selectFlag1) select1++;
-				if(event.key.keysym.sym == p[1]->input[2].key.keysym.sym && !selectFlag2) select2--;
-				if(event.key.keysym.sym == p[1]->input[3].key.keysym.sym && !selectFlag2) select2++;
-						
-				for(int i = 4; i < 9; i++){
-					if(event.key.keysym.sym == p[0]->input[i].key.keysym.sym) selectFlag1 = 1;
-					if(event.key.keysym.sym == p[1]->input[i].key.keysym.sym) selectFlag2 = 1;
-				}
-				if(event.key.keysym.sym == SDLK_q){
-					gameover = 1;
-					selectFlag1 = 1;
-					selectFlag2 = 1;
-				}
-				break;
-			case SDL_JOYBUTTONDOWN:
-				for(int i = 6; i < 9; i++){
-					if(event.jbutton.which == p[0]->input[i].jbutton.which && event.jbutton.button == p[0]->input[i].jbutton.button) selectFlag1 = 1;
-					if(event.jbutton.which == p[1]->input[i].jbutton.which && event.jbutton.button == p[1]->input[i].jbutton.button) selectFlag2 = 1;
-				}
-				break;
-			case SDL_JOYAXISMOTION:
-				if(event.jaxis.which == p[0]->input[2].jaxis.which && event.jaxis.axis == p[0]->input[2].jaxis.axis && event.jaxis.value == p[0]->input[2].jaxis.value && !selectFlag1) select1--;
-				if(event.jaxis.which == p[0]->input[3].jaxis.which && event.jaxis.axis == p[0]->input[3].jaxis.axis && event.jaxis.value == p[0]->input[3].jaxis.value && !selectFlag1) select1++;
-				if(event.jaxis.which == p[1]->input[2].jaxis.which && event.jaxis.axis == p[1]->input[2].jaxis.axis && event.jaxis.value == p[1]->input[2].jaxis.value && !selectFlag2) select2--;
-				if(event.jaxis.which == p[1]->input[3].jaxis.which && event.jaxis.axis == p[1]->input[3].jaxis.axis && event.jaxis.value == p[1]->input[3].jaxis.value && !selectFlag2) select2++;
-				break;
+	for(int i = 0; i < 2; i++){
+		if(sAxis[i][2] && !select[i] && counter[i] == 0){
+			selection[i]--;
+			if(selection[i] < 0) selection[i] = numChars;
+			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
+			cursor[i] = aux::load_image(base[i]);
+			counter[i] = 10;
+		}
+		if(sAxis[i][3] && !select[i] && counter[i] == 0){
+			selection[i]++;
+			if(selection[i] > numChars) selection[i] = 0;
+			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
+			cursor[i] = aux::load_image(base[i]);
+			counter[i] = 10;
+		}
+		for(int j = 0; j < 5; j++){
+			if(posEdge[i][j]){
+				select[i] = 1;
+				p[i]->characterSelect(selection[i]);
 			}
-			if(select2 > numChars) select2 = 0;
-			if(select1 > numChars) select1 = 0;
-			if(select1 < 0) select1 = numChars;
-			if(select2 < 0) select2 = numChars;
-			sprintf(base1, "Misc/P1Select%i.png", select1);
-			sprintf(base2, "Misc/P2Select%i.png", select2);
-			cursor1 = aux::load_image(base1);
-			cursor2 = aux::load_image(base2);
-			SDL_BlitSurface(selectScreen, NULL, screen, &wheel);
-			SDL_BlitSurface(cursor1, NULL, screen, &wheel);
-			SDL_BlitSurface(cursor2, NULL, screen, &wheel);
-			SDL_UpdateRect(screen, 0, 0, 0, 0);
-			SDL_FreeSurface(cursor1);
-			SDL_FreeSurface(cursor2);
 		}
 	}
-	SDL_FreeSurface(selectScreen);
-
-	p[0]->characterSelect(select1);
-	p[1]->characterSelect(select2);
+	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 100, 100, 100));
+	SDL_BlitSurface(selectScreen, NULL, screen, &wheel);
+	SDL_BlitSurface(cursor[0], NULL, screen, &wheel);
+	SDL_BlitSurface(cursor[1], NULL, screen, &wheel);
+	SDL_UpdateRect(screen, 0, 0, 0, 0);	
+	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
+	if(select[0] && select[1]) roundInit();
 }
 
 void interface::dragBG(int deltaX)
@@ -419,6 +384,9 @@ interface::~interface()
 {
 	SDL_FreeSurface(screen);
 	SDL_FreeSurface(background);
+	SDL_FreeSurface(selectScreen);
+	SDL_FreeSurface(cursor[0]);
+	SDL_FreeSurface(cursor[1]);
 	delete p[0];
 	delete p[1];
 	SDL_Quit();

@@ -31,17 +31,24 @@ public:
 	void unitCollision();
 	
 	player * p[2];
+	bool * sAxis[2];		//Initial input buffering.
+	bool * posEdge[2];	
+	bool * negEdge[2];
+	bool select[2];
+	int selection[2];
 	SDL_Surface *background, *screen;
 	SDL_Rect bg;
 	int grav; 			//Gravitational constant. 
 	bool fullscreen;		//For use with later.
-	bool * sAxis[2];		//Initial input buffering.
-	bool * posEdge[2];	
-	bool * negEdge[2];
 	int combo1;
 	int combo2;
 	int numRounds;
 	bool gameover;
+	SDL_Surface *selectScreen; 
+	SDL_Surface *cursor [2];
+	SDL_Rect wheel;
+	int counter[2];
+	
 
 //testing variables;
 	bool q;
