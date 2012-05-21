@@ -45,7 +45,6 @@ move::~move()
 
 void move::build(const char * n)
 {
-	cost = 0;
 	ifstream read;
 	int startup, recovery, countFrames = -1;
 	char fname[40];
@@ -130,6 +129,9 @@ void move::build(const char * n)
 		while(read.get() != ':'); read.ignore();
 		read >>	gain[i];
 	}
+	
+	while(read.get() != ':'); read.ignore();
+	read >> cost;
 
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
@@ -244,7 +246,6 @@ bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[])
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
-			if(i == 4) printf("Normal!\n");
 			if(!pos[i]) return 0;
 		}
 
