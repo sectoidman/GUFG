@@ -242,9 +242,9 @@ void move::build(const char * n)
 
 bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[])
 {
-	//if(meter < cost) return 0;
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
+			if(i == 4) printf("Normal!\n");
 			if(!pos[i]) return 0;
 		}
 

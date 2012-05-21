@@ -187,7 +187,8 @@ class super : virtual public special {
 public:
 	super() {}
 	super(const char*);
-	int superFreeze;
-private:
+	bool check(bool pos[], bool neg[], int t, int f, int* r);
+	void execute(move *, int *&);
 	void defineSuperFreeze();
+	int superFreeze;
 };
