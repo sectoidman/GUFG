@@ -1,6 +1,6 @@
 #include "move.h"
 
-special::special(char * n)
+special::special(const char * n)
 {
 	build(n);
 	init();

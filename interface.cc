@@ -10,6 +10,7 @@
 #include <math.h>
 interface::interface()
 {
+	numChars = 2;
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
@@ -198,70 +199,7 @@ void interface::resolve()
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
 	
 		//Check if moves hit. This will probably be a function at some point
-	
-		move * temp1 = p[0]->pick->cMove;
-		move * temp2 = p[1]->pick->cMove;
-		bool hit1 = 0;
-		bool hit2 = 0;
-
-		SDL_Rect v; 
-
-/*This loop checks for hits. Eventually this might be a function*/
-
-		for(int i = 0; i < p[1]->regComplexity; i++){
-			for(int j = 0; j < p[0]->hitComplexity; j++){
-				if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
-					if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
-						combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
-						if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
-						p[0]->pick->freeze = 10 + temp1->stun[temp1->currentHit] / 10;
-						hit2 = 1;
-						i = p[1]->regComplexity;
-						j = p[0]->hitComplexity;
-						v.w = 1; v.h = 0;
-						p[1]->momentumComplexity = 0;
-						p[1]->deltaX = 0; p[1]->deltaY = 0;
-						if(p[0]->rCorner || p[0]->lCorner) v.x += -combo1*2;
-						p[1]->addVector(v);
-						if(!p[0]->pick->aerial){
-							if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
-							else v.x = -combo1*2;
-						} else v.x = 0;
-						v.y = 0;
-						p[0]->addVector(v);
-						p[0]->checkFacing(p[1]);
-					}
-				}
-			}
-		}
-		for(int i = 0; i < p[0]->regComplexity; i++){
-			for(int j = 0; j < p[1]->hitComplexity; j++){
-				if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
-					if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
-						combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
-						if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
-						p[1]->pick->freeze = 10 + temp2->stun[temp2->currentHit] / 10;
-						hit1 = 1;
-						i = p[0]->regComplexity;
-						j = p[1]->hitComplexity;
-						v.w = 1; v.h = 0;
-						p[0]->momentumComplexity = 0;
-						p[0]->deltaX = 0; p[0]->deltaY = 0;
-						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo2*2;
-						p[0]->addVector(v);
-						if(!p[1]->pick->aerial){
-							if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
-							else v.x = -combo2*2;
-						} else v.x = 0;
-						v.y = 0;
-						p[1]->addVector(v);
-						p[1]->checkFacing(p[0]);
-					}
-				}
-			}
-		}
-		if(hit2) temp2->init();
-		if(hit1) temp1->init();
+		resolveHits();	
 
 		/*Draw the sprites*/
 		p[0]->spriteInit();
@@ -348,7 +286,6 @@ void interface::readInput()
 void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
-	int numChars = 2;
 	char base[2][40];
 
 	for(int i = 0; i < 2; i++){
@@ -439,4 +376,68 @@ void interface::unitCollision()
 	}
 	right->updateRects();
 	left->updateRects();
+}
+
+void interface::resolveHits()
+{
+	move * temp1 = p[0]->pick->cMove;
+	move * temp2 = p[1]->pick->cMove;
+	bool hit1 = 0;
+	bool hit2 = 0;
+	SDL_Rect v; 
+
+	for(int i = 0; i < p[1]->regComplexity; i++){
+		for(int j = 0; j < p[0]->hitComplexity; j++){
+			if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
+				if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
+					combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
+					if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
+					p[0]->pick->freeze = 10 + temp1->stun[temp1->currentHit] / 10;
+					hit2 = 1;
+					i = p[1]->regComplexity;
+					j = p[0]->hitComplexity;
+					v.w = 1; v.h = 0;
+					p[1]->momentumComplexity = 0;
+					p[1]->deltaX = 0; p[1]->deltaY = 0;
+					if(p[0]->rCorner || p[0]->lCorner) v.x += -combo1*2;
+					p[1]->addVector(v);
+					if(!p[0]->pick->aerial){
+						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
+						else v.x = -combo1*2;
+					} else v.x = 0;
+					v.y = 0;
+					p[0]->addVector(v);
+					p[0]->checkFacing(p[1]);
+				}
+			}
+		}
+	}
+	for(int i = 0; i < p[0]->regComplexity; i++){
+		for(int j = 0; j < p[1]->hitComplexity; j++){
+			if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
+				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
+					combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
+					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
+					p[1]->pick->freeze = 10 + temp2->stun[temp2->currentHit] / 10;
+					hit1 = 1;
+					i = p[0]->regComplexity;
+					j = p[1]->hitComplexity;
+					v.w = 1; v.h = 0;
+					p[0]->momentumComplexity = 0;
+					p[0]->deltaX = 0; p[0]->deltaY = 0;
+					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo2*2;
+					p[0]->addVector(v);
+					if(!p[1]->pick->aerial){
+						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
+						else v.x = -combo2*2;
+					} else v.x = 0;
+					v.y = 0;
+					p[1]->addVector(v);
+					p[1]->checkFacing(p[0]);
+				}
+			}
+		}
+	}
+	if(hit2) temp2->init();
+	if(hit1) temp1->init();
 }

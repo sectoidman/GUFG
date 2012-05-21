@@ -12,9 +12,9 @@
 class move{
 public:
 	move();
-	move(char*);
+	move(const char*);
 	virtual ~move();
-	virtual void build(char *);
+	virtual void build(const char *);
 
 	//Okay so, hopefully the idea here is that we can init()
 	//the move we're cancelling out of in the usual case, and, well
@@ -60,8 +60,8 @@ public:
 	int hits;
 	int currentFrame;//The frame that is currently running.
 	int currentHit;
-	int cFlag;
 	int * totalStartup;
+	int cFlag;
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
@@ -78,6 +78,7 @@ public:
 	//Accepted. Default is 30 (the entire input buffer)
 	int activation;
 
+	move * next;
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the move per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
@@ -96,13 +97,13 @@ public:
 	void step(int *&);
 	void blockSuccess(int);
 	hitstun(char *, int);
-	hitstun(char *);
+	hitstun(const char *);
 };
 
 class special : virtual public move {
 public:
 	special() {} 
-	special(char*);
+	special(const char*);
 	bool check(bool[], bool[], int, int, int*);
 	int chip;
 };
@@ -110,22 +111,22 @@ public:
 class utility : virtual public move {
 public:
 	utility() {}
-	utility(char *);
+	utility(const char *);
 	virtual bool check(bool[], bool[], int, int, int*);
 };
 
 class looping : virtual public utility {
 public:
 	looping() {}
-	looping(char*);
+	looping(const char*);
 	void step(int *&);
 };
 
 class airMove : virtual public move {
 public:
 	airMove() {}
-	airMove(char*);
-	void build (char *);
+	airMove(const char*);
+	void build (const char *);
 	void land(move *&);
 	move * landing;
 private:
@@ -135,13 +136,13 @@ private:
 class airSpecial : public airMove, public special {
 public:
 	airSpecial() {}
-	airSpecial(char* n) {build(n); init();}
+	airSpecial(const char* n) {build(n); init();}
 };
 
 class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
-	airUtility(char*);
+	airUtility(const char*);
 	bool check(bool[], bool[], int, int, int*);
 	virtual void execute(move *, int *&);	
 };
@@ -149,7 +150,7 @@ public:
 class airLooping : public airMove, public looping {
 public:
 	airLooping() {}
-	airLooping(char*);
+	airLooping(const char*);
 };
 
 class projectile {
@@ -170,7 +171,7 @@ public:
 class summon : virtual public special {
 public:
 	summon() {}
-	summon(char*);
+	summon(const char*);
 	projectile * payload;
 	projectile * spawnProjectile();
 	int spawnFrame;
@@ -179,13 +180,13 @@ public:
 class airSummon : public airMove, public summon {
 public:
 	airSummon() {}
-	airSummon(char*);
+	airSummon(const char*);
 };
 
 class super : virtual public special {
 public:
 	super() {}
-	super(char*);
+	super(const char*);
 	int superFreeze;
 private:
 	void defineSuperFreeze();

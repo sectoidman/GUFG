@@ -10,7 +10,7 @@ move::move()
 	name = NULL;
 }
 
-move::move(char * n)
+move::move(const char * n)
 {
 	build(n);
 	init();
@@ -43,7 +43,7 @@ move::~move()
 	if(name) delete [] name;
 }
 
-void move::build(char * n)
+void move::build(const char * n)
 {
 	cost = 0;
 	ifstream read;
@@ -284,13 +284,14 @@ void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 	}
 }
 
-
 bool move::operator>(move * x)
 {	
 	if(x == NULL) return 1;
-	else if(allowed.i & x->state[x->cFlag].i){
-		if(x->cFlag == 0 && x == this) return 0;
-		else return 1;
+	else{
+		if(allowed.i & x->state[x->cFlag].i){
+			if(x->cFlag == 0 && x == this) return 0;
+			else return 1;
+		}
 	}
 	return 0;
 }

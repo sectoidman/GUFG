@@ -29,7 +29,8 @@ public:
 	void checkWin();
 	void dragBG(int);
 	void unitCollision();
-	
+	void resolveHits();
+		
 	player * p[2];
 	bool * sAxis[2];		//Initial input buffering.
 	bool * posEdge[2];	
@@ -44,11 +45,13 @@ public:
 	int combo2;
 	int numRounds;
 	bool gameover;
+
+//Variables for cSelectMenu 
+	int numChars;
 	SDL_Surface *selectScreen; 
 	SDL_Surface *cursor [2];
 	SDL_Rect wheel;
 	int counter[2];
-	
 
 //testing variables;
 	bool q;

@@ -15,7 +15,7 @@ void hitstun::blockSuccess(int st){
 	init(st);
 }
 
-hitstun::hitstun(char * n)
+hitstun::hitstun(const char * n)
 {
 	build(n);
 	currentFrame = 0;

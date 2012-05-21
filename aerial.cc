@@ -5,7 +5,7 @@
 #include <math.h>
 using namespace std;
 
-airMove::airMove(char * n)
+airMove::airMove(const char * n)
 {
 	build(n);
 	init();
@@ -17,7 +17,7 @@ void airMove::land(move *& c)
 	c = landing;
 }
 
-void airMove::build(char * n)
+void airMove::build(const char * n)
 {
 	move::build(n);
 	landing = NULL;
@@ -28,7 +28,7 @@ void airMove::setLR(move * c)
 	landing = c;
 }
 
-airUtility::airUtility(char * n)
+airUtility::airUtility(const char * n)
 {
 	airMove::build(n);
 	airMove::init();
@@ -47,7 +47,7 @@ void airUtility::execute(move * last, int *& resource){
 	move::execute(last, resource);
 }
 
-airLooping::airLooping(char * n)
+airLooping::airLooping(const char * n)
 {
 	airMove::build(n);
 	airMove::init();
