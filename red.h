@@ -14,6 +14,6 @@ public:
 	redCancel();
 	~redCancel();
 	redCancel(char* n);
-	bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int*);
 	void execute(move *, int *&);
 };
