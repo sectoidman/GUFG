@@ -25,15 +25,8 @@ super::super(const char * n)
 	init();
 }
 
-bool super::check(bool pos[5], bool neg[5], int t, int f, int* resource)
-{
-	return special::check(pos, neg, t, f, resource);
-}
-
 void super::execute(move * last, int *& resource)
 {
-	printf("%i, %i\n", resource[0], cost);
-	resource[0] -= 100;
 	resource[0] -= cost;
 	last->init();
 }
