@@ -187,7 +187,7 @@ class super : public special {
 public:
 	super() {}
 	super(const char*);
-	bool check(bool a[], bool b[], int c, int d, int * e) 
+	virtual bool check(bool a[], bool b[], int c, int d, int * e) 
 		{ return special::check(a, b, c, d, e); }
 	void execute(move *, int *&);
 	void defineSuperFreeze();
