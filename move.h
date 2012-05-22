@@ -20,7 +20,7 @@ public:
 	//the move we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(move *, int *&);
-	virtual bool check(bool[], bool[], int, int, int[]) = 0; //Check to see if the move is possible right now.
+	virtual bool check(bool[], bool[], int, int, int[]); //Check to see if the move is possible right now.
 	virtual void blockSuccess(int);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
@@ -89,12 +89,7 @@ public:
 	SDL_Surface **sprite, **fSprite;
 };
 
-class normal : virtual public move {
-public:
-	virtual bool check(bool[], bool[], int, int, int[]);
-};
-
-class hitstun : public normal {
+class hitstun : public move {
 public:
 	hitstun() {}
 	void init(int);
@@ -127,19 +122,10 @@ public:
 	void step(int *&);
 };
 
-class super : virtual public special {
-public:
-	super() {}
-	super(const char*);
-	void defineSuperFreeze();
-	int superFreeze;
-};
-
 class airMove : virtual public move {
 public:
 	airMove() {}
 	airMove(const char*);
-	bool check(bool[], bool[], int, int, int[]) = 0; 
 	void build (const char *);
 	void land(move *&);
 	move * landing;
@@ -147,19 +133,13 @@ private:
 	void setLR(move *);
 };
 
-class airNormal : public normal, public airMove {
-public:
-	airNormal() {}
-	airNormal(const char* n) {build(n); init();}
-};
-
-class airSpecial : public special, public airMove {
+class airSpecial : public airMove, public special {
 public:
 	airSpecial() {}
 	airSpecial(const char* n) {build(n); init();}
 };
 
-class airUtility : public utility, public airMove {
+class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
 	airUtility(const char*);
@@ -167,12 +147,12 @@ public:
 	virtual void execute(move *, int *&);	
 };
 
-class airLooping : public looping, public airMove {
+class airLooping : public airMove, public looping {
 public:
 	airLooping() {}
 	airLooping(const char*);
 };
-/*
+
 class projectile {
 public:
 	projectile(char*);
@@ -197,9 +177,19 @@ public:
 	int spawnFrame;
 };
 
-class airSummon : public summon, public airMove {
+class airSummon : public airMove, public summon {
 public:
 	airSummon() {}
 	airSummon(const char*);
 };
-*/
+
+class super : public special {
+public:
+	super() {}
+	super(const char*);
+	bool check(bool a[], bool b[], int c, int d, int * e) 
+		{ return special::check(a, b, c, d, e); }
+	void execute(move *, int *&);
+	void defineSuperFreeze();
+	int superFreeze;
+};

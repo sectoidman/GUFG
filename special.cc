@@ -24,3 +24,10 @@ super::super(const char * n)
 	build(n);
 	init();
 }
+
+void super::execute(move * last, int *& resource)
+{
+	resource[0] -= cost;
+	last->init();
+}
+
