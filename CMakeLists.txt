@@ -24,9 +24,9 @@ set (SOURCES 	keytest.cc
 		red.cc
 		yellow.cc 
 		special.cc 
-		trie.cc 
 		aerial.cc
-		utility.cc)
+		utility.cc
+		trie.cc) 
 
 set (CMAKE_CXX_FLAGS "-O2 -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy -Wno-format-contains-nul")
 

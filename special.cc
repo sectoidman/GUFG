@@ -18,3 +18,9 @@ bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource)
 	if(resource[0] < cost) return 0;
 	return 1;
 }
+
+super::super(const char * n)
+{
+	build(n);
+	init();
+}

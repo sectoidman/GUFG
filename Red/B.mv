@@ -9,6 +9,7 @@ Stun: 14
 Push: 5
 Lift: 10
 Gain: 0 : 3
+Cost: 0
 Blockable: 3 
 Blocks: 0
 Properties:  

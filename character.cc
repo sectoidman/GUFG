@@ -195,13 +195,13 @@ void character::build(const char* n)
 			commentFlag = 1;
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
-			token = strtok(buffer, " \t-@%$\n");
+			token = strtok(buffer, " \t-@%$!\n");
 			sprintf(moveName, "%s/%s", name, token);
 			m = createMove(type, moveName);
-			strtok(buffer2, " \t-%@$\n");
+			strtok(buffer2, " \t-%@$!\n");
 			while (token){
 				token = NULL;
-				token = strtok(NULL, " \t=-@%$\n");
+				token = strtok(NULL, " \t=-@%$!\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -288,6 +288,11 @@ move * character::createMove(char * type, char * moveName)
 	case '@':
 		if(type[1] == 'j') m = new airLooping(moveName);
 		else m = new looping(moveName);
+		break;
+	case '!':
+//		if(type[1] == 'j') m = new airSuper(moveName);
+//		else 
+		m = new super(moveName);
 		break;
 	case 'j':
 		m = new airMove(moveName);
