@@ -389,11 +389,6 @@ void player::removeVector(int n)
 	momentumComplexity--;
 }
 
-void player::takeHit(player * attacker, move * attack)
-{
-
-}
-
 void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *& negEdge)
 {
 //	printf("Player %i read event of type %i:\n", ID, event.type);
