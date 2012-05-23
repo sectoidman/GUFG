@@ -102,8 +102,8 @@ public:
 	hitstun() {}
 	void init(int);
 	int counter;
-	void step(int *&);
-	void blockSuccess(int);
+	virtual void step(int *&);
+	virtual void blockSuccess(int);
 	hitstun(char *, int);
 	hitstun(const char *);
 };
@@ -127,15 +127,15 @@ class looping : virtual public utility {
 public:
 	looping() {}
 	looping(const char*);
-	void step(int *&);
+	virtual void step(int *&);
 };
 
 class airMove : virtual public move {
 public:
 	airMove() {}
 	airMove(const char*);
-	void build (const char *);
-	void land(move *&);
+	virtual void build (const char *);
+	virtual void land(move *&);
 	move * landing;
 private:
 	void setLR(move *);
@@ -195,9 +195,5 @@ class super : public special {
 public:
 	super() {}
 	super(const char*);
-	virtual bool check(bool a[], bool b[], int c, int d, int * e) 
-		{ return special::check(a, b, c, d, e); }
-	void execute(move *, int *&);
-	void defineSuperFreeze();
 	int superFreeze;
 };
