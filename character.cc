@@ -11,7 +11,6 @@ using namespace std;
 character::character()
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
-	name = "White";
 	move * temp;
 
 

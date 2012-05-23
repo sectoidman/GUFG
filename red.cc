@@ -1,7 +1,6 @@
 #include "interface.h"
 red::red()
 {
-	name = "Red";
 	delete head;
 	delete airHead;
 	delete neutral;
@@ -18,7 +17,7 @@ red::red()
 	
 	airHead = new moveTrie;
 	head = new moveTrie;
-	build(name);
+	build("Red");
 
 	init();	
 }

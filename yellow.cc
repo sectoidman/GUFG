@@ -1,6 +1,5 @@
 #include "yellow.h"
 yellow::yellow(){
-	name = "Yellow";
 	delete head;
 	delete airHead;
 	delete neutral;
@@ -13,8 +12,7 @@ yellow::yellow(){
 	delete crouchReel;
 	head = new moveTrie;
 	airHead = new moveTrie;
-	build(name);
-	
+	build("Yellow");
 }
 
 void yellow::init()

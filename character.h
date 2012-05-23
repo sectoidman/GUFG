@@ -17,7 +17,7 @@ public:
 	moveTrie * head;	//Trie for ground moves
 	moveTrie * airHead;	//Trie for air moves
 
-	const char * name; //The name of the directory from which the character spawns. This is important for loading into memory
+	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	virtual void drawMeters(SDL_Surface *&, int);
 	SDL_Surface * draw(int);//Pass sprite information up.
 	virtual int takeHit(character *, SDL_Rect&, int);	//Handle taking hits.
