@@ -1,7 +1,7 @@
 Name: Air Backdash
 Buffer: 10 : 0
 Hits: 0
-Frames: 7 : 7
+Frames: 8 : 8
 Check: 1
 State: 510
 Gain: 0
@@ -11,11 +11,15 @@ Properties: S
 #0 
 $C	5 10 60 120
 $R	5 10 60 120
-$D	-4 0 3 0
+$D	-4 0 4 0
 #0 
 $C	5 10 60 120
 $R	5 10 60 120
-$D	0 -3 5 1
+$D	0 -3 6 1
+#0 
+$C	5 10 60 120
+$R	5 10 60 120
+$D	0 0 0 0
 #0 
 $C	5 10 60 120
 $R	5 10 60 120

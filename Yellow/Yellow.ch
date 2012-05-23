@@ -14,5 +14,6 @@ Yellow
 -jwsh = a656 a956 a356
 -jqsh = a454 a754 a154
 -slide = h5 h4 h1 h2
--qsh = h5454 
+-qsh = h5454
+qC = h
 #Moves
