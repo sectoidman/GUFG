@@ -28,7 +28,8 @@ public:
 	void spriteInit();
 	void pullVolition();
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
-	void takeHit(player*, move*);
+	void takeHit(move*);
+	void giveHit(player*);
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
 	int hitComplexity, regComplexity, momentumComplexity;

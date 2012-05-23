@@ -444,3 +444,13 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 }
 
 player::~player(){}
+
+void player::giveHit(player* other)
+{
+
+}
+
+void player::takeHit(move* attack)
+{
+
+}
