@@ -137,13 +137,13 @@ void move::build(const char * n)
 	read.getline(buffer, 100);
 /*Debug*/
 //	printf("%s properties: %s\n", name, buffer);
-	launch = 0;
 	stop = 0;
 	crouch = 0;
+	int ch = 0;
 	for(unsigned int i = 0; i < strlen(buffer); i++){
 		switch(buffer[i]){
 		case '^': 
-			launch = 1;
+			stats[ch].launch = 1;
 			break;
 		case 's':
 			stop = 1;
@@ -153,6 +153,9 @@ void move::build(const char * n)
 			break;
 		case 'c':
 			crouch = 1;
+			break;
+		case ':':
+			ch++;
 			break;
 		default:
 			break;
@@ -275,6 +278,17 @@ void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 			b[i].y = temphit[i].y; b[i].h = temphit[i].h;
 		}
 	}
+}
+
+void move::pollStats(hStat & s)
+{
+	s.damage = stats[currentHit].damage;
+	s.stun = stats[currentHit].stun;
+	s.push = stats[currentHit].push;
+	s.lift = stats[currentHit].lift;
+	s.untech = stats[currentHit].untech;
+	s.launch = stats[currentHit].launch;
+	s.blockMask.i = stats[currentHit].blockMask.i;	
 }
 
 bool move::operator>(move * x)
