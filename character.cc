@@ -65,10 +65,6 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
-{
-}
-
 void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 {
 	move * t = NULL;

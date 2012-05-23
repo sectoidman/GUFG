@@ -382,4 +382,22 @@ void interface::resolveHits()
 {
 	hStat s[2];
 	bool hit[2];
+	for(int i = 0; i < 2; i++) hit[i] = 0;
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < p[i]->hitComplexity; j++){
+			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
+				if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
+					hit[i] = 1;
+					k = p[(i+1)%2]->regComplexity;
+					j = p[i]->hitComplexity;
+				}
+			}
+		}
+	}
+	for(int i = 0; i < 2; i++){ 
+		if(hit[i]){
+			printf("Player %i connected\n", i+1);
+			p[i]->pick->cMove->pollStats(s[i]);
+		}
+	}
 }
