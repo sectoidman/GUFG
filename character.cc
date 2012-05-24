@@ -69,7 +69,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 {
 	move * t = NULL;
 	if (cMove == NULL) {
-		if(aerial) cMove = /*air*/neutral;
+		if(aerial) cMove = airNeutral;
 		else cMove = neutral;
 	}
 	
@@ -120,6 +120,7 @@ void character::build(const char* n)
 
 	sprintf(buffer, "%s/NJ", name);
 	airNeutral = new airLooping(buffer);
+	airNeutral->feed(neutral, 1);
 
 	sprintf(buffer, "%s/HS", name);
 	reel = new hitstun(buffer);

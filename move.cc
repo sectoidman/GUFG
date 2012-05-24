@@ -338,3 +338,7 @@ void move::execute(move * last, int *& resource)
 	last->init();
 }
 
+void move::feed(move * c, int i)
+{
+	next = c;
+}

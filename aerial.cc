@@ -25,7 +25,8 @@ void airMove::build(const char * n)
 
 void airMove::feed(move * c, int i)
 {
-	landing = c;
+	if(i == 0) next = c;
+	if(i == 1) landing = c;
 }
 
 airUtility::airUtility(const char * n)

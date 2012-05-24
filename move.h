@@ -40,9 +40,9 @@ public:
 	bool operator>(move*); //Cancel allowed check. Essentially: is move Lvalue allowed given the current state of move Rvalue?
 	void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&);
-	virtual move* land() { return this; }
+	virtual move * land() { return this; }
 	virtual void connect(int *&);
-	virtual void feed(move *, int) {}
+	virtual void feed(move *, int);
 	SDL_Surface * draw(int, bool, int *&);
 
 	hStat *stats;
