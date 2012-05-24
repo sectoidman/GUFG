@@ -175,11 +175,6 @@ void interface::resolve()
 			p[1]->enforceGravity(grav, floor);
 		}
 
-		if(p[0]->pick->cMove->state[p[0]->pick->cMove->cFlag].i & 1 && p[0]->pick->cMove != p[0]->pick->airNeutral) 
-			p[0]->checkFacing(p[1]);
-		if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1 && p[1]->pick->cMove != p[1]->pick->airNeutral) 
-			p[1]->checkFacing(p[0]);
-		
 		dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +
 			p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall) );
 		p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
@@ -188,6 +183,12 @@ void interface::resolve()
 		if (aux::checkCollision(p[0]->collision, p[1]->collision)){
 			unitCollision();
 		}
+		
+		if(p[0]->pick->cMove->state[p[0]->pick->cMove->cFlag].i & 1 && p[0]->pick->cMove != p[0]->pick->airNeutral) 
+			p[0]->checkFacing(p[1]);
+		if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1 && p[1]->pick->cMove != p[1]->pick->airNeutral) 
+			p[1]->checkFacing(p[0]);
+		
 		
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }

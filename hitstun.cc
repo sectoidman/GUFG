@@ -3,6 +3,7 @@
 void hitstun::init(int n)
 {	
 	counter = n;
+	cFlag = 0;
 }
 
 void hitstun::step(int *& resource)
