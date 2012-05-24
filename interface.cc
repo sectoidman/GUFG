@@ -387,6 +387,7 @@ void interface::resolveHits()
 			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
 				if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
 					hit[i] = 1;
+					p[i]->pick->cMove->pollStats(s[i]);
 					k = p[(i+1)%2]->regComplexity;
 					j = p[i]->hitComplexity;
 				}
@@ -395,9 +396,13 @@ void interface::resolveHits()
 	}
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
-			p[i]->connect(combo[i]);
-			p[i]->pick->cMove->pollStats(s[i]);
-			combo[i] += p[(i+1)%2]->takeHit(s[i]);
+			p[i]->connect(combo[i], s[i]);
+		}
+	}
+	for(int i = 0; i < 2; i++){ 
+		if(hit[i]){
+			combo[i] += p[(i+1)%2]->takeHit(combo[i], s[i]);
+			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 		}
 	}
 }

@@ -42,6 +42,8 @@ public:
 	virtual void step(int *&);
 	virtual move * land() { return this; }
 	virtual void connect(int *&);
+	virtual bool takeHit(hStat&); 
+
 	virtual void feed(move *, int);
 	SDL_Surface * draw(int, bool, int *&);
 
@@ -105,6 +107,7 @@ public:
 	int counter;
 	virtual void step(int *&);
 	virtual void blockSuccess(int);
+	virtual bool takeHit(hStat &);
 	hitstun(char *, int);
 	hitstun(const char *);
 };

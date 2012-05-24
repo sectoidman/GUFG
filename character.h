@@ -23,6 +23,8 @@ public:
 	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
 	virtual void init();
 	virtual void tick();
+	virtual void connect(hStat&);
+	virtual int takeHit(hStat&);
 	virtual move * createMove(char*, char*);
 	//BRB prepping my hooks
 

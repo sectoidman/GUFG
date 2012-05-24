@@ -28,8 +28,8 @@ public:
 	void spriteInit();
 	void pullVolition();
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
-	int takeHit(hStat&);
-	void connect(int);
+	int takeHit(int, hStat&);
+	void connect(int, hStat&);
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
 	int hitComplexity, regComplexity, momentumComplexity;

@@ -27,6 +27,9 @@ character::character()
 	crouch = new looping("White/NL");
 	head->insert(neutral);
 
+	airNeutral = new airLooping("White/NS");
+	airNeutral->feed(neutral, 1);
+
 	head->insert(4, new utility("White/WQ"));
 	head->insert(6, new utility("White/W"));
 
@@ -243,3 +246,34 @@ void character::tick()
 		meter[2] = 1;
 	}
 }
+
+void character::connect(hStat & s)
+{
+	cMove->connect(meter);
+	freeze = s.stun/4+10;
+}
+
+int character::takeHit(hStat & s)
+{
+
+	freeze = s.stun/4+10;
+
+	if(cMove->takeHit(s))
+	{
+		if(s.launch) aerial = 1;
+		health -= s.damage; 
+		if(health < 0) health = 0;
+		if(aerial){
+			fall->init(s.stun+s.untech);
+			cMove = fall;
+		} else if(cMove->crouch){
+			crouchReel->init(s.stun+2);
+			cMove = crouchReel;
+		} else {
+			reel->init(s.stun);
+			cMove = reel;
+		}
+		return 1;
+	} else return 0;
+}
+

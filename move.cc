@@ -342,3 +342,12 @@ void move::feed(move * c, int i)
 {
 	next = c;
 }
+
+bool move::takeHit(hStat & s)
+{
+	if(s.blockMask.i & blockState.i) return 0;
+	else{
+		init();
+		return 1;
+	}
+}
