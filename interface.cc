@@ -116,8 +116,8 @@ void interface::roundInit()
 		negEdge[1][i] = 0;
 	}
 
-	combo1 = 0;
-	combo2 = 0;
+	combo[0] = 0;
+	combo[1] = 0;
 	grav = 3;
 	timer = 5824;
 	p[0]->facing = 1;
@@ -192,8 +192,8 @@ void interface::resolve()
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 	
-		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo2 = 0;
-		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo1 = 0;
+		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo[1] = 0;
+		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo[0] = 0;
 	
 		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
@@ -395,8 +395,9 @@ void interface::resolveHits()
 	}
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
-			printf("Player %i connected\n", i+1);
+			p[i]->connect(combo[i]);
 			p[i]->pick->cMove->pollStats(s[i]);
+			combo[i] += p[(i+1)%2]->takeHit(s[i]);
 		}
 	}
 }

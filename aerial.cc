@@ -11,10 +11,10 @@ airMove::airMove(const char * n)
 	init();
 }
 
-void airMove::land(move *& c)
+move * airMove::land()
 {
 	init();
-	c = landing;
+	return landing;
 }
 
 void airMove::build(const char * n)
@@ -23,7 +23,7 @@ void airMove::build(const char * n)
 	landing = NULL;
 }
 
-void airMove::setLR(move * c)
+void airMove::feed(move * c, int i)
 {
 	landing = c;
 }

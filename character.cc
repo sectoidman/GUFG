@@ -111,6 +111,34 @@ void character::build(const char* n)
 	read.open(buffer);
 	assert(!read.fail());
 	read.get(name, 50); read.ignore(100, '\n');
+
+	sprintf(buffer, "%s/NS", name);
+	neutral = new looping(buffer);
+
+	sprintf(buffer, "%s/NL", name);
+	crouch = new looping(buffer);
+
+	sprintf(buffer, "%s/NJ", name);
+	airNeutral = new airLooping(buffer);
+
+	sprintf(buffer, "%s/HS", name);
+	reel = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/UT", name);
+	fall = new hitstun(buffer);
+
+	sprintf(buffer, "%s/HL", name);
+	crouchReel = new hitstun(buffer);
+
+	sprintf(buffer, "%s/BH", name);
+	standBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BL", name);
+	crouchBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BA", name);
+	airBlock = new hitstun(buffer);	
+
 	while(!read.eof()){
 		commentFlag = 0;
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
@@ -155,37 +183,13 @@ void character::build(const char* n)
 	}
 	read.close();	
 
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
 	head->insert(5, neutral);
 	
-	sprintf(buffer, "%s/NL", name);
-	crouch = new looping(buffer);
 	head->insert(2, crouch);
 	head->insert(3, crouch);
 	head->insert(1, crouch);
 
-	sprintf(buffer, "%s/NJ", name);
-	airNeutral = new airLooping(buffer);
-	airHead->insert(airNeutral);
-
-	sprintf(buffer, "%s/HS", name);
-	reel = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/UT", name);
-	fall = new hitstun(buffer);
-
-	sprintf(buffer, "%s/HL", name);
-	crouchReel = new hitstun(buffer);
-
-	sprintf(buffer, "%s/BH", name);
-	standBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BL", name);
-	crouchBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);	
+	airHead->insert(5, airNeutral);
 }
 
 void character::init(){
@@ -222,6 +226,7 @@ move * character::createMove(char * type, char * moveName)
 		break;
 	case 'j':
 		m = new airMove(moveName);
+		m->feed(neutral, 1);
 		break;	
 	default:
 		m = new move(moveName);
