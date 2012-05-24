@@ -40,9 +40,8 @@ public:
 	SDL_Surface *background, *screen;
 	SDL_Rect bg;
 	int grav; 			//Gravitational constant. 
-	bool fullscreen;		//For use with later.
-	int combo1;
-	int combo2;
+	bool fullscreen;		//For use with later
+	int combo[2];
 	int numRounds;
 	bool gameover;
 

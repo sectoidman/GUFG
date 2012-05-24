@@ -33,14 +33,9 @@ move::~move()
 	if(deltaComplexity) delete [] deltaComplexity;
 	if(delta) delete [] delta;
 	if(state) delete [] state;
-	if(blockMask) delete [] blockMask;
-	if(lift) delete [] lift;
-	if(damage) delete [] damage;
-	if(stun) delete [] stun;
 	if(totalStartup) delete [] totalStartup;
-	if(push) delete [] push;
-	if(gain) delete [] gain;
 	if(name) delete [] name;
+	if(stats) delete [] stats;
 }
 
 void move::build(const char * n)
@@ -74,13 +69,10 @@ void move::build(const char * n)
 	
 	if(hits > 0) {
 		totalStartup = new int[hits];
-		damage = new int[hits];
-		stun = new int[hits]; 
-		push = new int[hits]; 
-		lift = new int[hits]; 
-		blockMask = new blockField[hits]; 
+		stats = new hStat[hits];
 	} else {
-		blockMask = NULL; lift = NULL; push = NULL; stun = NULL; damage = NULL; totalStartup = NULL;
+		totalStartup = NULL;
+		stats = NULL;
 	}
 	int active[hits];
 
@@ -107,22 +99,22 @@ void move::build(const char * n)
 	
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
-		read >> damage[i];
+		read >> stats[i].damage;
 	}
 	
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
-		read >> stun[i];
+		read >> stats[i].stun;
 	}
 	
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
-		read >> push[i];
+		read >> stats[i].push;
 	}
 
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
-		read >> lift[i];
+		read >> stats[i].lift;
 	}
 	
 	for(int i = 0; i < hits+1; i++){
@@ -135,7 +127,7 @@ void move::build(const char * n)
 
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
-		read >> blockMask[i].i;
+		read >> stats[i].blockMask.i;
 	}
 	
 	while(read.get() != ':'); read.ignore();
@@ -145,13 +137,13 @@ void move::build(const char * n)
 	read.getline(buffer, 100);
 /*Debug*/
 //	printf("%s properties: %s\n", name, buffer);
-	launch = 0;
 	stop = 0;
 	crouch = 0;
+	int ch = 0;
 	for(unsigned int i = 0; i < strlen(buffer); i++){
 		switch(buffer[i]){
 		case '^': 
-			launch = 1;
+			stats[ch].launch = 1;
 			break;
 		case 's':
 			stop = 1;
@@ -161,6 +153,9 @@ void move::build(const char * n)
 			break;
 		case 'c':
 			crouch = 1;
+			break;
+		case ':':
+			ch++;
 			break;
 		default:
 			break;
@@ -285,6 +280,17 @@ void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 	}
 }
 
+void move::pollStats(hStat & s)
+{
+	s.damage = stats[currentHit].damage;
+	s.stun = stats[currentHit].stun;
+	s.push = stats[currentHit].push;
+	s.lift = stats[currentHit].lift;
+	s.untech = stats[currentHit].untech;
+	s.launch = stats[currentHit].launch;
+	s.blockMask.i = stats[currentHit].blockMask.i;	
+}
+
 bool move::operator>(move * x)
 {	
 	if(x == NULL) return 1;
@@ -332,3 +338,16 @@ void move::execute(move * last, int *& resource)
 	last->init();
 }
 
+void move::feed(move * c, int i)
+{
+	next = c;
+}
+
+bool move::takeHit(hStat & s)
+{
+	if(s.blockMask.i & blockState.i) return 0;
+	else{
+		init();
+		return 1;
+	}
+}

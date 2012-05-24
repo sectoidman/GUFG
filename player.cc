@@ -263,7 +263,8 @@ void player::checkCorners(int floor, int left, int right)
 				pick->standBlock->init(pick->airBlock->counter);
 				pick->cMove = pick->standBlock;
 			} else { 
-				if(pick->cMove) pick->cMove->land(pick->cMove);
+				pick->cMove = pick->cMove->land();
+//				printf("P%i landed!\n", ID);
 				if(!pick->cMove) pick->cMove = pick->neutral;
 			}
 			pick->aerial = 0; 
@@ -440,12 +441,33 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 
 player::~player(){}
 
-void player::giveHit(player* other)
+void player::connect(int combo, hStat & s)
 {
-
+//	printf("Hit with %s!\n", pick->cMove->name);
+	SDL_Rect v;
+	if(combo < 2) v.x = 0;
+	else if (!pick->aerial) v.x = -combo;
+	v.w = 1;
+	v.h = 0;
+	v.y = 0;
+	addVector(v);
+	pick->connect(s);
 }
 
-void player::takeHit(move* attack)
+int player::takeHit(int combo, hStat & s)
 {
-
+	SDL_Rect v;
+	pick->takeHit(s);
+	deltaX = 0; deltaY = 0; momentumComplexity = 0;
+	if(pick->aerial){
+		printf("Air!\n");
+		v.y = -s.lift;
+	}
+	else v.y = 0;
+	if(pick->aerial) v.x = -(s.push/5+1);
+	else v.x = -s.push;
+	v.w = 1;
+	v.h = 0;
+	addVector(v);
+	return 1;
 }

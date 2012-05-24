@@ -27,6 +27,9 @@ character::character()
 	crouch = new looping("White/NL");
 	head->insert(neutral);
 
+	airNeutral = new airLooping("White/NS");
+	airNeutral->feed(neutral, 1);
+
 	head->insert(4, new utility("White/WQ"));
 	head->insert(6, new utility("White/W"));
 
@@ -65,84 +68,11 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-int character::takeHit(character * attacker, SDL_Rect &pushVector, int combo)
-{
-	move *attack = attacker->cMove;
-	/*All the important logic like blocking and stuff will go here later.*/
-	cMove->init();
-	int ct = 0;
-	int dmg;
-	/*Damage scaling logic will factor into this later*/
-	if(attack->cFlag <= attack->currentHit){
-		if(cMove->blockState.i & attack->blockMask[attack->currentHit].i){
-		/*Do blocking stuff. Specifically, we need to put the player in
-		block stun, a state in which they're frozen in the last block animation until blockstun ends.
-		During blockstun, generally the option available to everyone is to switch blocks, so as not
-		to allow mixup to be guaranteed. Some games have options like Alpha Counters (Any attack out of blockstun) 
-		or Rolls (Invulnerable movement option) that cost meter but can break out of blockstun state. These can
-		be universal or character-specific. Notably, characters are throw-invulnerable during blockstun,
-		for what should be obvious reasons. In MOST games, characters remain throw-invuln for a few frames after
-		coming out of blockstun.
-		*/
-			cMove->blockSuccess(attack->stun[attack->currentHit]);
-			printf("Block!\n");
-		}
-		else{
-		/*Do hitstun stuff. Specifically, the player needs to be put in a "hitstun" state for a number
-		of frames defined by the stun of the attacking move. Blockstun may be separate, or a function of the same
-		number. The hitstun state while standing generally has a "reeling" animation that can affect what hits them,
-		but unless we have a "burst-like" option, no actions can be taken by a player during hitstun. There will probably
-		also be a "launch" property, which knocks a grounded player into the air if hit by certain moves.
-		In the air, hitstun is slightly different. There is a "falling" animation the character is in, and they are launched
-		a little bit by any further move that hits them. Generally, there's some option to get out of aerial hitstun, most
-		easily referred to as a "Tech." Therefore, while falling state persists until they hit the ground, there's an amount of
-		"untechable" time associated with any move that hits them. This is not functionally different from hitstun in any other way.
-		*/
-			if(cMove == reel || cMove == fall || cMove == crouchReel) ct++;
-			if(!aerial && attack->launch) aerial = 1;
-			if(aerial){
-				pushVector.y = -(attack->lift[attack->currentHit]);
-				fall->init(attack->stun[attack->currentHit] - combo);
-				cMove = fall;
-			} else {
-				if(cMove->crouch){
-					crouchReel->init(attack->stun[attack->currentHit]+2);
-					cMove = crouchReel;
-				} else {
-					reel->init(attack->stun[attack->currentHit]);
-					cMove = reel;
-				}
-			}
-
-			//This will probably change, but it's the simplest possible damage scaling algorithm
-			dmg = (attack->damage[attack->currentHit] - combo);
-
-			//This won't change. Minimum damage per hit is 1.
-			if(dmg <= 0) dmg = 1;
-			health -= dmg;
-			if(health < 0){
-				health = 0; //Healthbar can't go below 0;
-				//Reckon other KO stuff;
-			}
-		}
-		if(aerial) pushVector.x = -(attack->push[attack->currentHit]/5);
-		else if (cMove == crouchReel) pushVector.x = -(attack->push[attack->currentHit]);
-		
-		else pushVector.x = -(attack->push[attack->currentHit]);
-		
-		attack->connect(attacker->meter); //Tell the attack it's connected.
-	}
-	freeze = 10 + attack->stun[attack->currentHit] / 10; //For now this is the simple formula for freeze. Eventually it might be changed, or made a separate parameter
- 	return ct;
-	/*Eventually the plan is to have this return a combo count. This not only allows us to display a counter and do whatever scaling/combo 
-	mitigation we want to, but also allows us to do things like pushback ramping during blockstrings*/
-}
-
 void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 {
 	move * t = NULL;
 	if (cMove == NULL) {
-		if(aerial) cMove = /*air*/neutral;
+		if(aerial) cMove = airNeutral;
 		else cMove = neutral;
 	}
 	
@@ -184,6 +114,35 @@ void character::build(const char* n)
 	read.open(buffer);
 	assert(!read.fail());
 	read.get(name, 50); read.ignore(100, '\n');
+
+	sprintf(buffer, "%s/NS", name);
+	neutral = new looping(buffer);
+
+	sprintf(buffer, "%s/NL", name);
+	crouch = new looping(buffer);
+
+	sprintf(buffer, "%s/NJ", name);
+	airNeutral = new airLooping(buffer);
+	airNeutral->feed(neutral, 1);
+
+	sprintf(buffer, "%s/HS", name);
+	reel = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/UT", name);
+	fall = new hitstun(buffer);
+
+	sprintf(buffer, "%s/HL", name);
+	crouchReel = new hitstun(buffer);
+
+	sprintf(buffer, "%s/BH", name);
+	standBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BL", name);
+	crouchBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BA", name);
+	airBlock = new hitstun(buffer);	
+
 	while(!read.eof()){
 		commentFlag = 0;
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
@@ -228,37 +187,13 @@ void character::build(const char* n)
 	}
 	read.close();	
 
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
 	head->insert(5, neutral);
 	
-	sprintf(buffer, "%s/NL", name);
-	crouch = new looping(buffer);
 	head->insert(2, crouch);
 	head->insert(3, crouch);
 	head->insert(1, crouch);
 
-	sprintf(buffer, "%s/NJ", name);
-	airNeutral = new airLooping(buffer);
-	airHead->insert(airNeutral);
-
-	sprintf(buffer, "%s/HS", name);
-	reel = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/UT", name);
-	fall = new hitstun(buffer);
-
-	sprintf(buffer, "%s/HL", name);
-	crouchReel = new hitstun(buffer);
-
-	sprintf(buffer, "%s/BH", name);
-	standBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BL", name);
-	crouchBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);	
+	airHead->insert(5, airNeutral);
 }
 
 void character::init(){
@@ -295,6 +230,7 @@ move * character::createMove(char * type, char * moveName)
 		break;
 	case 'j':
 		m = new airMove(moveName);
+		m->feed(neutral, 1);
 		break;	
 	default:
 		m = new move(moveName);
@@ -310,3 +246,34 @@ void character::tick()
 		meter[2] = 1;
 	}
 }
+
+void character::connect(hStat & s)
+{
+	cMove->connect(meter);
+	freeze = s.stun/4+10;
+}
+
+int character::takeHit(hStat & s)
+{
+
+	freeze = s.stun/4+10;
+
+	if(cMove->takeHit(s))
+	{
+		if(s.launch) aerial = 1;
+		health -= s.damage; 
+		if(health < 0) health = 0;
+		if(aerial){
+			fall->init(s.stun+s.untech);
+			cMove = fall;
+		} else if(cMove->crouch){
+			crouchReel->init(s.stun+2);
+			cMove = crouchReel;
+		} else {
+			reel->init(s.stun);
+			cMove = reel;
+		}
+		return 1;
+	} else return 0;
+}
+

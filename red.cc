@@ -90,6 +90,7 @@ move * red::createMove(char * type, char * moveName)
 		break;
 	case 'j':
 		m = new airMove(moveName);
+		m->feed(neutral, 1);
 		break;
 	case '!':
 //		if(type[1] == 'j') m = new airSuper(moveName); else

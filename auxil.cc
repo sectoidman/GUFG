@@ -221,8 +221,9 @@ void aux::apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destinat
 
 bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 {
+	if(a.h == 0 || a.w == 0 || b.h == 0 || b.w == 0) return 0;
 	if(a.y + a.h - b.y <= 0 || b.y + b.h - a.y <= 0) return 0;
-	if(a.x + a.w - b.x < 0 || b.x + b.w - a.x < 0) return 0;
+	if(a.x + a.w - b.x <= 0 || b.x + b.w - a.x <= 0) return 0;
 	return 1;
 }
 

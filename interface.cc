@@ -116,8 +116,8 @@ void interface::roundInit()
 		negEdge[1][i] = 0;
 	}
 
-	combo1 = 0;
-	combo2 = 0;
+	combo[0] = 0;
+	combo[1] = 0;
 	grav = 3;
 	timer = 5824;
 	p[0]->facing = 1;
@@ -192,8 +192,8 @@ void interface::resolve()
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 	
-		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo2 = 0;
-		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo1 = 0;
+		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo[1] = 0;
+		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo[0] = 0;
 	
 		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
@@ -380,64 +380,29 @@ void interface::unitCollision()
 
 void interface::resolveHits()
 {
-	move * temp1 = p[0]->pick->cMove;
-	move * temp2 = p[1]->pick->cMove;
-	bool hit1 = 0;
-	bool hit2 = 0;
-	SDL_Rect v; 
-
-	for(int i = 0; i < p[1]->regComplexity; i++){
-		for(int j = 0; j < p[0]->hitComplexity; j++){
-			if(p[0]->hitbox[j].w > 0 && p[1]->hitreg[i].w > 0){
-				if(aux::checkCollision(p[0]->hitbox[j], p[1]->hitreg[i])) {
-					combo1 += p[1]->pick->takeHit(p[0]->pick, v, combo1);
-					if(combo1 > 0) printf("p1: %i-hit combo\n", combo1+1);
-					p[0]->pick->freeze = 10 + temp1->stun[temp1->currentHit] / 10;
-					hit2 = 1;
-					i = p[1]->regComplexity;
-					j = p[0]->hitComplexity;
-					v.w = 1; v.h = 0;
-					p[1]->momentumComplexity = 0;
-					p[1]->deltaX = 0; p[1]->deltaY = 0;
-					if(p[0]->rCorner || p[0]->lCorner) v.x += -combo1*2;
-					p[1]->addVector(v);
-					if(!p[0]->pick->aerial){
-						if(p[1]->rCorner || p[1]->lCorner) v.x -= combo1;
-						else v.x = -combo1*2;
-					} else v.x = 0;
-					v.y = 0;
-					p[0]->addVector(v);
-					p[0]->checkFacing(p[1]);
+	hStat s[2];
+	bool hit[2] = {0, 0};
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < p[i]->hitComplexity; j++){
+			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
+				if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
+					hit[i] = 1;
+					p[i]->pick->cMove->pollStats(s[i]);
+					k = p[(i+1)%2]->regComplexity;
+					j = p[i]->hitComplexity;
 				}
 			}
 		}
 	}
-	for(int i = 0; i < p[0]->regComplexity; i++){
-		for(int j = 0; j < p[1]->hitComplexity; j++){
-			if(p[1]->hitbox[j].w > 0 && p[0]->hitreg[i].w > 0){
-				if(aux::checkCollision(p[1]->hitbox[j], p[0]->hitreg[i])) {
-					combo2 += p[0]->pick->takeHit(p[1]->pick, v, combo2);
-					if(combo2 > 0) printf("p2: %i-hit combo\n", combo2+1);
-					p[1]->pick->freeze = 10 + temp2->stun[temp2->currentHit] / 10;
-					hit1 = 1;
-					i = p[0]->regComplexity;
-					j = p[1]->hitComplexity;
-					v.w = 1; v.h = 0;
-					p[0]->momentumComplexity = 0;
-					p[0]->deltaX = 0; p[0]->deltaY = 0;
-					if(p[1]->rCorner || p[1]->lCorner) v.x -= combo2*2;
-					p[0]->addVector(v);
-					if(!p[1]->pick->aerial){
-						if(p[0]->rCorner || p[0]->lCorner) v.x -= combo2;
-						else v.x = -combo2*2;
-					} else v.x = 0;
-					v.y = 0;
-					p[1]->addVector(v);
-					p[1]->checkFacing(p[0]);
-				}
-			}
+	for(int i = 0; i < 2; i++){ 
+		if(hit[i]){
+			p[i]->connect(combo[i], s[i]);
 		}
 	}
-	if(hit2) temp2->init();
-	if(hit1) temp1->init();
+	for(int i = 0; i < 2; i++){ 
+		if(hit[i]){
+			combo[i] += p[(i+1)%2]->takeHit(combo[i], s[i]);
+			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
+		}
+	}
 }

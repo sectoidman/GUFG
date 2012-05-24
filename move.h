@@ -9,6 +9,17 @@
 #include "auxil.h"
 #include "masks.h"
 
+struct hStat{
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), launch(0) {} 
+	int damage;          //How much damage the move does
+	int stun;            //How much stun the move does
+	int push;            //How much pushback the move does
+	int lift;            //How much the move lifts an aerial opponent.
+	int untech;
+	bool launch;
+	blockField blockMask;
+};
+
 class move{
 public:
 	move();
@@ -25,27 +36,27 @@ public:
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
+	void pollStats(hStat&);
 	bool operator>(move*); //Cancel allowed check. Essentially: is move Lvalue allowed given the current state of move Rvalue?
 	void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&);
-	virtual void land(move *&) {}
+	virtual move * land() { return this; }
 	virtual void connect(int *&);
+	virtual bool takeHit(hStat&); 
+
+	virtual void feed(move *, int);
 	SDL_Surface * draw(int, bool, int *&);
 
-	bool launch;         //Whether or not the move launches on hit
+	hStat *stats;
 	int stop;
 	bool crouch; 
 
 	//Properties of a hit. These will only exist for moves that hit.
-	int *damage;          //How much damage the move does
-	int *stun;            //How much stun the move does
-	int *push;            //How much pushback the move does
-	int *lift;            //How much the move lifts an aerial opponent.
-
+	
 	//Low, High, Air Block. Basically a 3-digit binary number expressed as an integer from 0-7.
 	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask
 
-	blockField *blockMask, blockState;
+	blockField blockState;
 
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
@@ -94,8 +105,9 @@ public:
 	hitstun() {}
 	void init(int);
 	int counter;
-	void step(int *&);
-	void blockSuccess(int);
+	virtual void step(int *&);
+	virtual void blockSuccess(int);
+	virtual bool takeHit(hStat &);
 	hitstun(char *, int);
 	hitstun(const char *);
 };
@@ -119,18 +131,17 @@ class looping : virtual public utility {
 public:
 	looping() {}
 	looping(const char*);
-	void step(int *&);
+	virtual void step(int *&);
 };
 
 class airMove : virtual public move {
 public:
 	airMove() {}
 	airMove(const char*);
-	void build (const char *);
-	void land(move *&);
+	virtual void build (const char *);
+	virtual move * land();
+	virtual void feed(move *, int);
 	move * landing;
-private:
-	void setLR(move *);
 };
 
 class airSpecial : public airMove, public special {
@@ -187,9 +198,5 @@ class super : public special {
 public:
 	super() {}
 	super(const char*);
-	virtual bool check(bool a[], bool b[], int c, int d, int * e) 
-		{ return special::check(a, b, c, d, e); }
-	void execute(move *, int *&);
-	void defineSuperFreeze();
 	int superFreeze;
 };
