@@ -264,7 +264,7 @@ void player::checkCorners(int floor, int left, int right)
 				pick->cMove = pick->standBlock;
 			} else { 
 				pick->cMove = pick->cMove->land();
-				printf("P%i landed!\n", ID);
+//				printf("P%i landed!\n", ID);
 				if(!pick->cMove) pick->cMove = pick->neutral;
 			}
 			pick->aerial = 0; 
@@ -443,7 +443,7 @@ player::~player(){}
 
 void player::connect(int p)
 {
-	printf("Hit with %s!\n", pick->cMove->name);
+//	printf("Hit with %s!\n", pick->cMove->name);
 	SDL_Rect v;
 	if(p < 2) v.x = 0;
 	else v.x = -p;
@@ -455,6 +455,6 @@ void player::connect(int p)
 
 int player::takeHit(hStat & s)
 {
-	printf("Got hit during %s!\n", pick->cMove->name);
+//	printf("Got hit during %s!\n", pick->cMove->name);
 	return 1;
 }
