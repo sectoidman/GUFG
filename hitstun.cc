@@ -29,3 +29,9 @@ hitstun::hitstun(const char * n)
 	build(n);
 	currentFrame = 0;
 }
+
+int hitstun::arbitraryPoll(int q)
+{
+	if(q == 1) return counter;
+	else return 0;
+}

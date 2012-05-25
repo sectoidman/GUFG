@@ -8,7 +8,7 @@ yellow::yellow(){
 	delete crouchBlock;
 	delete airBlock;
 	delete reel;
-	delete fall;
+	delete untech;
 	delete crouchReel;
 	head = new moveTrie;
 	airHead = new moveTrie;

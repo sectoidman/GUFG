@@ -34,7 +34,7 @@ public:
 	move * airNeutral;
 	move * crouch;
 	hitstun * reel;
-	hitstun * untech;
+	untechState * untech;
 	airLooping * fall;
 	utility * down;
 	airMove * tech;

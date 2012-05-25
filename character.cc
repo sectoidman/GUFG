@@ -34,7 +34,7 @@ character::character()
 	head->insert(6, new utility("White/W"));
 
 	reel = new hitstun("White/HS");
-	untech = new hitstun("White/UT");
+	untech = new untechState("White/UT");
 	crouchReel = new hitstun("White/HL");
 
 	airBlock = new hitstun("White/BA");
@@ -132,13 +132,13 @@ void character::build(const char* n)
 	fall = new airLooping(buffer);
 	
 	sprintf(buffer, "%s/UT", name);
-	untech = new hitstun(buffer);
+	untech = new untechState(buffer);
 	untech->feed(fall, 0);
 
 	sprintf(buffer, "%s/down", name);
 	down = new utility(buffer);
+	untech->feed(down, 1);
 	fall->feed(down, 1);
-	printf("Fall lands to %s\n", fall->landing->name);
 
 	sprintf(buffer, "%s/TechA", name);
 	tech = new airMove(buffer);

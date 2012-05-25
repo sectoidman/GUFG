@@ -53,3 +53,9 @@ airLooping::airLooping(const char * n)
 	airMove::build(n);
 	airMove::init();
 }
+
+untechState::untechState(const char* n)
+{
+	airMove::build(n);
+	currentFrame = 0;
+}

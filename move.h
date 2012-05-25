@@ -33,6 +33,7 @@ public:
 	virtual void execute(move *, int *&);
 	virtual bool check(bool[], bool[], int, int, int[]); //Check to see if the move is possible right now.
 	virtual void blockSuccess(int);
+	virtual int arbitraryPoll(int q) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
@@ -100,7 +101,7 @@ public:
 	SDL_Surface **sprite, **fSprite;
 };
 
-class hitstun : public move {
+class hitstun : virtual public move {
 public:
 	hitstun() {}
 	void init(int);
@@ -108,6 +109,7 @@ public:
 	virtual void step(int *&);
 	virtual void blockSuccess(int);
 	virtual bool takeHit(hStat &);
+	virtual int arbitraryPoll(int);
 	hitstun(char *, int);
 	hitstun(const char *);
 };
@@ -143,6 +145,13 @@ public:
 	virtual void feed(move *, int);
 	move * landing;
 };
+
+class untechState : public airMove, public hitstun {
+public:
+	untechState() {}
+	untechState(const char*);
+};
+
 
 class airSpecial : public airMove, public special {
 public:

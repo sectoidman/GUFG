@@ -5,10 +5,10 @@ Frames: 36 : 21 : 3 : 12
 Check: 129
 State: 256 : 258 
 Damage: 38
-Stun: 19
-Untech: 0
+Stun: 13
+Untech: 15
 Push: 2
-Lift: 13
+Lift: 20
 Gain: 3 : 5
 Cost: 0
 Blockable: 2 

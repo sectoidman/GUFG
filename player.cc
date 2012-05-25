@@ -214,7 +214,7 @@ void player::checkBlocking()
 {
 	int st;
 	if(pick->cMove == pick->airBlock || pick->cMove == pick->standBlock || pick->cMove == pick->crouchBlock)
-		st = ((hitstun*)pick->cMove)->counter;
+		st = pick->cMove->arbitraryPoll(1);
 	else st = 0;
 
 	switch(inputBuffer[0]){
@@ -451,6 +451,7 @@ int player::takeHit(int combo, hStat & s)
 {
 	SDL_Rect v;
 	pick->takeHit(s);
+	s.untech -= combo;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
 	else v.y = 0;
