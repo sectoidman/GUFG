@@ -6,6 +6,7 @@ Check: 1
 State: 256 : 510
 Damage: 10
 Stun: 10
+Untech: 0
 Push: 1
 Lift: 3
 Gain: 0 : 15

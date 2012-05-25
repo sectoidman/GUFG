@@ -36,7 +36,8 @@ public:
 	hitstun * reel;
 	hitstun * untech;
 	airLooping * fall;
-	airUtility * tech;
+	utility * down;
+	airMove * tech;
 	hitstun * crouchReel;
 	hitstun * crouchBlock;
 	hitstun * standBlock;

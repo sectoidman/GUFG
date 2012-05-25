@@ -135,8 +135,13 @@ void character::build(const char* n)
 	untech = new hitstun(buffer);
 	untech->feed(fall, 0);
 
+	sprintf(buffer, "%s/down", name);
+	down = new utility(buffer);
+	fall->feed(down, 1);
+	printf("Fall lands to %s\n", fall->landing->name);
+
 	sprintf(buffer, "%s/TechA", name);
-	tech = new airUtility(buffer);
+	tech = new airMove(buffer);
 	
 	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);

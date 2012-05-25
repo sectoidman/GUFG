@@ -106,6 +106,11 @@ void move::build(const char * n)
 		while(read.get() != ':'); read.ignore();
 		read >> stats[i].stun;
 	}
+
+	for(int i = 0; i < hits; i++){
+		while(read.get() != ':'); read.ignore();
+		read >> stats[i].untech;
+	}
 	
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
