@@ -437,19 +437,16 @@ player::~player(){}
 void player::connect(int combo, hStat & s)
 {
 //	printf("Hit with %s!\n", pick->cMove->name);
-	SDL_Rect v;
+	SDL_Rect v = {0, 0, 1, 0};
 	if(combo < 2) v.x = 0;
 	else if (!pick->aerial) v.x = -combo;
-	v.w = 1;
-	v.h = 0;
-	v.y = 0;
 	addVector(v);
 	pick->connect(s);
 }
 
 int player::takeHit(int combo, hStat & s)
 {
-	SDL_Rect v;
+	SDL_Rect v = {0, 0, 1, 0};
 	pick->takeHit(s);
 	s.untech -= combo;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
@@ -457,8 +454,6 @@ int player::takeHit(int combo, hStat & s)
 	else v.y = 0;
 	if(pick->aerial) v.x = -(s.push/5+1);
 	else v.x = -s.push;
-	v.w = 1;
-	v.h = 0;
 	addVector(v);
 	return 1;
 }

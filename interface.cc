@@ -191,8 +191,8 @@ void interface::resolve()
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 	
-		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->fall && p[0]->pick->cMove != p[0]->pick->crouchReel) combo[1] = 0;
-		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->fall && p[1]->pick->cMove != p[1]->pick->crouchReel) combo[0] = 0;
+		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->untech && p[0]->pick->cMove != p[0]->pick->crouchReel) combo[1] = 0;
+		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->untech && p[1]->pick->cMove != p[1]->pick->crouchReel) combo[0] = 0;
 	
 		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
@@ -386,6 +386,7 @@ void interface::resolveHits()
 {
 	hStat s[2];
 	bool hit[2] = {0, 0};
+	SDL_Rect residual = {0, 0, 1, 0};
 	for(int i = 0; i < 2; i++){
 		for(int j = 0; j < p[i]->hitComplexity; j++){
 			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
@@ -401,12 +402,21 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
 			p[i]->connect(combo[i], s[i]);
+			if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+				residual.x = -(s[i].push);
+				if(combo[i] > 1) residual.x -= (combo[i]-1);
+				p[i]->addVector(residual);
+			}
 		}
 	}
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
 			combo[i] += p[(i+1)%2]->takeHit(combo[i], s[i]);
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
+			p[i]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 		}
+	}
+	if(hit[0] || hit[1]){
+		unitCollision();
 	}
 }
