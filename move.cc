@@ -200,6 +200,7 @@ void move::build(const char * n)
 			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
 		}
 	}
+	next = NULL;
 	read.close();
 	
 	for(int i = 0; i < 5; i++)

@@ -22,8 +22,10 @@ public:
 	SDL_Surface * draw(int);//Pass sprite information up.
 	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
 	virtual void init();
-	virtual void tick();
+	virtual void resetAirOptions();
+	virtual void tick() {}
 	virtual void connect(hStat&);
+	virtual void land();
 	virtual int takeHit(hStat&);
 	virtual move * createMove(char*, char*);
 	//BRB prepping my hooks

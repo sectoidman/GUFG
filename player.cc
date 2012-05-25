@@ -259,15 +259,8 @@ void player::checkCorners(int floor, int left, int right)
 
 	if (collision.y + collision.h > floor){
 		if(pick->aerial == 1){
-			if(pick->cMove == pick->airBlock){
-				pick->standBlock->init(pick->airBlock->counter);
-				pick->cMove = pick->standBlock;
-			} else { 
-				pick->cMove = pick->cMove->land();
-//				printf("P%i landed!\n", ID);
-				if(!pick->cMove) pick->cMove = pick->neutral;
-			}
-			pick->aerial = 0; 
+			pick->land();
+//			printf("P%i landed!\n", ID);
 			updateRects();
 			hOffset = posY - (collision.y);
 			deltaX = 0;

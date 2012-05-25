@@ -239,14 +239,6 @@ move * character::createMove(char * type, char * moveName)
 	return m;
 }
 
-void character::tick()
-{
-	if(!aerial){
-		meter[1] = 1;
-		meter[2] = 1;
-	}
-}
-
 void character::connect(hStat & s)
 {
 	cMove->connect(meter);
@@ -255,7 +247,6 @@ void character::connect(hStat & s)
 
 int character::takeHit(hStat & s)
 {
-
 	freeze = s.stun/4+10;
 
 	if(cMove->takeHit(s))
@@ -266,6 +257,7 @@ int character::takeHit(hStat & s)
 		if(aerial){
 			fall->init(s.stun+s.untech);
 			cMove = fall;
+			resetAirOptions();
 		} else if(cMove->crouch){
 			crouchReel->init(s.stun+2);
 			cMove = crouchReel;
@@ -277,3 +269,21 @@ int character::takeHit(hStat & s)
 	} else return 0;
 }
 
+void character::resetAirOptions()
+{
+	meter[1] = 1;
+	meter[2] = 1;
+}
+
+void character::land()
+{
+	if(cMove == airBlock){
+		standBlock->init(airBlock->counter);
+		cMove = standBlock;
+	} else { 
+		cMove = cMove->land();
+		if(!cMove) cMove = neutral;
+	}
+	aerial = 0; 
+	resetAirOptions();
+}

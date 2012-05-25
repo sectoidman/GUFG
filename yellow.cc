@@ -21,8 +21,8 @@ void yellow::init()
 	meter[2] = 2;
 }
 
-void yellow::tick()
+void yellow::resetAirOptions()
 {
-	character::tick();
-	if(!aerial) meter[2] = 2;
+	meter[1] = 1;
+	meter[2] = 2;
 }

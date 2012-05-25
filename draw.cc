@@ -89,7 +89,7 @@ SDL_Surface * character::draw(int facing)
 	if(freeze > 0) freeze--;
 	if(cMove->currentFrame == cMove->frames){
 		cMove->init();
-		cMove = NULL;
+		cMove = cMove->next;
 	}
 	return temp;
 }
