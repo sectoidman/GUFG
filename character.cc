@@ -34,7 +34,7 @@ character::character()
 	head->insert(6, new utility("White/W"));
 
 	reel = new hitstun("White/HS");
-	fall = new hitstun("White/UT");
+	untech = new hitstun("White/UT");
 	crouchReel = new hitstun("White/HL");
 
 	airBlock = new hitstun("White/BA");
@@ -127,9 +127,19 @@ void character::build(const char* n)
 
 	sprintf(buffer, "%s/HS", name);
 	reel = new hitstun(buffer);
+
+	sprintf(buffer, "%s/Fall", name);
+	fall = new airLooping(buffer);
 	
 	sprintf(buffer, "%s/UT", name);
-	fall = new hitstun(buffer);
+	untech = new hitstun(buffer);
+	untech->feed(fall, 0);
+
+	sprintf(buffer, "%s/TechA", name);
+	tech = new airUtility(buffer);
+	
+	sprintf(buffer, "%s/BA", name);
+	airBlock = new hitstun(buffer);
 
 	sprintf(buffer, "%s/HL", name);
 	crouchReel = new hitstun(buffer);
@@ -188,6 +198,7 @@ void character::build(const char* n)
 	read.close();	
 
 	head->insert(5, neutral);
+	airHead->insert(tech);
 	
 	head->insert(2, crouch);
 	head->insert(3, crouch);
@@ -255,8 +266,8 @@ int character::takeHit(hStat & s)
 		health -= s.damage; 
 		if(health < 0) health = 0;
 		if(aerial){
-			fall->init(s.stun+s.untech);
-			cMove = fall;
+			untech->init(s.stun+s.untech);
+			cMove = untech;
 			resetAirOptions();
 		} else if(cMove->crouch){
 			crouchReel->init(s.stun+2);

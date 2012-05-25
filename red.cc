@@ -9,7 +9,7 @@ red::red()
 	delete crouchBlock;
 	delete airBlock;
 	delete reel;
-	delete fall;
+	delete untech;
 	delete crouchReel;
 	delete [] meter;
 	

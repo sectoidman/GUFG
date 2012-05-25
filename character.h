@@ -34,7 +34,9 @@ public:
 	move * airNeutral;
 	move * crouch;
 	hitstun * reel;
-	hitstun * fall;
+	hitstun * untech;
+	airLooping * fall;
+	airUtility * tech;
 	hitstun * crouchReel;
 	hitstun * crouchBlock;
 	hitstun * standBlock;
