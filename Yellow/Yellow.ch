@@ -15,5 +15,9 @@ Yellow
 -jqsh = a454 a754 a154
 -slide = h5 h4 h1 h2
 -qsh = h5454
+?NeutralTech = a
+?StopTech = a8
+?ForwardTech = a6 a3 a9
+?BackTech = a4 a1 a7
 qC = h
 #Moves

@@ -1,4 +1,4 @@
-Name: Neutral tech
+Name: Forward tech
 Buffer: 2 : 0
 Hits: 0
 Frames: 3 : 3
@@ -7,16 +7,20 @@ State: 0
 Gain: 0
 Cost: 0
 Blocks: 0
-Properties:
+Properties: S
 #2 
-$C	5 0 55 150
+$C	5 0 55 135
 $R	0 0 0 0
 $D	0 0 0 0
 #1 
-$C	5 0 55 150
+$C	5 0 55 135
+$R	0 0 0 0
+$D	4 -8 2 0
+#1 
+$C	5 0 55 135
 $R	0 0 0 0
 $D	0 0 0 0
 #1 
-$C	5 0 55 150
-$R	5 0 55 150
+$C	5 0 55 135
+$R	5 0 55 135
 $D	0 0 0 0

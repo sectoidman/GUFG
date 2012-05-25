@@ -16,6 +16,10 @@ Red
 -jJQ = a57 a67 a47 a37 a27 a17
 -jwsh = a656 a956 a356
 -jqsh = a454 a754 a154
+?NeutralTech = a
+?BackTech = a4 a7 a1
+?ForwardTech = a6 a9 a3
+?StopTech = a8
 #Moves
 A = h
 B = h

@@ -209,3 +209,11 @@ public:
 	super(const char*);
 	int superFreeze;
 };
+
+class mash : virtual public move {
+public:
+	mash() {}
+	mash(const char* n) {build(n); init();}
+	virtual bool check(bool[], bool[], int, int, int*);
+
+};

@@ -25,3 +25,12 @@ super::super(const char * n)
 	init();
 }
 
+bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource)
+{
+	if(t > tolerance) return 0;
+	if(f > activation) return 0;
+	for(int i = 0; i < 5; i++){
+		if(pos[i]) return 1;
+	}
+	return 0;
+}

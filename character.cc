@@ -143,9 +143,6 @@ void character::build(const char* n)
 	untech->feed(down, 1);
 	fall->feed(down, 1);
 
-	sprintf(buffer, "%s/TechA", name);
-	tech = new airMove(buffer);
-	
 	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);
 
@@ -171,13 +168,13 @@ void character::build(const char* n)
 			commentFlag = 1;
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
-			token = strtok(buffer, " \t-@%$!\n");
+			token = strtok(buffer, " \t-@?%$!\n");
 			sprintf(moveName, "%s/%s", name, token);
 			m = createMove(type, moveName);
-			strtok(buffer2, " \t-%@$!\n");
+			strtok(buffer2, " \t-?%@$!\n");
 			while (token){
 				token = NULL;
-				token = strtok(NULL, " \t=-@%$!\n");
+				token = strtok(NULL, " \t=-?@%$!\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -246,6 +243,9 @@ move * character::createMove(char * type, char * moveName)
 //		if(type[1] == 'j') m = new airSuper(moveName);
 //		else 
 		m = new super(moveName);
+		break;
+	case '?':
+		m = new mash(moveName);
 		break;
 	case 'j':
 		m = new airMove(moveName);
