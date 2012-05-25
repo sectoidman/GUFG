@@ -23,15 +23,18 @@ character::character()
 	airHead = new moveTrie(temp);
 	
 	head->insert(new move("White/B"));
-	neutral = new utility("White/NS");
+	neutral = new looping("White/NS");
 	crouch = new looping("White/NL");
-	head->insert(neutral);
+	head->insert(5, neutral);
+	head->insert(2, crouch);
+	head->insert(1, crouch);
+	head->insert(3, crouch);
 
 	airNeutral = new airLooping("White/NS");
 	airNeutral->feed(neutral, 1);
 
-	head->insert(4, new utility("White/WQ"));
-	head->insert(6, new utility("White/W"));
+	head->insert(4, new looping("White/WQ"));
+	head->insert(6, new looping("White/W"));
 
 	reel = new hitstun("White/HS");
 	untech = new untechState("White/UT");
