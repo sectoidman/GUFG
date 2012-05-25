@@ -61,7 +61,7 @@ character::~character()
 	delete neutral;
 	delete crouch;
 	delete reel;
-	delete fall;
+	delete untech;
 	delete crouchReel;
 	delete crouchBlock;
 	delete standBlock;
