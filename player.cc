@@ -341,11 +341,13 @@ void player::pullVolition()
 				momentumComplexity = 0;
 		}
 	}
-	SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
-	for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
-		if(temp[i].x || temp[i].y || temp[i].h){
-			if(temp[i].h >= top || top == 0){
-				addVector(temp[i]);
+	if(pick->freeze < 1){
+		SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
+		for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
+			if(temp[i].x || temp[i].y || temp[i].h){
+				if(temp[i].h >= top || top == 0){
+					addVector(temp[i]);
+				}
 			}
 		}
 	}

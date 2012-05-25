@@ -207,7 +207,10 @@ class super : public special {
 public:
 	super() {}
 	super(const char*);
-	int superFreeze;
+	virtual int arbitraryPoll(int);
+	void readFreeze(const char*);
+	int freezeFrame;
+	int freezeLength;
 };
 
 class mash : virtual public move {

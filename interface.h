@@ -28,6 +28,7 @@ public:
 	void cSelectMenu();
 	void checkWin();
 	void dragBG(int);
+	void doSuperFreeze();
 	void unitCollision();
 	void resolveHits();
 		

@@ -203,7 +203,6 @@ void character::build(const char* n)
 	read.close();	
 
 	head->insert(5, neutral);
-	airHead->insert(tech);
 	
 	head->insert(2, crouch);
 	head->insert(3, crouch);

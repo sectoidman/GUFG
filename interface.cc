@@ -160,10 +160,11 @@ void interface::resolve()
 
 		p[0]->updateRects();
 		p[1]->updateRects();
-		p[0]->pullVolition();
-		p[1]->pullVolition();
 	
+		doSuperFreeze();
+		p[0]->pullVolition();
 		p[0]->updateRects();
+		p[1]->pullVolition();
 		p[1]->updateRects();
 
 		if(!p[0]->pick->freeze){
@@ -418,5 +419,14 @@ void interface::resolveHits()
 	}
 	if(hit[0] || hit[1]){
 		unitCollision();
+	}
+}
+
+void interface::doSuperFreeze()
+{
+	int go[2];
+	for(int i = 0; i < 2; i++){
+		go[i] = p[i]->pick->cMove->arbitraryPoll(2);
+		if(go[i] > 0) p[(i+1)%2]->pick->freeze += go[i];
 	}
 }
