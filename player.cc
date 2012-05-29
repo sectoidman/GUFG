@@ -459,3 +459,29 @@ int player::takeHit(int combo, hStat & s)
 	addVector(v);
 	return 1;
 }
+
+void player::invertVectors(int operation)
+{
+	switch (operation){
+	case 1:
+		for(int i = 0; i < momentumComplexity; i++)
+			momentum[i].x = -momentum[i].x;
+		break;
+	case 2:
+		for(int i = 0; i < momentumComplexity; i++)
+			momentum[i].y = -momentum[i].y;
+		break;
+	case 3:
+		for(int i = 0; i < momentumComplexity; i++){
+			momentum[i].x = -momentum[i].x;
+			momentum[i].y = -momentum[i].y;
+		}
+		break;
+	default:
+		return;
+		break;
+	}
+
+
+
+}

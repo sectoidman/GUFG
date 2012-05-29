@@ -28,6 +28,7 @@ public:
 	void spriteInit();
 	void pullVolition();
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
+	void invertVectors(int);
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
 

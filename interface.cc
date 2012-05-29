@@ -408,6 +408,7 @@ void interface::resolveHits()
 				if(combo[i] > 1) residual.x -= (combo[i]-1);
 				p[i]->addVector(residual);
 			}
+			if(p[i]->pick->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 	for(int i = 0; i < 2; i++){ 
@@ -415,6 +416,7 @@ void interface::resolveHits()
 			combo[i] += p[(i+1)%2]->takeHit(combo[i], s[i]);
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 			p[i]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[(i+1)%2]->invertVectors(1);
 		}
 	}
 	if(hit[0] || hit[1]){
