@@ -72,7 +72,9 @@ void player::spriteInit()
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
 	
 	/*Doing moves*/
-	sprite = pick->draw(facing);
+//	if(pick->freeze > 0) pick->freeze--;
+//	else 
+		sprite = pick->draw(facing);
 	if(facing == -1) {
 		if(sprite) spr.x = posX - sprite->w;
 	} else {
