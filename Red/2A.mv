@@ -4,14 +4,14 @@ Hits: 1
 Frames: 11 : 4 : 3 : 4
 Check: 5 
 State: 256 : 510
-Damage: 7
+Damage: 5
 Stun: 10
 Untech: 0
 Push: 1
 Lift: 6
 Gain: 0 : 2
 Cost: 0
-Blockable: 2 
+Blockable: 1 
 Blocks: 0
 Properties: c
 #0 

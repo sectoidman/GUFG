@@ -449,12 +449,13 @@ void player::connect(int combo, hStat & s)
 int player::takeHit(int combo, hStat & s)
 {
 	SDL_Rect v = {0, 0, 1, 0};
+	s.damage -= combo; if(s.damage < 1) s.damage = 1;
 	pick->takeHit(s);
 	s.untech -= combo;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
 	else v.y = 0;
-	if(pick->aerial) v.x = -(s.push/5+1);
+	if(pick->aerial) v.x = -(s.push/5);
 	else v.x = -s.push;
 	addVector(v);
 	return 1;
