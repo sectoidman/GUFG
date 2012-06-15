@@ -132,7 +132,7 @@ void redCancel::execute(move * last, int *& resource)
 	resource[1] = 1;
 	resource[2] = 1;
 	resource[3] -= 264;
-	resource[4] = 10;
+	resource[4] = 15;
 	move::execute(last, resource);
 }
 
