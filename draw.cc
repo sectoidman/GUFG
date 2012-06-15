@@ -66,10 +66,16 @@ void interface::draw()
 void player::spriteInit()
 {
 	int realPosY = collision.y;
-	for(int i = 0; i < hitComplexity; i++)
+	int realPosX = 0;
+	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-	for(int i = 0; i < regComplexity; i++)
+		if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+	}
+	for(int i = 0; i < regComplexity; i++){
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
+		if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+	}
+
 	
 	/*Doing moves*/
 //	if(pick->freeze > 0) pick->freeze--;

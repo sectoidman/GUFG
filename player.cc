@@ -486,3 +486,9 @@ void player::invertVectors(int operation)
 
 
 }
+
+bool player::CHState()
+{
+	if(hitbox[0].w > 0) return true;
+	else return pick->cMove->CHState();
+}

@@ -46,6 +46,7 @@ public:
 	virtual bool takeHit(hStat&); 
 
 	virtual void feed(move *, int);
+	bool CHState();
 	SDL_Surface * draw(int, bool, int *&);
 
 	hStat *stats;

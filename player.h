@@ -31,6 +31,7 @@ public:
 	void invertVectors(int);
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
+	bool CHState();
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
 	int hitComplexity, regComplexity, momentumComplexity;

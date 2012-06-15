@@ -357,3 +357,10 @@ bool move::takeHit(hStat & s)
 		return 1;
 	}
 }
+
+bool move::CHState()
+{
+	if(hits < 1) return false;
+	else if(currentFrame < totalStartup[hits-1]) return true;
+	else return false;
+}

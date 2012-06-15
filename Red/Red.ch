@@ -28,6 +28,7 @@ C = h
 2B = h2 h3 h1
 2C = h2 h3 h1
 jA = a
+jC = a
 $236D = h236
 $j214D = a214
 !214E = h214
