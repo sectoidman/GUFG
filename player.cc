@@ -455,7 +455,7 @@ int player::takeHit(int combo, hStat & s)
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
 	else v.y = 0;
-	if(pick->aerial) { v.x = -(s.push/5 + s.blowback); printf("%i\n", -(s.push/5 + s.blowback)); }
+	if(pick->aerial) v.x = -(s.push/5 + s.blowback);
 	else v.x = -s.push;
 	addVector(v);
 	return 1;
