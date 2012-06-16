@@ -28,7 +28,8 @@ set (SOURCES 	keytest.cc
 		utility.cc
 		trie.cc) 
 
-set (CMAKE_CXX_FLAGS "-O2 -g -Wall -Woverloaded-virtual -Wctor-dtor-privacy -Wno-format-contains-nul")
+
+set (CMAKE_CXX_FLAGS "-O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
 
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)

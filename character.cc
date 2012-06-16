@@ -6,7 +6,6 @@
 #include "character.h"
 #include <iostream>
 #include <cstring>
-using namespace std;
 
 character::character()
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
@@ -111,7 +110,7 @@ void character::build(const char* n)
 	char component[2];
 	char * token;
 	int q;
-	ifstream read; 
+	std::ifstream read; 
 	sprintf(buffer, "%s/%s.ch", n, n);
 	
 	read.open(buffer);

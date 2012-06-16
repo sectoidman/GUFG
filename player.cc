@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <fstream>
-using namespace std;
 #include "player.h"
+
 player::player()
 {
 	init();
@@ -54,7 +54,7 @@ bool player::readConfig()
 {
 	char fname[30];
 	sprintf(fname, "Misc/.p%i.conf", ID);
-	ifstream read;
+	std::ifstream read;
 	read.open(fname);
 	if(read.fail()) {
 		read.close();
@@ -102,7 +102,7 @@ void player::writeConfig()
 	char fname[30];
 	printf("Player %i:\n", ID);
 	sprintf(fname, "Misc/.p%i.conf", ID);
-	ofstream write;
+	std::ofstream write;
 	SDL_Event temp; 
 	write.open(fname);
 	/*Set up ALL the inputs*/
