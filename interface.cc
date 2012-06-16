@@ -405,10 +405,11 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
 			if(p[(i+1)%2]->CHState()){
-				s[i].stun += s[i].stun / 4;
-				s[i].untech += s[i].untech / 4;
+				s[i].stun += s[i].stun / 3;
+				s[i].untech += s[i].untech / 3;
 			}
 			p[i]->connect(combo[i], s[i]);
+			if(p[i]->pick->aerial) residual.y = -3;
 			if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 				residual.x = -(s[i].push);
 				if(combo[i] > 1) residual.x -= (combo[i]-1);
