@@ -10,12 +10,13 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), launch(0) {} 
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), launch(0){} 
 	int damage;          //How much damage the move does
 	int stun;            //How much stun the move does
 	int push;            //How much pushback the move does
 	int lift;            //How much the move lifts an aerial opponent.
 	int untech;
+	int blowback;
 	bool launch;
 	blockField blockMask;
 };

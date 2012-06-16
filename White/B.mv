@@ -9,6 +9,7 @@ Stun: 10 : 10
 Untech: 10 : 0 
 Push: 1 : 5
 Lift: 3 : 10
+Blowback: 10 : -10
 Gain: 0 : 5 : 10
 Cost: 0
 Blockable: 3 : 6

@@ -7,8 +7,9 @@ State: 0 : 0
 Damage: 60
 Stun: 15
 Untech: 15
-Push: 50
+Push: 25
 Lift: 25
+Blowback: 40
 Gain: 0 : 0
 Cost: 100
 Blockable: 3 
