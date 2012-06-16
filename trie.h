@@ -12,7 +12,6 @@
 #include <iostream>
 #include <fstream>
 
-using namespace std;
 
 /*Move trie class. Essentially a recursive trie-search algorithm that looks for input hooks*/
 
