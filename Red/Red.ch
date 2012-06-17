@@ -29,6 +29,7 @@ C = h
 2C = h2 h3 h1
 2D = h2 h3 h1
 jA = a
+jB = a
 jC = a
 jE = a
 $236D = h236
