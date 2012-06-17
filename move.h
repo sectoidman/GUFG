@@ -47,6 +47,9 @@ public:
 	virtual bool takeHit(hStat&); 
 
 	virtual void feed(move *, int);
+	char * findNext();
+	char * findOnHit();
+
 	bool CHState();
 	SDL_Surface * draw(int, bool, int *&);
 
@@ -93,6 +96,8 @@ public:
 	int activation;
 
 	move * next;
+	move * onHit;
+
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the move per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
@@ -222,3 +227,4 @@ public:
 	virtual bool check(bool[], bool[], int, int, int*);
 
 };
+

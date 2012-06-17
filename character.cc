@@ -12,6 +12,7 @@ character::character()
 {
 	move * temp;
 
+	name = NULL;
 
 	/*Currently I'm using this as a test case for my move hooks*/
 
@@ -66,6 +67,7 @@ character::~character()
 	delete standBlock;
 	delete airBlock;
 	delete [] meter;
+	if(name) delete [] name;
 }
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
@@ -94,16 +96,14 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 		cMove = bMove;
 		bMove = NULL;
 	}
-
 }
 
 void character::build(const char* n)
 {
 	char buffer[101];
 	char buffer2[101];
-	char moveName[151];
-	char name[51];
-	char type[2];
+//	char moveName[151];
+//	char type[2];
 	moveTrie * t = NULL;
 	move * m = NULL;
 	bool commentFlag;
@@ -115,7 +115,10 @@ void character::build(const char* n)
 	
 	read.open(buffer);
 	assert(!read.fail());
-	read.get(name, 50); read.ignore(100, '\n');
+
+	read.get(buffer, 50); read.ignore(100, '\n');
+	name = new char[strlen(buffer)+1];
+	strcpy(name, buffer);
 
 	sprintf(buffer, "%s/NS", name);
 	neutral = new looping(buffer);
@@ -160,17 +163,14 @@ void character::build(const char* n)
 	while(!read.eof()){
 		commentFlag = 0;
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
-		type[0] = buffer[0];
-		type[1] = buffer[1];
 		
-		if(type[0] == '#' || type[0] == '\0')
+		if(buffer[0] == '#' || buffer[0] == '\0')
 			commentFlag = 1;
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
-			token = strtok(buffer, " \t-@?%$!\n");
-			sprintf(moveName, "%s/%s", name, token);
-			m = createMove(type, moveName);
-			strtok(buffer2, " \t-?%@$!\n");
+
+			m = createMove(buffer);
+			token = strtok(buffer2, " \t-?%@$!\n");
 			while (token){
 				token = NULL;
 				token = strtok(NULL, " \t=-?@%$!\n");
@@ -221,8 +221,15 @@ void character::init(){
 	cMove = neutral;
 }
 
-move * character::createMove(char * type, char * moveName)
+move * character::createMove(char * fullName)
 {
+	char * token;
+	char type[2] = {fullName[0], fullName[1]};
+	char moveName[151];
+
+	token = strtok(fullName, " \t-@?%$!\n");
+	sprintf(moveName, "%s/%s", name, token);
+
 	move * m;
 	switch(type[0]){
 	case '%':

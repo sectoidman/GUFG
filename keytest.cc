@@ -16,7 +16,6 @@ int main(int argc, char* argv[])
 {
 	/*Spawn the interface*/
 	interface game;
-	std::chrono::high_resolution_clock clck;
 	int rounds = 2;
 //	int count = 0;
 	if(argc > 1) rounds = atoi(argv[1]);

@@ -27,7 +27,7 @@ public:
 	virtual void connect(hStat&);
 	virtual void land();
 	virtual int takeHit(hStat&);
-	virtual move * createMove(char*, char*);
+	virtual move * createMove(char*);
 	//BRB prepping my hooks
 
 	move * neutral;

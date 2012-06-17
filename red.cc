@@ -70,8 +70,15 @@ void red::init()
 	meter[4] = 0;
 }
 
-move * red::createMove(char * type, char * moveName)
+move * red::createMove(char * fullName)
 {
+	char * token;
+	char type[2] = {fullName[0], fullName[1]};
+	char moveName[151];
+
+	token = strtok(fullName, " \t-@?%$!\n");
+	sprintf(moveName, "%s/%s", name, token);
+
 	move * m;
 	switch(type[0]){
 	case '%':
