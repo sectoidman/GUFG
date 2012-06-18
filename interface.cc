@@ -23,6 +23,7 @@ interface::interface()
 	/*Initialize SDL*/
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_Init(SDL_INIT_JOYSTICK);
+	SDL_Init(SDL_INIT_EVERYTHING);
 	/*WM stuff*/
 	SDL_WM_SetCaption("GUFG", "GUFG");
 	screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, 0);
