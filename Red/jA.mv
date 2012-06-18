@@ -1,4 +1,4 @@
-Name: A
+Name: jA
 Buffer: 30 : 30
 Hits: 1
 Frames: 13 : 4 : 5 : 4
@@ -8,7 +8,7 @@ Damage: 6
 Stun: 11
 Untech: 0
 Push: 1
-Lift: 5
+Lift: 7
 Blowback: 1
 Gain: 0 : 2
 Cost: 0
