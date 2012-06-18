@@ -2,8 +2,8 @@
  *Used in project "GUFG" with her permission
  */
 
-#include <gl/gl.h>
-#include <gl/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <string>
