@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 		frameEnd = std::chrono::high_resolution_clock::now(); 
 		microsecs_t frameDuration( std::chrono::duration_cast<microsecs_t>(frameEnd - frameStart) );
 		std::chrono::microseconds sleepDuration(16667 - frameDuration.count()); 
-		std::this_thread::sleep_for(sleepDuration); 
+		std::this_thread::sleep_for(sleepDuration);
 	}
 }
 
