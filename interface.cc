@@ -415,7 +415,7 @@ void interface::resolveHits()
 				if(combo[i] > 1) residual.x -= (combo[i]-1);
 				p[i]->addVector(residual);
 			}
-			if(p[i]->pick->aerial) p[i]->checkFacing(p[(i+1)%2]);
+			if(!p[i]->pick->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 	for(int i = 0; i < 2; i++){ 
