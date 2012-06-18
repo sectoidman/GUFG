@@ -23,20 +23,18 @@ int main(int argc, char* argv[])
 
 	/*Loop of everything*/
 	while (!game.gameover){
-		while(SDL_GetTicks() % 17 != 1);
-		std::chrono::high_resolution_clock::time_point lEnd; 
-		std::chrono::high_resolution_clock::time_point lStart = std::chrono::high_resolution_clock::now(); 
+		std::chrono::high_resolution_clock::time_point frameEnd; 
+		std::chrono::high_resolution_clock::time_point frameStart = std::chrono::high_resolution_clock::now(); 
 		game.readInput();
 		game.resolve();
-		lEnd = std::chrono::high_resolution_clock::now(); 
-		typedef std::chrono::duration<int,std::milli> millisecs_t ; 
-		typedef std::chrono::duration<int,std::micro> microsecs_t ; 
-		typedef std::chrono::duration<double> secs_t ; 
-		microsecs_t lUDuration( std::chrono::duration_cast<microsecs_t>(lEnd-lStart) ) ; 
-		secs_t lDuration( std::chrono::duration_cast<microsecs_t>(lEnd-lStart) ) ; 
-		std::cout << "Time spent " << lUDuration.count() << " [us] " << std::endl; 
-		std::cout << "Time spent " << lDuration.count() << " [s] " << std::endl; 
-//		while(SDL_GetTicks() % 17 != 0);
+		int dur;
+		typedef std::chrono::duration<int,std::micro> microsecs_t ;
+		do{
+			frameEnd = std::chrono::high_resolution_clock::now(); 
+			microsecs_t frameDuration( std::chrono::duration_cast<microsecs_t>(frameEnd - frameStart) ); 
+			dur = frameDuration.count();
+		} while (dur < 16667);
+		std::cout << "Frame time " << dur << " [us] " << std::endl; 
 	}
 }
 
