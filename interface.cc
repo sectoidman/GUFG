@@ -119,7 +119,7 @@ void interface::roundInit()
 	combo[0] = 0;
 	combo[1] = 0;
 	grav = 3;
-	timer = 5824;
+	timer = 60 * 99;
 	p[0]->facing = 1;
 	p[1]->facing = -1;
 	p[0]->posX = 700;

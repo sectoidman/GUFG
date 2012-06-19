@@ -29,7 +29,7 @@ void red::touch(void * target)
 
 void red::tick(){
 	character::tick();
-	if(meter[3] < 528) meter[3]++;
+	if(meter[3] < 540) meter[3]++;
 	if(meter[3] < 0) meter[3] = 0;
 	if(meter[4] > 0) meter[4]--;
 }
@@ -42,22 +42,22 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 	if(meter[3] >= 0){
 		c1.w = meter[3]/2; 
 	} else c1.w = 1; 
-	if(meter[3] > 264){
-		c1.w = 132; c2.w = (meter[3] - 264)/2;
+	if(meter[3] > 270){
+		c1.w = 135; c2.w = (meter[3] - 270)/2;
 	} else c2.w = 0;
 	if(ID == 0){
-		c1.x = 134; 
-		c2.x = 134;
+		c1.x = 130; 
+		c2.x = 130;
 	}
 	else { 
-		c1.x = 534 + (132 - c1.w);
-		c2.x = 534 + (132 - c2.w);
+		c1.x = 530 + (135 - c1.w);
+		c2.x = 530 + (135 - c2.w);
 	}
 	c1.h = 5; c2.h = 5;
 	c1.y = 587; c2.y = 587;
-	if(meter[3] >= 264 && meter[4] < 1) color1 = 255;
+	if(meter[3] >= 270 && meter[4] < 1) color1 = 255;
 	else color1 = 127;
-	if(meter[3] >= 528 && meter[4] < 1) color2 = 255;
+	if(meter[3] >= 540 && meter[4] < 1) color2 = 255;
 	else color2 = 127;
 	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
 	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
