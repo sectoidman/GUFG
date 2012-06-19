@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <chrono>
+#include <SDL/SDL_opengl.h>
 using namespace std;
 int main(int argc, char* argv[])
 {
@@ -29,3 +30,4 @@ int main(int argc, char* argv[])
 //		while(SDL_GetTicks() % 17 != 0);
 	}
 }
+
