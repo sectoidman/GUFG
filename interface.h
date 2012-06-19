@@ -23,6 +23,7 @@ public:
 	void draw();        //This will eventually draw everything. Right now the drawing is done in the main loop.
 	void runTimer();    //Runs the timer. Currently just a decrementer wrapper.
 	void spriteInit();  //Initializes the sprite for drawing
+	bool screenInit();
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();

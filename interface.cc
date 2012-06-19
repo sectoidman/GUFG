@@ -8,6 +8,7 @@
 #include "interface.h"
 #include <cstring>
 #include <math.h>
+#include <assert.h>
 interface::interface()
 {
 	numChars = 2;
@@ -20,18 +21,8 @@ interface::interface()
 	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 25;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
-	/*Initialize SDL*/
-	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Init(SDL_INIT_JOYSTICK);
-	SDL_Init(SDL_INIT_EVERYTHING);
-	/*WM stuff*/
-	SDL_WM_SetCaption("GUFG", "GUFG");
-	screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, 0);
-//	SDL_ShowCursor(SDL_DISABLE);
+	assert(screenInit() != false);
 
-	/*Set up input buffers and joysticks*/
-	for(int i = 0; i < SDL_NumJoysticks(); i++)
-		SDL_JoystickOpen(i);
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
@@ -65,6 +56,22 @@ interface::interface()
 
 	/*Start a match*/
 	matchInit();
+}
+
+bool interface::screenInit()
+{
+	/*Initialize SDL*/
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	/*WM stuff*/
+	SDL_WM_SetCaption("GUFG", "GUFG");
+	if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, /*SDL_HWSURFACE | SDL_GL_DOUBLEBUFFER | SDL_OPENGL*/0)) == NULL)
+		return false;
+	SDL_ShowCursor(SDL_DISABLE);
+
+	/*Set up input buffers and joysticks*/
+	for(int i = 0; i < SDL_NumJoysticks(); i++)
+		SDL_JoystickOpen(i);
+	return true;
 }
 
 /*This functions sets things up for a new match. Initializes some things and draws the background*/
