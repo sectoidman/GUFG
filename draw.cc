@@ -6,8 +6,10 @@
 
 #include "interface.h"
 #include <math.h>
+#include <SDL/SDL_opengl.h>
 void interface::draw()
 {
+	GLuint t1 = aux::surface_to_texture(p[0]->sprite);
 	SDL_Surface * back = SDL_DisplayFormatAlpha(background);
 	SDL_Rect bar1, bar2, rounds1[numRounds], rounds2[numRounds];
 	
