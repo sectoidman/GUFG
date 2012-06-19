@@ -22,16 +22,16 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, bground);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((float)(bg.x), (float)(bg.y + bg.h), 0.f);
+		glVertex3f((float)(1600 - bg.x), (float)(900 - (bg.y + bg.h)), 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((float)(bg.x + bg.w), (float)(bg.y + bg.h), 0.f);
+		glVertex3f((float)(1600 - (bg.x + bg.w)), (float)(900 - (bg.y + bg.h)), 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((float)(bg.x + bg.w), (float)(bg.y), 0.f);
+		glVertex3f((float)(1600 - (bg.x + bg.w)), (float)(900 - bg.y), 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((float)(bg.x), (float)(bg.y), 0.f);
+		glVertex3f((float)(1600 - bg.x), (float)(900 - bg.y), 0.f);
 	glEnd();
 	for(int i = 0; i < 2; i++){
 		if(p[i]->sprite){
@@ -67,11 +67,11 @@ void interface::draw()
 //	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 
 	for(int i = 0; i < numRounds; i++){
-		if(p[0]->rounds > i) glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-		else glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		if(p[0]->rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		glRectf((GLfloat)(rounds1[i].x), (GLfloat)(rounds1[i].y), (GLfloat)(rounds1[i].x + rounds1[i].w), (GLfloat)(rounds1[i].y + rounds1[i].h));
-		if(p[1]->rounds > i) glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-		else glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		if(p[1]->rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		glRectf((GLfloat)(rounds2[i].x), (GLfloat)(rounds2[i].y), (GLfloat)(rounds2[i].x + rounds2[i].w), (GLfloat)(rounds2[i].y + rounds2[i].h));
 	}
 
