@@ -1,5 +1,5 @@
 /*Header file for some utility functions used in "GUFG",
- *Written by Ashley Fisher in 2012 for her project, "srpg",
+ *Written by Ashley Fisher in 2012 for her project, "Picoclash",
  *and used with her permission
  */
 

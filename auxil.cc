@@ -252,7 +252,7 @@ int aux::defineRectArray(char * definition, SDL_Rect *& array)
 	return complexity;
 }
 
-GLuint surface_to_texture(SDL_Surface * source)
+GLuint aux::surface_to_texture(SDL_Surface * source)
 {
 	GLint nColors;
 	GLenum texFormat;
