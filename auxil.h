@@ -6,6 +6,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <string>
+#include <SDL/SDL_opengl.h>
 
 class aux{
 	private:
@@ -13,6 +14,7 @@ class aux{
 		static void bilinear_scale  (SDL_Surface* source, SDL_Surface* destination);
 		static SDL_Surface* scale2x(SDL_Surface* source);
 	public:
+		static GLuint* surface_to_texture(SDL_Surface* source);
 		static SDL_Surface* init_screen(int width, int height, int bpp);
 		static void update_screen(SDL_Surface* source, SDL_Surface* destination);
 

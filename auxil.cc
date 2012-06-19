@@ -251,3 +251,22 @@ int aux::defineRectArray(char * definition, SDL_Rect *& array)
 	}
 	return complexity;
 }
+
+GLuint surface_to_texture(SDL_Surface * source)
+{
+	GLint nColors;
+	GLenum texFormat;
+	GLuint texture;
+	nColors = source->format->BytesPerPixel;
+	if (source->format->Rmask == 0x000000ff)
+		texFormat = GL_RGBA;
+	else
+		texFormat = GL_BGRA;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, nColors, source->w, source->h, 0, texFormat, GL_UNSIGNED_BYTE, source->pixels);
+	return texture;
+}
