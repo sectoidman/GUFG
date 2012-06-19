@@ -59,8 +59,12 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 	else color1 = 127;
 	if(meter[3] >= 528 && meter[4] < 1) color2 = 255;
 	else color2 = 127;
-	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
-	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
+	glColor4f(0.0f, 0.0f, (float)color1, 1.0f);
+	glRectf((GLfloat)(c1.x), (GLfloat)(c1.y), (GLfloat)(c1.x + c1.w), (GLfloat)(c1.y + c1.h));
+	glColor4f((float)color2, 0.0f, (float)color2, 1.0f);
+	glRectf((GLfloat)(c2.x), (GLfloat)(c2.y), (GLfloat)(c2.x + c2.w), (GLfloat)(c2.y + c2.h));
+//	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
+//	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
 void red::init()
