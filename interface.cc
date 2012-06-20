@@ -141,7 +141,7 @@ void interface::roundInit()
 	combo[0] = 0;
 	combo[1] = 0;
 	grav = 3;
-	timer = 5824;
+	timer = 60 * 99;
 	p[0]->facing = 1;
 	p[1]->facing = -1;
 	p[0]->posX = 700;
@@ -433,7 +433,7 @@ void interface::resolveHits()
 			}
 			p[i]->connect(combo[i], s[i]);
 			if(p[i]->pick->aerial) residual.y = -3;
-			if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+			else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 				residual.x = -(s[i].push);
 				if(combo[i] > 1) residual.x -= (combo[i]-1);
 				p[i]->addVector(residual);

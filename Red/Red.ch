@@ -24,6 +24,7 @@ Red
 A = h
 B = h
 C = h
+E = h
 2A = h2 h3 h1
 2B = h2 h3 h1
 2C = h2 h3 h1

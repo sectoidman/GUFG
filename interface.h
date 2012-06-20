@@ -14,15 +14,15 @@
 class interface
 {
 public:
-	interface();        //Constructor!
+	interface();		//Constructor!
 	~interface();
 	/*Important interface functions that will remain interface functions*/
 
-	void readInput();   //Reads input from players.
-	void resolve();     //This will eventually resolve actions (Such as a move hitting a player.) With only one player, this is not currently sprsible.
-	void draw();        //This will eventually draw everything. Right now the drawing is done in the main loop.
-	void runTimer();    //Runs the timer. Currently just a decrementer wrapper.
-	void spriteInit();  //Initializes the sprite for drawing
+	void readInput();	//Reads input from players.
+	void resolve();		//Main resolution function per frame. Happens exactly once per frame.
+	void draw();		//The primary function in charge of drawing things on the screen.
+	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
+	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
 	bool screenInit();
 	void roundInit();
 	void matchInit();
@@ -32,10 +32,10 @@ public:
 	void doSuperFreeze();
 	void unitCollision();
 	void resolveHits();
-		
+
 	player * p[2];
-	bool * sAxis[2];		//Initial input buffering.
-	bool * posEdge[2];	
+	bool * sAxis[2];	//Initial input buffering.
+	bool * posEdge[2];
 	bool * negEdge[2];
 	bool select[2];
 	int selection[2];
@@ -43,8 +43,8 @@ public:
 	GLuint bground;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	int grav; 			//Gravitational constant. 
-	bool fullscreen;		//For use with later
+	int grav; 		//Gravitational constant. 
+	bool fullscreen;	//For use with later
 	int combo[2];
 	int numRounds;
 	bool gameover;
