@@ -300,11 +300,11 @@ void player::checkFacing(player * other){
 	if (lCorner) facing = 1;
 	else if (rCorner) facing = -1;
 	else if (midpoint < comparison){
-		if(facing == -1) posX -= spr.w;
+		if(facing == -1) posX += collision.x - posX;
 		facing = 1;
 	}
 	else if (midpoint > comparison){
-		if(facing == 1) posX += spr.w;
+		if(facing == 1) posX += (collision.w + collision.x) - posX;
 		facing = -1;
 	}
 	updateRects();
