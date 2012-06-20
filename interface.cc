@@ -410,7 +410,7 @@ void interface::resolveHits()
 			}
 			p[i]->connect(combo[i], s[i]);
 			if(p[i]->pick->aerial) residual.y = -3;
-			if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+			else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 				residual.x = -(s[i].push);
 				if(combo[i] > 1) residual.x -= (combo[i]-1);
 				p[i]->addVector(residual);
