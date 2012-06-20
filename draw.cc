@@ -21,7 +21,7 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, bground);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(bg.x) - 400, 0.0f, 0.f);
+		glVertex3f(0.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 0);
 		glVertex3f((GLfloat)(bg.x + bg.w) - 400, 0.0f, 0.f);
@@ -30,27 +30,27 @@ void interface::draw()
 		glVertex3f((GLfloat)(bg.x + bg.w) - 400, (GLfloat)(bg.y + bg.h), 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(bg.x) - 400, (GLfloat)(bg.y + bg.h), 0.f);
+		glVertex3f(0.0f, (GLfloat)(bg.y + bg.h), 0.f);
 	glEnd();
 	for(int i = 0; i < 2; i++){
-		/*if(p[i]->sprite){
+/*		if(p[i]->sprite){
 			aux::surface_to_texture(p[i]->sprite);
 			glBindTexture(GL_TEXTURE_2D, t[i]);
 			glBegin(GL_QUADS);
 				glTexCoord2i(0, 0);
-				glVertex3f((GLfloat)(p[i]->spr.x), (GLfloat)(p[i]->spr.y + p[i]->spr.h), 0.f);
+				glVertex3f((GLfloat)(p[i]->spr.x - bg.x), (GLfloat)(p[i]->spr.y + p[i]->spr.h - bg.y), 0.f);
 
 				glTexCoord2i(1, 0);
-				glVertex3f((GLfloat)(p[i]->spr.x + p[i]->spr.w), (GLfloat)(p[i]->spr.y + p[i]->spr.h), 0.f);
+				glVertex3f((GLfloat)(p[i]->spr.x + p[i]->spr.w - bg.x), (GLfloat)(p[i]->spr.y + p[i]->spr.h - bg.y), 0.f);
 
 				glTexCoord2i(1, 1);
-				glVertex3f((GLfloat)(p[i]->spr.x + p[i]->spr.w), (GLfloat)(p[i]->spr.y), 0.f);
+				glVertex3f((GLfloat)(p[i]->spr.x + p[i]->spr.w - bg.x), (GLfloat)(p[i]->spr.y - bg.y), 0.f);
 
 				glTexCoord2i(0, 1);
-				glVertex3f((GLfloat)(p[i]->spr.x), (GLfloat)(p[i]->spr.y), 0.f);
+				glVertex3f((GLfloat)(p[i]->spr.x - bg.x), (GLfloat)(p[i]->spr.y - bg.y), 0.f);
 			glEnd();
-		} else {*/
-			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+		} else {
+*/			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 			glRectf((GLfloat)(p[i]->collision.x - bg.x), (GLfloat)(p[i]->collision.y - bg.y), (GLfloat)(p[i]->collision.x + p[i]->collision.w - bg.x), (GLfloat)(p[i]->collision.y + p[i]->collision.h - bg.y));
 			for(int j = 0; j < p[i]->regComplexity; j++){
 				glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
