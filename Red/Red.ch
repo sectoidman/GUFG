@@ -32,6 +32,7 @@ E = h
 jA = a
 jB = a
 jC = a
+jD = a
 jE = a
 $236D = h236
 $j214D = a214

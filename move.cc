@@ -338,7 +338,7 @@ void move::init()
 
 void move::connect(int *& resource)
 {
-	cFlag++;
+	cFlag = currentHit+1;
 	if(resource[0] + gain[cFlag] < 200) resource[0] += gain[cFlag];
 	else resource[0] = 200; 
 }
