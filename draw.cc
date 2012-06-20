@@ -10,7 +10,6 @@
 void interface::draw()
 {
 	GLuint t[2];
-	SDL_Surface * back = SDL_DisplayFormatAlpha(background);
 	SDL_Rect rounds1[numRounds], rounds2[numRounds];
 
 	for(int i = 0; i < numRounds; i++){
@@ -79,7 +78,6 @@ void interface::draw()
 	}
 
 	SDL_GL_SwapBuffers();
-	SDL_FreeSurface(back);
 }
 
 void player::spriteInit()
