@@ -20,16 +20,16 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, bground);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((float)(bg.x), (float)(900 - (bg.y + bg.h)), 0.f);
+		glVertex3f((float)(bg.x) - 400, 300.0f, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((float)(bg.x + bg.w), (float)(900 - (bg.y + bg.h)), 0.f);
+		glVertex3f((float)(bg.x + bg.w) - 400, 300.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((float)(bg.x + bg.w), (float)(900 - bg.y), 0.f);
+		glVertex3f((float)(bg.x + bg.w) - 400, 600.0f, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((float)(bg.x), (float)(900 - bg.y), 0.f);
+		glVertex3f((float)(bg.x) - 400, 600.0f, 0.f);
 	glEnd();
 	for(int i = 0; i < 2; i++){
 		/*if(p[i]->sprite){

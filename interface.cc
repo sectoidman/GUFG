@@ -123,7 +123,7 @@ void interface::roundInit()
 
 	
 	/*Background color, temporary until we have backgrounds*/
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
+//	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
