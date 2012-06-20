@@ -10,7 +10,6 @@
 void interface::draw()
 {
 	GLuint t[2];
-	GLuint bground = aux::surface_to_texture(background);
 	SDL_Surface * back = SDL_DisplayFormatAlpha(background);
 	SDL_Rect rounds1[numRounds], rounds2[numRounds];
 
@@ -22,19 +21,19 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, bground);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((float)(1600 - bg.x), (float)(900 - (bg.y + bg.h)), 0.f);
+		glVertex3f((float)(bg.x), (float)(900 - (bg.y + bg.h)), 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((float)(1600 - (bg.x + bg.w)), (float)(900 - (bg.y + bg.h)), 0.f);
+		glVertex3f((float)(bg.x + bg.w), (float)(900 - (bg.y + bg.h)), 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((float)(1600 - (bg.x + bg.w)), (float)(900 - bg.y), 0.f);
+		glVertex3f((float)(bg.x + bg.w), (float)(900 - bg.y), 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((float)(1600 - bg.x), (float)(900 - bg.y), 0.f);
+		glVertex3f((float)(bg.x), (float)(900 - bg.y), 0.f);
 	glEnd();
 	for(int i = 0; i < 2; i++){
-		if(p[i]->sprite){
+		/*if(p[i]->sprite){
 			aux::surface_to_texture(p[i]->sprite);
 			glBindTexture(GL_TEXTURE_2D, t[i]);
 			glBegin(GL_QUADS);
@@ -50,8 +49,7 @@ void interface::draw()
 				glTexCoord2i(0, 1);
 				glVertex3f((GLfloat)(p[i]->spr.x), (GLfloat)(p[i]->spr.y), 0.f);
 			glEnd();
-		} else {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		} else {*/
 			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 			glRectf((GLfloat)(p[i]->collision.x), (GLfloat)(p[i]->collision.y), (GLfloat)(p[i]->collision.x + p[i]->collision.w), (GLfloat)(p[i]->collision.y + p[i]->collision.h));
 			for(int j = 0; j < p[i]->regComplexity; j++){
@@ -62,7 +60,8 @@ void interface::draw()
 				glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
 				glRectf((GLfloat)(p[i]->hitbox[j].x), (GLfloat)(p[i]->hitbox[j].y), (GLfloat)(p[i]->hitbox[j].x + p[i]->hitbox[j].w), (GLfloat)(p[i]->hitbox[j].y + p[i]->hitbox[j].h));
 			}
-		}
+//		}
+
 	}
 //	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 
@@ -80,7 +79,6 @@ void interface::draw()
 	}
 
 	SDL_GL_SwapBuffers();
-	SDL_UpdateRect(screen, 0, 0, 0, 0);
 	SDL_FreeSurface(back);
 }
 

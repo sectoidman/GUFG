@@ -95,7 +95,8 @@ void interface::matchInit()
 	printf("Please select a character:\n");
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
-	background = IMG_Load("Misc/BG1.png");
+	background = aux::load_image("Misc/BG1.png");
+	bground = aux::surface_to_texture(background);
 	q = 0;
 }
 
@@ -331,6 +332,7 @@ void interface::cSelectMenu()
 			}
 		}
 	}
+	
 	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 100, 100, 100));
 	SDL_BlitSurface(selectScreen, NULL, screen, &wheel);
 	SDL_BlitSurface(cursor[0], NULL, screen, &wheel);

@@ -40,6 +40,7 @@ public:
 	bool select[2];
 	int selection[2];
 	SDL_Surface *background, *screen;
+	GLuint bground;
 	SDL_Rect bg;
 	SDL_Rect prox;
 	int grav; 			//Gravitational constant. 
