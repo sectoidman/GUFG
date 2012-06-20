@@ -9,6 +9,7 @@
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
+	glClear(GL_COLOR_BUFFER_BIT);
 	GLuint t[2];
 	SDL_Rect rounds1[numRounds], rounds2[numRounds];
 
@@ -20,16 +21,16 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, bground);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((float)(bg.x) - 400, 300.0f, 0.f);
+		glVertex3f((GLfloat)(bg.x) - 400, 0.0f, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((float)(bg.x + bg.w) - 400, 300.0f, 0.f);
+		glVertex3f((GLfloat)(bg.x + bg.w) - 400, 0.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((float)(bg.x + bg.w) - 400, 600.0f, 0.f);
+		glVertex3f((GLfloat)(bg.x + bg.w) - 400, (GLfloat)(bg.y + bg.h), 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((float)(bg.x) - 400, 600.0f, 0.f);
+		glVertex3f((GLfloat)(bg.x) - 400, (GLfloat)(bg.y + bg.h), 0.f);
 	glEnd();
 	for(int i = 0; i < 2; i++){
 		/*if(p[i]->sprite){
@@ -50,14 +51,14 @@ void interface::draw()
 			glEnd();
 		} else {*/
 			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-			glRectf((GLfloat)(p[i]->collision.x), (GLfloat)(p[i]->collision.y), (GLfloat)(p[i]->collision.x + p[i]->collision.w), (GLfloat)(p[i]->collision.y + p[i]->collision.h));
+			glRectf((GLfloat)(p[i]->collision.x - bg.x), (GLfloat)(p[i]->collision.y - bg.y), (GLfloat)(p[i]->collision.x + p[i]->collision.w - bg.x), (GLfloat)(p[i]->collision.y + p[i]->collision.h - bg.y));
 			for(int j = 0; j < p[i]->regComplexity; j++){
 				glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-				glRectf((GLfloat)(p[i]->hitreg[j].x), (GLfloat)(p[i]->hitreg[j].y), (GLfloat)(p[i]->hitreg[j].x + p[i]->hitreg[j].w), (GLfloat)(p[i]->hitreg[j].y + p[i]->hitreg[j].h));
+				glRectf((GLfloat)(p[i]->hitreg[j].x - bg.x), (GLfloat)(p[i]->hitreg[j].y - bg.y), (GLfloat)(p[i]->hitreg[j].x + p[i]->hitreg[j].w - bg.x), (GLfloat)(p[i]->hitreg[j].y + p[i]->hitreg[j].h - bg.y));
 			}
 			for(int j = 0; j < p[i]->hitComplexity; j++){
 				glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-				glRectf((GLfloat)(p[i]->hitbox[j].x), (GLfloat)(p[i]->hitbox[j].y), (GLfloat)(p[i]->hitbox[j].x + p[i]->hitbox[j].w), (GLfloat)(p[i]->hitbox[j].y + p[i]->hitbox[j].h));
+				glRectf((GLfloat)(p[i]->hitbox[j].x - bg.x), (GLfloat)(p[i]->hitbox[j].y - bg.y), (GLfloat)(p[i]->hitbox[j].x + p[i]->hitbox[j].w - bg.x), (GLfloat)(p[i]->hitbox[j].y + p[i]->hitbox[j].h - bg.y));
 			}
 //		}
 
@@ -76,8 +77,8 @@ void interface::draw()
 	for(int i = 0; i < 2; i++){
 		p[i]->pick->drawMeters(screen, i);
 	}
-
 	SDL_GL_SwapBuffers();
+
 }
 
 void player::spriteInit()
