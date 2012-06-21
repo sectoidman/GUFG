@@ -142,8 +142,6 @@ void character::drawMeters(SDL_Surface *& screen, int ID)
 	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
 	glColor4f((float)R, (float)G, (float)B, 1.0f);
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
-//	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, R, G, B));
-//	SDL_FillRect(screen, &h, SDL_MapRGB(screen->format, 255, 0, 0));
 }
 
 SDL_Surface * move::draw(int facing, bool freeze, int *& meter)
