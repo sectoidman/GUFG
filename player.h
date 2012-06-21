@@ -24,7 +24,7 @@ public:
 	bool readConfig();
 	void characterSelect(int);
 	void pushInput(bool*, bool*, bool*);
-	void draw();
+	void draw(int, int);
 	void spriteInit();
 	void pullVolition();
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);

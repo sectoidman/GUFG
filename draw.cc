@@ -10,7 +10,6 @@
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	GLuint t[2];
 	SDL_Rect rounds1[numRounds], rounds2[numRounds];
 
 	for(int i = 0; i < numRounds; i++){
@@ -32,49 +31,12 @@ void interface::draw()
 		glTexCoord2i(0, 1);
 		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.y + bg.h), 0.f);
 	glEnd();
-	for(int i = 0; i < 2; i++){
-/*		if(p[i]->sprite){
-			aux::surface_to_texture(p[i]->sprite);
-		glClear(GL_COLOR_BUFFER_BIT);
-			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-			glRectf((GLfloat)(p[i]->collision.x - bg.x), (GLfloat)(p[i]->collision.y - bg.y), (GLfloat)(p[i]->collision.x + p[i]->collision.w - bg.x), (GLfloat)(p[i]->collision.y + p[i]->collision.h - bg.y));
-			glBindTexture(GL_TEXTURE_2D, t[i]);
-			glBegin(GL_QUADS);
-				glTexCoord2i(0, 0);
-				glVertex3f((GLfloat)(p[i]->spr.x - bg.x), (GLfloat)(p[i]->spr.y + p[i]->spr.h - bg.y), 0.f);
-
-				glTexCoord2i(1, 0);
-				glVertex3f((GLfloat)(p[i]->spr.x + p[i]->spr.w - bg.x), (GLfloat)(p[i]->spr.y + p[i]->spr.h - bg.y), 0.f);
-
-				glTexCoord2i(1, 1);
-				glVertex3f((GLfloat)(p[i]->spr.x + p[i]->spr.w - bg.x), (GLfloat)(p[i]->spr.y - bg.y), 0.f);
-
-				glTexCoord2i(0, 1);
-				glVertex3f((GLfloat)(p[i]->spr.x - bg.x), (GLfloat)(p[i]->spr.y - bg.y), 0.f);
-			glEnd();
-		} else {
-*/			glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-			glRectf((GLfloat)(p[i]->collision.x - bg.x), (GLfloat)(p[i]->collision.y - bg.y), (GLfloat)(p[i]->collision.x + p[i]->collision.w - bg.x), (GLfloat)(p[i]->collision.y + p[i]->collision.h - bg.y));
-			for(int j = 0; j < p[i]->regComplexity; j++){
-				glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-				glRectf((GLfloat)(p[i]->hitreg[j].x - bg.x), (GLfloat)(p[i]->hitreg[j].y - bg.y), (GLfloat)(p[i]->hitreg[j].x + p[i]->hitreg[j].w - bg.x), (GLfloat)(p[i]->hitreg[j].y + p[i]->hitreg[j].h - bg.y));
-			}
-			for(int j = 0; j < p[i]->hitComplexity; j++){
-				glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-				glRectf((GLfloat)(p[i]->hitbox[j].x - bg.x), (GLfloat)(p[i]->hitbox[j].y - bg.y), (GLfloat)(p[i]->hitbox[j].x + p[i]->hitbox[j].w - bg.x), (GLfloat)(p[i]->hitbox[j].y + p[i]->hitbox[j].h - bg.y));
-			}
-//		}
 
 	}
 //	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 
-	for(int i = 0; i < numRounds; i++){
-		if(p[0]->rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-		glRectf((GLfloat)(rounds1[i].x), (GLfloat)(rounds1[i].y), (GLfloat)(rounds1[i].x + rounds1[i].w), (GLfloat)(rounds1[i].y + rounds1[i].h));
-		if(p[1]->rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-		glRectf((GLfloat)(rounds2[i].x), (GLfloat)(rounds2[i].y), (GLfloat)(rounds2[i].x + rounds2[i].w), (GLfloat)(rounds2[i].y + rounds2[i].h));
+	for(int i = 0; i < 2; i++){{
+		p[i]->draw(bg.x, bg.y);
 	}
 
 	for(int i = 0; i < 2; i++){
@@ -84,7 +46,7 @@ void interface::draw()
 
 }
 
-void player::spriteInit()
+void player::draw(int x, int y)
 {
 	int realPosY = collision.y;
 	int realPosX = 0;
@@ -96,6 +58,19 @@ void player::spriteInit()
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
 		if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
 	}
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
+	for(int j = 0; j < p[i]->regComplexity; j++){
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitreg.x - x), (GLfloat)(hitreg.y - y), (GLfloat)(hitreg.x + hitreg.w - x), (GLfloat)(hitreg.y + hitreg.h - y));
+	for(int j = 0; j < p[i]->hitComplexity; j++){
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitbox.x - x), (GLfloat)(hitbox.y - y), (GLfloat)(hitbox.x + hitbox.w - x), (GLfloat)(hitbox.y + hitbox.h - y));
+	}
+}
+
+void player::spriteInit()
+{
 
 	/*Doing moves*/
 //	if(pick->freeze > 0) pick->freeze--;
