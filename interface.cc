@@ -74,6 +74,9 @@ bool interface::screenInit()
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
 	glEnable( GL_TEXTURE_2D );
+//	glDisable (GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable( GL_BLEND );
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1.0f);
 	glViewport(0, 0, screenWidth, screenHeight);
@@ -81,7 +84,6 @@ bool interface::screenInit()
 	glLoadIdentity();
 	glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_TEXTURE_2D);
 	glLoadIdentity();
 	return true;
 }
@@ -307,7 +309,6 @@ void interface::readInput()
 
 void interface::cSelectMenu()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
 	char base[2][40];
 
@@ -333,10 +334,11 @@ void interface::cSelectMenu()
 			}
 		}
 	}
-
-	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
-	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
 	
+	glClear(GL_COLOR_BUFFER_BIT);
+
+//	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
+//	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
@@ -346,26 +348,26 @@ void interface::cSelectMenu()
 		glVertex3f(700.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(100.0f, 600.0f, 0.f);
+		glVertex3f(700.0f, 600.0f, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f(700.0f, 600.0f, 0.f);
+		glVertex3f(100.0f, 600.0f, 0.f);
 	glEnd();
 	
 	for(int i = 0; i < 2; i++){
 		glBindTexture(GL_TEXTURE_2D, cursor[i]);
 		glBegin(GL_QUADS);
 			glTexCoord2i(0, 0);
-			glVertex3f(100.0f, 0.0f, 0.f);
+			glVertex3f(100.0f, 0.0f, 0.0f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f(700.0f, 0.0f, 0.f);
+			glVertex3f(700.0f, 0.0f, 0.0f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f(100.0f, 600.0f, 0.f);
+			glVertex3f(700.0f, 600.0f, 0.0f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f(700.0f, 600.0f, 0.f);
+			glVertex3f(100.0f, 600.0f, 0.0f);
 		glEnd();
 	}
 
