@@ -45,6 +45,8 @@ interface::interface()
 			sAxis[0][i] = 0;
 			sAxis[1][i] = 0;
 		}
+		select[i] = 0;
+		selection[i] = 0;
 	}
 
 	/*Game and round end conditions*/
