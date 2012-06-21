@@ -80,6 +80,9 @@ void interface::draw()
 	for(int i = 0; i < 2; i++){
 		p[i]->pick->drawMeters(screen, i);
 	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	
 	SDL_GL_SwapBuffers();
 
 }

@@ -18,7 +18,7 @@ interface::interface()
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
-	screenHeight = 600;
+	screenHeight = 450;
 	bg.w = 1600;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 900;
 	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
@@ -85,6 +85,7 @@ bool interface::screenInit()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	return true;
@@ -108,7 +109,7 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	bg.x = 400;
-	bg.y = 300;
+	bg.y = 450;
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->pick->init();
