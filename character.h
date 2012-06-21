@@ -18,7 +18,7 @@ public:
 	moveTrie * airHead;	//Trie for air moves
 
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
-	virtual void drawMeters(SDL_Surface *&, int);
+	virtual void drawMeters(int);
 	SDL_Surface * draw(int);//Pass sprite information up.
 	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
 	virtual void init();

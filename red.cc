@@ -34,10 +34,10 @@ void red::tick(){
 	if(meter[4] > 0) meter[4]--;
 }
 
-void red::drawMeters(SDL_Surface *& screen, int ID)
+void red::drawMeters(int ID)
 {
 	int color1, color2;
-	character::drawMeters(screen, ID);
+	character::drawMeters(ID);
 	SDL_Rect c1, c2;
 	if(meter[3] >= 0){
 		c1.w = meter[3]/2; 
@@ -45,7 +45,7 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 	if(meter[3] > 270){
 		c1.w = 135; c2.w = (meter[3] - 270)/2;
 	} else c2.w = 0;
-	if(ID == 0){
+	if(ID == 1){
 		c1.x = 130; 
 		c2.x = 130;
 	}
@@ -54,7 +54,7 @@ void red::drawMeters(SDL_Surface *& screen, int ID)
 		c2.x = 530 + (135 - c2.w);
 	}
 	c1.h = 5; c2.h = 5;
-	c1.y = 587; c2.y = 587;
+	c1.y = 438; c2.y = 438;
 	if(meter[3] >= 270 && meter[4] < 1) color1 = 255;
 	else color1 = 127;
 	if(meter[3] >= 540 && meter[4] < 1) color2 = 255;

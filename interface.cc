@@ -375,6 +375,7 @@ void interface::cSelectMenu()
 	}
 
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]) roundInit();
 }
