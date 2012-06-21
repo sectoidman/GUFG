@@ -33,7 +33,7 @@ interface::interface()
 		posEdge[i] = new bool[5]; 
 		negEdge[i] = new bool[5];
 		sprintf(buffer, "Misc/P%iSelect0.png", i+1);
-		cursor[i] = aux::load_image(buffer);
+		cursor[i] = aux::load_texture(buffer);
 		counter[i] = 0;
 	}
 	for(int i = 0; i < 5; i++){
@@ -54,8 +54,7 @@ interface::interface()
 	SDL_Event temp;
 	while(SDL_PollEvent(&temp));
 	/*Select characters.*/
-	selectScreen = aux::load_image("Misc/Select.png");
-	wheel.x = 100; wheel.y = 0;
+	selectScreen = aux::load_texture("Misc/Select.png");
 
 	/*Start a match*/
 	matchInit();
@@ -90,14 +89,15 @@ bool interface::screenInit()
 /*This functions sets things up for a new match. Initializes some things and draws the background*/
 void interface::matchInit()
 {
+	SDL_Event event;
 	select[0] = 0;
 	select[1] = 0;
 	printf("Please select a character:\n");
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
-	background = aux::load_image("Misc/BG1.png");
-	bground = aux::surface_to_texture(background);
+	background = aux::load_texture("Misc/BG1.png");
 	q = 0;
+	while (SDL_PollEvent(&event));
 }
 
 /*Sets stuff up for a new round. This initializes the characters, the timer, and the background.*/
@@ -307,6 +307,7 @@ void interface::readInput()
 
 void interface::cSelectMenu()
 {
+	glClear(GL_COLOR_BUFFER_BIT);
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
 	char base[2][40];
 
@@ -315,30 +316,61 @@ void interface::cSelectMenu()
 			selection[i]--;
 			if(selection[i] < 0) selection[i] = numChars;
 			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
-			cursor[i] = aux::load_image(base[i]);
+			cursor[i] = aux::load_texture(base[i]);
 			counter[i] = 10;
 		}
 		if(sAxis[i][3] && !select[i] && counter[i] == 0){
 			selection[i]++;
 			if(selection[i] > numChars) selection[i] = 0;
 			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
-			cursor[i] = aux::load_image(base[i]);
+			cursor[i] = aux::load_texture(base[i]);
 			counter[i] = 10;
 		}
 		for(int j = 0; j < 5; j++){
-			if(posEdge[i][j]){
+			if(posEdge[i][j] && !select[i]){
 				select[i] = 1;
 				p[i]->characterSelect(selection[i]);
 			}
 		}
 	}
+
+	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
+	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
 	
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 100, 100, 100));
-	SDL_BlitSurface(selectScreen, NULL, screen, &wheel);
-	SDL_BlitSurface(cursor[0], NULL, screen, &wheel);
-	SDL_BlitSurface(cursor[1], NULL, screen, &wheel);
-	SDL_UpdateRect(screen, 0, 0, 0, 0);	
+	glBindTexture(GL_TEXTURE_2D, selectScreen);
+	glBegin(GL_QUADS);
+		glTexCoord2i(0, 0);
+		glVertex3f(100.0f, 0.0f, 0.f);
+
+		glTexCoord2i(1, 0);
+		glVertex3f(700.0f, 0.0f, 0.f);
+
+		glTexCoord2i(1, 1);
+		glVertex3f(100.0f, 600.0f, 0.f);
+
+		glTexCoord2i(0, 1);
+		glVertex3f(700.0f, 600.0f, 0.f);
+	glEnd();
+	
+	for(int i = 0; i < 2; i++){
+		glBindTexture(GL_TEXTURE_2D, cursor[i]);
+		glBegin(GL_QUADS);
+			glTexCoord2i(0, 0);
+			glVertex3f(100.0f, 0.0f, 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f(700.0f, 0.0f, 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f(100.0f, 600.0f, 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f(700.0f, 600.0f, 0.f);
+		glEnd();
+	}
+
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
+	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]) roundInit();
 }
 
@@ -352,10 +384,6 @@ void interface::dragBG(int deltaX)
 interface::~interface()
 {
 	SDL_FreeSurface(screen);
-	SDL_FreeSurface(background);
-	SDL_FreeSurface(selectScreen);
-	SDL_FreeSurface(cursor[0]);
-	SDL_FreeSurface(cursor[1]);
 	if(select[0]) delete p[0]->pick;
 	if(select[1]) delete p[1]->pick;
 	delete p[0];

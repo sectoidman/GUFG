@@ -254,6 +254,7 @@ int aux::defineRectArray(char * definition, SDL_Rect *& array)
 
 GLuint aux::surface_to_texture(SDL_Surface * source)
 {
+	if(source == NULL) return -1;
 	GLint nColors;
 	GLenum texFormat;
 	GLuint texture;
@@ -269,4 +270,9 @@ GLuint aux::surface_to_texture(SDL_Surface * source)
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, nColors, source->w, source->h, 0, texFormat, GL_UNSIGNED_BYTE, source->pixels);
 	return texture;
+}
+
+GLuint aux::load_texture (string filename)
+{
+	return surface_to_texture(load_image(filename));
 }
