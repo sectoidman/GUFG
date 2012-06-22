@@ -10,38 +10,33 @@
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	SDL_Rect rounds1[numRounds], rounds2[numRounds];
 
-	for(int i = 0; i < numRounds; i++){
-		rounds1[i].y = 12; rounds1[i].w = 10; rounds1[i].h = 5;
-		rounds2[i].y = 12; rounds2[i].w = 10; rounds2[i].h = 5;
-		rounds1[i].x = 340 - 12 * i; rounds2[i].x = 450 + 12 * i;
-	}
 	glBindTexture(GL_TEXTURE_2D, background);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(-bg.x), 0.0f, 0.f);
+		glVertex3f((GLfloat)(-bg.x), (GLfloat)(-bg.y), 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(bg.w - bg.x), 0.0f, 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(-bg.y), 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(bg.y + bg.h), 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(bg.h - bg.y), 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.y + bg.h), 0.f);
+		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.h - bg.y), 0.f);
 	glEnd();
 
-	}
 //	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 
-	for(int i = 0; i < 2; i++){{
+	for(int i = 0; i < 2; i++){
+		p[i]->drawMeters(numRounds);
+	}
+	for(int i = 0; i < 2; i++){
 		p[i]->draw(bg.x, bg.y);
 	}
 
-	for(int i = 0; i < 2; i++){
-		p[i]->pick->drawMeters(screen, i);
-	}
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	
 	SDL_GL_SwapBuffers();
 
 }
@@ -60,12 +55,13 @@ void player::draw(int x, int y)
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
-	for(int j = 0; j < p[i]->regComplexity; j++){
+	for(int i = 0; i < regComplexity; i++){
 		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitreg.x - x), (GLfloat)(hitreg.y - y), (GLfloat)(hitreg.x + hitreg.w - x), (GLfloat)(hitreg.y + hitreg.h - y));
-	for(int j = 0; j < p[i]->hitComplexity; j++){
+		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
+	}
+	for(int i = 0; i < hitComplexity; i++){
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitbox.x - x), (GLfloat)(hitbox.y - y), (GLfloat)(hitbox.x + hitbox.w - x), (GLfloat)(hitbox.y + hitbox.h - y));
+		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
 	}
 }
 
@@ -75,13 +71,14 @@ void player::spriteInit()
 	/*Doing moves*/
 //	if(pick->freeze > 0) pick->freeze--;
 //	else 
-		sprite = pick->draw(facing);
-	if(facing == -1) {
+	sprite = pick->draw(facing);
+/*	if(facing == -1) {
 		if(sprite) spr.x = posX - sprite->w;
 	} else {
 		if(sprite) spr.x = posX;
 	}
 	if(sprite) spr.y = realPosY;
+*/
 }
 
 SDL_Surface * character::draw(int facing)
@@ -97,22 +94,38 @@ SDL_Surface * character::draw(int facing)
 	return temp;
 }
 
-void character::drawMeters(SDL_Surface *& screen, int ID)
+void player::drawMeters(int n)
+{
+	SDL_Rect r[n];
+	for(int i = 0; i < n; i++){
+		r[i].y = 12; r[i].w = 10; r[i].h = 5;
+		if(ID == 1) r[i].x = 340 - 12 * i; 
+		else r[i].x = 450 + 12 * i;
+	}
+	for(int i = 0; i < n; i++){
+		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
+	}
+	pick->drawMeters(ID);
+}
+
+void character::drawMeters(int ID)
 {	
 	SDL_Rect m;
 	SDL_Rect h;
 	if(health >= 0) h.w = health; else h.w = 1; 
 
-	if(ID == 0) h.x = 50 + (300 - h.w); 
+	if(ID == 1) h.x = 50 + (300 - h.w); 
 	else h.x = 450;
 	h.h = 5;
 	h.y = 5;
 
 	int R = 0, G = 255, B = 0;
 	if(meter[0] >= 0) m.w = meter[0]; else m.w = 1; 
-	if(ID == 0) m.x = 100; 
+	if(ID == 1) m.x = 100; 
 	else m.x = 500 + (200 - m.w);
-	m.h = 5; m.y = 580;
+	m.h = 5; m.y = 430;
 
 	if(m.w < 100) R = 191;
 	else if(m.w < 200) B = 255;

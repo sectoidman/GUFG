@@ -18,7 +18,7 @@ interface::interface()
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
-	screenHeight = 600;
+	screenHeight = 450;
 	bg.w = 1600;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 900;
 	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
@@ -85,6 +85,7 @@ bool interface::screenInit()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	return true;
@@ -108,7 +109,7 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	bg.x = 400;
-	bg.y = 300;
+	bg.y = 450;
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->pick->init();
@@ -344,36 +345,37 @@ void interface::cSelectMenu()
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f(100.0f, 0.0f, 0.f);
+		glVertex3f(175.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f(700.0f, 0.0f, 0.f);
+		glVertex3f(625.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(700.0f, 600.0f, 0.f);
+		glVertex3f(625.0f, 450.0f, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f(100.0f, 600.0f, 0.f);
+		glVertex3f(175.0f, 450.0f, 0.f);
 	glEnd();
 	
 	for(int i = 0; i < 2; i++){
 		glBindTexture(GL_TEXTURE_2D, cursor[i]);
 		glBegin(GL_QUADS);
 			glTexCoord2i(0, 0);
-			glVertex3f(100.0f, 0.0f, 0.0f);
+			glVertex3f(175.0f, 0.0f, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f(700.0f, 0.0f, 0.0f);
+			glVertex3f(625.0f, 0.0f, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f(700.0f, 600.0f, 0.0f);
+			glVertex3f(625.0f, 450.0f, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f(100.0f, 600.0f, 0.0f);
+			glVertex3f(175.0f, 450.0f, 0.f);
 		glEnd();
 	}
 
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]) roundInit();
 }
