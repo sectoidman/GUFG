@@ -53,6 +53,7 @@ void player::draw(int x, int y)
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
 		if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
 	}
+	pick->draw(facing);
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
 	for(int i = 0; i < regComplexity; i++){
@@ -65,33 +66,9 @@ void player::draw(int x, int y)
 	}
 }
 
-void player::spriteInit()
+void character::draw(int facing)
 {
-
-	/*Doing moves*/
-//	if(pick->freeze > 0) pick->freeze--;
-//	else 
-	sprite = pick->draw(facing);
-/*	if(facing == -1) {
-		if(sprite) spr.x = posX - sprite->w;
-	} else {
-		if(sprite) spr.x = posX;
-	}
-	if(sprite) spr.y = realPosY;
-*/
-}
-
-SDL_Surface * character::draw(int facing)
-{
-	SDL_Surface * temp;
-	if(freeze < 0) freeze = 0;
-	temp = cMove->draw(facing, freeze, meter);
-	if(freeze > 0) freeze--;
-	if(cMove->currentFrame == cMove->frames){
-		cMove->init();
-		cMove = cMove->next;
-	}
-	return temp;
+	cMove->draw(facing);
 }
 
 void player::drawMeters(int n)
@@ -135,12 +112,8 @@ void character::drawMeters(int ID)
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
 }
 
-SDL_Surface * move::draw(int facing, bool freeze, int *& meter)
+void move::draw(int facing)
 {
-	SDL_Surface * temp;
-	if(facing == -1) temp = fSprite[currentFrame];
-	else temp = sprite[currentFrame];
-	if(freeze == 0) 
-		step(meter);
-	return temp;
+//	if(facing == -1) temp = fSprite[currentFrame];
+//	else temp = sprite[currentFrame];
 }

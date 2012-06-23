@@ -51,7 +51,7 @@ public:
 	char * findOnHit();
 
 	bool CHState();
-	SDL_Surface * draw(int, bool, int *&);
+	virtual void draw(int);
 
 	hStat *stats;
 	int stop;

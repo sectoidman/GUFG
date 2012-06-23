@@ -318,3 +318,13 @@ void character::land()
 	aerial = 0; 
 	resetAirOptions();
 }
+
+void character::step()
+{
+	if(freeze <= 0) cMove->step(meter);
+	if(freeze > 0) freeze--;
+	if(cMove->currentFrame == cMove->frames){
+		cMove->init();
+		cMove = cMove->next;
+	}
+}

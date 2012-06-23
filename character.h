@@ -20,11 +20,12 @@ public:
 
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	virtual void drawMeters(int);
-	SDL_Surface * draw(int);//Pass sprite information up.
+	virtual void draw(int);//Pass sprite information up.
 	virtual void prepHooks(int[], bool[], bool[]);	//Take input from the game and propagate it to the appropriate moveTrie.
 	virtual void init();
 	virtual void resetAirOptions();
 	virtual void tick() {}
+	virtual void step();
 	virtual void connect(hStat&);
 	virtual void land();
 	virtual int takeHit(hStat&);

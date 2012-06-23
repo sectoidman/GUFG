@@ -154,7 +154,6 @@ void interface::roundInit()
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
-		p[i]->spriteInit();
 		p[i]->updateRects();
 	}
 	draw();
@@ -229,11 +228,11 @@ void interface::resolve()
 		resolveHits();	
 
 		/*Draw the sprites*/
-		p[0]->spriteInit();
-		p[1]->spriteInit();
 		draw();
-		for(int i = 0; i < 2; i++)
+		for(int i = 0; i < 2; i++){
+			p[i]->pick->step();
 			p[i]->pick->tick();
+		}
 		checkWin();
 		runTimer();
 	}
