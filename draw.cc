@@ -26,8 +26,6 @@ void interface::draw()
 		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.h - bg.y), 0.f);
 	glEnd();
 
-//	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
-
 	for(int i = 0; i < 2; i++){
 		p[i]->drawMeters(numRounds);
 	}
@@ -38,13 +36,12 @@ void interface::draw()
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	
 	SDL_GL_SwapBuffers();
-
 }
 
 void player::draw(int x, int y)
 {
 	int realPosY = collision.y;
-	int realPosX = 0;
+	int realPosX = posX;
 	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
 		if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
@@ -53,7 +50,7 @@ void player::draw(int x, int y)
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
 		if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
 	}
-	pick->draw(facing);
+	pick->draw(facing, posX - x, posY - y);
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
 	for(int i = 0; i < regComplexity; i++){
@@ -66,10 +63,6 @@ void player::draw(int x, int y)
 	}
 }
 
-void character::draw(int facing)
-{
-	cMove->draw(facing);
-}
 
 void player::drawMeters(int n)
 {
@@ -88,7 +81,7 @@ void player::drawMeters(int n)
 }
 
 void character::drawMeters(int ID)
-{	
+{
 	SDL_Rect m;
 	SDL_Rect h;
 	if(health >= 0) h.w = health; else h.w = 1; 
@@ -112,8 +105,18 @@ void character::drawMeters(int ID)
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
 }
 
-void move::draw(int facing)
+void character::draw(int facing, int x, int y)
 {
-//	if(facing == -1) temp = fSprite[currentFrame];
-//	else temp = sprite[currentFrame];
+	cMove->draw(facing, x, y);
+}
+
+void move::draw(int facing, int x, int y)
+{
+	if(sprite[currentFrame]){
+		glColor4f(0, 0, 0, 1.0f);
+		if(facing == 1) 
+			glRectf((GLfloat)(x - 20), (GLfloat)y, (GLfloat)x, (GLfloat)(y + 20));
+		else 
+			glRectf((GLfloat)x, (GLfloat)y, (GLfloat)(x + 20), (GLfloat)(y + 20));
+	}
 }

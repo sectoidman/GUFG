@@ -51,7 +51,7 @@ public:
 	char * findOnHit();
 
 	bool CHState();
-	virtual void draw(int);
+	virtual void draw(int, int, int);
 
 	hStat *stats;
 	int stop;
