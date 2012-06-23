@@ -1,16 +1,6 @@
 #include "interface.h"
 red::red()
 {
-	delete head;
-	delete airHead;
-	delete neutral;
-	delete crouch;
-	delete standBlock;
-	delete crouchBlock;
-	delete airBlock;
-	delete reel;
-	delete untech;
-	delete crouchReel;
 	delete [] meter;
 	
 	meter = new int[5];

@@ -8,6 +8,13 @@
 #include <cstring>
 
 character::character()
+{
+	bMove = NULL;
+
+	meter = new int[3];
+}
+
+character::character(const char*)
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
 	move * temp;
