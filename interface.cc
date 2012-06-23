@@ -399,12 +399,12 @@ interface::~interface()
 
 void interface::unitCollision()
 {
-	player *right, *left;
+	player *right = p[1], *left = p[0];
 	if(p[0]->posX > p[1]->posX){ right = p[0]; left = p[1]; }
-	else if(p[0]->posX < p[1]->posX) { right = p[1]; left = p[0]; }
+	else if(p[0]->posX < p[1]->posX){ right = p[1]; left = p[0]; }
 	else{
-		left = p[0];
-		right = p[1];
+		if(p[0]->facing == 1 && p[1]->facing == -1){ left = p[0]; right = p[1]; }
+		else if(p[1]->facing == 1 && p[0]->facing == -1){ left = p[1]; right = p[0]; }
 	}
 	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
 
@@ -438,8 +438,8 @@ void interface::unitCollision()
 		right->updateRects();
 		left->updateRects();
 	}
-	prox.x = right->posX - left->posX;
-	prox.y = abs(right->posY - left->posY);
+	prox.w = right->posX - left->posX;
+	prox.h = abs(right->posY - left->posY);
 }
 
 void interface::resolveHits()
