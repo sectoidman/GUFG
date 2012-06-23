@@ -157,7 +157,7 @@ void player::characterSelect(int i)
 		pick = new yellow;
 		break;
 	default:
-		pick = new character;
+		pick = new character("White");
 		break;
 	}
 }

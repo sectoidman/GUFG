@@ -10,6 +10,7 @@
 
 class character{
 public:
+	character(const char*);
 	character();		//Load the entire character into memory. This should happen once per player per match.
 	virtual ~character();	//Free stuff
 

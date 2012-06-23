@@ -1,15 +1,5 @@
 #include "yellow.h"
 yellow::yellow(){
-	delete head;
-	delete airHead;
-	delete neutral;
-	delete crouch;
-	delete standBlock;
-	delete crouchBlock;
-	delete airBlock;
-	delete reel;
-	delete untech;
-	delete crouchReel;
 	head = new moveTrie;
 	airHead = new moveTrie;
 	build("Yellow");
