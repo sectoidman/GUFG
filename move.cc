@@ -23,8 +23,6 @@ move::~move()
 		if(sprite[i] != NULL) SDL_FreeSurface(sprite[i]);
 		if(fSprite[i] != NULL) SDL_FreeSurface(fSprite[i]);
 	}*/
-	if(sprite) delete [] sprite;
-	if(fSprite) delete [] fSprite;
 	if(collision) delete [] collision;
 	if(hitbox) delete [] hitbox;
 	if(hitreg) delete [] hitreg;
@@ -238,13 +236,24 @@ void move::build(const char * n)
 		}
 
 	}
-	sprite = new SDL_Surface*[frames];
-	fSprite = new SDL_Surface*[frames];
+	SDL_Surface *temp;
+	width = new int[frames];
+	height = new int[frames];
+	sprite = new GLuint[frames];
 	for(int i = 0; i < frames; i++){
 		sprintf(fname, "%s#%i.png", n, i);
-		sprite[i] = aux::load_image(fname);
-		sprintf(fname, "%s#%iF.png", n, i);
-		fSprite[i] = aux::load_image(fname);
+		temp = aux::load_image(fname);
+		if(!temp){
+			width[i] = 0;
+			height[i] = 0;
+			sprite[i] = 0;
+		} else {
+			width[i] = temp->w;
+			height[i] = temp->h;
+			sprite[i] = aux::surface_to_texture(temp);
+		}
+//		sprintf(fname, "%s#%iF.png", n, i);
+//		fSprite[i] = aux::load_image(fname);
 	}
 }
 

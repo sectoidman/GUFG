@@ -28,14 +28,33 @@ void interface::draw()
 
 	for(int i = 0; i < 2; i++){
 		p[i]->drawMeters(numRounds);
-	}
-	for(int i = 0; i < 2; i++){
-		p[i]->draw(bg.x, bg.y);
+		if(!p[i]->spriteCheck()) p[i]->drawBoxen(bg.x, bg.y);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
+	for(int i = 0; i < 2; i++){
+		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	
 	SDL_GL_SwapBuffers();
+}
+
+void player::drawBoxen(int x, int y)
+{
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
+	for(int i = 0; i < regComplexity; i++){
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
+	}
+	for(int i = 0; i < hitComplexity; i++){
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
+	}
+	glEnd();
 }
 
 void player::draw(int x, int y)
@@ -58,18 +77,8 @@ void player::draw(int x, int y)
 			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
 		}
 	}
-
+	
 	pick->draw(facing, realPosX - x, realPosY - y);
-	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
-	for(int i = 0; i < regComplexity; i++){
-		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
-	}
-	for(int i = 0; i < hitComplexity; i++){
-		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
-	}
 }
 
 
@@ -82,11 +91,14 @@ void player::drawMeters(int n)
 		else r[i].x = 450 + 12 * i;
 	}
 	for(int i = 0; i < n; i++){
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
 	}
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	pick->drawMeters(ID);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void character::drawMeters(int ID)
@@ -110,6 +122,7 @@ void character::drawMeters(int ID)
 	else if(m.w < 200) B = 255;
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f((float)R, (float)G, (float)B, 1.0f);
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
 }
@@ -117,15 +130,54 @@ void character::drawMeters(int ID)
 void character::draw(int facing, int x, int y)
 {
 	cMove->draw(facing, x, y);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void move::draw(int facing, int x, int y)
 {
 	if(sprite[currentFrame]){
-		glColor4f(0, 0, 0, 1.0f);
-		if(facing == 1) 
-			glRectf((GLfloat)(x - 20), (GLfloat)y, (GLfloat)x, (GLfloat)(y + 20));
-		else 
-			glRectf((GLfloat)x, (GLfloat)y, (GLfloat)(x + 20), (GLfloat)(y + 20));
+		glBindTexture(GL_TEXTURE_2D, sprite[currentFrame]);
+		glBegin(GL_QUADS);
+		if(facing == 1){
+			glTexCoord2i(0, 0);
+			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+		} else {
+			glTexCoord2i(0, 0);
+			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+		}
+		glEnd();
 	}
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+bool player::spriteCheck()
+{
+	return pick->spriteCheck();
+}
+bool character::spriteCheck()
+{
+	return cMove->spriteCheck();
+}
+bool move::spriteCheck()
+{
+	if(sprite[currentFrame]) return 1;
+	else return 0;
 }

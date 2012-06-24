@@ -45,6 +45,7 @@ public:
 	virtual move * land() { return this; }
 	virtual void connect(int *&);
 	virtual bool takeHit(hStat&); 
+	bool spriteCheck();
 
 	virtual void feed(move *, int);
 	char * findNext();
@@ -106,7 +107,10 @@ public:
 	int * hitComplexity;
 	int * regComplexity;
 	int * deltaComplexity;
-	SDL_Surface **sprite, **fSprite;
+
+private:
+	int *width, *height;
+	GLuint *sprite;
 };
 
 class hitstun : virtual public move {
