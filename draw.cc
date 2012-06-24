@@ -40,50 +40,6 @@ void interface::draw()
 	SDL_GL_SwapBuffers();
 }
 
-void player::drawBoxen(int x, int y)
-{
-	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
-	for(int i = 0; i < regComplexity; i++){
-		glFlush();
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
-	}
-	for(int i = 0; i < hitComplexity; i++){
-		glFlush();
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
-	}
-	glFlush();
-}
-
-void player::draw(int x, int y)
-{
-	int realPosY = collision.y;
-	int realPosX = posX;
-	for(int i = 0; i < hitComplexity; i++){
-		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-		if(facing == 1){
-			if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
-		} else {
-			if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
-		}
-	}
-	for(int i = 0; i < regComplexity; i++){
-		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
-		if(facing == 1){
-			if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
-		} else {
-			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
-		}
-	}
-	
-	pick->draw(facing, realPosX - x, realPosY - y);
-}
-
-
 void player::drawMeters(int n)
 {
 	SDL_Rect r[n];
@@ -93,7 +49,6 @@ void player::drawMeters(int n)
 		else r[i].x = 450 + 12 * i;
 	}
 	for(int i = 0; i < n; i++){
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
@@ -122,11 +77,54 @@ void character::drawMeters(int ID)
 
 	if(m.w < 100) R = 191;
 	else if(m.w < 200) B = 255;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f((float)R, (float)G, (float)B, 1.0f);
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
+}
+
+void player::drawBoxen(int x, int y)
+{
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
+	for(int i = 0; i < regComplexity; i++){
+		glFlush();
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
+	}
+	for(int i = 0; i < hitComplexity; i++){
+		glFlush();
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
+	}
+	glFlush();
+}
+
+void player::draw(int x, int y)
+{
+	int realPosY = collision.y;
+	int realPosX = posX;
+	for(int i = 0; i < hitComplexity; i++){
+		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
+		if(facing == 1){
+			if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+		} else {
+			if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+		}
+	}
+	for(int i = 0; i < regComplexity; i++){
+		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
+		if(facing == 1){
+			if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+		} else {
+			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+		}
+	}
+	if(secondInstance)
+		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
+	pick->draw(facing, realPosX - x, realPosY - y);
 }
 
 void character::draw(int facing, int x, int y)

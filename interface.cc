@@ -100,6 +100,8 @@ void interface::matchInit()
 	printf("Please select a character:\n");
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
+	p[0]->secondInstance = 0;
+	p[1]->secondInstance = 0;
 	background = aux::load_texture("Misc/BG1.png");
 	q = 0;
 	while (SDL_PollEvent(&event));
@@ -376,7 +378,10 @@ void interface::cSelectMenu()
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
-	if(select[0] && select[1]) roundInit();
+	if(select[0] && select[1]){
+		if(selection[0] == selection[1]) p[1]->secondInstance = true;
+		roundInit();
+	}
 }
 
 void interface::dragBG(int deltaX)

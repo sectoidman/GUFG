@@ -19,9 +19,9 @@ void red::touch(void * target)
 
 void red::tick(){
 	character::tick();
-	if(meter[3] < 540) meter[3]++;
-	if(meter[3] < 0) meter[3] = 0;
 	if(meter[4] > 0) meter[4]--;
+	else if(meter[3] < 540) meter[3]++;
+	if(meter[3] < 0) meter[3] = 0;
 }
 
 void red::drawMeters(int ID)

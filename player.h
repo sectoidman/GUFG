@@ -50,6 +50,7 @@ public:
 	void checkCorners(int, int, int);
 	void combineDelta();
 	void addVector(SDL_Rect&);
+	bool secondInstance;
 
 private:
 	int ID;
