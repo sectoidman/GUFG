@@ -45,16 +45,18 @@ void player::drawBoxen(int x, int y)
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
 	for(int i = 0; i < regComplexity; i++){
+		glFlush();
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
 		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
 	}
 	for(int i = 0; i < hitComplexity; i++){
+		glFlush();
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
 		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
 	}
-	glEnd();
+	glFlush();
 }
 
 void player::draw(int x, int y)
@@ -96,9 +98,9 @@ void player::drawMeters(int n)
 		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
 	}
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glFlush();
 	pick->drawMeters(ID);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glFlush();
 }
 
 void character::drawMeters(int ID)
@@ -130,7 +132,6 @@ void character::drawMeters(int ID)
 void character::draw(int facing, int x, int y)
 {
 	cMove->draw(facing, x, y);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void move::draw(int facing, int x, int y)
