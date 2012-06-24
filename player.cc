@@ -293,20 +293,21 @@ void player::checkFacing(player * other){
 	int comparison, midpoint;
 	midpoint = collision.x + collision.w/2;
 	comparison = other->collision.x + other->collision.w/2;
+
 	if(other->posX < posX) comparison += collision.w % 2; 
-	else {
-		midpoint += collision.w % 2;
-	}
+	else midpoint += collision.w % 2;
+
 	if (lCorner) facing = 1;
 	else if (rCorner) facing = -1;
 	else if (midpoint < comparison){
-		if(facing == -1) posX += collision.x - posX;
+		if(facing == -1) posX += collision.x - (posX + (posX - collision.x - collision.w));
 		facing = 1;
 	}
 	else if (midpoint > comparison){
-		if(facing == 1) posX += (collision.w + collision.x) - posX;
+		if(facing == 1) posX += (collision.w + collision.x) - posX*2 + collision.x;
 		facing = -1;
 	}
+
 	updateRects();
 }
 

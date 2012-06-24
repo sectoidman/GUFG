@@ -23,6 +23,7 @@ public:
 	void draw();		//The primary function in charge of drawing things on the screen.
 	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
 	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
+	bool screenInit();
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();
@@ -38,7 +39,8 @@ public:
 	bool * negEdge[2];
 	bool select[2];
 	int selection[2];
-	SDL_Surface *background, *screen;
+	SDL_Surface *screen;
+	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
 	int grav; 		//Gravitational constant. 
@@ -49,8 +51,8 @@ public:
 
 //Variables for cSelectMenu 
 	int numChars;
-	SDL_Surface *selectScreen; 
-	SDL_Surface *cursor [2];
+	GLuint selectScreen; 
+	GLuint cursor [2];
 	SDL_Rect wheel;
 	int counter[2];
 

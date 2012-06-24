@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <chrono>
+#include <SDL/SDL_opengl.h>
 #include <thread>
 using namespace std;
 int main(int argc, char* argv[])

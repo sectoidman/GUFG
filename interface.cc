@@ -8,29 +8,24 @@
 #include "interface.h"
 #include <cstring>
 #include <math.h>
+#include <assert.h>
+//#include <GL/glew.h>
+#include <SDL/SDL_opengl.h>
 interface::interface()
 {
+	
 	numChars = 2;
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
-	screenHeight = 600;
+	screenHeight = 450;
 	bg.w = 1600;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 900;
 	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 25;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
-	/*Initialize SDL*/
-	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Init(SDL_INIT_JOYSTICK);
-	/*WM stuff*/
-	SDL_WM_SetCaption("GUFG", "GUFG");
-	screen = SDL_SetVideoMode(screenWidth, screenHeight, 0, 0);
-//	SDL_ShowCursor(SDL_DISABLE);
+	assert(screenInit() != false);
 
-	/*Set up input buffers and joysticks*/
-	for(int i = 0; i < SDL_NumJoysticks(); i++)
-		SDL_JoystickOpen(i);
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
@@ -38,7 +33,7 @@ interface::interface()
 		posEdge[i] = new bool[5]; 
 		negEdge[i] = new bool[5];
 		sprintf(buffer, "Misc/P%iSelect0.png", i+1);
-		cursor[i] = aux::load_image(buffer);
+		cursor[i] = aux::load_texture(buffer);
 		counter[i] = 0;
 	}
 	for(int i = 0; i < 5; i++){
@@ -50,6 +45,8 @@ interface::interface()
 			sAxis[0][i] = 0;
 			sAxis[1][i] = 0;
 		}
+		select[i] = 0;
+		selection[i] = 0;
 	}
 
 	/*Game and round end conditions*/
@@ -59,30 +56,60 @@ interface::interface()
 	SDL_Event temp;
 	while(SDL_PollEvent(&temp));
 	/*Select characters.*/
-	selectScreen = aux::load_image("Misc/Select.png");
-	wheel.x = 100; wheel.y = 0;
+	selectScreen = aux::load_texture("Misc/Select.png");
 
 	/*Start a match*/
 	matchInit();
 }
 
+bool interface::screenInit()
+{
+	/*Initialize SDL*/
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	/*WM stuff*/
+	SDL_WM_SetCaption("GUFG", "GUFG");
+	if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL)) == NULL)
+		return false;
+	SDL_ShowCursor(SDL_DISABLE);
+
+	/*Set up input buffers and joysticks*/
+	for(int i = 0; i < SDL_NumJoysticks(); i++)
+		SDL_JoystickOpen(i);
+	glEnable( GL_TEXTURE_2D );
+//	glDisable (GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable( GL_BLEND );
+	glClearColor(0, 0, 0, 0);
+	glClearDepth(1.0f);
+	glViewport(0, 0, screenWidth, screenHeight);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	return true;
+}
+
 /*This functions sets things up for a new match. Initializes some things and draws the background*/
 void interface::matchInit()
 {
+	SDL_Event event;
 	select[0] = 0;
 	select[1] = 0;
 	printf("Please select a character:\n");
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
-	background = IMG_Load("Misc/BG1.png");
+	background = aux::load_texture("Misc/BG1.png");
 	q = 0;
+	while (SDL_PollEvent(&event));
 }
 
 /*Sets stuff up for a new round. This initializes the characters, the timer, and the background.*/
 void interface::roundInit()
 {
 	bg.x = 400;
-	bg.y = 300;
+	bg.y = 450;
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->pick->init();
@@ -101,7 +128,7 @@ void interface::roundInit()
 
 	
 	/*Background color, temporary until we have backgrounds*/
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
+//	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
 
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
@@ -127,7 +154,6 @@ void interface::roundInit()
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
-		p[i]->spriteInit();
 		p[i]->updateRects();
 	}
 	draw();
@@ -202,11 +228,11 @@ void interface::resolve()
 		resolveHits();	
 
 		/*Draw the sprites*/
-		p[0]->spriteInit();
-		p[1]->spriteInit();
 		draw();
-		for(int i = 0; i < 2; i++)
+		for(int i = 0; i < 2; i++){
+			p[i]->pick->step();
 			p[i]->pick->tick();
+		}
 		checkWin();
 		runTimer();
 	}
@@ -293,29 +319,63 @@ void interface::cSelectMenu()
 			selection[i]--;
 			if(selection[i] < 0) selection[i] = numChars;
 			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
-			cursor[i] = aux::load_image(base[i]);
+			cursor[i] = aux::load_texture(base[i]);
 			counter[i] = 10;
 		}
 		if(sAxis[i][3] && !select[i] && counter[i] == 0){
 			selection[i]++;
 			if(selection[i] > numChars) selection[i] = 0;
 			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
-			cursor[i] = aux::load_image(base[i]);
+			cursor[i] = aux::load_texture(base[i]);
 			counter[i] = 10;
 		}
 		for(int j = 0; j < 5; j++){
-			if(posEdge[i][j]){
+			if(posEdge[i][j] && !select[i]){
 				select[i] = 1;
 				p[i]->characterSelect(selection[i]);
 			}
 		}
 	}
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 100, 100, 100));
-	SDL_BlitSurface(selectScreen, NULL, screen, &wheel);
-	SDL_BlitSurface(cursor[0], NULL, screen, &wheel);
-	SDL_BlitSurface(cursor[1], NULL, screen, &wheel);
-	SDL_UpdateRect(screen, 0, 0, 0, 0);	
+	
+	glClear(GL_COLOR_BUFFER_BIT);
+
+//	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
+//	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
+	glBindTexture(GL_TEXTURE_2D, selectScreen);
+	glBegin(GL_QUADS);
+		glTexCoord2i(0, 0);
+		glVertex3f(175.0f, 0.0f, 0.f);
+
+		glTexCoord2i(1, 0);
+		glVertex3f(625.0f, 0.0f, 0.f);
+
+		glTexCoord2i(1, 1);
+		glVertex3f(625.0f, 450.0f, 0.f);
+
+		glTexCoord2i(0, 1);
+		glVertex3f(175.0f, 450.0f, 0.f);
+	glEnd();
+	
+	for(int i = 0; i < 2; i++){
+		glBindTexture(GL_TEXTURE_2D, cursor[i]);
+		glBegin(GL_QUADS);
+			glTexCoord2i(0, 0);
+			glVertex3f(175.0f, 0.0f, 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f(625.0f, 0.0f, 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f(625.0f, 450.0f, 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f(175.0f, 450.0f, 0.f);
+		glEnd();
+	}
+
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]) roundInit();
 }
 
@@ -329,10 +389,6 @@ void interface::dragBG(int deltaX)
 interface::~interface()
 {
 	SDL_FreeSurface(screen);
-	SDL_FreeSurface(background);
-	SDL_FreeSurface(selectScreen);
-	SDL_FreeSurface(cursor[0]);
-	SDL_FreeSurface(cursor[1]);
 	if(select[0]) delete p[0]->pick;
 	if(select[1]) delete p[1]->pick;
 	delete p[0];

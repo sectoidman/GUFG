@@ -4,6 +4,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_opengl.h>
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -249,4 +250,29 @@ int aux::defineRectArray(char * definition, SDL_Rect *& array)
 		array[i/4].h = atoi(coordinate[i]);
 	}
 	return complexity;
+}
+
+GLuint aux::surface_to_texture(SDL_Surface * source)
+{
+	if(source == NULL) return -1;
+	GLint nColors;
+	GLenum texFormat;
+	GLuint texture;
+	nColors = source->format->BytesPerPixel;
+	if (source->format->Rmask == 0x000000ff)
+		texFormat = GL_RGBA;
+	else
+		texFormat = GL_BGRA;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, nColors, source->w, source->h, 0, texFormat, GL_UNSIGNED_BYTE, source->pixels);
+	return texture;
+}
+
+GLuint aux::load_texture (string filename)
+{
+	return surface_to_texture(load_image(filename));
 }

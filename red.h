@@ -4,7 +4,7 @@ public:
 	red();
 	void touch(void*);
 	move * createMove(char*);
-	void drawMeters(SDL_Surface *&, int);
+	void drawMeters(int);
 	void tick();
 	void init();
 };

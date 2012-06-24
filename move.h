@@ -45,13 +45,14 @@ public:
 	virtual move * land() { return this; }
 	virtual void connect(int *&);
 	virtual bool takeHit(hStat&); 
+	bool spriteCheck();
 
 	virtual void feed(move *, int);
 	char * findNext();
 	char * findOnHit();
 
 	bool CHState();
-	SDL_Surface * draw(int, bool, int *&);
+	virtual void draw(int, int, int);
 
 	hStat *stats;
 	int stop;
@@ -102,10 +103,14 @@ public:
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
 	SDL_Rect ** delta;       //Same but for position on the screen.
+	SDL_Rect *spritebox, fSpritebox;
 	int * hitComplexity;
 	int * regComplexity;
 	int * deltaComplexity;
-	SDL_Surface **sprite, **fSprite;
+
+private:
+	int *width, *height;
+	GLuint *sprite;
 };
 
 class hitstun : virtual public move {

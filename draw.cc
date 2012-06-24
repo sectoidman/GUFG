@@ -6,123 +6,179 @@
 
 #include "interface.h"
 #include <math.h>
+#include <SDL/SDL_opengl.h>
 void interface::draw()
 {
-	SDL_Surface * back = SDL_DisplayFormatAlpha(background);
-	SDL_Rect bar1, bar2, rounds1[numRounds], rounds2[numRounds];
-	
-	if(p[0]->pick->health >= 0) bar1.w = p[0]->pick->health; else bar1.w = 1; 
-	if(p[1]->pick->health >= 0) bar2.w = p[1]->pick->health; else bar2.w = 1;
-	
-	bar1.x = 50 + (300 - bar1.w); bar2.x = 450;
-	bar1.h = 5; bar2.h = 5;
-	bar1.y = 5; bar2.y = 5;
-	
-	
-	for(int i = 0; i < numRounds; i++){
-		rounds1[i].y = 12; rounds1[i].w = 10; rounds1[i].h = 5;
-		rounds2[i].y = 12; rounds2[i].w = 10; rounds2[i].h = 5;
-		rounds1[i].x = 340 - 12 * i; rounds2[i].x = 450 + 12 * i;
-	}
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	if(p[0]->sprite) SDL_BlitSurface(p[0]->sprite, NULL, back, &p[0]->spr);
-	else {
-		SDL_FillRect(back, &p[0]->collision, SDL_MapRGB(back->format, 255, 255, 255));
-		for(int i = 0; i < p[0]->regComplexity; i++)
-			SDL_FillRect(back, &p[0]->hitreg[i], SDL_MapRGB(back->format, 0, 255, 0));
-		for(int i = 0; i < p[0]->hitComplexity; i++)
-			SDL_FillRect(back, &p[0]->hitbox[i], SDL_MapRGB(back->format, 255, 0, 0));
-	}
-	if(p[1]->sprite) SDL_BlitSurface(p[1]->sprite, NULL, back, &p[1]->spr);
-	else{
-		SDL_FillRect(back, &p[1]->collision, SDL_MapRGB(back->format, 255, 255, 255));
-		for(int i = 0; i < p[1]->regComplexity; i++)
-			SDL_FillRect(back, &p[1]->hitreg[i], SDL_MapRGB(back->format, 0, 255, 0));
-		for(int i = 0; i < p[1]->hitComplexity; i++)
-			SDL_FillRect(back, &p[1]->hitbox[i], SDL_MapRGB(back->format, 255, 0, 0));
-	}
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 255, 212, 120));
-	SDL_BlitSurface(back, &bg, screen, NULL);
-	
-	for(int i = 0; i < numRounds; i++){
-		if(p[0]->rounds > i) SDL_FillRect(screen, &rounds1[i], SDL_MapRGB(screen->format, 0, 255, 255));
-		else SDL_FillRect(screen, &rounds1[i], SDL_MapRGB(screen->format, 0, 0, 0));
-		if(p[1]->rounds > i) SDL_FillRect(screen, &rounds2[i], SDL_MapRGB(screen->format, 0, 255, 255));
-		else SDL_FillRect(screen, &rounds2[i], SDL_MapRGB(screen->format, 0, 0, 0));
-	}
+	glBindTexture(GL_TEXTURE_2D, background);
+	glBegin(GL_QUADS);
+		glTexCoord2i(0, 0);
+		glVertex3f((GLfloat)(-bg.x), (GLfloat)(-bg.y), 0.f);
 
-	SDL_FillRect(screen, &bar1, SDL_MapRGB(screen->format, 255, 0, 0));
-	SDL_FillRect(screen, &bar2, SDL_MapRGB(screen->format, 255, 0, 0));
-	
+		glTexCoord2i(1, 0);
+		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(-bg.y), 0.f);
+
+		glTexCoord2i(1, 1);
+		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(bg.h - bg.y), 0.f);
+
+		glTexCoord2i(0, 1);
+		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.h - bg.y), 0.f);
+	glEnd();
+
 	for(int i = 0; i < 2; i++){
-		p[i]->pick->drawMeters(screen, i);
+		p[i]->drawMeters(numRounds);
+		if(!p[i]->spriteCheck()) p[i]->drawBoxen(bg.x, bg.y);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	
-	SDL_UpdateRect(screen, 0, 0, 0, 0);
-	SDL_FreeSurface(back);
+
+	for(int i = 0; i < 2; i++){
+		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	SDL_GL_SwapBuffers();
 }
 
+void player::drawBoxen(int x, int y)
+{
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
+	for(int i = 0; i < regComplexity; i++){
+		glFlush();
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
+	}
+	for(int i = 0; i < hitComplexity; i++){
+		glFlush();
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
+	}
+	glFlush();
+}
 
-void player::spriteInit()
+void player::draw(int x, int y)
 {
 	int realPosY = collision.y;
-	int realPosX = 0;
+	int realPosX = posX;
 	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-		if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+		if(facing == 1){
+			if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+		} else {
+			if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+		}
 	}
 	for(int i = 0; i < regComplexity; i++){
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
-		if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+		if(facing == 1){
+			if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+		} else {
+			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+		}
 	}
-
 	
-	/*Doing moves*/
-//	if(pick->freeze > 0) pick->freeze--;
-//	else 
-		sprite = pick->draw(facing);
-	if(facing == -1) {
-		if(sprite) spr.x = posX - sprite->w;
-	} else {
-		if(sprite) spr.x = posX;
-	}
-	if(sprite) spr.y = realPosY;
+	pick->draw(facing, realPosX - x, realPosY - y);
 }
 
-SDL_Surface * character::draw(int facing)
+
+void player::drawMeters(int n)
 {
-	SDL_Surface * temp;
-	if(freeze < 0) freeze = 0;
-	temp = cMove->draw(facing, freeze, meter);
-	if(freeze > 0) freeze--;
-	if(cMove->currentFrame == cMove->frames){
-		cMove->init();
-		cMove = cMove->next;
+	SDL_Rect r[n];
+	for(int i = 0; i < n; i++){
+		r[i].y = 12; r[i].w = 10; r[i].h = 5;
+		if(ID == 1) r[i].x = 340 - 12 * i; 
+		else r[i].x = 450 + 12 * i;
 	}
-	return temp;
+	for(int i = 0; i < n; i++){
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
+	}
+	glFlush();
+	pick->drawMeters(ID);
+	glFlush();
 }
 
-void character::drawMeters(SDL_Surface *& screen, int ID)
-{	
+void character::drawMeters(int ID)
+{
 	SDL_Rect m;
+	SDL_Rect h;
+	if(health >= 0) h.w = health; else h.w = 1; 
+
+	if(ID == 1) h.x = 50 + (300 - h.w); 
+	else h.x = 450;
+	h.h = 5;
+	h.y = 5;
+
 	int R = 0, G = 255, B = 0;
 	if(meter[0] >= 0) m.w = meter[0]; else m.w = 1; 
-	if(ID == 0) m.x = 100; 
+	if(ID == 1) m.x = 100; 
 	else m.x = 500 + (200 - m.w);
-	m.h = 5; m.y = 580;
+	m.h = 5; m.y = 430;
 
 	if(m.w < 100) R = 191;
 	else if(m.w < 200) B = 255;
-	
-	SDL_FillRect(screen, &m, SDL_MapRGB(screen->format, R, G, B));
+	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glColor4f((float)R, (float)G, (float)B, 1.0f);
+	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
 }
 
-SDL_Surface * move::draw(int facing, bool freeze, int *& meter)
+void character::draw(int facing, int x, int y)
 {
-	SDL_Surface * temp;
-	if(facing == -1) temp = fSprite[currentFrame];
-	else temp = sprite[currentFrame];
-	if(freeze == 0) 
-		step(meter);
-	return temp;
+	cMove->draw(facing, x, y);
+}
+
+void move::draw(int facing, int x, int y)
+{
+	if(sprite[currentFrame]){
+		glBindTexture(GL_TEXTURE_2D, sprite[currentFrame]);
+		glBegin(GL_QUADS);
+		if(facing == 1){
+			glTexCoord2i(0, 0);
+			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+		} else {
+			glTexCoord2i(0, 0);
+			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y), 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+		}
+		glEnd();
+	}
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+bool player::spriteCheck()
+{
+	return pick->spriteCheck();
+}
+bool character::spriteCheck()
+{
+	return cMove->spriteCheck();
+}
+bool move::spriteCheck()
+{
+	if(sprite[currentFrame]) return 1;
+	else return 0;
 }
