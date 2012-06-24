@@ -11,6 +11,8 @@ void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glEnable( GL_TEXTURE_2D );
 	glBindTexture(GL_TEXTURE_2D, background);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
@@ -26,11 +28,14 @@ void interface::draw()
 		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.h - bg.y), 0.f);
 	glEnd();
 
+	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
 		p[i]->drawMeters(numRounds);
-		if(!p[i]->spriteCheck()) p[i]->drawBoxen(bg.x, bg.y);
+		if(!p[i]->spriteCheck()) 
+			p[i]->drawBoxen(bg.x, bg.y);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
+	glEnable( GL_TEXTURE_2D );
 
 	for(int i = 0; i < 2; i++){
 		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
@@ -38,6 +43,7 @@ void interface::draw()
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
+	glDisable( GL_TEXTURE_2D );
 }
 
 void player::drawMeters(int n)

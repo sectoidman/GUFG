@@ -196,9 +196,7 @@ void character::build(const char* n)
 					for(int i = strlen(token)-1; i > 0; i--){
 						sprintf(component, "%c\0", token[i]);
 						q = atoi(component);// % 10;
-						if(q > 10) { 
-							q = q % 10;
-						}
+						if(q > 10) q = q % 10;
 						t = t->insert(q);
 					}
 					t->insert(m);

@@ -75,7 +75,6 @@ bool interface::screenInit()
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
-	glEnable( GL_TEXTURE_2D );
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable( GL_BLEND );
@@ -341,8 +340,11 @@ void interface::cSelectMenu()
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 
-//	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
-//	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
+	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
+	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glEnable( GL_TEXTURE_2D );
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
@@ -374,6 +376,7 @@ void interface::cSelectMenu()
 			glVertex3f(175.0f, 450.0f, 0.f);
 		glEnd();
 	}
+	glEnable( GL_TEXTURE_2D );
 
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
