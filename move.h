@@ -102,6 +102,7 @@ public:
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
 	SDL_Rect ** delta;       //Same but for position on the screen.
+	SDL_Rect *spritebox, fSpritebox;
 	int * hitComplexity;
 	int * regComplexity;
 	int * deltaComplexity;

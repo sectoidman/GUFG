@@ -44,13 +44,22 @@ void player::draw(int x, int y)
 	int realPosX = posX;
 	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-		if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+		if(facing == 1){
+			if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+		} else {
+			if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+		}
 	}
 	for(int i = 0; i < regComplexity; i++){
 		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
-		if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+		if(facing == 1){
+			if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+		} else {
+			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+		}
 	}
-	pick->draw(facing, posX - x, posY - y);
+
+	pick->draw(facing, realPosX - x, realPosY - y);
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
 	for(int i = 0; i < regComplexity; i++){
