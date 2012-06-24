@@ -225,7 +225,7 @@ void interface::resolve()
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
 	
 		//Check if moves hit. This will probably be a function at some point
-		resolveHits();	
+		resolveHits();
 
 		/*Draw the sprites*/
 		draw();
@@ -458,6 +458,7 @@ void interface::resolveHits()
 			}
 		}
 	}
+
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
 			if(p[(i+1)%2]->CHState()){
@@ -474,6 +475,7 @@ void interface::resolveHits()
 			if(!p[i]->pick->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
+
 	for(int i = 0; i < 2; i++){ 
 		if(hit[i]){
 			combo[i] += p[(i+1)%2]->takeHit(combo[i], s[i]);

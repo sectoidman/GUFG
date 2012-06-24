@@ -459,6 +459,7 @@ int player::takeHit(int combo, hStat & s)
 	if(pick->aerial) v.x = -(s.push/5 + s.blowback);
 	else v.x = -s.push;
 	addVector(v);
+	updateRects();
 	return 1;
 }
 
