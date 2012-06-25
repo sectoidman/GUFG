@@ -32,6 +32,7 @@ public:
 	void doSuperFreeze();
 	void unitCollision();
 	void resolveHits();
+	void resolveThrows();
 
 	player * p[2];
 	bool * sAxis[2];	//Initial input buffering.

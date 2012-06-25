@@ -55,6 +55,8 @@ character::character(const char*)
 	head->insert(7, new utility("White/JQ"));
 	head->insert(9, new utility("White/JF"));
 	
+	throwBreak = new utility("White/break");
+	
 	cMove = neutral;
 	bMove = NULL;
 
@@ -166,6 +168,9 @@ void character::build(const char* n)
 	
 	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);	
+
+	sprintf(buffer, "%s/break", name);
+	throwBreak = new utility(buffer);
 
 	while(!read.eof()){
 		commentFlag = 0;

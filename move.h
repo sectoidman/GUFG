@@ -238,4 +238,9 @@ public:
 	werf() {}
 	werf(const char* n) {build(n); init();}
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
+	virtual int arbitraryPoll(int n);
+	int startPosX;
+	int startPosY;
+	int xRequisite;
+	int yRequisite;
 };

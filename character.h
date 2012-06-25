@@ -45,6 +45,7 @@ public:
 	hitstun * crouchBlock;
 	hitstun * standBlock;
 	hitstun * airBlock;
+	utility * throwBreak;
 
 	move * cMove;
 	move * bMove;

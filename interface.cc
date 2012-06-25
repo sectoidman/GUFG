@@ -451,6 +451,25 @@ void interface::unitCollision()
 	prox.h = abs(right->posY - left->posY);
 }
 
+void interface::resolveThrows()
+{
+	bool isThrown[2] = {false, false};
+	for(int i = 0; i < 2; i++){
+		if(p[i]->pick->cMove->arbitraryPoll(28)) isThrown[(i+1)%2] = true;
+	}
+	if(isThrown[0] && isThrown[1]){
+		p[0]->pick->throwBreak->execute(p[0]->pick->cMove, p[0]->pick->meter);
+		p[1]->pick->throwBreak->execute(p[1]->pick->cMove, p[1]->pick->meter);
+	} else {
+		for(int i = 0; i < 2; i++){
+			if(isThrown[i]){
+				p[i]->getThrown(p[(i+1)%2]->pick->cMove, p[(i+1)%2]->posX, p[(i+1)%2]->posY);
+				p[i]->checkFacing(p[(i+1)%2]);
+			}
+		}
+	}
+}
+
 void interface::resolveHits()
 {
 	hStat s[2];

@@ -50,6 +50,7 @@ public:
 	void addVector(SDL_Rect&);
 	void setPosition(int, int);
 	bool secondInstance;
+	void getThrown(move*, int, int);
 
 private:
 	int ID;

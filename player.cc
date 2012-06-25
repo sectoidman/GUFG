@@ -450,9 +450,12 @@ void player::connect(int combo, hStat & s)
 int player::takeHit(int combo, hStat & s)
 {
 	SDL_Rect v = {0, 0, 1, 0};
-	s.damage -= combo; if(s.damage < 1) s.damage = 1;
-	pick->takeHit(s);
+	if(s.damage > 0){
+		if(combo >= s.damage) s.damage = 1;
+		else s.damage -= combo; 
+	}
 	s.untech -= combo;
+	pick->takeHit(s);
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
 	else v.y = 0;
@@ -497,4 +500,11 @@ void player::setPosition(int x, int y)
 {
 	posX = x;
 	posY = y;
+}
+
+void player::getThrown(move *toss, int x, int y)
+{
+	setPosition(toss->arbitraryPoll(27) + x, toss->arbitraryPoll(26) + y);
+	pick->cMove = pick->reel;
+	updateRects();
 }
