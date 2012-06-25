@@ -49,7 +49,7 @@ void move::build(const char * n)
 	assert(!read.fail());
 	
 	while(read.get() != ':'); read.ignore();
-	name = new char[strlen(n)+1];	
+	name = new char[strlen(n)+1];
 	sprintf(name, "%s", n);
 
 	while(read.get() != ':'); read.ignore();
@@ -92,7 +92,7 @@ void move::build(const char * n)
 
 	for(int i = 0; i < hits+1; i++){
 		while(read.get() != ':'); read.ignore();
-		read >>	state[i].i;
+		read >> state[i].i;
 	}
 	
 	for(int i = 0; i < hits; i++){
@@ -127,7 +127,7 @@ void move::build(const char * n)
 	
 	for(int i = 0; i < hits+1; i++){
 		while(read.get() != ':'); read.ignore();
-		read >>	gain[i];
+		read >> gain[i];
 	}
 	
 	while(read.get() != ':'); read.ignore();
@@ -137,7 +137,7 @@ void move::build(const char * n)
 		while(read.get() != ':'); read.ignore();
 		read >> stats[i].blockMask.i;
 	}
-	
+
 	while(read.get() != ':'); read.ignore();
 	read >> blockState.i;
 
@@ -152,6 +152,9 @@ void move::build(const char * n)
 		switch(buffer[i]){
 		case '^': 
 			stats[ch].launch = 1;
+			break;
+		case 'g':
+			stats[ch].ghostHit = 1;
 			break;
 		case 's':
 			stop = 1;
@@ -383,3 +386,5 @@ bool move::CHState()
 	else if(currentFrame < totalStartup[hits-1]) return true;
 	else return false;
 }
+
+

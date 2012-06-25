@@ -9,11 +9,11 @@
 #include <cstring>
 #include <math.h>
 #include <assert.h>
-//#include <GL/glew.h>
 #include <SDL/SDL_opengl.h>
+#include <algorithm>
 interface::interface()
 {
-	
+
 	numChars = 2;
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
@@ -116,7 +116,6 @@ void interface::roundInit()
 		p[i]->pick->init();
 		p[i]->deltaX = 0;
 		p[i]->deltaY = 0;
-		p[i]->sprite = NULL;
 	}
 
 	for(int i = 0; i < 2; i++){
@@ -187,8 +186,9 @@ void interface::resolve()
 
 		p[0]->updateRects();
 		p[1]->updateRects();
-	
+
 		doSuperFreeze();
+
 		p[0]->pullVolition();
 		p[0]->updateRects();
 		p[1]->pullVolition();
@@ -218,13 +218,13 @@ void interface::resolve()
 		
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
-	
+
 		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->untech && p[0]->pick->cMove != p[0]->pick->crouchReel) combo[1] = 0;
 		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->untech && p[1]->pick->cMove != p[1]->pick->crouchReel) combo[0] = 0;
-	
+
 		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
-	
+
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
 
@@ -504,4 +504,6 @@ void interface::doSuperFreeze()
 		go[i] = p[i]->pick->cMove->arbitraryPoll(2);
 		if(go[i] > 0) p[(i+1)%2]->pick->freeze += go[i];
 	}
+	if(go[0] > 0 || go[1] > 0)
+		freeze = std::max(go[0], go[1]);
 }

@@ -460,7 +460,8 @@ int player::takeHit(int combo, hStat & s)
 	else v.x = -s.push;
 	addVector(v);
 	updateRects();
-	return 1;
+	if(s.ghostHit) return 0;
+	else return 1;
 }
 
 void player::invertVectors(int operation)
@@ -484,13 +485,16 @@ void player::invertVectors(int operation)
 		return;
 		break;
 	}
-
-
-
 }
 
 bool player::CHState()
 {
 	if(hitbox[0].w > 0) return true;
 	else return pick->cMove->CHState();
+}
+
+void player::setPosition(int x, int y)
+{
+	posX = x;
+	posY = y;
 }

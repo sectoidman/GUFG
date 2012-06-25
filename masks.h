@@ -41,12 +41,6 @@ struct gpf{
 	bool dropDelta:1;
 };
 
-struct hpf{
-	bool launch:1;
-	bool elasticX:1;
-	bool elasticY:1;
-};
-
 typedef union {
 	unsigned int i;
 	cf b;
@@ -61,11 +55,6 @@ typedef union{
 	unsigned int i;
 	effect b;
 } effectHook;
-
-typedef union{
-	unsigned int i;
-	hpf b;
-} properties;
 
 typedef union{
 	unsigned int i;

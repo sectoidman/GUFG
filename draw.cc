@@ -44,6 +44,11 @@ void interface::draw()
 		glEnable( GL_TEXTURE_2D );
 	}
 	glDisable( GL_TEXTURE_2D );
+	if(freeze > 0){
+		glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+		glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
+		freeze--;
+	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 }

@@ -56,9 +56,9 @@ public:
 	SDL_Rect wheel;
 	int counter[2];
 
-//testing variables;
 	bool q;
 	int timer;
 private:
 	int screenHeight, screenWidth, floor, wall;
+	int freeze;
 };

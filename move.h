@@ -10,14 +10,15 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), launch(0){} 
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), launch(0), ghostHit(0){} 
 	int damage;          //How much damage the move does
 	int stun;            //How much stun the move does
 	int push;            //How much pushback the move does
 	int lift;            //How much the move lifts an aerial opponent.
 	int untech;
 	int blowback;
-	bool launch;
+	bool launch:1;
+	bool ghostHit:1;
 	blockField blockMask;
 };
 
@@ -230,6 +231,11 @@ public:
 	mash() {}
 	mash(const char* n) {build(n); init();}
 	virtual bool check(bool[], bool[], int, int, int*);
-
 };
 
+class werf : virtual public move {
+public:
+	werf() {}
+	werf(const char* n) {build(n); init();}
+	virtual bool check(bool[], bool[], int, int, int*);
+};
