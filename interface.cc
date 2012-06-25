@@ -340,7 +340,7 @@ void interface::cSelectMenu()
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
+	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -376,7 +376,7 @@ void interface::cSelectMenu()
 			glVertex3f(175.0f, 450.0f, 0.f);
 		glEnd();
 	}
-	glEnable( GL_TEXTURE_2D );
+	glDisable( GL_TEXTURE_2D );
 
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
