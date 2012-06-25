@@ -324,7 +324,10 @@ void character::land()
 
 void character::step()
 {
-	if(freeze <= 0) cMove->step(meter);
+	if(freeze <= 0) {
+		cMove->step(meter);
+		tick();
+	}
 	if(freeze > 0) freeze--;
 	if(cMove->currentFrame == cMove->frames){
 		cMove->init();

@@ -14,7 +14,7 @@ red::red()
 
 void red::touch(void * target)
 {
-	((interface*)target)->timer+=290;
+	((interface*)target)->timer += 300;
 }
 
 void red::tick(){
@@ -60,7 +60,7 @@ void red::drawMeters(int ID)
 void red::init()
 {
 	character::init();
-	meter[3] = 528;
+	meter[3] = 540;
 	meter[4] = 0;
 }
 
@@ -114,7 +114,7 @@ redCancel::redCancel(char* n)
 	init();
 }
 
-bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
+bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect&)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -124,7 +124,8 @@ bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource)
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
 	if(resource[0] < cost) return 0;
-	if(resource[3] < 264 || resource[4] > 0) return 0;
+	if(resource[3] < 270) return 0;
+	if(resource[4] > 0) return 0;
 	return 1;
 }
 
@@ -132,7 +133,7 @@ void redCancel::execute(move * last, int *& resource)
 {
 	resource[1] = 1;
 	resource[2] = 1;
-	resource[3] -= 264;
+	resource[3] -= 270;
 	resource[4] = 15;
 	move::execute(last, resource);
 }

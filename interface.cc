@@ -234,7 +234,6 @@ void interface::resolve()
 		draw();
 		for(int i = 0; i < 2; i++){
 			p[i]->pick->step();
-			p[i]->pick->tick();
 		}
 		checkWin();
 		runTimer();

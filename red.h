@@ -9,11 +9,11 @@ public:
 	void init();
 };
 
-class redCancel : public special{
+class redCancel : virtual public special{
 public:
 	redCancel();
 	~redCancel();
 	redCancel(char* n);
-	virtual bool check(bool[], bool[], int, int, int*);
+	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	void execute(move *, int *&);
 };

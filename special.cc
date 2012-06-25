@@ -95,3 +95,5 @@ bool werf::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect
 	if(p.y > yRequisite) return 0;
 	if(!throwable) return 0;
 	return 1;
+}
+
