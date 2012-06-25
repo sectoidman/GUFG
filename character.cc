@@ -79,7 +79,7 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
+void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p)
 {
 	move * t = NULL;
 	if (cMove == NULL) {
@@ -87,8 +87,8 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5])
 		else cMove = neutral;
 	}
 	
-	if(aerial) t = airHead->moveHook(inputBuffer, 0, -1, meter, down, up, cMove);
-	else t = head->moveHook(inputBuffer, 0, -1, meter, down, up, cMove);
+	if(aerial) t = airHead->moveHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+	else t = head->moveHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
 
 	if(t != NULL){
 		if(freeze > 0){

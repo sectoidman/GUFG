@@ -10,7 +10,7 @@ special::special(const char * n)
 	init();
 }
 
-bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource)
+bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -30,7 +30,7 @@ super::super(const char * n)
 	init();
 }
 
-bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource)
+bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
 {
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;

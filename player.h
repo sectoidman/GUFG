@@ -22,7 +22,7 @@ public:
 	void writeConfig();
 	bool readConfig();
 	void characterSelect(int);
-	void pushInput(bool*, bool*, bool*);
+	void pushInput(bool*, bool*, bool*, SDL_Rect &);
 	void draw(int, int);
 	void drawBoxen(int, int);
 	void drawMeters(int);

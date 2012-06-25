@@ -318,7 +318,7 @@ int player::dragBG(int left, int right)
 	else return 0;
 }
 
-void player::pushInput(bool axis[4], bool down[5], bool up[5])
+void player::pushInput(bool axis[4], bool down[5], bool up[5], SDL_Rect &p)
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
 	inputBuffer[0] = temp;
@@ -327,7 +327,7 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5])
 		inputBuffer[i] = inputBuffer[i-1];
 	}
 
-	pick->prepHooks(inputBuffer, down, up);
+	pick->prepHooks(inputBuffer, down, up, p);
 }
 
 void player::pullVolition()

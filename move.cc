@@ -260,7 +260,7 @@ void move::build(const char * n)
 	}
 }
 
-bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[])
+bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){

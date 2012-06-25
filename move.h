@@ -33,7 +33,7 @@ public:
 	//the move we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(move *, int *&);
-	virtual bool check(bool[], bool[], int, int, int[]); //Check to see if the move is possible right now.
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 	virtual void blockSuccess(int);
 	virtual int arbitraryPoll(int q) {return 0;}
 
@@ -131,7 +131,7 @@ class special : virtual public move {
 public:
 	special() {} 
 	special(const char*);
-	virtual bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 	int chip;
 };
 
@@ -139,7 +139,7 @@ class utility : virtual public move {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 };
 
 class looping : virtual public utility {
@@ -176,7 +176,7 @@ class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
 	airUtility(const char*);
-	virtual bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 	virtual void execute(move *, int *&);	
 };
 
@@ -230,12 +230,12 @@ class mash : virtual public move {
 public:
 	mash() {}
 	mash(const char* n) {build(n); init();}
-	virtual bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 };
 
 class werf : virtual public move {
 public:
 	werf() {}
 	werf(const char* n) {build(n); init();}
-	virtual bool check(bool[], bool[], int, int, int*);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 };

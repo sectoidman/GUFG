@@ -35,11 +35,11 @@ airUtility::airUtility(const char * n)
 	airMove::init();
 }
 
-bool airUtility::check(bool* pos, bool* neg, int t, int f, int* resource) //Check to see if the move is possible right now.
+bool airUtility::check(bool* pos, bool* neg, int t, int f, int* resource, SDL_Rect &p) //Check to see if the move is possible right now.
 {
 	if(abs(delta[0][0].y) > abs(delta[0][0].x) && resource[1] < 1) return 0;
 	else if(abs(delta[0][0].y) < abs(delta[0][0].x) && resource[2] < 1) return 0;
-	return utility::check(pos, neg, t, f, resource);
+	return utility::check(pos, neg, t, f, resource, p);
 }
 
 void airUtility::execute(move * last, int *& resource){

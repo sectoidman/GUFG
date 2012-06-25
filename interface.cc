@@ -151,6 +151,8 @@ void interface::roundInit()
 	p[1]->facing = -1;
 	p[0]->posX = 700;
 	p[1]->posX = 900;
+	prox.w = 200;
+	prox.h = 0;
 	
 	for (int i = 0; i < 2; i++) {
 		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
@@ -169,8 +171,8 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); else {
-		p[0]->pushInput(sAxis[0], posEdge[0], negEdge[0]);
-		p[1]->pushInput(sAxis[1], posEdge[1], negEdge[1]);
+		p[0]->pushInput(sAxis[0], posEdge[0], negEdge[0], prox);
+		p[1]->pushInput(sAxis[1], posEdge[1], negEdge[1], prox);
 
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
