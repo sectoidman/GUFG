@@ -31,19 +31,21 @@ void interface::draw()
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
 		p[i]->drawMeters(numRounds);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	glEnable( GL_TEXTURE_2D );
+	for(int i = 0; i < 2; i++){
+		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
+		glDisable( GL_TEXTURE_2D );
 		if(!p[i]->spriteCheck()) 
 			p[i]->drawBoxen(bg.x, bg.y);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glEnable( GL_TEXTURE_2D );
 	}
-	glEnable( GL_TEXTURE_2D );
-
-	for(int i = 0; i < 2; i++){
-		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	}
+	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
-	glDisable( GL_TEXTURE_2D );
 }
 
 void player::drawMeters(int n)
