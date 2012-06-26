@@ -182,10 +182,10 @@ void character::build(const char* n)
 			strcpy(buffer2, buffer);
 
 			m = createMove(buffer);
-			token = strtok(buffer2, " \t-?%@$!\n");
+			token = strtok(buffer2, " \t-?%@$_!\n");
 			while (token){
 				token = NULL;
-				token = strtok(NULL, " \t=-?@%$!\n");
+				token = strtok(NULL, " \t=-?@%$_!\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -237,7 +237,7 @@ move * character::createMove(char * fullName)
 	char type[2] = {fullName[0], fullName[1]};
 	char moveName[151];
 
-	token = strtok(fullName, " \t-@?%$!\n");
+	token = strtok(fullName, " \t-@?%_$!\n");
 	sprintf(moveName, "%s/%s", name, token);
 
 	move * m;
@@ -262,10 +262,13 @@ move * character::createMove(char * fullName)
 	case '?':
 		m = new mash(moveName);
 		break;
+	case '_':
+		m = new werf(moveName);
+		break;
 	case 'j':
 		m = new airMove(moveName);
 		m->feed(neutral, 1);
-		break;	
+		break;
 	default:
 		m = new move(moveName);
 		break;	
@@ -276,12 +279,12 @@ move * character::createMove(char * fullName)
 void character::connect(hStat & s)
 {
 	cMove->connect(meter);
-	freeze = s.stun/4+10;
+	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
 int character::takeHit(hStat & s)
 {
-	freeze = s.stun/4+10;
+	if(!s.ghostHit) freeze = s.stun/4+10;
 
 	if(cMove->takeHit(s))
 	{

@@ -47,7 +47,7 @@ typedef union {
 } cancelField;
 
 typedef union {
-	unsigned int i;
+	unsigned int i = 0;
 	bf b; 
 } blockField;
 

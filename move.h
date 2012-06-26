@@ -10,7 +10,7 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), launch(0), ghostHit(0){} 
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), launch(0), ghostHit(0) {} 
 	int damage;          //How much damage the move does
 	int stun;            //How much stun the move does
 	int push;            //How much pushback the move does
@@ -109,7 +109,6 @@ public:
 	int * regComplexity;
 	int * deltaComplexity;
 
-private:
 	int *width, *height;
 	GLuint *sprite;
 };
@@ -237,6 +236,7 @@ class werf : virtual public move {
 public:
 	werf() {}
 	werf(const char* n) {build(n); init();}
+	void build(const char *n);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 	virtual int arbitraryPoll(int n);
 	int startPosX;

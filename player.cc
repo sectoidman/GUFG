@@ -500,11 +500,13 @@ void player::setPosition(int x, int y)
 {
 	posX = x;
 	posY = y;
+	updateRects();
 }
 
 void player::getThrown(move *toss, int x, int y)
 {
-	setPosition(toss->arbitraryPoll(27) + x, toss->arbitraryPoll(26) + y);
+	int xSign = x / abs(x);
+	setPosition(toss->arbitraryPoll(27)*xSign + abs(x), toss->arbitraryPoll(26) + y);
 	pick->cMove = pick->reel;
 	updateRects();
 }

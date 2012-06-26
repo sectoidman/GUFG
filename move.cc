@@ -109,7 +109,7 @@ void move::build(const char * n)
 		while(read.get() != ':'); read.ignore();
 		read >> stats[i].untech;
 	}
-	
+
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> stats[i].push;
@@ -124,12 +124,12 @@ void move::build(const char * n)
 		while(read.get() != ':'); read.ignore();
 		read >> stats[i].blowback;
 	}
-	
+
 	for(int i = 0; i < hits+1; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> gain[i];
 	}
-	
+
 	while(read.get() != ':'); read.ignore();
 	read >> cost;
 
@@ -213,7 +213,7 @@ void move::build(const char * n)
 	}
 	next = NULL;
 	read.close();
-	
+
 	for(int i = 0; i < 5; i++)
 		button[i] = 0;
 	int r = strlen(name);
@@ -311,6 +311,7 @@ void move::pollStats(hStat & s)
 	s.lift = stats[currentHit].lift;
 	s.untech = stats[currentHit].untech;
 	s.launch = stats[currentHit].launch;
+	s.ghostHit = stats[currentHit].ghostHit;
 	s.blowback = stats[currentHit].blowback;
 	s.blockMask.i = stats[currentHit].blockMask.i;	
 }

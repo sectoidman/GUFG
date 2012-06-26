@@ -77,7 +77,14 @@ bool interface::screenInit()
 		SDL_JoystickOpen(i);
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glEnable( GL_BLEND );
+	glEnable (GL_POINT_SMOOTH);
+	glEnable (GL_LINE_SMOOTH);
+	glEnable (GL_POLYGON_SMOOTH);
+
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1.0f);
 	glViewport(0, 0, screenWidth, screenHeight);
@@ -170,10 +177,13 @@ void interface::runTimer()
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
-	if(!select[0] || !select[1]) cSelectMenu(); else {
-		p[0]->pushInput(sAxis[0], posEdge[0], negEdge[0], prox);
-		p[1]->pushInput(sAxis[1], posEdge[1], negEdge[1], prox);
-
+	if(!select[0] || !select[1]) cSelectMenu(); 
+	else {
+		for(int i = 0; i < 2; i++){
+			if(p[(i+1)%2]->pick->aerial) prox.y = 1;
+			else prox.y = 0;
+			p[i]->pushInput(sAxis[i], posEdge[i], negEdge[i], prox);
+		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
 		1. Update to current rectangles. Since the actual step is part of the draw routine, this should happen first.
@@ -189,6 +199,7 @@ void interface::resolve()
 		p[0]->updateRects();
 		p[1]->updateRects();
 
+		resolveThrows();
 		doSuperFreeze();
 
 		p[0]->pullVolition();
@@ -462,7 +473,7 @@ void interface::resolveThrows()
 	} else {
 		for(int i = 0; i < 2; i++){
 			if(isThrown[i]){
-				p[i]->getThrown(p[(i+1)%2]->pick->cMove, p[(i+1)%2]->posX, p[(i+1)%2]->posY);
+				p[i]->getThrown(p[(i+1)%2]->pick->cMove, p[(i+1)%2]->posX*p[(i+1)%2]->facing, p[(i+1)%2]->posY);
 				p[i]->checkFacing(p[(i+1)%2]);
 			}
 		}

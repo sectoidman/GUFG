@@ -70,7 +70,7 @@ move * red::createMove(char * fullName)
 	char type[2] = {fullName[0], fullName[1]};
 	char moveName[151];
 
-	token = strtok(fullName, " \t-@?%$!\n");
+	token = strtok(fullName, " \t-@?_%$!\n");
 	sprintf(moveName, "%s/%s", name, token);
 
 	move * m;
@@ -97,6 +97,9 @@ move * red::createMove(char * fullName)
 	case '!':
 //		if(type[1] == 'j') m = new airSuper(moveName); else
 		m = new super(moveName);	
+		break;
+	case '_':
+		m = new werf(moveName);
 		break;
 	case '?':
 		m = new mash(moveName);
