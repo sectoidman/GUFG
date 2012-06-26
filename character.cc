@@ -81,7 +81,7 @@ character::~character()
 
 /*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p)
+void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	move * t = NULL;
 	if (cMove == NULL) {
@@ -94,16 +94,17 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 
 	if(t != NULL){
 		if(freeze > 0){
-			if(bMove == NULL || (*t) > bMove) bMove = t;
-		} 
+			if(bMove == NULL || (*t) > bMove) 
+				if(!dryrun) bMove = t;
+		}
 		else {
-			t->execute(cMove, meter);
+			if(!dryrun) t->execute(cMove, meter);
 			cMove = t;
 		}
 	} else if (bMove != NULL && freeze <= 0) {
-		bMove->execute(cMove, meter);
+		if(!dryrun) bMove->execute(cMove, meter);
 		cMove = bMove;
-		bMove = NULL;
+		if(!dryrun) bMove = NULL;
 	}
 }
 

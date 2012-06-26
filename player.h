@@ -22,7 +22,8 @@ public:
 	void writeConfig();
 	bool readConfig();
 	void characterSelect(int);
-	void pushInput(bool*, bool*, bool*, SDL_Rect &);
+	void pushInput(bool*);
+	void getMove(bool*, bool*, SDL_Rect &, bool);
 	void draw(int, int);
 	void drawBoxen(int, int);
 	void drawMeters(int);
@@ -33,6 +34,7 @@ public:
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
 	bool CHState();
+	int throwInvuln;
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
 	int hitComplexity, regComplexity, momentumComplexity;

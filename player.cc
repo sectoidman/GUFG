@@ -318,7 +318,7 @@ int player::dragBG(int left, int right)
 	else return 0;
 }
 
-void player::pushInput(bool axis[4], bool down[5], bool up[5], SDL_Rect &p)
+void player::pushInput(bool axis[4])
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
 	inputBuffer[0] = temp;
@@ -326,8 +326,18 @@ void player::pushInput(bool axis[4], bool down[5], bool up[5], SDL_Rect &p)
 	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];
 	}
+}
 
-	pick->prepHooks(inputBuffer, down, up, p);
+void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
+{
+	move * heldMove;
+	if(dryrun) heldMove = pick->cMove;
+	pick->prepHooks(inputBuffer, down, up, p, dryrun);
+	if(pick->cMove){
+		if(pick->cMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
+		if(pick->cMove->throwinvuln == 2) throwInvuln = 6;
+	}
+	if(dryrun) pick->cMove = heldMove;
 }
 
 void player::pullVolition()
@@ -507,6 +517,8 @@ void player::getThrown(move *toss, int x, int y)
 {
 	int xSign = x / abs(x);
 	setPosition(toss->arbitraryPoll(27)*xSign + abs(x), toss->arbitraryPoll(26) + y);
+	pick->cMove->init();
+	pick->reel->init(1);
 	pick->cMove = pick->reel;
 	updateRects();
 }

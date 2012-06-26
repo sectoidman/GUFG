@@ -57,6 +57,7 @@ public:
 
 	hStat *stats;
 	int stop;
+	int throwinvuln;
 	bool crouch; 
 
 	//Properties of a hit. These will only exist for moves that hit.
@@ -73,8 +74,7 @@ public:
 	//Hooks for touching other things in more upper layers, like interface or player
 
 	virtual void touch(void*) {}
-	
-	bool xLock, yLock;
+
 	int frames;	 //Number of frames.
 	int hits;
 	int currentFrame;//The frame that is currently running.

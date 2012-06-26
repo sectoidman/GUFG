@@ -123,6 +123,7 @@ void interface::roundInit()
 		p[i]->pick->init();
 		p[i]->deltaX = 0;
 		p[i]->deltaY = 0;
+		p[i]->throwInvuln = 0;
 	}
 
 	for(int i = 0; i < 2; i++){
@@ -179,10 +180,13 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
+		for(int i = 0; i < 2; i++) p[i]->pushInput(sAxis[i]);
+		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < 2; i++){
 			if(p[(i+1)%2]->pick->aerial) prox.y = 1;
 			else prox.y = 0;
-			p[i]->pushInput(sAxis[i], posEdge[i], negEdge[i], prox);
+			prox.x = p[(i+1)%2]->throwInvuln;
+			p[i]->getMove(posEdge[i], negEdge[i], prox, 0);
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -526,6 +530,7 @@ void interface::resolveHits()
 	if(hit[0] || hit[1]){
 		unitCollision();
 	}
+	for(int i = 0; i < 2; i++) p[i]->throwInvuln--;
 }
 
 void interface::doSuperFreeze()

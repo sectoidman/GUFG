@@ -147,7 +147,7 @@ void move::build(const char * n)
 //	printf("%s properties: %s\n", name, buffer);
 	stop = 0;
 	crouch = 0;
-//	throwinvuln = 0;
+	throwinvuln = 0;
 	int ch = 0;
 	for(unsigned int i = 0; i < strlen(buffer); i++){
 		switch(buffer[i]){
@@ -169,13 +169,13 @@ void move::build(const char * n)
 		case ':':
 			ch++;
 			break;
-/*		case 't':
+		case 't':
 			throwinvuln = 1;
 			break;
 		case 'T':
 			throwinvuln = 2;
 			break;
-*/		default:
+		default:
 			break;
 		}
 	}

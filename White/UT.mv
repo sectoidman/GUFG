@@ -7,7 +7,7 @@ State: 0
 Gain: 1
 Cost: 0
 Blocks: 0
-Properties:  
+Properties: t
 #0 
 $C	5 5 50 55
 $R	-20 5 100 65
