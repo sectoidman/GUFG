@@ -231,8 +231,7 @@ void interface::resolve()
 			p[0]->checkFacing(p[1]);
 		if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1 && p[1]->pick->cMove != p[1]->pick->airNeutral) 
 			p[1]->checkFacing(p[0]);
-		
-		
+
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 
@@ -423,9 +422,14 @@ interface::~interface()
 void interface::unitCollision()
 {
 	player *right = p[1], *left = p[0];
-	if(p[0]->posX > p[1]->posX){ right = p[0]; left = p[1]; }
-	else if(p[0]->posX < p[1]->posX){ right = p[1]; left = p[0]; }
-	else{
+	int middle[2];
+	for(int i = 0; i < 2; i++){
+		if(p[i]->facing == 1) middle[i] = p[i]->collision.x + p[i]->collision.w / 2 + p[i]->collision.w % 2;
+		else middle[i] = p[i]->collision.x + p[i]->collision.w / 2; 
+	}
+	if(middle[0] > middle[1]){ right = p[0]; left = p[1]; }
+	else if(middle[0] < middle[1]){ right = p[1]; left = p[0]; }
+	else {
 		if(p[0]->facing == 1 && p[1]->facing == -1){ left = p[0]; right = p[1]; }
 		else if(p[1]->facing == 1 && p[0]->facing == -1){ left = p[1]; right = p[0]; }
 	}
@@ -438,14 +442,14 @@ void interface::unitCollision()
 		int lLOffset = left->posX - left->collision.x;
 		int lROffset = left->posX - (left->collision.x + left->collision.w);
 		int dOffset = (left->deltaX - right->deltaX) % 2;
-		int middle = (right->collision.x + left->collision.x + left->collision.w)/2;
-		if(abs(left->deltaX) > abs(right->deltaX)) middle += dOffset;
+		int totalMiddle = (right->collision.x + left->collision.x + left->collision.w)/2;
+		if(abs(left->deltaX) > abs(right->deltaX)) totalMiddle += dOffset;
 
 		if(left->lCorner) right->posX = left->collision.x + left->collision.w + rLOffset;
 		else if(right->rCorner) left->posX = right->collision.x + lROffset;
 		else {
-			right->posX = middle + right->collision.w + rROffset;
-			left->posX = middle - left->collision.w + lLOffset;
+			right->posX = totalMiddle + right->collision.w + rROffset;
+			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
 		if(left->collision.x < 25) {
 			left->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
