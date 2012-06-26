@@ -468,8 +468,8 @@ void interface::resolveThrows()
 		if(p[i]->pick->cMove->arbitraryPoll(28)) isThrown[(i+1)%2] = true;
 	}
 	if(isThrown[0] && isThrown[1]){
-		p[0]->pick->throwBreak->execute(p[0]->pick->cMove, p[0]->pick->meter);
-		p[1]->pick->throwBreak->execute(p[1]->pick->cMove, p[1]->pick->meter);
+		p[0]->pick->cMove = p[0]->pick->throwBreak;
+		p[1]->pick->cMove = p[1]->pick->throwBreak;
 	} else {
 		for(int i = 0; i < 2; i++){
 			if(isThrown[i]){
