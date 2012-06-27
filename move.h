@@ -111,6 +111,9 @@ public:
 
 	int *width, *height;
 	GLuint *sprite;
+
+	void parseProperties(char*);
+
 };
 
 class hitstun : virtual public move {

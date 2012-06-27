@@ -228,38 +228,9 @@ void werf::build(const char * n)
 
 	while(read.get() != ':'); read.ignore();
 	read.getline(buffer, 100);
-/*Debug*/
-//	printf("%s properties: %s\n", name, buffer);
-	stop = 0;
-	crouch = 0;
-	int ch = 0;
-	for(unsigned int i = 0; i < strlen(buffer); i++){
-		switch(buffer[i]){
-		case '^': 
-			stats[ch].launch = true;
-			break;
-		case 'g':
-			stats[ch].ghostHit = true;
-			break;
-		case 's':
-			stop = 1;
-			break;
-		case 'S': 
-			stop = 2;
-			break;
-		case 'c':
-			crouch = 1;
-			break;
-		case ':':
-			ch++;
-			break;
-		default:
-			break;
-		}
-	}
-	
-	//Properties will be a bit more complicated, I'll add this later.
-	
+
+	parseProperties(buffer);
+
 	collision = new SDL_Rect[frames];
 	hitbox = new SDL_Rect*[frames];
 	hitComplexity = new int[frames];

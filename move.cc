@@ -143,45 +143,9 @@ void move::build(const char * n)
 
 	while(read.get() != ':'); read.ignore();
 	read.getline(buffer, 100);
-/*Debug*/
-//	printf("%s properties: %s\n", name, buffer);
-	stop = 0;
-	crouch = 0;
-	throwinvuln = 0;
-	int ch = 0;
-	for(unsigned int i = 0; i < strlen(buffer); i++){
-		switch(buffer[i]){
-		case '^': 
-			stats[ch].launch = 1;
-			break;
-		case 'g':
-			stats[ch].ghostHit = 1;
-			break;
-		case 's':
-			stop = 1;
-			break;
-		case 'S': 
-			stop = 2;
-			break;
-		case 'c':
-			crouch = 1;
-			break;
-		case ':':
-			ch++;
-			break;
-		case 't':
-			throwinvuln = 1;
-			break;
-		case 'T':
-			throwinvuln = 2;
-			break;
-		default:
-			break;
-		}
-	}
-	
-	//Properties will be a bit more complicated, I'll add this later.
-	
+
+	parseProperties(buffer);
+
 	collision = new SDL_Rect[frames];
 	hitbox = new SDL_Rect*[frames];
 	hitComplexity = new int[frames];
@@ -265,6 +229,49 @@ void move::build(const char * n)
 //		sprintf(fname, "%s#%iF.png", n, i);
 //		fSprite[i] = aux::load_image(fname);
 	}
+}
+
+void move::parseProperties(char * buffer)
+{
+	/*Debug*/
+	//printf("%s properties: %s\n", name, buffer);
+	stop = 0;
+	crouch = 0;
+	throwinvuln = 0;
+	int ch = 0;
+	for(unsigned int i = 0; i < strlen(buffer); i++){
+		switch(buffer[i]){
+		case '^': 
+			stats[ch].launch = 1;
+			break;
+		case 'g':
+			stats[ch].ghostHit = 1;
+			break;
+		case 's':
+			stop = 1;
+			break;
+		case 'S': 
+			stop = 2;
+			break;
+		case 'c':
+			crouch = 1;
+			break;
+		case ':':
+			ch++;
+			break;
+		case 't':
+			throwinvuln = 1;
+			break;
+		case 'T':
+			throwinvuln = 2;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	//Properties will be a bit more complicated, I'll add this later.
+	
 }
 
 bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
