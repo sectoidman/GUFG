@@ -261,6 +261,7 @@ move * character::createMove(char * fullName)
 		m = new super(moveName);
 		break;
 	case '?':
+		if(type[1] == 'j') m = new luftigeWerf(moveName);
 		m = new mash(moveName);
 		break;
 	case '_':

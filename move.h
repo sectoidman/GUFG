@@ -244,3 +244,11 @@ public:
 	int xRequisite;
 	int yRequisite;
 };
+
+class luftigeWerf : public airMove, public werf {
+public:
+	luftigeWerf() {}
+	luftigeWerf(const char* n) {build(n); init();}
+	void build(const char *n) {werf::build(n);}
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.	
+};

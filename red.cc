@@ -99,6 +99,7 @@ move * red::createMove(char * fullName)
 		m = new super(moveName);	
 		break;
 	case '_':
+		if(type[1] == 'j') m = new luftigeWerf(moveName);
 		m = new werf(moveName);
 		break;
 	case '?':
