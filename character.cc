@@ -261,11 +261,11 @@ move * character::createMove(char * fullName)
 		m = new super(moveName);
 		break;
 	case '?':
-		if(type[1] == 'j') m = new luftigeWerf(moveName);
 		m = new mash(moveName);
 		break;
 	case '_':
-		m = new werf(moveName);
+		if(type[1] == 'j') m = new luftigeWerf(moveName);
+		else m = new werf(moveName);
 		break;
 	case 'j':
 		m = new airMove(moveName);

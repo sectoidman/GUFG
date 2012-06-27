@@ -26,6 +26,7 @@ B = h
 C = h
 E = h
 _Cthrow = h6 h4
+_jCthrow = a6 a4
 2A = h2 h3 h1
 2B = h2 h3 h1
 2C = h2 h3 h1
