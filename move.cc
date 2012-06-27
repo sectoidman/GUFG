@@ -47,20 +47,16 @@ void move::build(const char * n)
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
-	
-	while(read.get() != ':'); read.ignore();
-	name = new char[strlen(n)+1];
-	sprintf(name, "%s", n);
 
-	while(read.get() != ':'); read.ignore();
-	read >> tolerance;
-	while(read.get() != ':'); read.ignore();
-	read >> activation;
-	while(read.get() != ':'); read.ignore();
-	read >> hits;
+	read.getline(buffer, 100);
+	setParameter(buffer);
 
-	state = new cancelField[hits+1];
-	gain = new int[hits+1];
+	read.getline(buffer, 100);
+	setParameter(buffer);
+
+	read.getline(buffer, 100);
+	setParameter(buffer);
+
 
 	while(read.get() != ':'); read.ignore();
 	read >> frames;
@@ -187,9 +183,9 @@ void move::build(const char * n)
 
 	for(int i = 0; i < 5; i++)
 		button[i] = 0;
-	int r = strlen(name);
+	int r = strlen(n);
 	for(int i = 0; i < r; i++){
-		switch(name[i]){
+		switch(n[i]){
 		case 'A':
 			button[0] = 1;
 			break;
@@ -226,9 +222,32 @@ void move::build(const char * n)
 			height[i] = temp->h;
 			sprite[i] = aux::surface_to_texture(temp);
 		}
-//		sprintf(fname, "%s#%iF.png", n, i);
-//		fSprite[i] = aux::load_image(fname);
 	}
+}
+
+bool move::setParameter(char * buffer)
+{
+	char* token = strtok(buffer, "\t: \n");
+	printf("%s\n", token);
+
+	if(!strcmp("Name", token)){
+		token = strtok(NULL, "\t: \n");
+		name = new char[strlen(token)+1];
+		sprintf(name, "%s\0", token);
+		return 1;
+	} else if (!strcmp("Buffer", token)) {
+		token = strtok(NULL, "\t: \n");
+		tolerance = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		activation = atoi(token);
+		return 1;
+	} else if (!strcmp("Hits", token)) {
+		token = strtok(NULL, "\t: \n");
+		hits = atoi(token);
+		state = new cancelField[hits+1];
+		gain = new int[hits+1];
+		return 1;
+	} else return 0;
 }
 
 void move::parseProperties(char * buffer)

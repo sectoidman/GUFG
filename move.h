@@ -112,6 +112,7 @@ public:
 	int *width, *height;
 	GLuint *sprite;
 
+	bool setParameter(char*);
 	void parseProperties(char*);
 
 };
