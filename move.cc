@@ -5,12 +5,12 @@
 #include <assert.h>
 using namespace std;
 
-move::move()
+move::move() : frames(0), hits(0), name(NULL)
 {
 	name = NULL;
 }
 
-move::move(const char * n)
+move::move(const char * n) : frames(0), hits(0)
 {
 	build(n);
 	init();
@@ -57,10 +57,9 @@ void move::build(const char * n)
 	read.getline(buffer, 100);
 	setParameter(buffer);
 
-
 	while(read.get() != ':'); read.ignore();
-	read >> frames;
-	
+	read >> frames; 
+
 	if(hits > 0) {
 		totalStartup = new int[hits];
 		stats = new hStat[hits];
@@ -79,55 +78,45 @@ void move::build(const char * n)
 		read >> active[i];
 		countFrames += active[i];
 	}
- 
-	while(read.get() != ':'); read.ignore();
-	read >> recovery;
 
 	while(read.get() != ':'); read.ignore();
-	read >> allowed.i;
+	read >> recovery; 
 
-	for(int i = 0; i < hits+1; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> state[i].i;
-	}
-	
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].damage;
-	}
-	
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].stun;
-	}
+	read.ignore(100, '\n');
 
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].untech;
-	}
+	read.getline(buffer, 100);
+	setParameter(buffer);
 
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].push;
-	}
+	read.getline(buffer, 100);
+	setParameter(buffer);
 
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].lift;
-	}
+	if(hits > 0){
+		read.getline(buffer, 100);
+		setParameter(buffer);
 
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].blowback;
-	}
+		read.getline(buffer, 100);
+		setParameter(buffer);
 
+		read.getline(buffer, 100);
+		setParameter(buffer);
+
+		read.getline(buffer, 100);
+		setParameter(buffer);
+
+		read.getline(buffer, 100);
+		setParameter(buffer);
+
+		read.getline(buffer, 100);
+		setParameter(buffer);
+	}
 	for(int i = 0; i < hits+1; i++){
 		while(read.get() != ':'); read.ignore();
 		read >> gain[i];
 	}
+	read.ignore(100, '\n');
 
-	while(read.get() != ':'); read.ignore();
-	read >> cost;
+	read.getline(buffer, 100);
+	setParameter(buffer);
 
 	for(int i = 0; i < hits; i++){
 		while(read.get() != ':'); read.ignore();
@@ -228,24 +217,104 @@ void move::build(const char * n)
 bool move::setParameter(char * buffer)
 {
 	char* token = strtok(buffer, "\t: \n");
-	printf("%s\n", token);
 
 	if(!strcmp("Name", token)){
 		token = strtok(NULL, "\t: \n");
 		name = new char[strlen(token)+1];
-		sprintf(name, "%s\0", token);
+		sprintf(name, "Name: %s\0", token);
+//		printf(": %s\n", name);
 		return 1;
 	} else if (!strcmp("Buffer", token)) {
 		token = strtok(NULL, "\t: \n");
 		tolerance = atoi(token);
 		token = strtok(NULL, "\t: \n");
 		activation = atoi(token);
+//		printf("Buffer: %i : %i\n", tolerance, activation);
 		return 1;
 	} else if (!strcmp("Hits", token)) {
 		token = strtok(NULL, "\t: \n");
 		hits = atoi(token);
 		state = new cancelField[hits+1];
 		gain = new int[hits+1];
+//		printf("Hits: %i\n", hits);
+		return 1;
+	} else if (!strcmp("Check", token)) {
+		token = strtok(NULL, "\t: \n");
+		allowed.i = atoi(token);
+//		printf("Check: %i\n", allowed.i);
+		return 1;
+	} else if (!strcmp("Cost", token)) {
+		token = strtok(NULL, "\t: \n");
+		cost = atoi(token);
+//		printf("Cost: %i\n", cost);
+		return 1;
+	} else if (!strcmp("Frames", token)) {
+		token = strtok(NULL, "\t: \n");
+		frames = atoi(token);
+//		printf("Frames: %i\n", frames);
+		return 1;
+	} else if (!strcmp("State", token)) {
+//		printf("State");
+		for(int i = 0; i < hits+1; i++){
+			token = strtok(NULL, "\t: \n");
+			state[i].i = atoi(token);
+//			printf(": %i ", state[i].i);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Damage", token)) {
+//		printf("Damage");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].damage = atoi(token);
+//			printf(": %i ", stats[i].damage);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Push", token)) {
+//		printf("Push");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].push = atoi(token);
+//			printf(": %i ", stats[i].push);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Lift", token)) {
+//		printf("Lift");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].lift = atoi(token);
+//			printf(": %i ", stats[i].lift);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Blowback", token)) {
+//		printf("Blowback");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].blowback = atoi(token);
+//			printf(": %i ", stats[i].blowback);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Stun", token)) {
+//		printf("Stun");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].stun = atoi(token);
+//			printf(": %i ", stats[i].stun);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Untech", token)) {
+//		printf("Untech");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].untech = atoi(token);
+//			printf(": %i ", stats[i].untech);
+		}
+//		printf("\n");
 		return 1;
 	} else return 0;
 }
