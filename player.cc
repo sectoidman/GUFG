@@ -48,6 +48,8 @@ void player::init()
 	momentum = NULL;
 	lCorner = 0;
 	rCorner = 0;
+	elasticX = 0;
+	hover = 0;
 }
 
 bool player::readConfig()
@@ -186,7 +188,8 @@ void player::combineDelta()
 {
 	for(int i = 0; i < momentumComplexity; i++){
 		deltaX += momentum[i].x;
-		deltaY += momentum[i].y;
+		if(momentum[i].y > 0 && hover > 0);
+		else deltaY += momentum[i].y;
 
 		if(momentum[i].w <= 0) {
 			removeVector(i);
@@ -276,11 +279,13 @@ void player::checkCorners(int floor, int left, int right)
 	so we can specialcase collision checks for when one player is in the corner.*/
 
 	if(collision.x <= left){
+		if(elasticX) deltaX = -deltaX; 
 		if(facing == 1 && collision.x <= 25) lCorner = 1;
 		if(collision.x < left) 
 			posX = left + lOffset;
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
+		if(elasticX) deltaX = -deltaX; 
 		if(facing == -1 && collision.x + collision.w >= 1575) rCorner = 1;
 		if(collision.x + collision.w > right){
 			posX = right + rOffset;
@@ -472,6 +477,8 @@ int player::takeHit(int combo, hStat & s)
 	if(pick->aerial) v.x = -(s.push/5 + s.blowback);
 	else v.x = -s.push;
 	addVector(v);
+	if(pick->aerial && s.hover) hover = s.hover;
+	if(s.wallBounce) elasticX = true;
 	updateRects();
 	if(s.ghostHit) return 0;
 	else return 1;

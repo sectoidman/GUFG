@@ -238,6 +238,15 @@ bool move::setParameter(char * buffer)
 		}
 //		printf("\n");
 		return 1;
+	} else if (!strcmp("Float", token)) {
+//		printf("Float");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].hover = atoi(token);
+//			printf(": %i ", stats[i].hover);
+		}
+//		printf("\n");
+		return 1;
 	} else if (!strcmp("Blowback", token)) {
 //		printf("Blowback");
 		for(int i = 0; i < hits; i++){
@@ -302,6 +311,9 @@ void move::parseProperties(char * buffer)
 			break;
 		case 'g':
 			stats[ch].ghostHit = 1;
+			break;
+		case '>':
+			stats[ch].wallBounce = 1;
 			break;
 		case 's':
 			stop = 1;
@@ -379,9 +391,11 @@ void move::pollStats(hStat & s)
 	s.lift = stats[currentHit].lift;
 	s.untech = stats[currentHit].untech;
 	s.launch = stats[currentHit].launch;
+	s.hover = stats[currentHit].hover;
+	s.wallBounce = stats[currentHit].wallBounce;
 	s.ghostHit = stats[currentHit].ghostHit;
 	s.blowback = stats[currentHit].blowback;
-	s.blockMask.i = stats[currentHit].blockMask.i;	
+	s.blockMask.i = stats[currentHit].blockMask.i;
 }
 
 bool move::operator>(move * x)

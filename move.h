@@ -10,15 +10,17 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), launch(0), ghostHit(0) {} 
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0) {}
 	int damage;          //How much damage the move does
 	int stun;            //How much stun the move does
 	int push;            //How much pushback the move does
 	int lift;            //How much the move lifts an aerial opponent.
 	int untech;
 	int blowback;
+	int hover;
 	bool launch:1;
 	bool ghostHit:1;
+	bool wallBounce:1;
 	blockField blockMask;
 };
 
@@ -39,9 +41,9 @@ public:
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
-	void pollStats(hStat&);
+	virtual void pollStats(hStat&);
 	bool operator>(move*); //Cancel allowed check. Essentially: is move Lvalue allowed given the current state of move Rvalue?
-	void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
+	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&);
 	virtual move * land() { return this; }
 	virtual void connect(int *&);
@@ -86,7 +88,7 @@ public:
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
 	char * name;
-	int cost;
+	int cost = 0;
 	int * gain;
 
 	//Tolerance refers to the individual size of the input buffer allowed for this move.

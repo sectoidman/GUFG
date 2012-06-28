@@ -8,12 +8,13 @@ Damage: 0 : 7
 Stun: 15 : 40
 Untech: 0 : 0
 Push: 0 : 0
-Lift: 7 : 10
+Lift: 0 : 8
+Float: 10 : 5
 Blowback: 0 : 16
 Gain: 0 : 0 : 5
 Cost: 0
 Proximity: 175 : 75
-Position: 120 : 35
+Position: 120 : 10
 Blocks: 0
 Properties: Sg : >
 #0 

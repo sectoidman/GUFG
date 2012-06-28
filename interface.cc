@@ -235,8 +235,15 @@ void interface::resolve()
 		if(!p[0]->pick->aerial) { p[0]->deltaX = 0; p[0]->deltaY = 0; }
 		if(!p[1]->pick->aerial) { p[1]->deltaX = 0; p[1]->deltaY = 0; }
 
-		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->untech && p[0]->pick->cMove != p[0]->pick->crouchReel) combo[1] = 0;
-		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->untech && p[1]->pick->cMove != p[1]->pick->crouchReel) combo[0] = 0;
+		if(p[0]->pick->cMove != p[0]->pick->reel && p[0]->pick->cMove != p[0]->pick->untech && p[0]->pick->cMove != p[0]->pick->crouchReel){
+			combo[1] = 0;
+			p[0]->elasticX = 0;
+		}
+
+		if(p[1]->pick->cMove != p[1]->pick->reel && p[1]->pick->cMove != p[1]->pick->untech && p[1]->pick->cMove != p[1]->pick->crouchReel){
+			combo[0] = 0;
+			p[1]->elasticX = 0;
+		}
 
 		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
 		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
@@ -534,7 +541,10 @@ void interface::resolveHits()
 	if(hit[0] || hit[1]){
 		unitCollision();
 	}
-	for(int i = 0; i < 2; i++) p[i]->throwInvuln--;
+	for(int i = 0; i < 2; i++) {
+		p[i]->throwInvuln--;
+		p[i]->hover--;
+	}
 }
 
 void interface::doSuperFreeze()

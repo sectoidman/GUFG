@@ -34,6 +34,8 @@ public:
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
 	bool CHState();
+	bool elasticX;
+	int hover;
 	int throwInvuln;
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
