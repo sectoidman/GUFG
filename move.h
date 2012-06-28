@@ -56,9 +56,9 @@ public:
 	virtual void draw(int, int, int);
 
 	hStat *stats;
-	int stop;
-	int throwinvuln;
-	bool crouch; 
+	int stop = 0;
+	int throwinvuln = 0;
+	bool crouch = 0;
 
 	//Properties of a hit. These will only exist for moves that hit.
 	

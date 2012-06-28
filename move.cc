@@ -292,9 +292,6 @@ void move::parseProperties(char * buffer)
 	token = strtok(NULL, "\n");
 	/*Debug*/
 //	printf("%s properties: %s\n", name, buffer);
-	stop = 0;
-	crouch = 0;
-	throwinvuln = 0;
 	int ch = 0;
 //	printf("%s: ", name);
 	for(unsigned int i = 0; i < strlen(token); i++){
