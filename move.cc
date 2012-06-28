@@ -108,6 +108,9 @@ void move::build(const char * n)
 
 		read.getline(buffer, 100);
 		setParameter(buffer);
+
+		read.getline(buffer, 100);
+		setParameter(buffer);
 	}
 
 	read.getline(buffer, 100);
@@ -116,13 +119,8 @@ void move::build(const char * n)
 	read.getline(buffer, 100);
 	setParameter(buffer);
 
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> stats[i].blockMask.i;
-	}
-
-	while(read.get() != ':'); read.ignore();
-	read >> blockState.i;
+	read.getline(buffer, 100);
+	setParameter(buffer);
 
 	while(read.get() != ':'); read.ignore();
 	read.getline(buffer, 100);
@@ -236,6 +234,11 @@ bool move::setParameter(char * buffer)
 		gain = new int[hits+1];
 //		printf("Hits: %i\n", hits);
 		return 1;
+	} else if (!strcmp("Blocks", token)) {
+		token = strtok(NULL, "\t: \n");
+		blockState.i = atoi(token);
+//		printf("Blocks: %i\n", blockState.i);
+		return 1;
 	} else if (!strcmp("Check", token)) {
 		token = strtok(NULL, "\t: \n");
 		allowed.i = atoi(token);
@@ -311,6 +314,15 @@ bool move::setParameter(char * buffer)
 			token = strtok(NULL, "\t: \n");
 			stats[i].untech = atoi(token);
 //			printf(": %i ", stats[i].untech);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Blockable", token)) {
+//		printf("Blockable");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].blockMask.i = atoi(token);
+//			printf(": %i ", stats[i].blockMask.i);
 		}
 //		printf("\n");
 		return 1;
