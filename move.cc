@@ -42,6 +42,7 @@ void move::build(const char * n)
 	int startup, recovery, countFrames = -1;
 	char fname[40];
 	char buffer[100];
+	char savedBuffer[100];
 	buffer[0] = '\0';
 
 	sprintf(fname, "%s.mv", n);
@@ -84,48 +85,12 @@ void move::build(const char * n)
 
 	read.ignore(100, '\n');
 
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	if(hits > 0){
+	do {
 		read.getline(buffer, 100);
-		setParameter(buffer);
+		strcpy(savedBuffer, buffer);
+	} while (setParameter(buffer));
 
-		read.getline(buffer, 100);
-		setParameter(buffer);
-
-		read.getline(buffer, 100);
-		setParameter(buffer);
-
-		read.getline(buffer, 100);
-		setParameter(buffer);
-
-		read.getline(buffer, 100);
-		setParameter(buffer);
-
-		read.getline(buffer, 100);
-		setParameter(buffer);
-
-		read.getline(buffer, 100);
-		setParameter(buffer);
-	}
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	while(read.get() != ':'); read.ignore();
-	read.getline(buffer, 100);
-
-	parseProperties(buffer);
+	parseProperties(savedBuffer);
 
 	collision = new SDL_Rect[frames];
 	hitbox = new SDL_Rect*[frames];
@@ -215,9 +180,9 @@ bool move::setParameter(char * buffer)
 	char* token = strtok(buffer, "\t: \n");
 
 	if(!strcmp("Name", token)){
-		token = strtok(NULL, "\t: \n");
+		token = strtok(NULL, "\t:\n");
 		name = new char[strlen(token)+1];
-		sprintf(name, "Name: %s\0", token);
+		sprintf(name, "%s", token);
 //		printf(": %s\n", name);
 		return 1;
 	} else if (!strcmp("Buffer", token)) {
@@ -340,14 +305,16 @@ bool move::setParameter(char * buffer)
 
 void move::parseProperties(char * buffer)
 {
+	char * token = strtok(buffer, " \t\n:");
+	token = strtok(NULL, ":\n");
 	/*Debug*/
 	//printf("%s properties: %s\n", name, buffer);
 	stop = 0;
 	crouch = 0;
 	throwinvuln = 0;
 	int ch = 0;
-	for(unsigned int i = 0; i < strlen(buffer); i++){
-		switch(buffer[i]){
+	for(unsigned int i = 0; i < strlen(token); i++){
+		switch(token[i]){
 		case '^': 
 			stats[ch].launch = 1;
 			break;
@@ -376,8 +343,6 @@ void move::parseProperties(char * buffer)
 			break;
 		}
 	}
-	
-	//Properties will be a bit more complicated, I'll add this later.
 	
 }
 
