@@ -80,6 +80,7 @@ public:
 	int currentFrame;//The frame that is currently running.
 	int currentHit;
 	int * totalStartup;
+	int * active;
 	int cFlag;
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;

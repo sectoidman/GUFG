@@ -39,7 +39,6 @@ move::~move()
 void move::build(const char * n)
 {
 	ifstream read;
-	int startup, recovery, countFrames = -1;
 	char fname[40];
 	char buffer[100];
 	char savedBuffer[100];
@@ -48,42 +47,6 @@ void move::build(const char * n)
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	read.getline(buffer, 100);
-	setParameter(buffer);
-
-	while(read.get() != ':'); read.ignore();
-	read >> frames; 
-
-	if(hits > 0) {
-		totalStartup = new int[hits];
-		stats = new hStat[hits];
-	} else {
-		totalStartup = NULL;
-		stats = NULL;
-	}
-	int active[hits];
-
-	for(int i = 0; i < hits; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> startup;
-		countFrames += startup;
-		totalStartup[i] = countFrames;
-		while(read.get() != ':'); read.ignore();
-		read >> active[i];
-		countFrames += active[i];
-	}
-
-	while(read.get() != ':'); read.ignore();
-	read >> recovery; 
-
-	read.ignore(100, '\n');
 
 	do {
 		read.getline(buffer, 100);
@@ -154,8 +117,8 @@ void move::build(const char * n)
 		default:
 			break;
 		}
-
 	}
+
 	SDL_Surface *temp;
 	width = new int[frames];
 	height = new int[frames];
@@ -218,6 +181,26 @@ bool move::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		frames = atoi(token);
 //		printf("Frames: %i\n", frames);
+		int startup, countFrames = -1;
+		if(hits > 0) {
+			totalStartup = new int[hits];
+			stats = new hStat[hits];
+			active = new int[hits];
+		} else {
+			totalStartup = NULL;
+			stats = NULL;
+			active = NULL;
+		}
+
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			startup = atoi(token);
+			countFrames += startup;
+			totalStartup[i] = countFrames;
+			token = strtok(NULL, "\t: \n");
+			active[i] = atoi(token);
+			countFrames += active[i];
+		}
 		return 1;
 	} else if (!strcmp("State", token)) {
 //		printf("State");
