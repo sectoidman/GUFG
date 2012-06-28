@@ -109,11 +109,9 @@ void move::build(const char * n)
 		read.getline(buffer, 100);
 		setParameter(buffer);
 	}
-	for(int i = 0; i < hits+1; i++){
-		while(read.get() != ':'); read.ignore();
-		read >> gain[i];
-	}
-	read.ignore(100, '\n');
+
+	read.getline(buffer, 100);
+	setParameter(buffer);
 
 	read.getline(buffer, 100);
 	setParameter(buffer);
@@ -313,6 +311,15 @@ bool move::setParameter(char * buffer)
 			token = strtok(NULL, "\t: \n");
 			stats[i].untech = atoi(token);
 //			printf(": %i ", stats[i].untech);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("Gain", token)) {
+//		printf("Gain");
+		for(int i = 0; i < hits+1; i++){
+			token = strtok(NULL, "\t: \n");
+			gain[i] = atoi(token);
+//			printf(": %i ", gain[i]);
 		}
 //		printf("\n");
 		return 1;
