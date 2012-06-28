@@ -289,14 +289,16 @@ bool move::setParameter(char * buffer)
 void move::parseProperties(char * buffer)
 {
 	char * token = strtok(buffer, " \t\n:");
-	token = strtok(NULL, ":\n");
+	token = strtok(NULL, "\n");
 	/*Debug*/
-	//printf("%s properties: %s\n", name, buffer);
+//	printf("%s properties: %s\n", name, buffer);
 	stop = 0;
 	crouch = 0;
 	throwinvuln = 0;
 	int ch = 0;
+//	printf("%s: ", name);
 	for(unsigned int i = 0; i < strlen(token); i++){
+//		printf("%c ", token[i]);
 		switch(token[i]){
 		case '^': 
 			stats[ch].launch = 1;
@@ -326,7 +328,7 @@ void move::parseProperties(char * buffer)
 			break;
 		}
 	}
-	
+//	printf("\n");
 }
 
 bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)

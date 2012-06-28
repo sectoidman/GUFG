@@ -113,8 +113,8 @@ public:
 	int *width, *height;
 	GLuint *sprite;
 
-	bool setParameter(char*);
-	void parseProperties(char*);
+	virtual bool setParameter(char*);
+	virtual void parseProperties(char*);
 
 };
 
@@ -225,7 +225,7 @@ public:
 	super() {}
 	super(const char*);
 	virtual int arbitraryPoll(int);
-	void readFreeze(const char*);
+	virtual bool setParameter(char*);
 	int freezeFrame;
 	int freezeLength;
 };
@@ -241,7 +241,7 @@ class werf : virtual public move {
 public:
 	werf() {}
 	werf(const char* n) {build(n); init();}
-	void build(const char *n);
+	virtual bool setParameter(char *n);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
 	virtual int arbitraryPoll(int n);
 	int startPosX;

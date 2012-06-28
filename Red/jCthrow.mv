@@ -13,14 +13,14 @@ Blowback: 0 : 16
 Gain: 0 : 0 : 5
 Cost: 0
 Proximity: 175 : 75
-Position: 120 : 50
+Position: 120 : 35
 Blocks: 0
 Properties: Sg : >
 #0 
 $C	5 0 55 135
 $R	0 0 0 0
 $D	0 0 0 0
-$A	65 50 10 10
+$A	65 50 100 100
 #1
 $C	5 0 55 135
 $R	0 0 0 0

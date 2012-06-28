@@ -1,7 +1,8 @@
 Name: 214E
 Buffer: 30 : 15
 Hits: 1
-Frames: 58 : 19 : 9 : 30 | 7 - 18
+Frames: 58 : 19 : 9 : 30 
+SuperFreeze: 7 - 18
 Check: 257
 State: 0 : 0 
 Damage: 40

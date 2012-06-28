@@ -11,9 +11,9 @@ Push: 0 : 0 : 5
 Lift: 0 : 19 : -30
 Blowback: 0 : 1 : 2
 Gain: 0 : 0 : 2 : 6
-Cost: 0
 Proximity: 150 : 0
 Position: 120 : 0
+Cost: 0
 Blocks: 0
 Properties: g : ^ 
 #0 
