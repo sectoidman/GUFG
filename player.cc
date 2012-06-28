@@ -279,13 +279,13 @@ void player::checkCorners(int floor, int left, int right)
 	so we can specialcase collision checks for when one player is in the corner.*/
 
 	if(collision.x <= left){
-		if(elasticX) deltaX = -deltaX; 
+		if(elasticX) deltaX = -deltaX / 2; 
 		if(facing == 1 && collision.x <= 25) lCorner = 1;
 		if(collision.x < left) 
 			posX = left + lOffset;
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
-		if(elasticX) deltaX = -deltaX; 
+		if(elasticX) deltaX = -deltaX / 2; 
 		if(facing == -1 && collision.x + collision.w >= 1575) rCorner = 1;
 		if(collision.x + collision.w > right){
 			posX = right + rOffset;
