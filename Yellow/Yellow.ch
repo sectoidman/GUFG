@@ -22,4 +22,5 @@ Yellow
 qA = h
 qB = h
 qC = h
+%236D = h236
 #Moves
