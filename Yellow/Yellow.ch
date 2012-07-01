@@ -19,5 +19,6 @@ Yellow
 ?StopTech = a8
 ?ForwardTech = a6 a3 a9
 ?BackTech = a4 a1 a7
+qB = h
 qC = h
 #Moves

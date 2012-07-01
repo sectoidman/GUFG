@@ -431,8 +431,8 @@ void interface::unitCollision()
 	player *right = p[1], *left = p[0];
 	int middle[2];
 	for(int i = 0; i < 2; i++){
-		if(p[i]->facing == 1) middle[i] = p[i]->collision.x + p[i]->collision.w / 2 + p[i]->collision.w % 2;
-		else middle[i] = p[i]->collision.x + p[i]->collision.w / 2; 
+		if(p[i]->facing == 1) middle[i] = p[i]->collision.x + p[i]->collision.w / 2;
+		else middle[i] = p[i]->collision.x + p[i]->collision.w / 2 + p[i]->collision.w % 2;
 	}
 	if(middle[0] > middle[1]){ right = p[0]; left = p[1]; }
 	else if(middle[0] < middle[1]){ right = p[1]; left = p[0]; }
@@ -443,7 +443,7 @@ void interface::unitCollision()
 	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
 
 	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
-	
+
 		int rLOffset = right->posX - right->collision.x;
 		int rROffset = right->posX - (right->collision.x + right->collision.w);
 		int lLOffset = left->posX - left->collision.x;
