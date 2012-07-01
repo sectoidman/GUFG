@@ -35,6 +35,7 @@ public:
 	void connect(int, hStat&);
 	bool CHState();
 	bool elasticX;
+	bool elasticY;
 	int hover;
 	int throwInvuln;
 

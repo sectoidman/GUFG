@@ -8,7 +8,8 @@ Damage: 17
 Stun: 14
 Untech: 0
 Push: 8
-Lift: 10
+Lift: 12
+Float: 12
 Blowback: 0
 Gain: 0 : 3
 Cost: 0

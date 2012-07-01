@@ -49,6 +49,7 @@ void player::init()
 	lCorner = 0;
 	rCorner = 0;
 	elasticX = 0;
+	elasticY = 0;
 	hover = 0;
 }
 
