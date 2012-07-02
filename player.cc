@@ -189,8 +189,7 @@ void player::combineDelta()
 {
 	for(int i = 0; i < momentumComplexity; i++){
 		deltaX += momentum[i].x;
-		if(momentum[i].y > 0 && hover > 0);
-		else deltaY += momentum[i].y;
+		deltaY += momentum[i].y;
 
 		if(momentum[i].w <= 0) {
 			removeVector(i);
@@ -199,7 +198,7 @@ void player::combineDelta()
 		else momentum[i].w--;
 	}
 	posX += deltaX;
-	posY += deltaY;
+	if(hover <= 0 || deltaY <= 0) posY += deltaY;
 	updateRects();
 }
 
