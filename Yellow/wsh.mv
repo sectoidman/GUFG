@@ -1,5 +1,5 @@
 Name: Dash
-Buffer: 12 : 0
+Buffer: 15 : 0
 Hits: 0
 Frames: 13 : 13
 Check: 2049 
@@ -11,7 +11,7 @@ Properties:
 #0 
 $C	5 10 55 140
 $R	5 10 55 140
-$D	15 0 12 0
+$D	18 0 11 0
 #0 
 $C	5 20 55 130
 $R	5 20 55 130
