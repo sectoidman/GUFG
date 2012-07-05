@@ -14,7 +14,7 @@ Gain: 0 : 5
 Cost: 0
 Blockable: 1
 Blocks: 0
-Properties: ^C
+Properties: c^
 #1 
 $C	5 51 56 99
 $R	5 51 56 99
