@@ -17,19 +17,19 @@ character::character()
 character::character(const char*)
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
-	move * temp;
+	action * temp;
 
 	name = NULL;
 
-	/*Currently I'm using this as a test case for my move hooks*/
+	/*Currently I'm using this as a test case for my action hooks*/
 
-	head = new moveTrie(new move("White/A"));
+	head = new actionTrie(new action("White/A"));
 
-	temp = new move("White/D");
+	temp = new action("White/D");
 	head->insert(temp);
-	airHead = new moveTrie(temp);
+	airHead = new actionTrie(temp);
 	
-	head->insert(new move("White/B"));
+	head->insert(new action("White/B"));
 	neutral = new looping("White/NS");
 	crouch = new looping("White/NL");
 	head->insert(5, neutral);
@@ -79,18 +79,18 @@ character::~character()
 	if(name) delete [] name;
 }
 
-/*Here begin move functions. Actually contemplating making this a class instead, but this might be simpler for now*/
+/*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
 void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
-	move * t = NULL;
+	action * t = NULL;
 	if (cMove == NULL) {
 		if(aerial) cMove = airNeutral;
 		else cMove = neutral;
 	}
 	
-	if(aerial) t = airHead->moveHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
-	else t = head->moveHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
 
 	if(t != NULL){
 		if(freeze > 0){
@@ -112,10 +112,10 @@ void character::build(const char* n)
 {
 	char buffer[101];
 	char buffer2[101];
-//	char moveName[151];
+//	char actionName[151];
 //	char type[2];
-	moveTrie * t = NULL;
-	move * m = NULL;
+	actionTrie * t = NULL;
+	action * m = NULL;
 	bool commentFlag;
 	char component[2];
 	char * token;
@@ -232,47 +232,47 @@ void character::init(){
 	cMove = neutral;
 }
 
-move * character::createMove(char * fullName)
+action * character::createMove(char * fullName)
 {
 	char * token;
 	char type[2] = {fullName[0], fullName[1]};
-	char moveName[151];
+	char actionName[151];
 
 	token = strtok(fullName, " \t-@?%_$!\n");
-	sprintf(moveName, "%s/%s", name, token);
+	sprintf(actionName, "%s/%s", name, token);
 
-	move * m;
+	action * m;
 	switch(type[0]){
 	case '%':
-		if(type[1] == 'j') m = new airSpecial(moveName);
-		else m = new special(moveName);
+		if(type[1] == 'j') m = new airSpecial(actionName);
+		else m = new special(actionName);
 		break;
 	case '-':
-		if(type[1] == 'j') m = new airUtility(moveName);
-		else m = new utility(moveName);
+		if(type[1] == 'j') m = new airUtility(actionName);
+		else m = new utility(actionName);
 		break;
 	case '@':
-		if(type[1] == 'j') m = new airLooping(moveName);
-		else m = new looping(moveName);
+		if(type[1] == 'j') m = new airLooping(actionName);
+		else m = new looping(actionName);
 		break;
 	case '!':
-//		if(type[1] == 'j') m = new airSuper(moveName);
+//		if(type[1] == 'j') m = new airSuper(actionName);
 //		else 
-		m = new super(moveName);
+		m = new super(actionName);
 		break;
 	case '?':
-		m = new mash(moveName);
+		m = new mash(actionName);
 		break;
 	case '_':
-		if(type[1] == 'j') m = new luftigeWerf(moveName);
-		else m = new werf(moveName);
+		if(type[1] == 'j') m = new luftigeWerf(actionName);
+		else m = new werf(actionName);
 		break;
 	case 'j':
-		m = new airMove(moveName);
+		m = new airMove(actionName);
 		m->feed(neutral, 1);
 		break;
 	default:
-		m = new move(moveName);
+		m = new action(actionName);
 		break;	
 	}
 	return m;
@@ -280,7 +280,7 @@ move * character::createMove(char * fullName)
 
 void character::connect(hStat & s)
 {
-	cMove->connect(meter);
+	cMove = cMove->connect(meter);
 	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
@@ -336,7 +336,7 @@ void character::step()
 		tick();
 	}
 	if(freeze > 0) freeze--;
-	if(cMove->currentFrame == cMove->frames){
+	if(cMove && cMove->currentFrame == cMove->frames){
 		cMove->init();
 		cMove = cMove->next;
 	}

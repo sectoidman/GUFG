@@ -145,7 +145,7 @@ void character::draw(int facing, int x, int y)
 	cMove->draw(facing, x, y);
 }
 
-void move::draw(int facing, int x, int y)
+void action::draw(int facing, int x, int y)
 {
 	if(sprite[currentFrame]){
 		glBindTexture(GL_TEXTURE_2D, sprite[currentFrame]);
@@ -186,9 +186,11 @@ bool player::spriteCheck()
 }
 bool character::spriteCheck()
 {
-	return cMove->spriteCheck();
+	if(cMove == NULL) return 0;
+	else return cMove->spriteCheck();
 }
-bool move::spriteCheck()
+
+bool action::spriteCheck()
 {
 	if(sprite[currentFrame]) return 1;
 	else return 0;

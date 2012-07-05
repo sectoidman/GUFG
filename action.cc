@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include "move.h"
+#include "action.h"
 #include <assert.h>
 using namespace std;
 
-move::move() : frames(0), hits(0), name(NULL)
+action::action() : frames(0), hits(0), name(NULL)
 {
 	name = NULL;
 }
 
-move::move(const char * n) : frames(0), hits(0)
+action::action(const char * n) : frames(0), hits(0)
 {
 	build(n);
 	init();
 }
 
-move::~move()
+action::~action()
 {
 	if(!this) return;
 /*	for(int i = 0; i < frames; i++){
@@ -36,7 +36,7 @@ move::~move()
 	if(stats) delete [] stats;
 }
 
-void move::build(const char * n)
+void action::build(const char * n)
 {
 	ifstream read;
 	char fname[40];
@@ -138,7 +138,7 @@ void move::build(const char * n)
 	}
 }
 
-bool move::setParameter(char * buffer)
+bool action::setParameter(char * buffer)
 {
 	char* token = strtok(buffer, "\t: \n");
 
@@ -158,6 +158,15 @@ bool move::setParameter(char * buffer)
 	} else if (!strcmp("Hits", token)) {
 		token = strtok(NULL, "\t: \n");
 		hits = atoi(token);
+		if(hits > 0){
+			stats = new hStat[hits];
+			onConnect = new action*[hits];
+			for (int i = 0; i < hits; i++)
+				onConnect[i] = NULL;
+		} else {
+			stats = NULL;
+			onConnect = NULL;
+		}
 		state = new cancelField[hits+1];
 		gain = new int[hits+1];
 //		printf("Hits: %i\n", hits);
@@ -184,11 +193,9 @@ bool move::setParameter(char * buffer)
 		int startup, countFrames = -1;
 		if(hits > 0) {
 			totalStartup = new int[hits];
-			stats = new hStat[hits];
 			active = new int[hits];
 		} else {
 			totalStartup = NULL;
-			stats = NULL;
 			active = NULL;
 		}
 
@@ -311,7 +318,7 @@ bool move::setParameter(char * buffer)
 	} else return 0;
 }
 
-void move::parseProperties(char * buffer)
+void action::parseProperties(char * buffer)
 {
 	char * token = strtok(buffer, " \t\n:");
 	token = strtok(NULL, "\n");
@@ -359,7 +366,7 @@ void move::parseProperties(char * buffer)
 //	printf("\n");
 }
 
-bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -373,7 +380,7 @@ bool move::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rec
 	return 1;
 }
 
-void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
+void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 {
 	if(rc > 0) delete [] r;
 	if(hc > 0) delete [] b;
@@ -402,7 +409,7 @@ void move::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
 	}
 }
 
-void move::pollStats(hStat & s)
+void action::pollStats(hStat & s)
 {
 	s.damage = stats[currentHit].damage;
 	s.stun = stats[currentHit].stun;
@@ -418,7 +425,7 @@ void move::pollStats(hStat & s)
 	s.blockMask.i = stats[currentHit].blockMask.i;
 }
 
-bool move::operator>(move * x)
+bool action::operator>(action * x)
 {	
 	if(x == NULL) return 1;
 	else{
@@ -434,7 +441,7 @@ bool move::operator>(move * x)
 	return 0;
 }
 
-void move::step(int *& resource)
+void action::step(int *& resource)
 {
 	if(currentFrame == 0){
 		if(resource[0] + gain[0] < 200) resource[0] += gain[0];
@@ -444,37 +451,41 @@ void move::step(int *& resource)
 	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
 }
 
-void move::init()
+void action::init()
 {
 	cFlag = 0;
 	currentFrame = 0;
 	currentHit = 0;
 }
 
-void move::connect(int *& resource)
+action * action::connect(int *& resource)
 {
 	cFlag = currentHit+1;
 	if(resource[0] + gain[cFlag] < 200) resource[0] += gain[cFlag];
-	else resource[0] = 200; 
+	else resource[0] = 200;
+	if(onConnect[cFlag-1] != NULL){
+		init();
+		return onConnect[cFlag-1];
+	} else return this;
 }
 
-void move::blockSuccess(int st)
+void action::blockSuccess(int st)
 {
 	return;
 }
 
-void move::execute(move * last, int *& resource)
+void action::execute(action * last, int *& resource)
 {
 	resource[0] -= cost;
 	last->init();
 }
 
-void move::feed(move * c, int i)
+void action::feed(action * c, int i)
 {
 	next = c;
 }
 
-bool move::takeHit(hStat & s)
+bool action::takeHit(hStat & s)
 {
 	if(s.blockMask.i & blockState.i && currentFrame > guardStart && currentFrame < guardStart + guardLength)
 		return 0;
@@ -487,7 +498,7 @@ bool move::takeHit(hStat & s)
 	}
 }
 
-bool move::CHState()
+bool action::CHState()
 {
 	if(hits < 1) return false;
 	else if(currentFrame < totalStartup[hits-1]) return true;

@@ -1,4 +1,4 @@
-/*Header file for "move" class in project Ground Up Fighting Game
+/*Header file for "action" class in project Ground Up Fighting Game
  *
  *Written by Alex Kelly in 2012.
  *Licensed under MIT OSI, see "COPYING" for details
@@ -10,11 +10,11 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0) {}
-	int damage;          //How much damage the move does
-	int stun;            //How much stun the move does
-	int push;            //How much pushback the move does
-	int lift;            //How much the move lifts an aerial opponent.
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0){}
+	int damage;          //How much damage the action does
+	int stun;            //How much stun the action does
+	int push;            //How much pushback the action does
+	int lift;            //How much the action lifts an aerial opponent.
 	int untech;
 	int blowback;
 	int hover;
@@ -25,47 +25,45 @@ struct hStat{
 	blockField blockMask;
 };
 
-class move{
+class action{
 public:
-	move();
-	move(const char*);
-	virtual ~move();
+	action();
+	action(const char*);
+	virtual ~action();
 	virtual void build(const char *);
 
 	//Okay so, hopefully the idea here is that we can init()
-	//the move we're cancelling out of in the usual case, and, well
+	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
-	virtual void execute(move *, int *&);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
+	virtual void execute(action *, int *&);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void blockSuccess(int);
 	virtual int arbitraryPoll(int q) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&);
 	virtual void pollStats(hStat&);
-	bool operator>(move*); //Cancel allowed check. Essentially: is move Lvalue allowed given the current state of move Rvalue?
+	bool operator>(action*); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&);
-	virtual move * land() { return this; }
-	virtual void connect(int *&);
+	virtual action * land() { return this; }
+	virtual action * connect(int *&);
 	virtual bool takeHit(hStat&); 
 	bool spriteCheck();
 
-	virtual void feed(move *, int);
-	char * findNext();
-	char * findOnHit();
+	virtual void feed(action *, int);
 
 	bool CHState();
 	virtual void draw(int, int, int);
 
-	hStat *stats;
+	hStat *stats = NULL;
 	int stop = 0;
 	int throwinvuln = 0;
 	bool crouch = 0;
 	int armorStart = 0; int armorLength = 0;
 	int guardStart = 0; int guardLength = 0;
 
-	//Properties of a hit. These will only exist for moves that hit.
+	//Properties of a hit. These will only exist for actions that hit.
 	
 	//Low, High, Air Block. Basically a 3-digit binary number expressed as an integer from 0-7.
 	//Digits from low to high: Blockable low, Blockable high, Blockable in the air, use a bitmask
@@ -94,19 +92,20 @@ public:
 	int cost = 0;
 	int * gain;
 
-	//Tolerance refers to the individual size of the input buffer allowed for this move.
+	//Tolerance refers to the individual size of the input buffer allowed for this action.
 	//Default is 30 (The entire input buffer)
 	int tolerance;
 
 	//Activation refers to the most recent accepted last command. So an activation of 0
-	//Implies that the most recent input has to have been *this frame* for the move to be
+	//Implies that the most recent input has to have been *this frame* for the action to be
 	//Accepted. Default is 30 (the entire input buffer)
 	int activation;
 
-	move * next;
-	move * onHit;
+	action * next;
+	action ** onConnect;
+	action * onHit;
 
-	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the move per frame
+	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
 	SDL_Rect ** delta;       //Same but for position on the screen.
@@ -123,7 +122,7 @@ public:
 
 };
 
-class hitstun : virtual public move {
+class hitstun : virtual public action {
 public:
 	hitstun() {}
 	void init(int);
@@ -136,19 +135,19 @@ public:
 	hitstun(const char *);
 };
 
-class special : virtual public move {
+class special : virtual public action {
 public:
 	special() {} 
 	special(const char*);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int chip;
 };
 
-class utility : virtual public move {
+class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -158,14 +157,14 @@ public:
 	virtual void step(int *&);
 };
 
-class airMove : virtual public move {
+class airMove : virtual public action {
 public:
 	airMove() {}
 	airMove(const char*);
 	virtual void build (const char *);
-	virtual move * land();
-	virtual void feed(move *, int);
-	move * landing;
+	virtual action * land();
+	virtual void feed(action *, int);
+	action * landing;
 };
 
 class untechState : public airMove, public hitstun {
@@ -185,8 +184,8 @@ class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
 	airUtility(const char*);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
-	virtual void execute(move *, int *&);	
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual void execute(action *, int *&);	
 };
 
 class airLooping : public airMove, public looping {
@@ -207,7 +206,7 @@ public:
 	SDL_Rect *momentum, *hitbox, *hitreg, collision, spr;
 
 	SDL_Surface *sprite;
-	move *cMove;
+	action *cMove;
 };
 
 class summon : virtual public special {
@@ -235,19 +234,19 @@ public:
 	int freezeLength;
 };
 
-class mash : virtual public move {
+class mash : virtual public action {
 public:
 	mash() {}
 	mash(const char* n) {build(n); init();}
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
-class werf : virtual public move {
+class werf : virtual public action {
 public:
 	werf() {}
 	werf(const char* n) {build(n); init();}
 	virtual bool setParameter(char *n);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual int arbitraryPoll(int n);
 	int startPosX;
 	int startPosY;
@@ -260,5 +259,5 @@ public:
 	luftigeWerf() {}
 	luftigeWerf(const char* n) {build(n); init();}
 	void build(const char *n) {werf::build(n);}
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the move is possible right now.	
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.	
 };

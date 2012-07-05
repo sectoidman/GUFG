@@ -55,11 +55,11 @@ public:
 	void addVector(SDL_Rect&);
 	void setPosition(int, int);
 	bool secondInstance;
-	void getThrown(move*, int, int);
+	void getThrown(action*, int, int);
 
 private:
 	int ID;
 	int inputBuffer[30];
 	void init();
-	void removeVector(int);
+	void reactionVector(int);
 };

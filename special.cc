@@ -1,4 +1,4 @@
-#include "move.h"
+#include "action.h"
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -61,7 +61,7 @@ bool super::setParameter(char * buffer)
 		freezeLength = atoi(token); 
 		freezeLength = freezeLength - freezeFrame;
 		return 1;
-	} else return move::setParameter(savedBuffer);
+	} else return action::setParameter(savedBuffer);
 }
 
 int werf::arbitraryPoll(int n)
@@ -134,6 +134,6 @@ bool werf::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		startPosY = atoi(token); 
 		return 1;
-	} else return move::setParameter(savedBuffer);
+	} else return action::setParameter(savedBuffer);
 }
 

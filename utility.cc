@@ -1,4 +1,4 @@
-#include "move.h"
+#include "action.h"
 utility::utility(const char * n)
 {
 	build(n);
@@ -26,6 +26,6 @@ looping::looping(const char * n)
 
 void looping::step(int *& resource)
 {
-	move::step(resource);
+	action::step(resource);
 	if(currentFrame >= frames) init();
 }

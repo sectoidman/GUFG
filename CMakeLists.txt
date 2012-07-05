@@ -19,7 +19,7 @@ set (SOURCES 	keytest.cc
 		draw.cc 
 		hitstun.cc
 		interface.cc 
-		move.cc 
+		action.cc 
 		player.cc 
 		red.cc
 		yellow.cc 

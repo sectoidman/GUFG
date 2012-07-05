@@ -192,7 +192,7 @@ void player::combineDelta()
 		deltaY += momentum[i].y;
 
 		if(momentum[i].w <= 0) {
-			removeVector(i);
+			reactionVector(i);
 			i--;
 		}
 		else momentum[i].w--;
@@ -346,7 +346,7 @@ void player::pushInput(bool axis[4])
 
 void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
-	move * heldMove;
+	action * heldMove;
 	if(dryrun) heldMove = pick->cMove;
 	pick->prepHooks(inputBuffer, down, up, p, dryrun);
 	if(pick->cMove){
@@ -400,7 +400,7 @@ void player::addVector(SDL_Rect &v)
 	momentumComplexity++;
 }
 
-void player::removeVector(int n)
+void player::reactionVector(int n)
 {
 	if(momentumComplexity < 0 || !momentum) return;
 	for(int i = n; i < momentumComplexity-1; i++){
@@ -532,7 +532,7 @@ void player::setPosition(int x, int y)
 	updateRects();
 }
 
-void player::getThrown(move *toss, int x, int y)
+void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
 	setPosition(toss->arbitraryPoll(27)*xSign + abs(x), toss->arbitraryPoll(26) + y);

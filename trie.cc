@@ -1,5 +1,5 @@
 #include "trie.h"
-moveTrie::moveTrie()
+actionTrie::actionTrie()
 {
 	for(int i = 0; i < 10; i++)
 		child[i] = NULL;
@@ -8,21 +8,21 @@ moveTrie::moveTrie()
 }
 
 
-moveTrie::moveTrie(move * a)
+actionTrie::actionTrie(action * a)
 {
 	for(int i = 0; i < 10; i++)
 		child[i] = NULL;
-	fish = new move*[1];
+	fish = new action*[1];
 	fish[0] = a;
 	occupants = 1;
 }
 
-void moveTrie::insert(move * b)
+void actionTrie::insert(action * b)
 {
 	int i;
-	move ** temp;
+	action ** temp;
 	occupants++;
-	temp = new move*[occupants];
+	temp = new action*[occupants];
 	for(i = 0; i < occupants-1; i++){
 		temp[i] = fish[i];
 	}
@@ -30,26 +30,26 @@ void moveTrie::insert(move * b)
 	fish = temp;
 }
 
-moveTrie * moveTrie::insert(int a, move * b)
+actionTrie * actionTrie::insert(int a, action * b)
 {
 	if(a < 10 && a > 0){
-		if(!child[a]) child[a] = new moveTrie(b);
+		if(!child[a]) child[a] = new actionTrie(b);
 		else child[a]->insert(b);
 		return child[a];
 	}
 	else return NULL;
 }
 
-moveTrie * moveTrie::insert(int a)
+actionTrie * actionTrie::insert(int a)
 {
 	if(a < 10 && a > 0) {
-		if(!child[a]) child[a] = new moveTrie();
+		if(!child[a]) child[a] = new actionTrie();
 		return child[a];
 	}
 	else return NULL;
 }
 
-moveTrie::~moveTrie()
+actionTrie::~actionTrie()
 {
 	for(int i = 0; i < 9; i++){
 		if(child[i] != NULL){
@@ -61,16 +61,16 @@ moveTrie::~moveTrie()
 	fish = NULL;
 }
 
-move * moveTrie::moveHook(int inputBuffer[30], int i, int f, int * r, bool pos[5], bool neg[5], move * c, SDL_Rect &p)
+action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool pos[5], bool neg[5], action * c, SDL_Rect &p)
 {
-	moveTrie * test = NULL;
-	move * result = NULL;
+	actionTrie * test = NULL;
+	action * result = NULL;
 	int j;
 	for(j = i; j < 30; j++){
 		test = child[inputBuffer[j]];
 		if(test != NULL){
-			if (f < 0) result = test->moveHook(inputBuffer, j, j, r, pos, neg, c, p);
-			else result = test->moveHook(inputBuffer, j, f, r, pos, neg, c, p);
+			if (f < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, p);
+			else result = test->actionHook(inputBuffer, j, f, r, pos, neg, c, p);
 			if(result != NULL) return result; 
 		}
 	}

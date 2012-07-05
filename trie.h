@@ -1,10 +1,10 @@
-/*Header file for "move" class in project Ground Up Fighting Game
+/*Header file for "action" class in project Ground Up Fighting Game
  *
  *Written by Alex Kelly in 2012.
  *Licensed under MIT OSI, see "COPYING" for details
  */
 
-#include "move.h"
+#include "action.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <cstring>
@@ -15,18 +15,18 @@
 
 /*Move trie class. Essentially a recursive trie-search algorithm that looks for input hooks*/
 
-class moveTrie{
+class actionTrie{
 public:
-	moveTrie();
-	moveTrie(move*);
-	moveTrie(move*, char*);
-	~moveTrie();
-	move * moveHook(int[40], int, int, int*, bool[5], bool[5], move *, SDL_Rect&);
-	moveTrie * child[10];
-	move ** fish;       //Because it's what a hook catches! Okay, this name probably needs to change.
-	moveTrie * insert(int);
-	moveTrie * insert(int, move*);
-	void insert(move *);
+	actionTrie();
+	actionTrie(action*);
+	actionTrie(action*, char*);
+	~actionTrie();
+	action * actionHook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&);
+	actionTrie * child[10];
+	action ** fish;       //Because it's what a hook catches! Okay, this name probably needs to change.
+	actionTrie * insert(int);
+	actionTrie * insert(int, action*);
+	void insert(action *);
 	int occupants;
 private:
 	int * button;

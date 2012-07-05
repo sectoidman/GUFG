@@ -1,7 +1,7 @@
 #include "yellow.h"
 yellow::yellow(){
-	head = new moveTrie;
-	airHead = new moveTrie;
+	head = new actionTrie;
+	airHead = new actionTrie;
 	build("Yellow");
 }
 

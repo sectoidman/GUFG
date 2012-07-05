@@ -3,7 +3,7 @@ class red : public character{
 public:
 	red();
 	void touch(void*);
-	move * createMove(char*);
+	action * createMove(char*);
 	void drawMeters(int);
 	void tick();
 	void init();
@@ -15,5 +15,5 @@ public:
 	~redCancel();
 	redCancel(char* n);
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
-	void execute(move *, int *&);
+	void execute(action *, int *&);
 };

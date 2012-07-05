@@ -15,13 +15,13 @@ public:
 	virtual ~character();	//Free stuff
 
 	void build(const char*);	//This will *eventually* be the function that parses the character constructor file.
-	moveTrie * head;	//Trie for ground moves
-	moveTrie * airHead;	//Trie for air moves
+	actionTrie * head;	//Trie for ground actions
+	actionTrie * airHead;	//Trie for air actions
 
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	virtual void drawMeters(int);
 	virtual void draw(int, int, int);//Pass sprite information up.
-	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate moveTrie.
+	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	virtual void init();
 	virtual void resetAirOptions();
 	virtual void tick() {}
@@ -29,13 +29,13 @@ public:
 	virtual void connect(hStat&);
 	virtual void land();
 	virtual int takeHit(hStat&);
-	virtual move * createMove(char*);
+	virtual action * createMove(char*);
 	bool spriteCheck();
 	//BRB prepping my hooks
 
-	move * neutral;
-	move * airNeutral;
-	move * crouch;
+	action * neutral;
+	action * airNeutral;
+	action * crouch;
 	hitstun * reel;
 	untechState * untech;
 	airLooping * fall;
@@ -47,8 +47,8 @@ public:
 	hitstun * airBlock;
 	utility * throwBreak;
 
-	move * cMove;
-	move * bMove;
+	action * cMove;
+	action * bMove;
 
 	int freeze;
 	int health;
