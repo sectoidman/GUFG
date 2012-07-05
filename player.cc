@@ -261,14 +261,19 @@ void player::checkCorners(int floor, int left, int right)
 	/*Floor, or "Bottom corner"*/
 
 	if (collision.y + collision.h > floor){
-		if(pick->aerial == 1){
-			pick->land();
-//			printf("P%i landed!\n", ID);
-			updateRects();
-			hOffset = posY - (collision.y);
-			deltaX = 0;
+		if(elasticY){
+			deltaY = -deltaY;
+			elasticY = false;
+		} else {
+			if(pick->aerial == 1){
+				pick->land();
+//				printf("P%i landed!\n", ID);
+				updateRects();
+				hOffset = posY - (collision.y);
+				deltaX = 0;
+			}
+			deltaY = 0;
 		}
-		deltaY = 0;
 		posY = floor - collision.h + hOffset;
 	}
 	updateRects();
@@ -279,13 +284,19 @@ void player::checkCorners(int floor, int left, int right)
 	so we can specialcase collision checks for when one player is in the corner.*/
 
 	if(collision.x <= left){
-		if(elasticX) deltaX = -deltaX / 2; 
+		if(elasticX){
+			deltaX = -deltaX / 2;
+			elasticX = false;
+		}
 		if(facing == 1 && collision.x <= 25) lCorner = 1;
 		if(collision.x < left) 
 			posX = left + lOffset;
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
-		if(elasticX) deltaX = -deltaX / 2; 
+		if(elasticX){
+			deltaX = -deltaX / 2; 
+			elasticX = false;
+		}
 		if(facing == -1 && collision.x + collision.w >= 1575) rCorner = 1;
 		if(collision.x + collision.w > right){
 			posX = right + rOffset;
@@ -479,6 +490,7 @@ int player::takeHit(int combo, hStat & s)
 	addVector(v);
 	if(pick->aerial && s.hover) hover = s.hover;
 	if(s.wallBounce) elasticX = true;
+	if(s.floorBounce) elasticY = true;
 	updateRects();
 	if(s.ghostHit) return 0;
 	else return 1;

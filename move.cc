@@ -331,6 +331,9 @@ void move::parseProperties(char * buffer)
 		case '>':
 			stats[ch].wallBounce = 1;
 			break;
+		case 'v':
+			stats[ch].floorBounce = 1;
+			break;
 		case 's':
 			stop = 1;
 			break;
@@ -409,6 +412,7 @@ void move::pollStats(hStat & s)
 	s.launch = stats[currentHit].launch;
 	s.hover = stats[currentHit].hover;
 	s.wallBounce = stats[currentHit].wallBounce;
+	s.floorBounce = stats[currentHit].floorBounce;
 	s.ghostHit = stats[currentHit].ghostHit;
 	s.blowback = stats[currentHit].blowback;
 	s.blockMask.i = stats[currentHit].blockMask.i;
