@@ -292,6 +292,22 @@ bool move::setParameter(char * buffer)
 		}
 //		printf("\n");
 		return 1;
+	} else if (!strcmp("Autoguard", token)) {
+		token = strtok(NULL, "\t: \n-");
+		guardStart = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		guardLength = atoi(token); 
+		guardLength = guardLength - guardStart;
+		return 1;
+	} else if (!strcmp("Armor", token)) {
+		token = strtok(NULL, "\t: \n-");
+		armorStart = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		armorLength = atoi(token); 
+		armorLength = armorLength - armorStart;
+		return 1;
 	} else return 0;
 }
 
@@ -456,8 +472,12 @@ void move::feed(move * c, int i)
 
 bool move::takeHit(hStat & s)
 {
-	if(s.blockMask.i & blockState.i) return 0;
-	else{
+	if(s.blockMask.i & blockState.i && currentFrame > guardStart && currentFrame < guardStart + guardLength)
+		return 0;
+	else if (currentFrame > armorStart && currentFrame < armorStart + armorLength){
+		s.stun = 0;
+		return 1;
+	} else {
 		init();
 		return 1;
 	}

@@ -54,7 +54,6 @@ bool super::setParameter(char * buffer)
 	char * token = strtok(buffer, "\t: \n-");
 
 	if(!strcmp("SuperFreeze", token)){
-
 		token = strtok(NULL, "\t: \n-");
 		freezeFrame = atoi(token); 
 

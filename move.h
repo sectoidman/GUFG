@@ -1,6 +1,6 @@
 /*Header file for "move" class in project Ground Up Fighting Game
  *
- *Written by Alex Kelly in 2012. 
+ *Written by Alex Kelly in 2012.
  *Licensed under MIT OSI, see "COPYING" for details
  */
 
@@ -10,7 +10,7 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0) {}
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0) {}
 	int damage;          //How much damage the move does
 	int stun;            //How much stun the move does
 	int push;            //How much pushback the move does
@@ -21,6 +21,7 @@ struct hStat{
 	bool launch:1;
 	bool ghostHit:1;
 	bool wallBounce:1;
+	bool floorBounce:1;
 	blockField blockMask;
 };
 
@@ -61,6 +62,8 @@ public:
 	int stop = 0;
 	int throwinvuln = 0;
 	bool crouch = 0;
+	int armorStart = 0; int armorLength = 0;
+	int guardStart = 0; int guardLength = 0;
 
 	//Properties of a hit. These will only exist for moves that hit.
 	

@@ -288,23 +288,25 @@ int character::takeHit(hStat & s)
 {
 	if(!s.ghostHit) freeze = s.stun/4+10;
 
-	if(cMove->takeHit(s))
-	{
+	if(cMove->takeHit(s)){
 		if(s.launch) aerial = 1;
 		health -= s.damage; 
 		if(health < 0) health = 0;
-		if(aerial){
-			untech->init(s.stun+s.untech);
-			cMove = untech;
-			resetAirOptions();
-		} else if(cMove->crouch){
-			crouchReel->init(s.stun+2);
-			cMove = crouchReel;
-		} else {
-			reel->init(s.stun);
-			cMove = reel;
+		if(s.stun > 0){
+			if(aerial){
+				untech->init(s.stun+s.untech);
+				cMove = untech;
+				resetAirOptions();
+			} else if(cMove->crouch){
+				crouchReel->init(s.stun+2);
+				cMove = crouchReel;
+			} else {
+				reel->init(s.stun);
+				cMove = reel;
+			}
+			return 1;
 		}
-		return 1;
+		else return 0;
 	} else return 0;
 }
 
