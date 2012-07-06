@@ -137,3 +137,11 @@ bool werf::setParameter(char * buffer)
 	} else return action::setParameter(savedBuffer);
 }
 
+bool luftigeWerf::setParameter(char * buffer)
+{
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+	char * token = strtok(buffer, "\t: \n-");
+	if(!strcmp("Landing", token)) return airMove::setParameter(savedBuffer);
+	else return werf::setParameter(savedBuffer);
+}

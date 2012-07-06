@@ -47,11 +47,12 @@ public:
 	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&);
 	virtual action * land() { return this; }
-	virtual action * connect(int *&);
+	virtual action * connect(int *&, action *&);
 	virtual bool takeHit(hStat&); 
 	bool spriteCheck();
 
-	virtual void feed(action *, int);
+	virtual void feed(action *, int, int);
+	virtual char* request(int, int);
 
 	bool CHState();
 	virtual void draw(int, int, int);
@@ -78,7 +79,7 @@ public:
 
 	virtual void touch(void*) {}
 
-	int frames;	 //Number of frames.
+	int frames;	//Number of frames.
 	int hits;
 	int currentFrame;//The frame that is currently running.
 	int currentHit;
@@ -103,7 +104,8 @@ public:
 
 	action * next;
 	action ** onConnect;
-	action * onHit;
+	char * tempNext = NULL;
+	char ** tempOnConnect;
 
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
@@ -163,7 +165,10 @@ public:
 	airMove(const char*);
 	virtual void build (const char *);
 	virtual action * land();
-	virtual void feed(action *, int);
+	char * tempLanding = NULL;
+	virtual bool setParameter(char*);
+	virtual void feed(action *, int, int);
+	virtual char* request(int, int);
 	action * landing;
 };
 
@@ -258,6 +263,7 @@ class luftigeWerf : public airMove, public werf {
 public:
 	luftigeWerf() {}
 	luftigeWerf(const char* n) {build(n); init();}
+	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.	
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };

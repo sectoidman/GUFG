@@ -30,6 +30,7 @@ public:
 	virtual void land();
 	virtual int takeHit(hStat&);
 	virtual action * createMove(char*);
+	virtual void processMove(action * m);
 	bool spriteCheck();
 	//BRB prepping my hooks
 

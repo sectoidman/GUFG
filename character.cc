@@ -38,7 +38,7 @@ character::character(const char*)
 	head->insert(3, crouch);
 
 	airNeutral = new airLooping("White/NS");
-	airNeutral->feed(neutral, 1);
+	airNeutral->feed(neutral, 1, 0);
 
 	head->insert(4, new looping("White/WQ"));
 	head->insert(6, new looping("White/W"));
@@ -138,7 +138,7 @@ void character::build(const char* n)
 
 	sprintf(buffer, "%s/NJ", name);
 	airNeutral = new airLooping(buffer);
-	airNeutral->feed(neutral, 1);
+	airNeutral->feed(neutral, 1, 0);
 
 	sprintf(buffer, "%s/HS", name);
 	reel = new hitstun(buffer);
@@ -148,12 +148,12 @@ void character::build(const char* n)
 	
 	sprintf(buffer, "%s/UT", name);
 	untech = new untechState(buffer);
-	untech->feed(fall, 0);
+	untech->feed(fall, 0, 0);
 
 	sprintf(buffer, "%s/down", name);
 	down = new utility(buffer);
-	untech->feed(down, 1);
-	fall->feed(down, 1);
+	untech->feed(down, 1, 0);
+	fall->feed(down, 1, 0);
 
 	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);
@@ -183,6 +183,7 @@ void character::build(const char* n)
 			strcpy(buffer2, buffer);
 
 			m = createMove(buffer);
+			processMove(m);
 			token = strtok(buffer2, " \t-?%@$_!\n");
 			while (token){
 				token = NULL;
@@ -196,7 +197,6 @@ void character::build(const char* n)
 						t = airHead;
 						break;
 					default:
-						printf("??\n");
 						break;
 					}
 					for(int i = strlen(token)-1; i > 0; i--){
@@ -230,6 +230,26 @@ void character::init(){
 	aerial = 0;
 	freeze = 0;
 	cMove = neutral;
+}
+
+void character::processMove(action * m)
+{
+	char* temp;
+	for(int i = 0; i < 3; i++){
+		if(i == 2){
+			for(int j = 0; j < m->hits; j++){
+				temp = m->request(i, j);
+				if(temp != NULL){ 
+					m->feed(createMove(temp), i, j);
+				}
+			}
+		} else {
+			temp = m->request(i, 0);
+			if(temp != NULL){
+				m->feed(createMove(temp), i, 0);
+			}
+		}
+	}
 }
 
 action * character::createMove(char * fullName)
@@ -269,7 +289,7 @@ action * character::createMove(char * fullName)
 		break;
 	case 'j':
 		m = new airMove(actionName);
-		m->feed(neutral, 1);
+		m->feed(neutral, 1, 0);
 		break;
 	default:
 		m = new action(actionName);
@@ -280,7 +300,8 @@ action * character::createMove(char * fullName)
 
 void character::connect(hStat & s)
 {
-	cMove = cMove->connect(meter);
+	cMove->connect(meter, bMove);
+	if(bMove == cMove) bMove = NULL;
 	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 

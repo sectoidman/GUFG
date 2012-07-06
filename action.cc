@@ -161,8 +161,11 @@ bool action::setParameter(char * buffer)
 		if(hits > 0){
 			stats = new hStat[hits];
 			onConnect = new action*[hits];
-			for (int i = 0; i < hits; i++)
+			tempOnConnect = new char*[hits];
+			for (int i = 0; i < hits; i++){
 				onConnect[i] = NULL;
+				tempOnConnect[i] = NULL;
+			}
 		} else {
 			stats = NULL;
 			onConnect = NULL;
@@ -170,6 +173,18 @@ bool action::setParameter(char * buffer)
 		state = new cancelField[hits+1];
 		gain = new int[hits+1];
 //		printf("Hits: %i\n", hits);
+		return 1;
+	} else if (!strcmp("Next", token)) {
+		token = strtok(NULL, "\t: \n");
+		tempNext = new char[strlen(token)+1];
+		strcpy(tempNext, token);
+		return 1;
+	} else if (!strcmp("Connect", token)) {
+		token = strtok(NULL, "\t: \n");
+		int x = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		tempOnConnect[x] = new char[strlen(token)+1];
+		strcpy(tempOnConnect[x], token);
 		return 1;
 	} else if (!strcmp("Blocks", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -458,15 +473,17 @@ void action::init()
 	currentHit = 0;
 }
 
-action * action::connect(int *& resource)
+action * action::connect(int *& resource, action *& temp)
 {
 	cFlag = currentHit+1;
 	if(resource[0] + gain[cFlag] < 200) resource[0] += gain[cFlag];
 	else resource[0] = 200;
 	if(onConnect[cFlag-1] != NULL){
-		init();
-		return onConnect[cFlag-1];
-	} else return this;
+		onConnect[cFlag-1]->init();
+		printf("%s\n", onConnect[cFlag-1]->name);
+		temp = onConnect[cFlag-1];
+	}
+	return temp;
 }
 
 void action::blockSuccess(int st)
@@ -480,9 +497,25 @@ void action::execute(action * last, int *& resource)
 	last->init();
 }
 
-void action::feed(action * c, int i)
+void action::feed(action * c, int code, int i)
 {
-	next = c;
+	if(code == 0){ 
+		next = c;
+		if(tempNext) delete [] tempNext;
+	}
+	else if(code == 2){
+		onConnect[i] = new action;
+		onConnect[i] = c;
+		if(tempOnConnect[i]) delete [] tempOnConnect[i];
+//		printf("%s-%i: %s\n", name, i, onConnect[i]->name);
+	}
+}
+
+char * action::request(int code, int i)
+{
+	if(code == 0) return tempNext;
+	else if(code == 2) return tempOnConnect[i];
+	else return NULL;
 }
 
 bool action::takeHit(hStat & s)

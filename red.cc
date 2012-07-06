@@ -69,45 +69,20 @@ action * red::createMove(char * fullName)
 	char * token;
 	char type[2] = {fullName[0], fullName[1]};
 	char actionName[151];
+	char buffer[101];
+	strcpy (buffer, fullName);
 
 	token = strtok(fullName, " \t-@?_%$!\n");
 	sprintf(actionName, "%s/%s", name, token);
 
 	action * m;
 	switch(type[0]){
-	case '%':
-		if(type[1] == 'j') m = new airSpecial(actionName);
-		else m = new special(actionName);
-		break;
-	case '-':
-		if(type[1] == 'j') m = new airUtility(actionName);
-		else m = new utility(actionName);
-		break;
-	case '@':
-		if(type[1] == 'j') m = new airLooping(actionName);
-		else m = new looping(actionName);
-		break;
 	case '$':
 		m = new redCancel(actionName);
 		break;
-	case 'j':
-		m = new airMove(actionName);
-		m->feed(neutral, 1);
-		break;
-	case '!':
-//		if(type[1] == 'j') m = new airSuper(actionName); else
-		m = new super(actionName);	
-		break;
-	case '_':
-		if(type[1] == 'j') m = new luftigeWerf(actionName);
-		else m = new werf(actionName);
-		break;
-	case '?':
-		m = new mash(actionName);
-		break;
 	default:
-		m = new action(actionName);
-		break;	
+		m = character::createMove(buffer);
+		break;
 	}
 	return m;
 }
