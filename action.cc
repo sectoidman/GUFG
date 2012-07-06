@@ -480,7 +480,6 @@ action * action::connect(int *& resource, action *& temp)
 	else resource[0] = 200;
 	if(onConnect[cFlag-1] != NULL){
 		onConnect[cFlag-1]->init();
-		printf("%s\n", onConnect[cFlag-1]->name);
 		temp = onConnect[cFlag-1];
 	}
 	return temp;
