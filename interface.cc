@@ -173,6 +173,7 @@ void interface::runTimer()
 			timer += (p[i]->pick->cMove->arbitraryPoll(31));
 	}
 	if(timer > 0) timer--;
+//	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
