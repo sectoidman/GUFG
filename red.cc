@@ -78,7 +78,8 @@ action * red::createMove(char * fullName)
 	action * m;
 	switch(type[0]){
 	case '$':
-		m = new redCancel(actionName);
+		if(type[1] == '!') m = new redSuper(actionName);
+		else m = new redCancel(actionName);
 		break;
 	default:
 		m = character::createMove(buffer);
@@ -117,5 +118,12 @@ void redCancel::execute(action * last, int *& resource)
 	action::execute(last, resource);
 }
 
+int redSuper::arbitraryPoll(int q)
+{
+	if(q == 31) return 6;
+	else return super::arbitraryPoll(q);
+}
+
 redCancel::~redCancel() {}
+redSuper::~redSuper() {}
 

@@ -17,3 +17,11 @@ public:
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	void execute(action *, int *&);
 };
+
+class redSuper : virtual public super{
+public:
+	redSuper();
+	~redSuper();
+	redSuper(char* n) { build(n); init(); }
+	int arbitraryPoll(int);
+};
