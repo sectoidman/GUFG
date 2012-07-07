@@ -120,7 +120,7 @@ void redCancel::execute(action * last, int *& resource)
 
 int redSuper::arbitraryPoll(int q)
 {
-	if(q == 31) return 6;
+	if(q == 31) return 11;
 	else return super::arbitraryPoll(q);
 }
 

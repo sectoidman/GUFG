@@ -1,8 +1,8 @@
 Name: DE
 Buffer: 30 : 15
 Hits: 0
-Frames: 60 : 60
-SuperFreeze: 0 - 59
+Frames: 30 : 30
+SuperFreeze: 0 - 29
 Check: 256
 State: 0
 Cost: 100
