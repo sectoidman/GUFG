@@ -174,6 +174,7 @@ void interface::runTimer()
 	}
 	if(timer > 0) timer--;
 //	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);
+//	printf("%i frames remaining\n", timer);
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
