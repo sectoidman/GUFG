@@ -169,8 +169,12 @@ void interface::roundInit()
 void interface::runTimer()
 {
 	for(int i = 0; i < 2; i++){
-		if(p[i]->pick->cMove != NULL)
-			timer += (p[i]->pick->cMove->arbitraryPoll(31));
+		if(select[i] == true){
+			if(p[i]->pick->cMove != NULL)
+			{
+				timer += (p[i]->pick->cMove->arbitraryPoll(31));
+			}
+		}
 	}
 	if(timer > 0) timer--;
 //	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);

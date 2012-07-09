@@ -296,7 +296,7 @@ void player::checkCorners(int floor, int left, int right)
 
 	if(collision.x <= left){
 		if(elasticX){
-			deltaX = -deltaX / 2;
+			deltaX = -deltaX;
 			elasticX = false;
 		}
 		if(facing == 1 && collision.x <= 25) lCorner = 1;
