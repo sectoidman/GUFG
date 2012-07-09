@@ -13,6 +13,7 @@ Lift: -17
 Gain: 0 : 10
 Cost: 0
 Blocks: 0
+Landing: -j214BLR
 Blockable: 6
 Properties: sv^
 #0
