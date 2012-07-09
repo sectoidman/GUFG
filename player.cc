@@ -50,6 +50,7 @@ void player::init()
 	rCorner = 0;
 	elasticX = 0;
 	elasticY = 0;
+	slide = 0;
 	hover = 0;
 }
 
@@ -264,6 +265,16 @@ void player::checkCorners(int floor, int left, int right)
 		if(elasticY){
 			deltaY = -deltaY;
 			elasticY = false;
+		} else if (slide) {
+			deltaY = 0;
+			if(pick->cMove == pick->untech){ 
+				if(deltaX < 0) deltaX++;
+				else if(deltaX > 0) deltaX--;
+				pick->aerial = 1;
+			} else {
+				deltaX = 0;
+				slide = 0;
+			}
 		} else {
 			if(pick->aerial == 1){
 				pick->land();
@@ -481,6 +492,7 @@ int player::takeHit(int combo, hStat & s)
 		else s.damage -= combo; 
 	}
 	s.untech -= combo;
+	if(slide) s.lift += s.lift/2;
 	pick->takeHit(s);
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
@@ -489,8 +501,13 @@ int player::takeHit(int combo, hStat & s)
 	else v.x = -s.push;
 	addVector(v);
 	if(pick->aerial && s.hover) hover = s.hover;
+	else hover = 0;
 	if(s.wallBounce) elasticX = true;
+	else elasticX = false;
 	if(s.floorBounce) elasticY = true;
+	else elasticY = false;
+	if(s.slide) slide = true;
+	else slide = false;
 	updateRects();
 	if(s.ghostHit) return 0;
 	else return 1;

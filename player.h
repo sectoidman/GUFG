@@ -34,8 +34,9 @@ public:
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
 	bool CHState();
-	bool elasticX;
-	bool elasticY;
+	bool elasticX:1;
+	bool elasticY:1;
+	bool slide:1;
 	int hover;
 	int throwInvuln;
 

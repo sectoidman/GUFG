@@ -359,6 +359,9 @@ void action::parseProperties(char * buffer)
 		case 'v':
 			stats[ch].floorBounce = 1;
 			break;
+		case '_':
+			stats[ch].slide = 1;
+			break;
 		case 's':
 			stop = 1;
 			break;
@@ -438,6 +441,7 @@ void action::pollStats(hStat & s)
 	s.hover = stats[currentHit].hover;
 	s.wallBounce = stats[currentHit].wallBounce;
 	s.floorBounce = stats[currentHit].floorBounce;
+	s.slide = stats[currentHit].slide;
 	s.ghostHit = stats[currentHit].ghostHit;
 	s.blowback = stats[currentHit].blowback;
 	s.blockMask.i = stats[currentHit].blockMask.i;
