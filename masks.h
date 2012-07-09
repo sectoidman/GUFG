@@ -1,7 +1,7 @@
 //A 6-bit field to keep track of block states.
 struct bf{
-	bool high:1;
 	bool low:1;
+	bool high:1;
 	bool air:1;
 };
 
