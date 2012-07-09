@@ -492,7 +492,7 @@ int player::takeHit(int combo, hStat & s)
 		else s.damage -= combo; 
 	}
 	s.untech -= combo;
-	if(slide) s.lift += s.lift/2;
+	if(slide) s.lift += 7 - s.lift/5;
 	pick->takeHit(s);
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
