@@ -67,6 +67,7 @@ character::~character()
 	//Character destructor. Might not need this if we aren't working with any dynamic memory, but it might be worthwhile to have.
 {
 	delete head;
+	delete airHead;
 	delete neutral;
 	delete crouch;
 	delete reel;

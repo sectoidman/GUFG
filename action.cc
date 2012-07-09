@@ -31,9 +31,12 @@ action::~action()
 	if(deltaComplexity) delete [] deltaComplexity;
 	if(delta) delete [] delta;
 	if(state) delete [] state;
+	if(gain) delete [] gain;
 	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
 	if(stats) delete [] stats;
+	if(next) delete next;
+	if(onConnect) delete [] onConnect;
 }
 
 void action::build(const char * n)
