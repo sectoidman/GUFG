@@ -173,6 +173,7 @@ void interface::runTimer()
 			if(p[i]->pick->cMove != NULL)
 			{
 				timer += (p[i]->pick->cMove->arbitraryPoll(31));
+				if(timer > 60*99) timer = 60*99;
 			}
 		}
 	}

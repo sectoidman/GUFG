@@ -17,11 +17,17 @@ void red::touch(void * target)
 	((interface*)target)->timer += 300;
 }
 
-void red::tick(){
+void red::tick()
+{
 	character::tick();
-	if(meter[4] > 0) meter[4]--;
-	else if(meter[3] < 540) meter[3]++;
+	if(meter[3] < 540) meter[3]++;
 	if(meter[3] < 0) meter[3] = 0;
+}
+
+void red::step()
+{
+	if(meter[4] > 0) meter[4]--;
+	character::step();
 }
 
 void red::drawMeters(int ID)

@@ -6,6 +6,7 @@ public:
 	action * createMove(char*);
 	void drawMeters(int);
 	void tick();
+	void step();
 	void init();
 };
 

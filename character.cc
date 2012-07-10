@@ -302,14 +302,15 @@ action * character::createMove(char * fullName)
 void character::connect(hStat & s)
 {
 	cMove->connect(meter, bMove);
-	if(bMove == cMove) bMove = NULL;
+	if(bMove == cMove){ 
+		bMove = NULL;
+	}
 	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
 int character::takeHit(hStat & s)
 {
 	if(!s.ghostHit) freeze = s.stun/4+10;
-
 	if(cMove->takeHit(s)){
 		if(s.launch) aerial = 1;
 		health -= s.damage; 
