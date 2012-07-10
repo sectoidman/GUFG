@@ -1,5 +1,5 @@
 Name: 236C
-Buffer: 30 : 15
+Buffer: 30 : 0
 Hits: 1
 Frames: 41 : 19 : 3 : 19
 Check: 129
@@ -15,7 +15,7 @@ Gain: 0 : 4
 Cost: 0
 Blockable: 2
 Blocks: 0
-Properties: _^c
+Properties: _^Sc
 #1 
 $C	5 5 54 145
 $R	5 5 54 145

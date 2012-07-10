@@ -114,7 +114,7 @@ void redCancel::execute(action * last, int *& resource)
 	resource[1] = 1;
 	resource[2] = 1;
 	resource[3] -= 270;
-	resource[4] = 15;
+	resource[4] = 16;
 	action::execute(last, resource);
 }
 
