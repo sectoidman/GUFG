@@ -524,12 +524,6 @@ void interface::resolveHits()
 				s[i].untech += s[i].untech / 3;
 			}
 			p[i]->connect(combo[i], s[i]);
-			if(p[i]->pick->aerial) residual.y = -3;
-			else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
-				residual.x = -(s[i].push);
-				if(combo[i] > 1) residual.x -= (combo[i]-1);
-				p[i]->addVector(residual);
-			}
 			if(!p[i]->pick->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
@@ -542,9 +536,22 @@ void interface::resolveHits()
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[(i+1)%2]->invertVectors(1);
 		}
 	}
+	
+	for(int i = 0; i < 2; i++){ 
+		if(hit[i]){
+			if(p[i]->pick->aerial) residual.y = -3;
+			else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+				residual.x = -(s[i].push);
+				if(combo[i] > 1) residual.x -= (combo[i]-1);
+				p[i]->addVector(residual);
+			}
+		}
+	}
+
 	if(hit[0] || hit[1]){
 		unitCollision();
 	}
+
 	for(int i = 0; i < 2; i++) {
 		p[i]->throwInvuln--;
 		p[i]->hover--;

@@ -50,6 +50,7 @@ void player::init()
 	rCorner = 0;
 	elasticX = 0;
 	elasticY = 0;
+	blockType = 0;
 	slide = 0;
 	hover = 0;
 }
@@ -217,9 +218,11 @@ void player::enforceGravity(int grav, int floor)
 void player::checkBlocking()
 {
 	int st;
+	bool block = false;
 	if(pick->cMove == pick->airBlock || pick->cMove == pick->standBlock || pick->cMove == pick->crouchBlock)
 		st = pick->cMove->arbitraryPoll(1);
 	else st = 0;
+	
 
 	switch(inputBuffer[0]){
 	case 7:
@@ -233,6 +236,7 @@ void player::checkBlocking()
 			pick->cMove = pick->standBlock;
 		}
 		updateRects();
+		block = true;
 		break;
 	case 1:
 		if(pick->aerial && (*pick->airBlock) > pick->cMove) {
@@ -244,9 +248,18 @@ void player::checkBlocking()
 			pick->cMove = pick->crouchBlock;
 		}
 		updateRects();
+		block = true;
 		break;
 	default:
 		break;
+	}
+
+	if(block){
+		blockType = 0;
+		for(int i = 1; i < 7; i++){
+			if(inputBuffer[i] % 3 != 1)
+			blockType = 1;
+		}
 	}
 }
 
@@ -493,7 +506,7 @@ int player::takeHit(int combo, hStat & s)
 	}
 	s.untech -= combo;
 	if(slide) s.lift += 7 - s.lift/5;
-	pick->takeHit(s);
+	pick->takeHit(s, blockType);
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
 	else v.y = 0;

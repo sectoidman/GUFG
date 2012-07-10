@@ -308,10 +308,10 @@ void character::connect(hStat & s)
 	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
-int character::takeHit(hStat & s)
+int character::takeHit(hStat & s, int b)
 {
 	if(!s.ghostHit) freeze = s.stun/4+10;
-	if(cMove->takeHit(s)){
+	if(cMove->takeHit(s, b)){
 		if(s.launch) aerial = 1;
 		health -= s.damage; 
 		if(health < 0) health = 0;

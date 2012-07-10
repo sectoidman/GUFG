@@ -49,7 +49,7 @@ public:
 	virtual void step(int *&);
 	virtual action * land() { return this; }
 	virtual action * connect(int *&, action *&);
-	virtual bool takeHit(hStat&); 
+	virtual bool takeHit(hStat&, int); 
 	bool spriteCheck();
 
 	virtual void feed(action *, int, int);
@@ -132,7 +132,7 @@ public:
 	int counter;
 	virtual void step(int *&);
 	virtual void blockSuccess(int);
-	virtual bool takeHit(hStat &);
+	virtual bool takeHit(hStat &, int);
 	virtual int arbitraryPoll(int);
 	hitstun(char *, int);
 	hitstun(const char *);

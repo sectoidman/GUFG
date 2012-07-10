@@ -28,7 +28,7 @@ public:
 	virtual void step();
 	virtual void connect(hStat&);
 	virtual void land();
-	virtual int takeHit(hStat&);
+	virtual int takeHit(hStat&, int);
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
 	bool spriteCheck();
