@@ -18,7 +18,7 @@ void hitstun::blockSuccess(int st){
 
 bool hitstun::takeHit(hStat & s){
 	if(s.blockMask.i & blockState.i){
-		init(s.stun);
+		init(s.stun - 2);
 		return 0;
 	}
 	else return 1;
