@@ -254,8 +254,8 @@ void player::checkBlocking()
 		break;
 	}
 
+	blockType = 0;
 	if(block){
-		blockType = 0;
 		for(int i = 1; i < 7; i++){
 			if(inputBuffer[i] % 3 != 1)
 			blockType = 1;

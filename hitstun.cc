@@ -21,7 +21,7 @@ bool hitstun::takeHit(hStat & s, int b){
 	if(s.blockMask.i & blockState.i){
 		if(b == 1){ 
 			init(s.stun - 1  - s.stun/5);
-			s.push = std::max(s.push - s.push/5 - 1, 1);
+			s.push = (s.push*4)/5;
 		}
 		else init(s.stun - std::max(0, 1 - s.stun/15));
 		return 0;
