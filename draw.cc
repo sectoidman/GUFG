@@ -40,6 +40,7 @@ void interface::draw()
 		glDisable( GL_TEXTURE_2D );
 		if(!p[i]->spriteCheck()) 
 			p[i]->drawBoxen(bg.x, bg.y);
+		p[i]->drawHitParticle(bg.x, bg.y);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnable( GL_TEXTURE_2D );
 	}
@@ -135,10 +136,6 @@ void player::draw(int x, int y)
 			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
 		}
 	}
-	if(particleLife > 0){
-		particleLife--;
-		drawHitParticle(x, y);
-	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
 	pick->draw(facing, realPosX - x, realPosY - y);
@@ -147,19 +144,22 @@ void player::draw(int x, int y)
 void player::drawHitParticle(int x, int y)
 {
 	/*Stand-in for now, just to indicate block type*/
-	switch (particleType){
-	case 1:
-		glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
-		break;
-	case 0:
-		glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
-		break;
-	case -1:
-		glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
-		break;
+	if(particleLife > 0){
+		switch (particleType){
+		case 1:
+			glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
+			break;
+		case 0:
+			glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+			break;
+		case -1:
+			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
+			break;
+		}
+		glRectf((GLfloat)(posX - 5 * facing - x), (GLfloat)(posY - y), (GLfloat)(posX - 25*facing - x), (GLfloat)(posY + 20 - y));
+		particleLife--;
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	glRectf((GLfloat)(posX - 5 * facing - x), (GLfloat)(posY - y), (GLfloat)(posX - 25*facing - x), (GLfloat)(posY + 20 - y));
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void character::draw(int facing, int x, int y)
