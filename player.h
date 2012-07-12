@@ -26,6 +26,7 @@ public:
 	void getMove(bool*, bool*, SDL_Rect &, bool);
 	void draw(int, int);
 	void drawBoxen(int, int);
+	void drawHitParticle(int, int);
 	void drawMeters(int);
 	void pullVolition();
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
@@ -45,9 +46,11 @@ public:
 	int hitComplexity, regComplexity, momentumComplexity;
 	bool rCorner, lCorner;
 
+	int particleLife;
+	int particleType;
+
 	/*Helper functions for "resolve" tick*/
 	void updateRects();
-	int checkHit(player*);
 	void enforceGravity(int, int);
 	void checkBlocking();
 	void checkFacing(player*);

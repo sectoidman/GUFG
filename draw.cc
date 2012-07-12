@@ -104,12 +104,12 @@ void player::drawBoxen(int x, int y)
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
-		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
-		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
 	}
 	glFlush();
@@ -135,9 +135,31 @@ void player::draw(int x, int y)
 			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
 		}
 	}
+	if(particleLife > 0){
+		particleLife--;
+		drawHitParticle(x, y);
+	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
 	pick->draw(facing, realPosX - x, realPosY - y);
+}
+
+void player::drawHitParticle(int x, int y)
+{
+	/*Stand-in for now, just to indicate block type*/
+	switch (particleType){
+	case 1:
+		glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
+		break;
+	case 0:
+		glColor4f(0.0f, 0.0f, 0.0f, 0.7f);
+		break;
+	case -1:
+		glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
+		break;
+	}
+	glRectf((GLfloat)(posX - 5 * facing - x), (GLfloat)(posY - y), (GLfloat)(posX - 25*facing - x), (GLfloat)(posY + 20 - y));
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void character::draw(int facing, int x, int y)

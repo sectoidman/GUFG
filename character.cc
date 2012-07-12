@@ -311,7 +311,8 @@ void character::connect(hStat & s)
 int character::takeHit(hStat & s, int b)
 {
 	if(!s.ghostHit) freeze = s.stun/4+10;
-	if(cMove->takeHit(s, b)){
+	int x = cMove->takeHit(s, b);
+	if (x == 1){
 		if(s.launch) aerial = 1;
 		health -= s.damage; 
 		if(health < 0) health = 0;
@@ -327,10 +328,14 @@ int character::takeHit(hStat & s, int b)
 				reel->init(s.stun);
 				cMove = reel;
 			}
-			return 1;
 		}
-		else return 0;
-	} else return 0;
+	} else if (x == -1) {
+		if(meter[0] + 4 < 200) meter[0] += 4;
+		else meter[0] = 200;
+	}
+	if(meter[0] + 1 < 200) meter[0] += 1;
+	else meter[0] = 200;
+	return x;
 }
 
 void character::resetAirOptions()

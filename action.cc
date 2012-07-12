@@ -524,7 +524,7 @@ char * action::request(int code, int i)
 	else return NULL;
 }
 
-bool action::takeHit(hStat & s, int b)
+int action::takeHit(hStat & s, int b)
 {
 	if(s.blockMask.i & blockState.i && currentFrame > guardStart && currentFrame < guardStart + guardLength)
 		return 0;

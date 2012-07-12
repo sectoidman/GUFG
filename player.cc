@@ -53,6 +53,8 @@ void player::init()
 	blockType = 0;
 	slide = 0;
 	hover = 0;
+	particleLife = 0;
+	particleType = 0;
 }
 
 bool player::readConfig()
@@ -506,7 +508,8 @@ int player::takeHit(int combo, hStat & s)
 	}
 	s.untech -= combo;
 	if(slide) s.lift += 7 - s.lift/5;
-	pick->takeHit(s, blockType);
+	particleType = pick->takeHit(s, blockType);
+	if (combo == 0) particleLife = 8;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick->aerial) v.y = -s.lift;
 	else v.y = 0;
