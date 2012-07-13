@@ -29,7 +29,6 @@ void airMove::feed(action * c, int code, int i)
 		landing = c;
 		if(tempLanding){ 
 			delete [] tempLanding;
-			printf("%s!%s\n", name, tempLanding);
 		}
 	} else action::feed(c, code, i);
 }
