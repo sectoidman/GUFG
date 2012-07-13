@@ -36,7 +36,6 @@ void airMove::feed(action * c, int code, int i)
 char * airMove::request(int code, int i)
 {
 	if(code == 1){
-		if(tempLanding) printf("%s\n", tempLanding);
 		return tempLanding;
 	}
 	else return action::request(code, i); 
