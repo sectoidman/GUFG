@@ -120,8 +120,8 @@ void interface::roundInit()
 	bg.y = 450;
 
 	for(int i = 0; i < 2; i++){
-		p[i]->roundInit();
 		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
+		p[i]->roundInit();
 	}
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
@@ -433,10 +433,14 @@ void interface::unitCollision()
 		int totalMiddle = (right->collision.x + left->collision.x + left->collision.w)/2;
 		if(abs(left->deltaX) > abs(right->deltaX)) totalMiddle += dOffset;
 
-		if(left->lCorner) right->posX = left->collision.x + left->collision.w + rLOffset;
+		if(left->lCorner){ 
+			right->posX = left->collision.x + left->collision.w + rLOffset;
+			if(left->elasticX && left->deltaX < 0) left->deltaX = -(left->deltaX);
+		}
 		else if(right->rCorner) left->posX = right->collision.x + lROffset;
 		else {
 			right->posX = totalMiddle + right->collision.w + rROffset;
+			if(right->elasticX && right->deltaX > 0) right->deltaX = -(right->deltaX);
 			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
 		if(left->collision.x < 25) {

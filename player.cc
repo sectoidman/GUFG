@@ -220,7 +220,7 @@ void player::combineDelta()
 		else momentum[i].w--;
 	}
 	posX += deltaX;
-	if(hover <= 0 || deltaY <= 0) posY += deltaY;
+	posY += deltaY;
 	updateRects();
 }
 
@@ -232,7 +232,10 @@ void player::enforceGravity(int grav, int floor)
 		pick->aerial = 1;
 	}
 
-	else if(pick->aerial && !pick->freeze) addVector(g);
+	else if(pick->aerial && !pick->freeze){ 
+		if(hover > 0 && deltaY + 3 > 0) g.y = -deltaY;
+		addVector(g);
+	}
 }
 
 void player::checkBlocking()
@@ -329,7 +332,7 @@ void player::checkCorners(int floor, int left, int right)
 
 	if(collision.x <= left){
 		if(elasticX){
-			deltaX = -deltaX;
+			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
 		}
 		if(facing == 1 && collision.x <= 25) lCorner = 1;
@@ -338,7 +341,7 @@ void player::checkCorners(int floor, int left, int right)
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(elasticX){
-			deltaX = -deltaX / 2; 
+			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
 		}
 		if(facing == -1 && collision.x + collision.w >= 1575) rCorner = 1;
