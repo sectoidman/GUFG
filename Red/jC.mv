@@ -5,10 +5,10 @@ Frames: 28 : 7 : 6 : 15
 Check: 9
 State: 256 : 498
 Damage: 12
-Stun: 15
-Untech: 7
+Stun: 13
+Untech: 10
 Push: 7
-Lift: 11
+Lift: 10
 Blowback: 1
 Gain: 0 : 4
 Cost: 0

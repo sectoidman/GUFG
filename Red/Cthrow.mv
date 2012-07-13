@@ -12,7 +12,7 @@ Lift: 0 : 12: -30
 Float: 0 : 17 : 0
 Blowback: 0 : 1 : 2
 Gain: 0 : 0 : 2 : 6
-Proximity: 150 : 0
+Proximity: 140 : 0
 Position: 120 : 0
 Cost: 0
 Blocks: 0
