@@ -27,14 +27,19 @@ void airMove::feed(action * c, int code, int i)
 {
 	if(code == 1){ 
 		landing = c;
-		if(tempLanding) delete [] tempLanding;
-	}
-	else action::feed(c, code, i);
+		if(tempLanding){ 
+			delete [] tempLanding;
+			printf("%s!%s\n", name, tempLanding);
+		}
+	} else action::feed(c, code, i);
 }
 
 char * airMove::request(int code, int i)
 {
-	if(code == 1) return tempLanding;
+	if(code == 1){
+		if(tempLanding) printf("%s\n", tempLanding);
+		return tempLanding;
+	}
 	else return action::request(code, i); 
 }
 

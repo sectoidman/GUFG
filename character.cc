@@ -237,7 +237,7 @@ void character::init(){
 
 void character::processMove(action * m)
 {
-	char* temp;
+	char* temp = NULL;
 	for(int i = 0; i < 3; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
@@ -292,7 +292,6 @@ action * character::createMove(char * fullName)
 		break;
 	case 'j':
 		m = new airMove(actionName);
-		m->feed(neutral, 1, 0);
 		break;
 	default:
 		m = new action(actionName);

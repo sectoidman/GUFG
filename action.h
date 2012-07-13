@@ -170,7 +170,7 @@ public:
 	virtual bool setParameter(char*);
 	virtual void feed(action *, int, int);
 	virtual char* request(int, int);
-	action * landing;
+	action * landing = NULL;
 };
 
 class untechState : public airMove, public hitstun {
