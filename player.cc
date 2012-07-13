@@ -39,7 +39,17 @@ void player::init()
 
 	/*Set up the sprite*/
 
+	pick = NULL;
 	rounds = 0;
+	roundInit();
+}
+
+void player::roundInit()
+{
+	if(pick){
+		pick->init();
+		updateRects();
+	}
 	deltaX = 0;
 	deltaY = 0;
 	regComplexity = 0;
@@ -53,8 +63,16 @@ void player::init()
 	blockType = 0;
 	slide = 0;
 	hover = 0;
+	throwInvuln = 0;
 	particleLife = 0;
 	particleType = 0;
+	if(ID == 1){ 
+		facing = 1;
+		posX = 700;
+	} else {
+		facing = -1;
+		posX = 900;
+	}
 }
 
 bool player::readConfig()

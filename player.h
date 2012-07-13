@@ -32,6 +32,7 @@ public:
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void invertVectors(int);
 	bool spriteCheck();
+	void roundInit();
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
 	bool CHState();

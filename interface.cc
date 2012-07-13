@@ -118,22 +118,11 @@ void interface::roundInit()
 {
 	bg.x = 400;
 	bg.y = 450;
-	
-	for (int i = 0; i < 2; i++) {
-		p[i]->pick->init();
-		p[i]->deltaX = 0;
-		p[i]->deltaY = 0;
-		p[i]->throwInvuln = 0;
-	}
 
 	for(int i = 0; i < 2; i++){
-		if(p[i]->pick->cMove != p[i]->pick->neutral) {
-			if(p[i]->pick->cMove) p[i]->pick->cMove->init();
-			p[i]->pick->neutral->init();
-			p[i]->pick->cMove = p[i]->pick->neutral;
-		}
+		p[i]->roundInit();
+		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
 	}
-
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
 	{
@@ -151,17 +140,9 @@ void interface::roundInit()
 	combo[1] = 0;
 	grav = 3;
 	timer = 60 * 99;
-	p[0]->facing = 1;
-	p[1]->facing = -1;
-	p[0]->posX = 700;
-	p[1]->posX = 900;
 	prox.w = 200;
 	prox.h = 0;
 	
-	for (int i = 0; i < 2; i++) {
-		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
-		p[i]->updateRects();
-	}
 	draw();
 }
 
@@ -213,18 +194,14 @@ void interface::resolve()
 		resolveThrows();
 		doSuperFreeze();
 
-		p[0]->pullVolition();
 		p[0]->updateRects();
-		p[1]->pullVolition();
 		p[1]->updateRects();
-
-		if(!p[0]->pick->freeze){
-			p[0]->combineDelta();
-			p[0]->enforceGravity(grav, floor);
-		}
-		if(!p[1]->pick->freeze){
-			p[1]->combineDelta();
-			p[1]->enforceGravity(grav, floor);
+		for(int i = 0; i < 2; i++){
+			if(!p[i]->pick->freeze){
+				p[i]->pullVolition();
+				p[i]->combineDelta();
+				p[i]->enforceGravity(grav, floor);
+			}
 		}
 
 		dragBG(p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) +

@@ -10,7 +10,7 @@
 character::character()
 {
 	bMove = NULL;
-
+	cMove = NULL;
 	meter = new int[3];
 }
 
@@ -223,14 +223,16 @@ void character::build(const char* n)
 }
 
 void character::init(){
+	if(cMove){
+		if(cMove != neutral) cMove->init();
+	}
+	neutral->init();
+	cMove = neutral;
 	health = 300;
 	meter[0] = 0;
-	meter[1] = 1;
-	meter[2] = 1;
-	rounds = 0;
+	resetAirOptions();
 	aerial = 0;
 	freeze = 0;
-	cMove = neutral;
 }
 
 void character::processMove(action * m)
