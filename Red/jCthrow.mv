@@ -4,7 +4,7 @@ Hits: 2
 Frames: 22 : 0 : 1 : 10 : 1 : 10
 Check: 1
 State: 0 : 0 : 384
-Damage: 0 : 7
+Damage: 0 : 14
 Stun: 15 : 40
 Untech: 0 : 0
 Push: 0 : 0
@@ -21,7 +21,7 @@ Properties: Sg : >
 $C	5 0 55 135
 $R	0 0 0 0
 $D	0 0 0 0
-$A	65 50 100 100
+$A	40 50 100 100
 #1
 $C	5 0 55 135
 $R	0 0 0 0
