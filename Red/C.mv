@@ -7,9 +7,9 @@ State: 256 : 496
 Damage: 26
 Stun: 16
 Untech: 0
-Push: 20
+Push: 15
 Lift: 8
-Blowback: -2
+Blowback: -1
 Gain: 0 : 5
 Cost: 0
 Blockable: 3 
