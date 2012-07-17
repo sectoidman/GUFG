@@ -323,7 +323,7 @@ int character::takeHit(hStat & s, int b)
 				cMove = untech;
 				resetAirOptions();
 			} else if(cMove->crouch){
-				crouchReel->init(s.stun+2);
+				crouchReel->init(s.stun + s.stun/5);
 				cMove = crouchReel;
 			} else {
 				reel->init(s.stun);

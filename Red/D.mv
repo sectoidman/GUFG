@@ -1,17 +1,17 @@
 Name: D
 Buffer: 30 : 30
 Hits: 2 
-Frames: 40 : 11 : 3 : 7 : 3 : 16
+Frames: 41 : 11 : 3 : 7 : 3 : 17
 Check: 65
 State: 256 : 384 : 448
 Damage: 8 : 15
-Stun: 10 : 16
-Untech: 20 : 4
+Stun: 10 : 17
+Untech: 20 : 2
 Push: 10 : 10
 Lift: 10 : 10
 Float: 25 : 0
 Blowback: -2 : 2
-Gain: 0 : 10 : 5
+Gain: 0 : 4 : 2
 Cost: 0
 Blockable: 5 : 3
 Blocks: 0
@@ -179,6 +179,10 @@ $C	5 0 55 150
 $R	5 0 55 150
 $D	0 0 0 0
 #40
+$C	5 0 55 150
+$R	5 0 55 150
+$D	0 0 0 0
+#41
 $C	5 0 55 150
 $R	5 0 55 150
 $D	0 0 0 0
