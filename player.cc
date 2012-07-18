@@ -539,11 +539,11 @@ int player::takeHit(int combo, hStat & s)
 	addVector(v);
 	if(pick->aerial && s.hover) hover = s.hover;
 	else hover = 0;
-	if(s.wallBounce) elasticX = true;
+	if(pick->aerial && s.wallBounce) elasticX = true;
 	else elasticX = false;
-	if(s.floorBounce) elasticY = true;
+	if(pick->aerial && s.floorBounce) elasticY = true;
 	else elasticY = false;
-	if(s.slide) slide = true;
+	if(pick->aerial && s.slide) slide = true;
 	else slide = false;
 	updateRects();
 	if(s.ghostHit) return 0;

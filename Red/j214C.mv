@@ -9,21 +9,21 @@ Stun: 8
 Untech: 16
 Push: 3
 Blowback: 3
-Lift: -10
+Lift: -9
 Gain: 0 : 5
 Cost: 0
 Blocks: 0
 Landing: -j214BLR
-Blockable: 6
-Properties: s_
+Blockable: 7
+Properties: _s
 #0
 $C	5 0 55 133
 $R	5 0 55 133
-$D	-1 0 6 0
+$D	6 0 0 0
 #1
 $C	5 0 55 131
 $R	5 0 57 131
-$D	0 -3 5 0	0 -1 8 -1
+$D	0 -3 5 0	0 -1 6 -1
 #2
 $C	5 0 55 129
 $R	5 0 59 129
@@ -47,11 +47,11 @@ $D	0 0 0 0
 #7
 $C	5 5 55 119
 $R	5 5 69 119
-$D	2 0 6 0
+$D	0 0 0 0
 #8
 $C	5 6 55 117
 $R	5 6 71 117
-$D	0 0 0 0
+$D	2 0 6 0
 #9
 $C	5 7 55 115
 $R	5 7 73 115
