@@ -547,7 +547,7 @@ int player::takeHit(int combo, hStat & s)
 	else slide = false;
 	updateRects();
 	if(s.ghostHit) return 0;
-	else return 1;
+	else return particleType;
 }
 
 void player::invertVectors(int operation)

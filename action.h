@@ -24,6 +24,7 @@ struct hStat{
 	bool floorBounce:1;
 	bool slide:1;
 	blockField blockMask;
+	cancelField hitState;
 };
 
 class action{
@@ -38,7 +39,7 @@ public:
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
-	virtual void blockSuccess(int);
+	virtual action * blockSuccess(int);
 	virtual int arbitraryPoll(int q) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
@@ -49,6 +50,7 @@ public:
 	virtual void step(int *&);
 	virtual action * land() { return this; }
 	virtual action * connect(int *&, action *&);
+	virtual void hitConfirm(int);
 	virtual int takeHit(hStat&, int); 
 	bool spriteCheck();
 
@@ -87,6 +89,7 @@ public:
 	int * totalStartup;
 	int * active;
 	int cFlag;
+	int hFlag;
 	
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
@@ -131,7 +134,7 @@ public:
 	void init(int);
 	int counter;
 	virtual void step(int *&);
-	virtual void blockSuccess(int);
+	virtual action * blockSuccess(int);
 	virtual int takeHit(hStat &, int);
 	virtual int arbitraryPoll(int);
 	hitstun(char *, int);

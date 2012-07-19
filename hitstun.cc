@@ -12,9 +12,10 @@ void hitstun::step(int *& resource)
 	if(counter <= 0) currentFrame++;
 	else counter--;
 }
-	
-void hitstun::blockSuccess(int st){
+
+action * hitstun::blockSuccess(int st){
 	init(st);
+	return this;
 }
 
 int hitstun::takeHit(hStat & s, int b){

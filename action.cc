@@ -168,6 +168,7 @@ bool action::setParameter(char * buffer)
 			for (int i = 0; i < hits; i++){
 				onConnect[i] = NULL;
 				tempOnConnect[i] = NULL;
+				stats[i].hitState.i = 0;
 			}
 		} else {
 			stats = NULL;
@@ -175,6 +176,8 @@ bool action::setParameter(char * buffer)
 		}
 		state = new cancelField[hits+1];
 		gain = new int[hits+1];
+		for(int i = 0; i < hits+1; i++)
+			gain[i] = 0;
 //		printf("Hits: %i\n", hits);
 		return 1;
 	} else if (!strcmp("Next", token)) {
@@ -233,6 +236,15 @@ bool action::setParameter(char * buffer)
 			token = strtok(NULL, "\t: \n");
 			state[i].i = atoi(token);
 //			printf(": %i ", state[i].i);
+		}
+//		printf("\n");
+		return 1;
+	} else if (!strcmp("HitAllows", token)) {
+//		printf("HitAllows");
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].hitState.i = atoi(token);
+//			printf(": %i ", hitState[i].i);
 		}
 //		printf("\n");
 		return 1;
@@ -448,10 +460,15 @@ void action::pollStats(hStat & s)
 }
 
 bool action::operator>(action * x)
-{	
+{
+	cancelField r;
+	r.i = x->state[x->cFlag].i;
+	if(x->hFlag > 0 && x->hFlag == x->cFlag){ 
+		r.i = r.i + x->stats[x->hFlag - 1].hitState.i;
+	}
 	if(x == NULL) return 1;
 	else{
-		if(allowed.i & x->state[x->cFlag].i){
+		if(allowed.i & r.i){
 			if(x == this){
 				if(x->cFlag == 0) return 0;
 				else if(allowed.i & 4) return 1;
@@ -476,6 +493,7 @@ void action::step(int *& resource)
 void action::init()
 {
 	cFlag = 0;
+	hFlag = 0;
 	currentFrame = 0;
 	currentHit = 0;
 }
@@ -492,9 +510,16 @@ action * action::connect(int *& resource, action *& temp)
 	return temp;
 }
 
-void action::blockSuccess(int st)
+void action::hitConfirm(int a)
 {
-	return;
+	if(a == 1){ 
+		hFlag = cFlag;
+	}
+}
+
+action * action::blockSuccess(int st)
+{
+	return this;
 }
 
 void action::execute(action * last, int *& resource)

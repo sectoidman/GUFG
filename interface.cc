@@ -484,12 +484,13 @@ void interface::resolveHits()
 {
 	hStat s[2];
 	bool hit[2] = {0, 0};
+	bool connect[2] = {0, 0};
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(int i = 0; i < 2; i++){
 		for(int j = 0; j < p[i]->hitComplexity; j++){
 			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
 				if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
-					hit[i] = 1;
+					connect[i] = 1;
 					p[i]->pick->cMove->pollStats(s[i]);
 					k = p[(i+1)%2]->regComplexity;
 					j = p[i]->hitComplexity;
@@ -499,7 +500,7 @@ void interface::resolveHits()
 	}
 
 	for(int i = 0; i < 2; i++){ 
-		if(hit[i]){
+		if(connect[i]){
 			if(p[(i+1)%2]->CHState()){
 				s[i].stun += s[i].stun / 3;
 				s[i].untech += s[i].untech / 3;
@@ -510,8 +511,10 @@ void interface::resolveHits()
 	}
 
 	for(int i = 0; i < 2; i++){ 
-		if(hit[i]){
-			combo[i] += p[(i+1)%2]->takeHit(combo[i], s[i]);
+		if(connect[i]){
+			hit[i] = p[(i+1)%2]->takeHit(combo[i], s[i]);
+			combo[i] += abs(hit[i]);
+			p[i]->pick->cMove->hitConfirm(hit[i]);
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 			p[i]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[(i+1)%2]->invertVectors(1);
@@ -519,7 +522,7 @@ void interface::resolveHits()
 	}
 	
 	for(int i = 0; i < 2; i++){ 
-		if(hit[i]){
+		if(connect[i]){
 			if(p[i]->pick->aerial) residual.y = -3;
 			else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 				residual.x = -(s[i].push);
@@ -529,7 +532,7 @@ void interface::resolveHits()
 		}
 	}
 
-	if(hit[0] || hit[1]){
+	if(connect[0] || connect[1]){
 		unitCollision();
 	}
 
