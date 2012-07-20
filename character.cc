@@ -238,18 +238,23 @@ void character::init(){
 void character::processMove(action * m)
 {
 	char* temp = NULL;
+	action* t = NULL;
 	for(int i = 0; i < 3; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
 				temp = m->request(i, j);
 				if(temp != NULL){ 
-					m->feed(createMove(temp), i, j);
+					t = createMove(temp);
+					m->feed(t, i, j);
+					processMove(t);
 				}
 			}
 		} else {
 			temp = m->request(i, 0);
 			if(temp != NULL){
-				m->feed(createMove(temp), i, 0);
+				t = createMove(temp);
+				m->feed(t, i, 0);
+				processMove(t);
 			}
 		}
 	}
