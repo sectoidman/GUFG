@@ -21,8 +21,9 @@ Red
 ?ForwardTech = a6 a9 a3
 ?StopTech = a8
 #Moves
-$!DA = h
-$!DAcancel = h
+$!DB = h
+!DAcancel = h a
+$!DBcancel = h
 $!214D = h214
 A = h
 B = h
