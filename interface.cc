@@ -506,7 +506,7 @@ void interface::resolveHits()
 				s[i].untech += s[i].untech / 3;
 			}
 			p[i]->connect(combo[i], s[i]);
-			if(!p[i]->pick->aerial) p[i]->checkFacing(p[(i+1)%2]);
+			if(!p[i]->pick->aerial && p[i]->pick->cMove->allowed.i < 128) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 

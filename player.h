@@ -28,9 +28,7 @@ public:
 	void drawBoxen(int, int);
 	void drawHitParticle(int, int);
 	void drawMeters(int);
-	void pullVolition();
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
-	void invertVectors(int);
 	bool spriteCheck();
 	void roundInit();
 	int takeHit(int, hStat&);
@@ -59,6 +57,9 @@ public:
 	void checkCorners(int, int, int);
 	void combineDelta();
 	void addVector(SDL_Rect&);
+	void clipVectors(int);
+	void pullVolition();
+	void invertVectors(int);
 	void setPosition(int, int);
 	bool secondInstance;
 	void getThrown(action*, int, int);

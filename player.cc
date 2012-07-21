@@ -573,6 +573,13 @@ void player::invertVectors(int operation)
 	}
 }
 
+void player::clipVectors(int maxLength)
+{
+	for(int i = 0; i < momentumComplexity; i++){
+		if(momentum[i].w > maxLength) momentum[i].w = maxLength;
+	}
+}
+
 bool player::CHState()
 {
 	if(hitbox[0].w > 0) return true;
