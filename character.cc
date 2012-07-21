@@ -95,7 +95,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 
 	if(t != NULL){
 		if(freeze > 0){
-			if(bMove == NULL || (*t) > bMove) 
+			if(bMove == NULL) 
 				if(!dryrun) bMove = t;
 		}
 		else {

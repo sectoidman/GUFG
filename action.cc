@@ -469,6 +469,7 @@ bool action::operator>(action * x)
 	if(x == NULL) return 1;
 	else{
 		if(allowed.i & r.i){
+//			if(r.i > 1) printf("%i allows %i\n", r.i, allowed.i);
 			if(x == this){
 				if(x->cFlag == 0) return 0;
 				else if(allowed.i & 4) return 1;

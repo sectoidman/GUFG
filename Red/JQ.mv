@@ -1,7 +1,7 @@
 Name: JB
 Buffer: 0 : 0
 Hits: 0
-Frames: 3 : 3
+Frames: 3
 Check: 3
 State: 256
 Gain: 0
@@ -20,4 +20,7 @@ $D	0 0 0 0
 $C	5 0 55 150
 $R	5 0 55 150
 $D	-5 -31 0 0
-
+#1 
+$C	5 0 55 150
+$R	5 0 55 150
+$D	0 0 0 0
