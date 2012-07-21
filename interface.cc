@@ -142,7 +142,7 @@ void interface::roundInit()
 	timer = 60 * 99;
 	prox.w = 200;
 	prox.h = 0;
-	
+	freeze = 0;
 	draw();
 }
 
