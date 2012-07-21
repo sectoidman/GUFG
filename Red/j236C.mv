@@ -6,9 +6,9 @@ Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
 Damage: 20
-Stun: 15
+Stun: 18
 Cost: 50
-Untech: 25
+Untech: 27
 Float: 40
 Gain: 0 : 0
 Blockable: 7
@@ -21,7 +21,7 @@ $D	0 0 0 0
 #0 
 $C	5 10 55 115
 $R	5 10 55 115
-$D	0 -3 20 0
+$D	0 -3 30 0
 #0 
 $C	5 15 55 105
 $R	5 15 55 105
