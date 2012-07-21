@@ -546,7 +546,7 @@ int player::takeHit(int combo, hStat & s)
 	if(pick->aerial && s.slide) slide = true;
 	else slide = false;
 	updateRects();
-	if(s.ghostHit) return 0;
+	if(s.ghostHit && combo < 1) return 0;
 	else return particleType;
 }
 
