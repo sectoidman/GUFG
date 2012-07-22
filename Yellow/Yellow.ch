@@ -13,12 +13,13 @@ Yellow
 -jJQ = a57 a67 a47 a37 a27 a17
 -jwsh = a656 a956 a356
 -jqsh = a454 a754 a154
--slide = h5 h4 h1 h2
 -qsh = h5454
 ?NeutralTech = a
 ?StopTech = a8
 ?ForwardTech = a6 a3 a9
 ?BackTech = a4 a1 a7
+A = h
+B = h
 qA = h
 qB = h
 qC = h
