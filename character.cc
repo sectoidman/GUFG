@@ -316,7 +316,8 @@ void character::connect(hStat & s)
 
 int character::takeHit(hStat & s, int b)
 {
-	if(!s.ghostHit) freeze = s.stun/4+10;
+	if(s.ghostHit) freeze = 0;
+	else freeze = s.stun/4+10;
 	int x = cMove->takeHit(s, b);
 	if (x == 1){
 		if(s.launch) aerial = 1;
