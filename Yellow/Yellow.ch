@@ -35,6 +35,6 @@ $jDdownf = a3
 $jDdownb = a1
 $jDforward = a6
 $jDback = a4
-$214A = h214
+$22D = h252
 %236B = h236
 #Moves
