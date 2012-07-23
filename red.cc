@@ -12,11 +12,6 @@ red::red()
 	init();	
 }
 
-void red::touch(void * target)
-{
-	((interface*)target)->timer += 300;
-}
-
 void red::tick()
 {
 	character::tick();

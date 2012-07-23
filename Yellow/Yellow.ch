@@ -23,6 +23,8 @@ B = h
 qA = h
 qB = h
 qC = h
+wA = h
 wD = h
+%236B = h236
 %236D = h236
 #Moves
