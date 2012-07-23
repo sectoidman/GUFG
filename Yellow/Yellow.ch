@@ -25,6 +25,16 @@ qB = h
 qC = h
 wA = h
 wD = h
+$Dforward = h6
+$Dback = h4
+$Dupf = h9 a9
+$Dupb = h7 a7
+$Dup = h8 a8
+$Ddown = a2
+$jDdownf = a3
+$jDdownb = a1
+$jDforward = a6
+$jDback = a4
+$214A = h214
 %236B = h236
-%236D = h236
 #Moves

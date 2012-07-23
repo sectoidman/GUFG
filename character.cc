@@ -374,5 +374,7 @@ void character::step()
 	if(cMove && cMove->currentFrame == cMove->frames){
 		cMove->init();
 		cMove = cMove->next;
+		if(cMove) cMove->init();
+		if(cMove) printf("%s\n", cMove->name);
 	}
 }

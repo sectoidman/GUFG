@@ -1,0 +1,31 @@
+Name: Specialdash
+Buffer: 2 : 0
+Hits: 0
+Frames: 5 : 5
+Check: 8193
+FlashCost: 25
+State: 0
+Gain: 0
+Cost: 0
+Blocks: 0
+Properties: S
+#0
+$C	0 0 0 150
+$R	0 0 0 0
+$D	0 -40 0 0
+#0
+$C	0 0 0 150
+$R	0 0 0 0
+$D	0 -3 0 0
+#0
+$C	0 0 0 150
+$R	0 0 0 0
+$D	0 -3 0 0
+#0
+$C	0 0 0 150
+$R	0 0 0 0
+$D	0 -3 0 0
+#0
+$C	0 0 0 150
+$R	0 0 0 0
+$D	0 37 0 0

@@ -533,6 +533,7 @@ void action::feed(action * c, int code, int i)
 {
 	if(code == 0){ 
 		next = c;
+		if(tempNext) printf("%s\n", tempNext);
 		if(tempNext) delete [] tempNext;
 	}
 	else if(code == 2){
