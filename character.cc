@@ -375,6 +375,5 @@ void character::step()
 		cMove->init();
 		cMove = cMove->next;
 		if(cMove) cMove->init();
-		if(cMove) printf("%s\n", cMove->name);
 	}
 }
