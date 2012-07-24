@@ -1,5 +1,5 @@
 /*Some SDL-related utility functions written by Ashley Fisher, c. 2012, for project "picoclash".
- *Used in project "GUFG" with her permission
+ *Used in project "GUFG" with her permission.
  */
 
 #include <SDL/SDL.h>

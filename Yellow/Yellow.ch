@@ -22,6 +22,7 @@ A = h
 B = h
 C = h
 2A = h2 h3 h1
+jB = a
 qA = h
 qB = h
 qC = h
