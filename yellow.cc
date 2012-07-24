@@ -86,6 +86,13 @@ void yellow::drawMeters(int ID)
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
+int yellow::takeHit(hStat & s, int b)
+{
+	int x = character::takeHit(s, b);
+	if(x == 1) meter[3] = 0;
+	return x;
+}
+
 flashStep::flashStep() {}
 flashSummon::flashSummon() {}
 
