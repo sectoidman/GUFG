@@ -22,7 +22,8 @@ Red
 ?StopTech = a8
 #Moves
 $!DB = h
-!DAcancel = h a
+!jDAcancel = a
+!DAcancel = h
 $!DBcancel = h
 $!Dcancel = h63214
 A = h
