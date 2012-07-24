@@ -20,6 +20,7 @@ Yellow
 ?BackTech = a4 a1 a7
 A = h
 B = h
+C = h
 qA = h
 qB = h
 qC = h
