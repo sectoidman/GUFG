@@ -21,6 +21,7 @@ Yellow
 A = h
 B = h
 C = h
+2A = h2 h3 h1
 qA = h
 qB = h
 qC = h
@@ -34,6 +35,6 @@ $jDdownf = a3
 $jDdownb = a1
 $jDforward = a6
 $jDback = a4
-$22D = h252
+&22D = h252
 %236B = h236
 #Moves

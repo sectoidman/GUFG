@@ -43,13 +43,16 @@ action * yellow::createMove(char * fullName)
 	char buffer[101];
 	strcpy (buffer, fullName);
 
-	token = strtok(fullName, " \t-@?_%$!\n");
+	token = strtok(fullName, " \t-@?_%&$!\n");
 	sprintf(actionName, "%s/%s", name, token);
 
 	action * m;
 	switch(type[0]){
 	case '$':
 		m = new flashStep(actionName);
+		break;
+	case '&':
+		m = new flashSummon(actionName);
 		break;
 	default:
 		m = character::createMove(buffer);
@@ -84,10 +87,17 @@ void yellow::drawMeters(int ID)
 }
 
 flashStep::flashStep() {}
+flashSummon::flashSummon() {}
 
-flashStep::flashStep(char * n)
+flashStep::flashStep(const char * n)
 {
 	flashMeterCost = 0;
+	build(n);
+	init();
+}
+
+flashSummon::flashSummon(const char * n)
+{
 	flashMeterGain = 0;
 	build(n);
 	init();
@@ -104,25 +114,34 @@ bool flashStep::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n-");
 		flashMeterCost = atoi(token); 
 		return 1;
-	} else if(!strcmp("FlashGain", token)){
+	} else return airMove::setParameter(savedBuffer);
+}
+
+bool flashSummon::setParameter(char * buffer)
+{
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+
+	char * token = strtok(buffer, "\t: \n-");
+	
+	if(!strcmp("FlashGain", token)){
 		token = strtok(NULL, "\t: \n-");
 		flashMeterGain = atoi(token); 
 		return 1;
-	} else return airMove::setParameter(savedBuffer);
+	} else return action::setParameter(savedBuffer);
 }
 
 bool flashStep::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect& p)
 {
+	if(!action::check(pos, neg, t, f, resource, p)) return 0;
+	if(resource[3] < 1) return 0;
+	return 1;
+}
+
+bool flashSummon::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect& p)
+{
 	if(!special::check(pos, neg, t, f, resource, p)) return 0;
-	if(resource[3] < 1 && flashMeterCost > 0){ 
-		return 0;
-	}
-	if(resource[3] < 0){
-		return 0;
-	}
-	if(flashMeterCost < 1 && resource[3] != 0){ 
-		return 0;
-	}
+	if(resource[3] != 0) return 0;
 	return 1;
 }
 
@@ -134,7 +153,7 @@ void flashStep::execute(action * last, int *& resource)
 	action::execute(last, resource);
 }
 
-void flashStep::step(int *& resource)
+void flashSummon::step(int *& resource)
 {
 	resource[3] += flashMeterGain / frames + 1;
 	if(resource[3] > 540) resource[3] = 540;

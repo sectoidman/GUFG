@@ -89,7 +89,7 @@ action * red::createMove(char * fullName)
 	return m;
 }
 
-redCancel::redCancel(char* n) 
+redCancel::redCancel(const char* n) 
 { 
 	build(n); 
 	init();

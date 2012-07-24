@@ -10,14 +10,24 @@ public:
 	void step();
 };
 
-class flashStep : public airSpecial {
+class flashStep : public airMove {
 public:
 	flashStep();
-	flashStep(char*);
-	bool setParameter(char*);
+	flashStep(const char*);
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	void execute(action *, int *&);
+	bool setParameter(char*);
+private:
 	int flashMeterCost;
-	int flashMeterGain;
+};
+
+class flashSummon : public special {
+public:
+	flashSummon();
+	flashSummon(const char*);
+	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
+	bool setParameter(char*);
 	void step(int *&);
+private:
+	int flashMeterGain;
 };

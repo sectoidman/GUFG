@@ -149,6 +149,13 @@ public:
 	int chip;
 };
 
+class negNormal : virtual public action {
+public:
+	negNormal() {}
+	negNormal(const char *);
+	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+};
+
 class utility : virtual public action {
 public:
 	utility() {}
@@ -187,6 +194,12 @@ class airSpecial : public airMove, public special {
 public:
 	airSpecial() {}
 	airSpecial(const char* n) {build(n); init();}
+};
+
+class airNegNormal : public airMove, public negNormal {
+public:
+	airNegNormal() {}
+	airNegNormal(const char* n) {build(n); init();}
 };
 
 class airUtility : public airMove, public utility {

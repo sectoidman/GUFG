@@ -185,10 +185,10 @@ void character::build(const char* n)
 
 			m = createMove(buffer);
 			processMove(m);
-			token = strtok(buffer2, " \t-?%@$_!\n");
+			token = strtok(buffer2, " \t-?%@$&_!\n");
 			while (token){
 				token = NULL;
-				token = strtok(NULL, " \t=-?@%$_!\n");
+				token = strtok(NULL, " \t=-&?@%$_!\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
