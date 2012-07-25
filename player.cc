@@ -331,19 +331,21 @@ void player::checkCorners(int floor, int left, int right)
 	This not only keeps the characters within the stage boundaries, but flags them as "in the corner"
 	so we can specialcase collision checks for when one player is in the corner.*/
 
-	SDL_Rect a = {0, -3, 0, 0};
 	if(collision.x <= left){
 		if(elasticX){
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
-		} else if (stick) {
-			if(pick->cMove == pick->untech){
-				deltaX = 0;
-				deltaY = 0;
-				momentumComplexity = 0;
-			} else stick = 0;
+		} 
+		if(collision.x <= 25){ 
+			if(facing == 1) lCorner = 1;
+			if (stick) {
+				if(pick->cMove == pick->untech){
+					deltaX = 0;
+					deltaY = 0;
+					momentumComplexity = 0;
+				} else stick = 0;
+			}
 		}
-		if(facing == 1 && collision.x <= 25) lCorner = 1;
 		if(collision.x < left) 
 			posX = left + lOffset;
 	} else lCorner = 0;
@@ -351,14 +353,17 @@ void player::checkCorners(int floor, int left, int right)
 		if(elasticX){
 			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
-		} else if (stick) {
-			if(pick->cMove == pick->untech){
-				deltaX = 0;
-				deltaY = 0;
-				momentumComplexity = 0;
-			} else stick = 0;
+		} 
+		if(collision.x + collision.w >= 1575){ 
+			if(facing == -1) rCorner = 1;
+			if (stick) {
+				if(pick->cMove == pick->untech){
+					deltaX = 0;
+					deltaY = 0;
+					momentumComplexity = 0;
+				} else stick = 0;
+			}
 		}
-		if(facing == -1 && collision.x + collision.w >= 1575) rCorner = 1;
 		if(collision.x + collision.w > right){
 			posX = right + rOffset;
 		}

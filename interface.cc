@@ -444,15 +444,13 @@ void interface::unitCollision()
 			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
 		if(left->collision.x < 25) {
-			left->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+//			left->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			left->updateRects();
 			right->posX = left->collision.x + left->collision.w + rLOffset;
-			left->lCorner = true;
 		} else if (right->collision.x + right->collision.w > 1575) {
-			right->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+//			right->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			right->updateRects();
 			left->posX = right->collision.x + lROffset;
-			right->rCorner = true;
 		}
 		right->updateRects();
 		left->updateRects();
