@@ -150,9 +150,6 @@ void interface::roundInit()
 void interface::runTimer()
 {
 	for(int i = 0; i < 2; i++){
-		p[i]->pick->step();
-	}
-	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
 			if(p[i]->pick->cMove != NULL)
 			{
@@ -237,6 +234,9 @@ void interface::resolve()
 
 		/*Draw the sprites*/
 		draw();
+		for(int i = 0; i < 2; i++){
+			p[i]->pick->step();
+		}
 		checkWin();
 		runTimer();
 	}
