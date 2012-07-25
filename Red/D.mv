@@ -7,10 +7,10 @@ State: 256 : 384 : 448
 Damage: 8 : 15
 Stun: 11 : 17
 Untech: 20 : 2
-Push: 10 : 10
+Push: 5 : 10
 Lift: 10 : 10
 Float: 25 : 0
-Blowback: -2 : 1
+Blowback: -1 : 1
 Gain: 0 : 4 : 2
 Cost: 0
 Blockable: 5 : 3
