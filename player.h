@@ -37,6 +37,7 @@ public:
 	bool elasticX:1;
 	bool elasticY:1;
 	bool slide:1;
+	bool stick:1;
 	int blockType;
 	int hover;
 	int throwInvuln;

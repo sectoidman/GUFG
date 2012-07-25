@@ -6,15 +6,15 @@ Check: 65
 State: 256 : 256
 Damage: 30
 Stun: 23
-Untech: 4
+Untech: 20
 Push: 10
 Lift: 9
-Blowback: 0
+Blowback: 1
 Gain: 0 : 8
 Cost: 0
 Blockable: 7 
 Blocks: 0
-Properties: t
+Properties: t=
 #0
 $C	7 0 55 150
 $R	7 0 55 150

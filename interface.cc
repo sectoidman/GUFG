@@ -524,9 +524,10 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
 			if(p[i]->pick->aerial) residual.y = -3;
-			else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
-				residual.x = -(s[i].push);
-				if(combo[i] > 1) residual.x -= (combo[i]-1);
+			else{ 
+				if(combo[i] > 1) residual.x = -(combo[i]-1);
+				if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner)
+					residual.x -= combo[i];
 				p[i]->addVector(residual);
 			}
 		}

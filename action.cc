@@ -392,6 +392,9 @@ void action::parseProperties(char * buffer)
 		case 'T':
 			throwinvuln = 2;
 			break;
+		case '=':
+			stats[ch].stick = 1;
+			break;
 		default:
 			break;
 		}
@@ -454,6 +457,7 @@ void action::pollStats(hStat & s)
 	s.wallBounce = stats[currentHit].wallBounce;
 	s.floorBounce = stats[currentHit].floorBounce;
 	s.slide = stats[currentHit].slide;
+	s.stick = stats[currentHit].stick;
 	s.ghostHit = stats[currentHit].ghostHit;
 	s.blowback = stats[currentHit].blowback;
 	s.blockMask.i = stats[currentHit].blockMask.i;
