@@ -43,7 +43,7 @@ link_libraries (
    SDLmain # not included in SDL_LIBRARY variable
 )
 
-add_executable (keytest 
+add_executable (gufg 
 		WIN32 
 		MACOSX_BUNDLE
 		${SOURCES})
