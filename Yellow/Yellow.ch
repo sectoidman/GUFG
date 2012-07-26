@@ -33,6 +33,7 @@ C = h
 2C = h2 h3 h1
 jA = a
 jB = a
+jC = a
 qA = h
 qB = h
 qC = h

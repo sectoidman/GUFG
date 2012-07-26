@@ -311,8 +311,6 @@ void interface::readInput()
 	}
 }
 
-
-
 void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
@@ -435,12 +433,10 @@ void interface::unitCollision()
 
 		if(left->lCorner){ 
 			right->posX = left->collision.x + left->collision.w + rLOffset;
-			if(left->elasticX && left->deltaX < 0) left->deltaX = -(left->deltaX);
 		}
 		else if(right->rCorner) left->posX = right->collision.x + lROffset;
 		else {
 			right->posX = totalMiddle + right->collision.w + rROffset;
-			if(right->elasticX && right->deltaX > 0) right->deltaX = -(right->deltaX);
 			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
 		if(left->collision.x < 25) {
@@ -521,7 +517,7 @@ void interface::resolveHits()
 	
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->pick->aerial) residual.y = -3;
+			if(p[i]->pick->aerial) residual.y = -4;
 			else{ 
 				if(combo[i] > 1) residual.x = -(combo[i]-1);
 				if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner)
