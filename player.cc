@@ -434,7 +434,10 @@ void player::pullVolition()
 {
 	int top = 0;
 	for(int i = 0; i < momentumComplexity; i++)
-		if(momentum[i].h > top) top = momentum[i].h;
+		if(momentum[i].h > 0 && momentum[i].h > top){ 
+			top = (short)momentum[i].h;
+			printf("<%i %i %i %i\n", momentum[i].x, momentum[i].y, momentum[i].w, momentum[i].h);
+		}
 	if(pick->cMove->stop){
 		if(pick->cMove->currentFrame == 0){ 
 			deltaX = 0; deltaY = 0;
@@ -446,11 +449,11 @@ void player::pullVolition()
 		SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
 		for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
 			if(temp[i].x || temp[i].y || temp[i].h){
-				if(abs(temp[i].h) >= top || top == 0){
+				if(abs((short)temp[i].h) >= top || top == 0){
 					addVector(temp[i]);
-				}
-			}
-		}
+				} else printf("%i\n", top);
+			} 
+		} 
 	}
 }
 
