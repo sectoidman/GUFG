@@ -436,7 +436,6 @@ void player::pullVolition()
 	for(int i = 0; i < momentumComplexity; i++)
 		if(momentum[i].h > 0 && momentum[i].h > top){ 
 			top = (short)momentum[i].h;
-			printf("<%i %i %i %i\n", momentum[i].x, momentum[i].y, momentum[i].w, momentum[i].h);
 		}
 	if(pick->cMove->stop){
 		if(pick->cMove->currentFrame == 0){ 
@@ -451,7 +450,7 @@ void player::pullVolition()
 			if(temp[i].x || temp[i].y || temp[i].h){
 				if(abs((short)temp[i].h) >= top || top == 0){
 					addVector(temp[i]);
-				} else printf("%i\n", top);
+				}
 			} 
 		} 
 	}
