@@ -257,6 +257,13 @@ public:
 	int freezeLength;
 };
 
+class airSuper : public airMove, public super {
+public:
+	airSuper() {}
+	airSuper(const char* n) {build(n); init();}
+	virtual bool setParameter(char*);
+};
+
 class mash : virtual public action {
 public:
 	mash() {}

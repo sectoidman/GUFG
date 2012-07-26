@@ -22,6 +22,7 @@ public:
 	void writeConfig();
 	bool readConfig();
 	void characterSelect(int);
+	void land();
 	void pushInput(bool*);
 	void getMove(bool*, bool*, SDL_Rect &, bool);
 	void draw(int, int);
@@ -69,5 +70,5 @@ private:
 	int ID;
 	int inputBuffer[30];
 	void init();
-	void reactionVector(int);
+	void removeVector(int);
 };

@@ -286,7 +286,8 @@ action * character::createMove(char * fullName)
 	case '!':
 //		if(type[1] == 'j') m = new airSuper(actionName);
 //		else 
-		m = new super(actionName);
+		if(type[1] == 'j') m = new airSuper(actionName);
+		else m = new super(actionName);
 		break;
 	case '?':
 		m = new mash(actionName);

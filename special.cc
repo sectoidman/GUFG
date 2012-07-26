@@ -83,6 +83,16 @@ bool super::setParameter(char * buffer)
 	} else return action::setParameter(savedBuffer);
 }
 
+bool airSuper::setParameter(char * buffer)
+{
+	bool x;
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+	x = super::setParameter(buffer);
+	if (!x) x = airMove::setParameter(savedBuffer);
+	return x;
+}
+
 int werf::arbitraryPoll(int n)
 {
 	switch (n){

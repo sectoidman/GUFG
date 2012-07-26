@@ -6,6 +6,7 @@ Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
 Damage: 20
+Landing: -j214CLR
 Stun: 38
 Cost: 50
 Untech: 22
@@ -17,11 +18,11 @@ Properties: gS
 #0 
 $C	5 5 55 125
 $R	5 5 55 125
-$D	0 0 0 0
+$D	0 -3 35 0	0 3 0 0
 #0 
 $C	5 10 55 115
 $R	5 10 55 115
-$D	0 -3 30 0
+$D	0 0 0 0
 #0 
 $C	5 15 55 105
 $R	5 15 55 105

@@ -215,7 +215,7 @@ void player::combineDelta()
 		deltaY += momentum[i].y;
 
 		if(momentum[i].w <= 0) {
-			reactionVector(i);
+			removeVector(i);
 			i--;
 		}
 		else momentum[i].w--;
@@ -314,7 +314,7 @@ void player::checkCorners(int floor, int left, int right)
 			}
 		} else {
 			if(pick->aerial == 1){
-				pick->land();
+				land();
 //				printf("P%i landed!\n", ID);
 				updateRects();
 				hOffset = posY - (collision.y);
@@ -369,6 +369,14 @@ void player::checkCorners(int floor, int left, int right)
 		}
 	} else rCorner = 0;
 	updateRects(); //Update rectangles or the next collision check will be wrong.
+}
+
+void player::land()
+{
+	for(int i = 0; i < momentumComplexity; i++){
+		if(momentum[i].y < 0) removeVector(i);
+	}
+	pick->land();
 }
 
 void player::checkFacing(player * other){
@@ -438,7 +446,7 @@ void player::pullVolition()
 		SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
 		for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
 			if(temp[i].x || temp[i].y || temp[i].h){
-				if(temp[i].h >= top || top == 0){
+				if(abs(temp[i].h) >= top || top == 0){
 					addVector(temp[i]);
 				}
 			}
@@ -466,7 +474,7 @@ void player::addVector(SDL_Rect &v)
 	momentumComplexity++;
 }
 
-void player::reactionVector(int n)
+void player::removeVector(int n)
 {
 	if(momentumComplexity < 0 || !momentum) return;
 	for(int i = n; i < momentumComplexity-1; i++){
