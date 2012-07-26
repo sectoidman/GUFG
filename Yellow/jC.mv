@@ -1,16 +1,15 @@
-Name: jB
+Name: jC
 Buffer: 30 : 30
 Hits: 1
 Frames: 24 : 7 : 7 : 10
 Check: 17
 State: 256 : 12784
-Damage: 10
-Stun: 13
+Damage: 13
+Stun: 15
 Untech: 8
-Push: 5
-Lift: 10
-Float: 9
-Blowback: 1
+Push: 7
+Lift: 9
+Blowback: 2
 Gain: 0 : 2
 Cost: 0
 Blockable: 6
