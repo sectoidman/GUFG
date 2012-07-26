@@ -9,7 +9,7 @@ bool utility::check(bool pos[5], bool neg[5], int t, int f, int * resource, SDL_
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
-			if(!pos[i]) return 0;
+			if(!pos[i] && !neg[i]) return 0;
 		} else if(pos[i]) return 0;
 	}
 	if(t > tolerance) return 0;

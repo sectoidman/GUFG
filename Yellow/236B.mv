@@ -15,7 +15,7 @@ Gain: 0 : 4
 Cost: 0
 Blockable: 7
 Blocks: 0
-Properties: Sc
+Properties: Sc=
 #1 
 $C	5 5 55 145
 $R	5 5 56 145
