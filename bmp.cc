@@ -43,7 +43,7 @@ void writeImage(const char * movename, int frame, action * move)
 		x = realPosX;
 	}
 	sprintf(fname, "%s#%i.bmp", movename, frame);
-	SDL_Rect q = { x, y, w, h };
+	SDL_Rect q = { (Sint16)x, (Sint16)y, (Uint16)w, (Uint16)h };
 	SDL_Surface /*a, *b, *c,*/ *d;
 	Uint32 rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -91,12 +91,16 @@ int main(int argc, char* argv[])
 	char buffer[150];
 	if(argc < 2) printf("Please supply a move\n");
 	else{ 
-		strcpy(buffer, argv[1]);
-		buffer[strlen(argv[1]) - 3] = '\0';
-		printf("%s\n", buffer);
-	}
-	action * a = new action(buffer);
-	for(int i = 0; i < a->frames; i++){
-		writeImage(buffer, i, a);
+		for(int i = 1; i < argc; i++){
+			strcpy(buffer, argv[i]);
+			buffer[strlen(argv[i]) - 3] = '\0';
+			printf("%s\n", buffer);
+			action * a = new action(buffer);
+
+			for(int i = 0; i < a->frames; i++){
+				writeImage(buffer, i, a);
+			}
+			delete a;
+		}
 	}
 }
