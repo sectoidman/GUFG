@@ -48,6 +48,7 @@ void action::build(const char * n)
 	buffer[0] = '\0';
 
 	sprintf(fname, "%s.mv", n);
+	printf("%s\n", fname);
 	read.open(fname);
 	assert(!read.fail());
 

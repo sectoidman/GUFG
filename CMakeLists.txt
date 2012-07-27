@@ -13,8 +13,7 @@ set (gufg_VERSION_MAJOR 0)
 set (gufg_VERSION_MINOR 0)
 set (gufg_VERSION_PATCH 1)
 
-set (SOURCES 	keytest.cc 
-		auxil.cc 
+set (SOURCES	auxil.cc 
 		character.cc 
 		draw.cc 
 		hitstun.cc
@@ -46,4 +45,11 @@ link_libraries (
 add_executable (gufg 
 		WIN32 
 		MACOSX_BUNDLE
+		keytest.cc
+		${SOURCES})
+
+add_executable (bmpout
+		WIN32 
+		MACOSX_BUNDLE
+		bmp.cc
 		${SOURCES})
