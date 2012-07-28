@@ -28,7 +28,7 @@ set (SOURCES	auxil.cc
 		trie.cc) 
 
 
-set (CMAKE_CXX_FLAGS "-O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
+set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
 set(QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
