@@ -578,7 +578,8 @@ int player::takeHit(int combo, hStat & s)
 	else stick = false;
 	updateRects();
 	if(s.ghostHit && combo < 1) return 0;
-	else return particleType;
+	else if(particleType == 1) return particleType;
+	else return -1;
 }
 
 void player::invertVectors(int operation)

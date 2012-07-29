@@ -219,7 +219,9 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++){
 			if(!p[i]->pick->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(p[i]->pick->cMove != p[i]->pick->reel && p[i]->pick->cMove != p[i]->pick->untech && p[i]->pick->cMove != p[i]->pick->crouchReel){
+			if(p[i]->pick->cMove != p[i]->pick->reel && p[i]->pick->cMove != p[i]->pick->untech && 
+			   p[i]->pick->cMove != p[i]->pick->crouchReel && p[i]->pick->cMove != p[i]->pick->crouchBlock && 
+			   p[i]->pick->cMove != p[i]->pick->standBlock && p[i]->pick->cMove != p[i]->pick->airBlock){
 				combo[(i+1)%2] = 0;
 				p[i]->elasticX = 0;
 				p[i]->elasticY = 0;
@@ -507,7 +509,7 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
 			hit[i] = p[(i+1)%2]->takeHit(combo[i], s[i]);
-			combo[i] += abs(hit[i]);
+			combo[i] += hit[i];
 			p[i]->pick->cMove->hitConfirm(hit[i]);
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 			p[i]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
@@ -519,9 +521,15 @@ void interface::resolveHits()
 		if(connect[i]){
 			if(p[i]->pick->aerial) residual.y = -4;
 			else{ 
-				if(combo[i] > 1) residual.x = -(combo[i]-1);
-				if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner)
-					residual.x -= combo[i];
+				if(p[(i+1)%2]->pick->aerial) residual.x = -1;
+				else {
+					if(combo[i] > 1) residual.x = -(abs(combo[i]-1));
+					if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+						residual.x -= 1;
+						residual.x -= s[i].push/2;
+						residual.x -= abs(combo[i]);
+					}
+				}
 				p[i]->addVector(residual);
 			}
 		}
