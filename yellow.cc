@@ -89,7 +89,7 @@ void yellow::drawMeters(int ID)
 int yellow::takeHit(hStat & s, int b)
 {
 	int x = character::takeHit(s, b);
-	if(x == 1) meter[3] = 0;
+	if(x == 1 && meter[3] > 0) meter[3] = 0;
 	return x;
 }
 
