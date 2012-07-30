@@ -10,12 +10,12 @@ Stun: 19
 Untech: 0
 Push: 5
 Lift: 20
-Blowback: 0
+Blowback: 5
 Gain: 1 : 6
 Cost: 0
 Blockable: 7
 Blocks: 0
-Properties: S
+Properties: S>
 #0 
 $C	5 0 55 150
 $R	0 0 0 0
