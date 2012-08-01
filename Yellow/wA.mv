@@ -2,7 +2,7 @@ Name: Overhead
 Buffer: 30 : 0
 Hits: 1
 Frames: 28 : 14 : 5 : 10
-Check: 4096
+Check: 16384
 State: 256 : 8448
 Gain: 0 : 4
 Cost: 0
