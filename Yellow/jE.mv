@@ -6,10 +6,10 @@ Check: 65
 State: 256 : 8576
 Damage: 12
 Stun: 11
-Untech: 5
+Untech: 2
 Push: 4
 Lift: -16
-Blowback: 3
+Blowback: 4
 Gain: 0 : 2
 Cost: 0
 Blockable: 6
