@@ -7,7 +7,7 @@ State: 256 : 8448
 HitAllows: 4096
 Damage: 26
 Stun: 19
-Untech: 0
+Untech: 20
 Push: 5
 Lift: -20
 Blowback: 0
