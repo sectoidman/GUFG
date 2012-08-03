@@ -20,6 +20,7 @@ namespace internal {
 		using namespace boost::chrono;
 		using namespace boost;
 	#else
+		using namespace std::chrono;
 		using namespace std;
 	#endif
 }
