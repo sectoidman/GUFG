@@ -6,7 +6,7 @@ Check: 1
 State: 0 : 0 : 0 : 8192
 Damage: 1 : 0 : 20
 Stun: 30 : 20 : 40
-Push: 0 : 0 : 0
+Push: 0 : -1 : 0
 Lift: 0 : 0 : 12
 Float: 0 : 0 : 17
 Blowback: 1 : 1 : 8
