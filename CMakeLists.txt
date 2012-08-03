@@ -29,7 +29,7 @@ set (SOURCES	auxil.cc
 
 
 set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
-set(QT_USE_QTOPENGL TRUE)
+set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
@@ -41,6 +41,18 @@ link_libraries (
    ${OPENGL_LIBRARIES}
    SDLmain # not included in SDL_LIBRARY variable
 )
+
+if (WIN32)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
+	find_package (Boost 1.45 COMPONENTS thread chrono system REQUIRED)
+	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
+	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
+	link_libraries (
+		${Boost_THREAD_LIBRARY} 
+		${Boost_CHRONO_LIBRARY}
+		${Boost_SYSTEM_LIBRARY}
+	)
+endif (WIN32)
 
 add_executable (gufg 
 		WIN32 
