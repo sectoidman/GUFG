@@ -2,7 +2,8 @@
 #include <math.h>
 
 void hitstun::init(int n)
-{	
+{
+	currentFrame = 0;
 	counter = n;
 	cFlag = 0;
 }
