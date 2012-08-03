@@ -149,4 +149,4 @@ endif (WIN32 AND NOT UNIX)
 
 set (CPACK_PACKAGE_EXECUTABLES "gufg" "General Universal Fighting Game")
 
-INCLUDE (CPACK)
+INCLUDE (CPack)
