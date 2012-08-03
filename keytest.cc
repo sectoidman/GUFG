@@ -8,18 +8,18 @@
  */
 
 #include "interface.h"
+#include "compat.h"
 #include <unistd.h>
 #include <stdlib.h>
-#include <chrono>
 #include <SDL/SDL_opengl.h>
-#include <thread>
-using namespace std;
+using namespace internal;
+
 int main(int argc, char* argv[])
 {
 	/*Spawn the interface*/
-	typedef std::chrono::duration<int,std::micro> microsecs_t ;
-	std::chrono::high_resolution_clock::time_point frameStart;
-	std::chrono::high_resolution_clock::time_point frameEnd; 
+	typedef chrono::duration<int,micro> microsecs_t ;
+	chrono::high_resolution_clock::time_point frameStart;
+	chrono::high_resolution_clock::time_point frameEnd; 
 	interface game;
 	int rounds = 2;
 //	int count = 0;
@@ -28,13 +28,13 @@ int main(int argc, char* argv[])
 
 	/*Loop of everything*/
 	while (!game.gameover){
-		frameStart = std::chrono::high_resolution_clock::now(); 
+		frameStart = chrono::high_resolution_clock::now(); 
 		game.readInput();
 		game.resolve();
-		frameEnd = std::chrono::high_resolution_clock::now(); 
-		microsecs_t frameDuration( std::chrono::duration_cast<microsecs_t>(frameEnd - frameStart) );
-		std::chrono::microseconds sleepDuration(16667 - frameDuration.count()); 
-		std::this_thread::sleep_for(sleepDuration);
+		frameEnd = chrono::high_resolution_clock::now(); 
+		microsecs_t frameDuration(chrono::duration_cast<microsecs_t>(frameEnd - frameStart) );
+		chrono::microseconds sleepDuration(16667 - frameDuration.count()); 
+		this_thread::sleep_for(sleepDuration);
 	}
 }
 
