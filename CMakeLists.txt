@@ -29,6 +29,7 @@ set (SOURCES	auxil.cc
 
 
 set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
+set (CMAKE_EXE_LINKER_FLAGS "-static") # need this to build a static version.
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
