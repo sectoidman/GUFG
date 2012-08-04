@@ -128,7 +128,6 @@ void action::build(const char * n)
 	sprite = new GLuint[frames];
 	for(int i = 0; i < frames; i++){
 		sprintf(fname, "%s#%i.png", n, i);
-		printf("%s\n", fname);
 		temp = aux::load_image(fname);
 		if(!temp){
 			width[i] = 0;

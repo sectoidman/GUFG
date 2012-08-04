@@ -111,7 +111,6 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 
 void character::build(const char* n)
 {
-	printf("%s\n", n);
 	char buffer[101];
 	char buffer2[101];
 //	char actionName[151];
