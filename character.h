@@ -13,6 +13,9 @@ public:
 	virtual void init() = 0;
 	action * cMove;
 	action * bMove;
+	int freeze;
+	bool spriteCheck();
+	virtual void draw(int, int, int);//Pass sprite information up.
 };
 
 class character : public avatar{
@@ -27,7 +30,6 @@ public:
 
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	virtual void drawMeters(int);
-	virtual void draw(int, int, int);//Pass sprite information up.
 	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	virtual void init();
 	virtual void resetAirOptions();
@@ -38,7 +40,6 @@ public:
 	virtual int takeHit(hStat&, int);
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
-	bool spriteCheck();
 	//BRB prepping my hooks
 
 	action * neutral;
@@ -55,12 +56,9 @@ public:
 	hitstun * airBlock;
 	utility * throwBreak;
 
-	int freeze;
 	int health;
 	int * meter;
-	int rounds;
 	int jumpOptions;
-	SDL_Rect * volition;
 	bool aerial; 		//Flags whether the character is considered "in the air"
 private:
 	int state; 

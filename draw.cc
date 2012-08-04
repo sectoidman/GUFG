@@ -162,7 +162,7 @@ void player::drawHitParticle(int x, int y)
 	}
 }
 
-void character::draw(int facing, int x, int y)
+void avatar::draw(int facing, int x, int y)
 {
 	cMove->draw(facing, x, y);
 }
@@ -206,7 +206,7 @@ bool player::spriteCheck()
 {
 	return pick->spriteCheck();
 }
-bool character::spriteCheck()
+bool avatar::spriteCheck()
 {
 	if(cMove == NULL) return 0;
 	else return cMove->spriteCheck();
