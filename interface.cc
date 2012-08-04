@@ -13,8 +13,7 @@
 #include <algorithm>
 interface::interface()
 {
-
-	numChars = 2;
+	numChars = 3;
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
 	screenWidth = 800; //By screen, I mean the window the game occurs in.
@@ -32,10 +31,13 @@ interface::interface()
 		sAxis[i] = new bool[4];
 		posEdge[i] = new bool[5]; 
 		negEdge[i] = new bool[5];
-		sprintf(buffer, "Misc/P%iSelect0.png", i+1);
+		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, 1);
 		cursor[i] = aux::load_texture(buffer);
 		counter[i] = 0;
+		select[i] = 0;
+		selection[i] = 1;
 	}
+
 	for(int i = 0; i < 5; i++){
 		posEdge[0][i] = 0;
 		posEdge[1][i] = 0;
@@ -45,8 +47,6 @@ interface::interface()
 			sAxis[0][i] = 0;
 			sAxis[1][i] = 0;
 		}
-		select[i] = 0;
-		selection[i] = 0;
 	}
 
 	/*Game and round end conditions*/
@@ -60,6 +60,7 @@ interface::interface()
 
 	/*Start a match*/
 	matchInit();
+
 }
 
 bool interface::screenInit()
@@ -321,14 +322,14 @@ void interface::cSelectMenu()
 	for(int i = 0; i < 2; i++){
 		if(sAxis[i][2] && !select[i] && counter[i] == 0){
 			selection[i]--;
-			if(selection[i] < 0) selection[i] = numChars;
+			if(selection[i] < 1) selection[i] = numChars;
 			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
 			cursor[i] = aux::load_texture(base[i]);
 			counter[i] = 10;
 		}
 		if(sAxis[i][3] && !select[i] && counter[i] == 0){
 			selection[i]++;
-			if(selection[i] > numChars) selection[i] = 0;
+			if(selection[i] > numChars) selection[i] = 1;
 			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
 			cursor[i] = aux::load_texture(base[i]);
 			counter[i] = 10;
@@ -399,11 +400,11 @@ void interface::dragBG(int deltaX)
 
 interface::~interface()
 {
-	SDL_FreeSurface(screen);
 	if(select[0]) delete p[0]->pick;
 	if(select[1]) delete p[1]->pick;
 	delete p[0];
 	delete p[1];
+	SDL_FreeSurface(screen);
 	SDL_Quit();
 }
 
