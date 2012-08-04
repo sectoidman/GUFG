@@ -8,7 +8,14 @@
 #include <SDL/SDL_image.h>
 #include "trie.h"
 
-class character{
+class avatar{
+public:
+	virtual void init() = 0;
+	action * cMove;
+	action * bMove;
+};
+
+class character : public avatar{
 public:
 	character(const char*);
 	character();		//Load the entire character into memory. This should happen once per player per match.
@@ -48,9 +55,6 @@ public:
 	hitstun * airBlock;
 	utility * throwBreak;
 
-	action * cMove;
-	action * bMove;
-
 	int freeze;
 	int health;
 	int * meter;
@@ -59,7 +63,6 @@ public:
 	SDL_Rect * volition;
 	bool aerial; 		//Flags whether the character is considered "in the air"
 private:
-
 	int state; 
 
 };
