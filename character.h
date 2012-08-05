@@ -61,8 +61,6 @@ public:
 
 	int health;
 	int * meter;
-private:
-	int state; 
 };
 
 class projectile : virtual public avatar {
