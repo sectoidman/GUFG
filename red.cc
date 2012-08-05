@@ -8,8 +8,23 @@ red::red()
 	airHead = new actionTrie;
 	head = new actionTrie;
 	build("Red");
+	backup = new red(this);
 
 	init();	
+}
+
+red::red(red* b)
+{
+	delete [] meter;
+	
+	meter = new int[5];
+	
+	airHead = new actionTrie;
+	head = new actionTrie;
+	build("Red");
+	backup = b;
+
+	init();
 }
 
 void red::tick()

@@ -1,3 +1,5 @@
+#ifndef YELLOW_INCLUDED
+#define YELLOW_INCLUDED
 #include "red.h"
 class yellow : public character {
 public:
@@ -32,3 +34,4 @@ public:
 private:
 	int flashMeterGain;
 };
+#endif

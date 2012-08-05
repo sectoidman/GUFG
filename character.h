@@ -59,13 +59,12 @@ public:
 	int health;
 	int * meter;
 	int jumpOptions;
-	bool aerial; 		//Flags whether the character is considered "in the air"
+	bool aerial; 	//Flags whether the character is considered "in the air"
 private:
 	int state; 
-
 };
 
-class projectile : public avatar {
+class projectile : virtual public avatar {
 public:
 	projectile(const char*);
 	projectile();
@@ -77,10 +76,13 @@ public:
 	SDL_Rect *momentum, *hitbox, *hitreg, collision, spr;
 };
 
-class summon : virtual public special {
+class summon : virtual public action {
 public:
 	summon() {}
 	summon(const char*);
+	virtual int arbitraryPoll(int);
+	virtual bool setParameter(char*);
+
 	avatar * payload;
 	int spawnFrame;
 };
@@ -88,6 +90,7 @@ public:
 class airSummon : public airMove, public summon {
 public:
 	airSummon() {}
+	virtual bool setParameter(char*);
 	airSummon(const char*);
 };
 
