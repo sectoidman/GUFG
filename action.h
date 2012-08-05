@@ -217,36 +217,6 @@ public:
 	airLooping(const char*);
 };
 
-class projectile {
-public:
-	projectile(char*);
-	~projectile();
-
-	int ID;
-	int posX, posY;
-	
-	int hitComplexity, regComplexity, momentumComplexity;
-	SDL_Rect *momentum, *hitbox, *hitreg, collision, spr;
-
-	SDL_Surface *sprite;
-	action *cMove;
-};
-
-class summon : virtual public special {
-public:
-	summon() {}
-	summon(const char*);
-	projectile * payload;
-	projectile * spawnProjectile();
-	int spawnFrame;
-};
-
-class airSummon : public airMove, public summon {
-public:
-	airSummon() {}
-	airSummon(const char*);
-};
-
 class super : public special {
 public:
 	super() {}

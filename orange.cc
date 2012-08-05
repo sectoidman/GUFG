@@ -4,5 +4,6 @@ orange::orange()
 	head = new actionTrie;
 	airHead = new actionTrie;
 	build("Orange");
-	init();	
+	init();
+//	projectile *matrix;
 }

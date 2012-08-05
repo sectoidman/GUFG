@@ -64,3 +64,30 @@ private:
 	int state; 
 
 };
+
+class projectile : public avatar {
+public:
+	projectile(const char*);
+	projectile();
+
+	int ID;
+	int posX, posY;
+	
+	int hitComplexity, regComplexity, momentumComplexity;
+	SDL_Rect *momentum, *hitbox, *hitreg, collision, spr;
+};
+
+class summon : virtual public special {
+public:
+	summon() {}
+	summon(const char*);
+	avatar * payload;
+	int spawnFrame;
+};
+
+class airSummon : public airMove, public summon {
+public:
+	airSummon() {}
+	airSummon(const char*);
+};
+
