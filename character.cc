@@ -235,7 +235,7 @@ void character::init(){
 	freeze = 0;
 }
 
-void character::processMove(action * m)
+void avatar::processMove(action * m)
 {
 	char* temp = NULL;
 	action* t = NULL;
@@ -260,7 +260,7 @@ void character::processMove(action * m)
 	}
 }
 
-action * character::createMove(char * fullName)
+action * avatar::createMove(char * fullName)
 {
 	char * token;
 	char type[2] = {fullName[0], fullName[1]};
