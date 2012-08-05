@@ -11,14 +11,19 @@
 class avatar{
 public:
 	virtual void init() = 0;
-	action * cMove;
-	action * bMove;
-	int freeze;
 	bool spriteCheck();
 	virtual void draw(int, int, int);//Pass sprite information up.
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
+	virtual void build(const char*);
+
+	action * cMove;
+	action * bMove;
+	int freeze;
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
+	bool aerial; 	//Flags whether the character is considered "in the air"
+	actionTrie * head;	//Trie for ground actions
+	actionTrie * airHead;	//Trie for air actions
 };
 
 class character : public avatar{
@@ -27,9 +32,7 @@ public:
 	character();		//Load the entire character into memory. This should happen once per player per match.
 	virtual ~character();	//Free stuff
 
-	void build(const char*);	//This will *eventually* be the function that parses the character constructor file.
-	actionTrie * head;	//Trie for ground actions
-	actionTrie * airHead;	//Trie for air actions
+	virtual void build(const char*);//This will *eventually* be the function that parses the character constructor file.
 
 	virtual void drawMeters(int);
 	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
@@ -58,8 +61,6 @@ public:
 
 	int health;
 	int * meter;
-	int jumpOptions;
-	bool aerial; 	//Flags whether the character is considered "in the air"
 private:
 	int state; 
 };

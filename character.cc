@@ -50,7 +50,7 @@ character::character(const char*)
 	airBlock = new hitstun("White/BA");
 	standBlock = new hitstun("White/BH");
 	crouchBlock = new hitstun("White/BL");
-	
+
 	head->insert(8, new utility("White/JN"));
 	head->insert(7, new utility("White/JQ"));
 	head->insert(9, new utility("White/JF"));
@@ -109,7 +109,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 	}
 }
 
-void character::build(const char* n)
+void avatar::build(const char* n)
 {
 	char buffer[101];
 	char buffer2[101];
@@ -123,56 +123,13 @@ void character::build(const char* n)
 	int q;
 	std::ifstream read; 
 	sprintf(buffer, "%s/%s.ch", n, n);
-	
+
 	read.open(buffer);
 	assert(!read.fail());
 
 	read.get(buffer, 50); read.ignore(100, '\n');
 	name = new char[strlen(buffer)+1];
 	strcpy(name, buffer);
-
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
-
-	sprintf(buffer, "%s/NL", name);
-	crouch = new looping(buffer);
-
-	sprintf(buffer, "%s/NJ", name);
-	airNeutral = new airLooping(buffer);
-	airNeutral->feed(neutral, 1, 0);
-
-	sprintf(buffer, "%s/HS", name);
-	reel = new hitstun(buffer);
-
-	sprintf(buffer, "%s/Fall", name);
-	fall = new airLooping(buffer);
-	
-	sprintf(buffer, "%s/UT", name);
-	untech = new untechState(buffer);
-	untech->feed(fall, 0, 0);
-
-	sprintf(buffer, "%s/down", name);
-	down = new utility(buffer);
-	untech->feed(down, 1, 0);
-	fall->feed(down, 1, 0);
-
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);
-
-	sprintf(buffer, "%s/HL", name);
-	crouchReel = new hitstun(buffer);
-
-	sprintf(buffer, "%s/BH", name);
-	standBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BL", name);
-	crouchBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);	
-
-	sprintf(buffer, "%s/break", name);
-	throwBreak = new utility(buffer);
 
 	while(!read.eof()){
 		commentFlag = 0;
@@ -212,6 +169,56 @@ void character::build(const char* n)
 		}
 	}
 	read.close();	
+
+}
+
+void character::build(const char *n)
+{
+	char buffer[101];
+	sprintf(buffer, "%s/NS", n);
+	neutral = new looping(buffer);
+
+	sprintf(buffer, "%s/NL", n);
+	crouch = new looping(buffer);
+
+	sprintf(buffer, "%s/NJ", n);
+	airNeutral = new airLooping(buffer);
+	airNeutral->feed(neutral, 1, 0);
+
+	sprintf(buffer, "%s/HS", n);
+	reel = new hitstun(buffer);
+
+	sprintf(buffer, "%s/Fall", n);
+	fall = new airLooping(buffer);
+	
+	sprintf(buffer, "%s/UT", n);
+	untech = new untechState(buffer);
+	untech->feed(fall, 0, 0);
+
+	sprintf(buffer, "%s/down", n);
+	down = new utility(buffer);
+	untech->feed(down, 1, 0);
+	fall->feed(down, 1, 0);
+
+	sprintf(buffer, "%s/BA", n);
+	airBlock = new hitstun(buffer);
+
+	sprintf(buffer, "%s/HL", n);
+	crouchReel = new hitstun(buffer);
+
+	sprintf(buffer, "%s/BH", n);
+	standBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BL", n);
+	crouchBlock = new hitstun(buffer);
+	
+	sprintf(buffer, "%s/BA", n);
+	airBlock = new hitstun(buffer);	
+
+	sprintf(buffer, "%s/break", n);
+	throwBreak = new utility(buffer);
+
+	avatar::build(n);
 
 	head->insert(5, neutral);
 	

@@ -142,4 +142,3 @@ int redSuper::arbitraryPoll(int q)
 
 redCancel::~redCancel() {}
 redSuper::~redSuper() {}
-
