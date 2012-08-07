@@ -50,6 +50,8 @@ void action::build(const char * n)
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
+	next = NULL;
+	attempt = NULL;
 
 	do {
 		read.getline(buffer, 100);
@@ -94,7 +96,6 @@ void action::build(const char * n)
 			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
 		}
 	}
-	next = NULL;
 	read.close();
 
 	for(int i = 0; i < 5; i++)
@@ -184,6 +185,17 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		tempNext = new char[strlen(token)+1];
 		strcpy(tempNext, token);
+		return 1;
+	} else if (!strcmp("Attempt", token)) {
+		token = strtok(NULL, "\t: \n-");
+		attemptStart = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		attemptEnd = atoi(token); 
+
+		token = strtok(NULL, "\t: \n");
+		tempAttempt = new char[strlen(token)+1];
+		strcpy(tempAttempt, token);
 		return 1;
 	} else if (!strcmp("Connect", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -402,6 +414,15 @@ void action::parseProperties(char * buffer)
 //	printf("\n");
 }
 
+bool action::window()
+{
+	if(!attempt) return 0;
+	if(currentFrame < attemptStart) return 0;
+	if(currentFrame > attemptEnd) return 0;
+	return 1;
+
+}
+
 bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
@@ -413,6 +434,11 @@ bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_R
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
 	if(cost > resource[0]) return 0;
+	return check(p);
+}
+
+bool action::check(SDL_Rect &p)
+{
 	return 1;
 }
 
@@ -535,23 +561,36 @@ void action::execute(action * last, int *& resource)
 
 void action::feed(action * c, int code, int i)
 {
-	if(code == 0){ 
+	switch(code){
+	case 0:
 		next = c;
 		if(tempNext) delete [] tempNext;
-	}
-	else if(code == 2){
+		break;
+	case 2:
 		onConnect[i] = new action;
 		onConnect[i] = c;
 		if(tempOnConnect[i]) delete [] tempOnConnect[i];
 //		printf("%s-%i: %s\n", name, i, onConnect[i]->name);
+		break;
+	case 3:
+		attempt = c;
+		if(tempAttempt) delete [] tempAttempt;
+		break;
 	}
 }
 
 char * action::request(int code, int i)
 {
-	if(code == 0) return tempNext;
-	else if(code == 2) return tempOnConnect[i];
-	else return NULL;
+	switch(code){
+	case 0: 
+		return tempNext;
+	case 2: 
+		return tempOnConnect[i];
+	case 3:
+		return tempAttempt;
+	default:
+		return NULL;
+	}
 }
 
 int action::takeHit(hStat & s, int b)

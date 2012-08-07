@@ -109,32 +109,16 @@ int werf::arbitraryPoll(int n)
 	return 0;
 }
 
-bool werf::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool werf::check(SDL_Rect &p)
 {
-	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
-			if(!pos[i]) return 0;
-		}
-	}
-	if(t > tolerance) return 0;
-	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
 	if(p.w > xRequisite) return 0;
 	if(p.y != 0) return 0;
 	if(p.x > 0) return 0;
 	return 1;
 }
 
-bool luftigeWerf::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool luftigeWerf::check(SDL_Rect &p)
 {
-	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
-			if(!pos[i]) return 0;
-		}
-	}
-	if(t > tolerance) return 0;
-	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
 	if(p.w > xRequisite) return 0;
 	if(p.h > yRequisite) return 0;
 	if(p.y == 0) return 0;

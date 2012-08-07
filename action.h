@@ -40,6 +40,7 @@ public:
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 	virtual action * blockSuccess(int);
 	virtual int arbitraryPoll(int q) {return 0;}
 
@@ -109,8 +110,14 @@ public:
 
 	action * next;
 	action ** onConnect;
+	action * attempt;
+	int attemptStart = 0;
+	int attemptEnd = 0;
+	bool window();
+
 	char * tempNext = NULL;
 	char ** tempOnConnect;
+	char * tempAttempt = NULL;
 
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
@@ -246,7 +253,7 @@ public:
 	werf() {}
 	werf(const char* n) {build(n); init();}
 	virtual bool setParameter(char *n);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 	virtual int arbitraryPoll(int n);
 	int startPosX;
 	int startPosY;
@@ -260,5 +267,5 @@ public:
 	luftigeWerf(const char* n) {build(n); init();}
 	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 };

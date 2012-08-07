@@ -92,6 +92,9 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 	
 	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
 	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+	if(t == NULL && cMove->window()){
+		if(cMove->attempt->check(p)) t = cMove->attempt;
+	}
 
 	if(t != NULL){
 		if(freeze > 0){
@@ -106,7 +109,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 		if(!dryrun) bMove->execute(cMove, meter);
 		cMove = bMove;
 		if(!dryrun) bMove = NULL;
-	}
+	} 
 }
 
 void avatar::build(const char* n)
@@ -246,7 +249,7 @@ void avatar::processMove(action * m)
 {
 	char* temp = NULL;
 	action* t = NULL;
-	for(int i = 0; i < 3; i++){
+	for(int i = 0; i < 4; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
 				temp = m->request(i, j);
