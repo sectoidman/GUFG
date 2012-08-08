@@ -39,8 +39,25 @@ action::~action()
 	if(onConnect) delete [] onConnect;
 }
 
+void action::zero()
+{
+	attemptStart = 0;
+	attemptEnd = 0;
+	stop = 0;
+	throwinvuln = 0;
+	crouch = 0;
+	armorStart = 0; armorLength = 0;
+	guardStart = 0; guardLength = 0;
+	blockState.i = 0;
+	stats = NULL;
+	cost = 0;
+	tempNext = NULL;
+	tempAttempt = NULL;
+}
+
 void action::build(const char * n)
 {
+	zero();
 	ifstream read;
 	char fname[40];
 	char buffer[100];

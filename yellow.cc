@@ -148,7 +148,9 @@ bool flashStep::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL
 bool flashSummon::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect& p)
 {
 	if(!special::check(pos, neg, t, f, resource, p)) return 0;
-	if(resource[3] != 0) return 0;
+	if(resource[3] < 0) return 0;
+	else if(resource[3] > 0) uFlag = 1;
+	else uFlag = 0;
 	return 1;
 }
 
@@ -162,7 +164,9 @@ void flashStep::execute(action * last, int *& resource)
 
 void flashSummon::step(int *& resource)
 {
-	resource[3] += flashMeterGain / frames + 1;
+	if(uFlag){
+		if(currentFrame == frames) resource[3] = 0;
+	} else resource[3] += flashMeterGain / frames + 1;
 	if(resource[3] > 540) resource[3] = 540;
 	action::step(resource);
 }

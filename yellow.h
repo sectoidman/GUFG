@@ -20,6 +20,7 @@ public:
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	void execute(action *, int *&);
 	bool setParameter(char*);
+	virtual void zero() { flashMeterCost = 0; airMove::zero(); }
 private:
 	int flashMeterCost;
 };
@@ -31,7 +32,9 @@ public:
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	bool setParameter(char*);
 	void step(int *&);
+	virtual void zero() { flashMeterGain = 0; special::zero(); }
 private:
+	bool uFlag;
 	int flashMeterGain;
 };
 #endif

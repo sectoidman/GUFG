@@ -62,12 +62,12 @@ public:
 	bool CHState();
 	virtual void draw(int, int, int);
 
-	hStat *stats = NULL;
-	int stop = 0;
-	int throwinvuln = 0;
-	bool crouch = 0;
-	int armorStart = 0; int armorLength = 0;
-	int guardStart = 0; int guardLength = 0;
+	hStat *stats;
+	int stop;
+	int throwinvuln;
+	bool crouch;
+	int armorStart; int armorLength;
+	int guardStart; int guardLength;
 
 	//Properties of a hit. These will only exist for actions that hit.
 	
@@ -96,7 +96,7 @@ public:
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
 	char * name;
-	int cost = 0;
+	int cost;
 	int * gain;
 
 	//Tolerance refers to the individual size of the input buffer allowed for this action.
@@ -111,13 +111,13 @@ public:
 	action * next;
 	action ** onConnect;
 	action * attempt;
-	int attemptStart = 0;
-	int attemptEnd = 0;
+	int attemptStart;
+	int attemptEnd;
 	bool window();
 
-	char * tempNext = NULL;
+	char * tempNext;
 	char ** tempOnConnect;
-	char * tempAttempt = NULL;
+	char * tempAttempt;
 
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
@@ -133,7 +133,7 @@ public:
 
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*);
-
+	virtual void zero();
 };
 
 class hitstun : virtual public action {
@@ -184,11 +184,12 @@ public:
 	airMove(const char*);
 	virtual void build (const char *);
 	virtual action * land();
-	char * tempLanding = NULL;
+	char * tempLanding;
 	virtual bool setParameter(char*);
 	virtual void feed(action *, int, int);
 	virtual char* request(int, int);
-	action * landing = NULL;
+	action * landing;
+	virtual void zero() { tempLanding = NULL; landing = NULL; action::zero(); }
 };
 
 class untechState : public airMove, public hitstun {
