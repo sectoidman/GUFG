@@ -165,7 +165,7 @@ void flashStep::execute(action * last, int *& resource)
 void flashSummon::step(int *& resource)
 {
 	if(uFlag){
-		if(currentFrame == frames) resource[3] = 0;
+		if(currentFrame == frames - 1) resource[3] = 0;
 	} else resource[3] += flashMeterGain / frames + 1;
 	if(resource[3] > 540) resource[3] = 540;
 	action::step(resource);
