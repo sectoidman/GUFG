@@ -119,10 +119,11 @@ void interface::roundInit()
 {
 	if(things){ 
 		delete [] things;
-		things = NULL;
-		for(int i = 0; i < 2; i++)
-			addThing(p[i]);
 	}
+	things = NULL;
+	thingComplexity = 0;
+	for(int i = 0; i < 2; i++)
+		addThing(p[i]);
 	thingComplexity = 2;
 	bg.x = 400;
 	bg.y = 450;
@@ -488,16 +489,20 @@ void interface::resolveHits()
 {
 	hStat s[2];
 	bool hit[2] = {0, 0};
-	bool connect[2] = {0, 0};
+	bool connect[thingComplexity];
 	SDL_Rect residual = {0, 0, 1, 0};
-	for(int i = 0; i < 2; i++){
-		for(int j = 0; j < p[i]->hitComplexity; j++){
-			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
-				if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
-					connect[i] = 1;
-					p[i]->pick()->cMove->pollStats(s[i]);
-					k = p[(i+1)%2]->regComplexity;
-					j = p[i]->hitComplexity;
+	for(int i = 0; i < thingComplexity; i++){
+		for(int h = 0; h < thingComplexity; h++){
+			if(h != i){
+				for(int j = 0; j < things[i]->hitComplexity; j++){
+					for(int k = 0; k < things[h]->regComplexity; k++){
+						if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
+							connect[i] = 1;
+							p[i]->pick()->cMove->pollStats(s[i]);
+							k = things[h]->regComplexity;
+							j = things[i]->hitComplexity;
+						} else connect[i] = 0;
+					}
 				}
 			}
 		}
@@ -573,6 +578,7 @@ void interface::addThing(instance *v)
 		temp[i] = things[i];
 	temp[i] = v;
 	if(thingComplexity > 0) delete [] things;
+	things = temp;
 	thingComplexity++;
 }
 
