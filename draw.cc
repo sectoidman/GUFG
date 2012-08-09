@@ -68,7 +68,7 @@ void player::drawMeters(int n)
 		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
 	}
 	glFlush();
-	((character*)pick())->drawMeters(ID);
+	pick()->drawMeters(ID);
 	glFlush();
 }
 
