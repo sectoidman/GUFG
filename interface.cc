@@ -59,8 +59,8 @@ interface::interface()
 	selectScreen = aux::load_texture("Misc/Select.png");
 
 	/*Start a match*/
+	things = NULL;
 	matchInit();
-
 }
 
 bool interface::screenInit()
@@ -117,6 +117,11 @@ void interface::matchInit()
 /*Sets stuff up for a new round. This initializes the characters, the timer, and the background.*/
 void interface::roundInit()
 {
+	if(things){ 
+		delete [] things;
+		things = NULL;
+	}
+	thingComplexity = 0;
 	bg.x = 400;
 	bg.y = 450;
 
@@ -555,4 +560,23 @@ void interface::doSuperFreeze()
 	}
 	if(go[0] > 0 || go[1] > 0)
 		freeze = std::max(go[0], go[1]);
+}
+
+void interface::addThing(avatar *v)
+{
+	int i;
+	avatar ** temp;
+	temp = new avatar*[thingComplexity+1];
+	for(i = 0; i < thingComplexity; i++)
+		temp[i] = things[i];
+	temp[i] = v;
+	if(thingComplexity > 0) delete [] things;
+	thingComplexity++;
+}
+
+void interface::cullThing(int q)
+{
+	for(int i = q; i < thingComplexity - 1; i++)
+		things[i] = things[i+1];
+	thingComplexity--;
 }

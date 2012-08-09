@@ -122,17 +122,6 @@ bool player::readConfig()
 	}
 }
 
-bool instance::noMove()
-{
-	if(!pick()->cMove) return 1;
-	else return 0;
-}
-
-int instance::arbitraryPoll(int q)
-{
-	return pick()->cMove->arbitraryPoll(q);
-}
-
 bool player::aerial()
 {
 	return pick()->aerial;

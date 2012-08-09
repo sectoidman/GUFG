@@ -33,6 +33,8 @@ public:
 	void unitCollision();
 	void resolveHits();
 	void resolveThrows();
+	void addThing(avatar*);
+	void cullThing(int);
 
 	player * p[2];
 	bool * sAxis[2];	//Initial input buffering.
@@ -44,11 +46,13 @@ public:
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	int grav; 		//Gravitational constant. 
+	int grav;		//Gravitational constant. 
 	bool fullscreen;	//For use with later
 	int combo[2];
 	int numRounds;
 	bool gameover;
+	avatar ** things;
+	int thingComplexity;
 
 //Variables for cSelectMenu 
 	int numChars;

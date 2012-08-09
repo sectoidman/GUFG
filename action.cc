@@ -49,6 +49,7 @@ void action::zero()
 	armorStart = 0; armorLength = 0;
 	guardStart = 0; guardLength = 0;
 	blockState.i = 0;
+	isProjectile = 0;
 	stats = NULL;
 	cost = 0;
 	tempNext = NULL;
@@ -423,6 +424,12 @@ void action::parseProperties(char * buffer)
 			break;
 		case '=':
 			stats[ch].stick = 1;
+			break;
+		case 'p':
+			isProjectile = 1;
+			break;
+		case 'P':
+			stats[ch].eatsProjectile = 1;
 			break;
 		default:
 			break;

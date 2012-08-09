@@ -202,7 +202,7 @@ void action::draw(int facing, int x, int y)
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-bool player::spriteCheck()
+bool instance::spriteCheck()
 {
 	return pick()->spriteCheck();
 }

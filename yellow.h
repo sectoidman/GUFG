@@ -30,6 +30,7 @@ public:
 	flashSummon();
 	flashSummon(const char*);
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
+	void execute(action *, int *&);
 	bool setParameter(char*);
 	void step(int *&);
 	virtual void zero() { flashMeterGain = 0; special::zero(); }

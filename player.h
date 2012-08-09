@@ -23,14 +23,13 @@ public:
 	virtual void invertVectors(int);
 	virtual void addVector(SDL_Rect&);
 	virtual void removeVector(int);
-	virtual void setPosition(int, int);
 	virtual void pullVolition();
+	virtual void setPosition(int, int);
 	virtual void updateRects();
 	virtual void draw(int, int);
 	virtual void drawBoxen(int, int);
 	virtual void combineDelta();
-	virtual bool noMove();
-	virtual int arbitraryPoll(int);
+	virtual bool spriteCheck();
 protected:
 	avatar * v;
 };
@@ -41,7 +40,6 @@ public:
 	player(int);
 	~player();
 	character * pick() { return v; }
-
 
 	bool aerial();
 	void getMove(bool*, bool*, SDL_Rect &, bool);
@@ -58,7 +56,6 @@ public:
 	void pushInput(bool*);
 	void drawMeters(int);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
-	bool spriteCheck();
 	void roundInit();
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);

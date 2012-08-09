@@ -147,9 +147,14 @@ bool flashSummon::check(bool pos[5], bool neg[5], int t, int f, int* resource, S
 {
 	if(!special::check(pos, neg, t, f, resource, p)) return 0;
 	if(resource[3] < 0) return 0;
-	else if(resource[3] > 0) uFlag = 1;
-	else uFlag = 0;
 	return 1;
+}
+
+void flashSummon::execute(action * last, int *& resource)
+{
+	if(resource[3] > 0) uFlag = 1;
+	else uFlag = 0;
+	action::execute(last, resource);
 }
 
 void flashStep::execute(action * last, int *& resource)

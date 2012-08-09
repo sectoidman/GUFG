@@ -10,7 +10,7 @@
 #include "masks.h"
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0) {}
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), eatsProjectile() {}
 	int damage;          //How much damage the action does
 	int stun;            //How much stun the action does
 	int push;            //How much pushback the action does
@@ -24,6 +24,7 @@ struct hStat{
 	bool floorBounce:1;
 	bool slide:1;
 	bool stick:1;
+	bool eatsProjectile:1;
 	blockField blockMask;
 	cancelField hitState;
 };
@@ -65,7 +66,7 @@ public:
 	hStat *stats;
 	int stop;
 	int throwinvuln;
-	bool crouch;
+	bool crouch:1;
 	int armorStart; int armorLength;
 	int guardStart; int guardLength;
 
@@ -131,6 +132,7 @@ public:
 	int *width, *height;
 	GLuint *sprite;
 
+	bool isProjectile:1;
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*);
 	virtual void zero();
