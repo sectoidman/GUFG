@@ -5,16 +5,27 @@
  */
 
 #include "charlist.h"
-class player{
+
+class instance{
+public:
+	instance() {}
+
+	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
+	int hitComplexity, regComplexity, momentumComplexity;
+	bool secondInstance;
+	int deltaX, deltaY; 
+	avatar * pick;
+};
+
+class player : public instance{
 public:
 	player();
 	player(int);
 	~player();
+	character * pick;
 
 	const char * inputName[10];   //Input names. This is really just for housekeeping.
 	SDL_Event input[10];    //Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
-	character * pick;
-	int deltaX, deltaY; 
 	int posX, posY;
 	int rounds;		//How many rounds has this player won this match?
 	int facing;
@@ -43,8 +54,6 @@ public:
 	int hover;
 	int throwInvuln;
 
-	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
-	int hitComplexity, regComplexity, momentumComplexity;
 	bool rCorner, lCorner;
 
 	int particleLife;
@@ -63,7 +72,6 @@ public:
 	void pullVolition();
 	void invertVectors(int);
 	void setPosition(int, int);
-	bool secondInstance;
 	void getThrown(action*, int, int);
 
 private:

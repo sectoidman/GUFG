@@ -98,14 +98,12 @@ flashSummon::flashSummon() {}
 
 flashStep::flashStep(const char * n)
 {
-	flashMeterCost = 0;
 	build(n);
 	init();
 }
 
 flashSummon::flashSummon(const char * n)
 {
-	flashMeterGain = 0;
 	build(n);
 	init();
 }
