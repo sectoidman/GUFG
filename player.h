@@ -9,12 +9,30 @@
 class instance{
 public:
 	instance() {}
+	virtual ~instance();
+	virtual avatar * pick() { return v; }
 
 	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
 	int hitComplexity, regComplexity, momentumComplexity;
 	bool secondInstance;
+	int posX, posY;
+	int facing;
 	int deltaX, deltaY; 
-	avatar * pick;
+	int ID;
+
+	virtual void invertVectors(int);
+	virtual void addVector(SDL_Rect&);
+	virtual void removeVector(int);
+	virtual void setPosition(int, int);
+	virtual void pullVolition();
+	virtual void updateRects();
+	virtual void draw(int, int);
+	virtual void drawBoxen(int, int);
+	virtual void combineDelta();
+	virtual bool noMove();
+	virtual int arbitraryPoll(int);
+protected:
+	avatar * v;
 };
 
 class player : public instance{
@@ -22,23 +40,22 @@ public:
 	player();
 	player(int);
 	~player();
-	character * pick;
+	character * pick() { return v; }
 
+
+	bool aerial();
+	void getMove(bool*, bool*, SDL_Rect &, bool);
 	const char * inputName[10];   //Input names. This is really just for housekeeping.
 	SDL_Event input[10];    //Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
-	int posX, posY;
 	int rounds;		//How many rounds has this player won this match?
-	int facing;
 	int padding[400];   //More magic. Do not touch
 	void writeConfig();
 	bool readConfig();
 	void characterSelect(int);
+	void drawHitParticle(int, int);
+
 	void land();
 	void pushInput(bool*);
-	void getMove(bool*, bool*, SDL_Rect &, bool);
-	void draw(int, int);
-	void drawBoxen(int, int);
-	void drawHitParticle(int, int);
 	void drawMeters(int);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	bool spriteCheck();
@@ -60,23 +77,15 @@ public:
 	int particleType;
 
 	/*Helper functions for "resolve" tick*/
-	void updateRects();
 	void enforceGravity(int, int);
 	void checkBlocking();
 	void checkFacing(player*);
 	int dragBG(int, int);
 	void checkCorners(int, int, int);
-	void combineDelta();
-	void addVector(SDL_Rect&);
-	void clipVectors(int);
-	void pullVolition();
-	void invertVectors(int);
-	void setPosition(int, int);
 	void getThrown(action*, int, int);
 
-private:
-	int ID;
 	int inputBuffer[30];
 	void init();
-	void removeVector(int);
+protected:
+	character * v;
 };

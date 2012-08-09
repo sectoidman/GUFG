@@ -68,7 +68,7 @@ void player::drawMeters(int n)
 		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
 	}
 	glFlush();
-	pick->drawMeters(ID);
+	((character*)pick())->drawMeters(ID);
 	glFlush();
 }
 
@@ -99,7 +99,7 @@ void character::drawMeters(int ID)
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
 }
 
-void player::drawBoxen(int x, int y)
+void instance::drawBoxen(int x, int y)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
@@ -116,7 +116,7 @@ void player::drawBoxen(int x, int y)
 	glFlush();
 }
 
-void player::draw(int x, int y)
+void instance::draw(int x, int y)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
@@ -138,7 +138,7 @@ void player::draw(int x, int y)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick->draw(facing, realPosX - x, realPosY - y);
+	pick()->draw(facing, realPosX - x, realPosY - y);
 }
 
 void player::drawHitParticle(int x, int y)
@@ -204,7 +204,7 @@ void action::draw(int facing, int x, int y)
 
 bool player::spriteCheck()
 {
-	return pick->spriteCheck();
+	return pick()->spriteCheck();
 }
 bool avatar::spriteCheck()
 {

@@ -8,14 +8,16 @@
 #include <SDL/SDL_image.h>
 #include "trie.h"
 
-class avatar{
+class avatar {
 public:
+	avatar() : cMove(NULL), bMove(NULL) {}
 	virtual void init() = 0;
 	bool spriteCheck();
 	virtual void draw(int, int, int);//Pass sprite information up.
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
 	virtual void build(const char*);
+	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool) {}	//Take input from the game and propagate it to the appropriate actionTrie.
 
 	action * cMove;
 	action * bMove;
@@ -35,7 +37,6 @@ public:
 	virtual void build(const char*);//This will *eventually* be the function that parses the character constructor file.
 
 	virtual void drawMeters(int);
-	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	virtual void init();
 	virtual void resetAirOptions();
 	virtual void tick() {}
@@ -44,6 +45,7 @@ public:
 	virtual void land();
 	virtual int takeHit(hStat&, int);
 	//BRB prepping my hooks
+	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 
 	action * neutral;
 	action * airNeutral;
@@ -84,6 +86,11 @@ public:
 
 	avatar * payload;
 	int spawnFrame;
+	int spawnPosX;
+	int spawnPosY;
+	bool spawnGround;
+	bool spawnTrackX;
+	bool spawnTrackY;
 };
 
 class airSummon : public airMove, public summon {

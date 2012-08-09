@@ -121,7 +121,7 @@ void interface::roundInit()
 	bg.y = 450;
 
 	for(int i = 0; i < 2; i++){
-		p[i]->posY = floor - p[i]->pick->neutral->collision[0].h;
+		p[i]->posY = floor - p[i]->pick()->neutral->collision[0].h;
 		p[i]->roundInit();
 	}
 	/*Initialize input containers*/
@@ -152,9 +152,9 @@ void interface::runTimer()
 {
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
-			if(p[i]->pick->cMove != NULL)
+			if(p[i]->pick()->cMove != NULL)
 			{
-				timer += (p[i]->pick->cMove->arbitraryPoll(31));
+				timer += (p[i]->pick()->cMove->arbitraryPoll(31));
 				if(timer > 60*99) timer = 60*99;
 			}
 		}
@@ -172,7 +172,7 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++) p[i]->pushInput(sAxis[i]);
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < 2; i++){
-			if(p[(i+1)%2]->pick->aerial) prox.y = 1;
+			if(p[(i+1)%2]->pick()->aerial) prox.y = 1;
 			else prox.y = 0;
 			prox.x = p[(i+1)%2]->throwInvuln;
 			p[i]->getMove(posEdge[i], negEdge[i], prox, 0);
@@ -198,7 +198,7 @@ void interface::resolve()
 		p[0]->updateRects();
 		p[1]->updateRects();
 		for(int i = 0; i < 2; i++){
-			if(!p[i]->pick->freeze){
+			if(!p[i]->pick()->freeze){
 				p[i]->pullVolition();
 				p[i]->combineDelta();
 				p[i]->enforceGravity(grav, floor);
@@ -212,17 +212,17 @@ void interface::resolve()
 		
 		unitCollision();
 		
-		if(p[0]->pick->cMove->state[p[0]->pick->cMove->cFlag].i & 1 && p[0]->pick->cMove != p[0]->pick->airNeutral) 
+		if(p[0]->pick()->cMove->state[p[0]->pick()->cMove->cFlag].i & 1 && p[0]->pick()->cMove != p[0]->pick()->airNeutral) 
 			p[0]->checkFacing(p[1]);
-		if(p[1]->pick->cMove->state[p[1]->pick->cMove->cFlag].i & 1 && p[1]->pick->cMove != p[1]->pick->airNeutral) 
+		if(p[1]->pick()->cMove->state[p[1]->pick()->cMove->cFlag].i & 1 && p[1]->pick()->cMove != p[1]->pick()->airNeutral) 
 			p[1]->checkFacing(p[0]);
 
 		for(int i = 0; i < 2; i++){
-			if(!p[i]->pick->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
+			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(p[i]->pick->cMove != p[i]->pick->reel && p[i]->pick->cMove != p[i]->pick->untech && 
-			   p[i]->pick->cMove != p[i]->pick->crouchReel && p[i]->pick->cMove != p[i]->pick->crouchBlock && 
-			   p[i]->pick->cMove != p[i]->pick->standBlock && p[i]->pick->cMove != p[i]->pick->airBlock){
+			if(p[i]->pick()->cMove != p[i]->pick()->reel && p[i]->pick()->cMove != p[i]->pick()->untech && 
+			   p[i]->pick()->cMove != p[i]->pick()->crouchReel && p[i]->pick()->cMove != p[i]->pick()->crouchBlock && 
+			   p[i]->pick()->cMove != p[i]->pick()->standBlock && p[i]->pick()->cMove != p[i]->pick()->airBlock){
 				combo[(i+1)%2] = 0;
 				p[i]->elasticX = 0;
 				p[i]->elasticY = 0;
@@ -238,7 +238,7 @@ void interface::resolve()
 		/*Draw the sprites*/
 		draw();
 		for(int i = 0; i < 2; i++){
-			p[i]->pick->step();
+			p[i]->pick()->step();
 		}
 		checkWin();
 		runTimer();
@@ -257,13 +257,13 @@ void interface::resolve()
 /*Check if someone won*/
 void interface::checkWin()
 {
-	if(p[0]->pick->health == 0 || p[1]->pick->health == 0 || timer == 0){
-		for(int i = 0; i < 2; i++) p[i]->pick->cMove->init();
-		if(p[0]->pick->health > p[1]->pick->health) {
+	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
+		for(int i = 0; i < 2; i++) p[i]->pick()->cMove->init();
+		if(p[0]->pick()->health > p[1]->pick()->health) {
 			printf("Player 1 wins!\n");
 			p[0]->rounds++;
 		}
-		else if(p[1]->pick->health > p[0]->pick->health) {
+		else if(p[1]->pick()->health > p[0]->pick()->health) {
 			printf("Player 2 wins!\n");
 			p[1]->rounds++;
 		}
@@ -275,8 +275,8 @@ void interface::checkWin()
 		p[0]->momentumComplexity = 0;
 		p[1]->momentumComplexity = 0;
 		if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-			delete p[0]->pick;
-			delete p[1]->pick;
+			delete p[0]->pick();
+			delete p[1]->pick();
 			matchInit();
 		}
 		else roundInit();
@@ -400,8 +400,8 @@ void interface::dragBG(int deltaX)
 
 interface::~interface()
 {
-	if(select[0]) delete p[0]->pick;
-	if(select[1]) delete p[1]->pick;
+	if(select[0]) delete p[0]->pick();
+	if(select[1]) delete p[1]->pick();
 	delete p[0];
 	delete p[1];
 	SDL_FreeSurface(screen);
@@ -462,15 +462,15 @@ void interface::resolveThrows()
 {
 	bool isThrown[2] = {false, false};
 	for(int i = 0; i < 2; i++){
-		if(p[i]->pick->cMove->arbitraryPoll(28)) isThrown[(i+1)%2] = true;
+		if(p[i]->pick()->cMove->arbitraryPoll(28)) isThrown[(i+1)%2] = true;
 	}
 	if(isThrown[0] && isThrown[1]){
-		p[0]->pick->cMove = p[0]->pick->throwBreak;
-		p[1]->pick->cMove = p[1]->pick->throwBreak;
+		p[0]->pick()->cMove = p[0]->pick()->throwBreak;
+		p[1]->pick()->cMove = p[1]->pick()->throwBreak;
 	} else {
 		for(int i = 0; i < 2; i++){
 			if(isThrown[i]){
-				p[i]->getThrown(p[(i+1)%2]->pick->cMove, p[(i+1)%2]->posX*p[(i+1)%2]->facing, p[(i+1)%2]->posY);
+				p[i]->getThrown(p[(i+1)%2]->pick()->cMove, p[(i+1)%2]->posX*p[(i+1)%2]->facing, p[(i+1)%2]->posY);
 				p[i]->checkFacing(p[(i+1)%2]);
 			}
 		}
@@ -488,7 +488,7 @@ void interface::resolveHits()
 			for(int k = 0; k < p[(i+1)%2]->regComplexity; k++){
 				if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
 					connect[i] = 1;
-					p[i]->pick->cMove->pollStats(s[i]);
+					p[i]->pick()->cMove->pollStats(s[i]);
 					k = p[(i+1)%2]->regComplexity;
 					j = p[i]->hitComplexity;
 				}
@@ -503,7 +503,7 @@ void interface::resolveHits()
 				s[i].untech += s[i].untech / 3;
 			}
 			p[i]->connect(combo[i], s[i]);
-			if(!p[i]->pick->aerial && p[i]->pick->cMove->allowed.i < 128) p[i]->checkFacing(p[(i+1)%2]);
+			if(!p[i]->pick()->aerial && p[i]->pick()->cMove->allowed.i < 128) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 
@@ -511,7 +511,7 @@ void interface::resolveHits()
 		if(connect[i]){
 			hit[i] = p[(i+1)%2]->takeHit(combo[i], s[i]);
 			combo[i] += hit[i];
-			p[i]->pick->cMove->hitConfirm(hit[i]);
+			p[i]->pick()->cMove->hitConfirm(hit[i]);
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 			p[i]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[(i+1)%2]->invertVectors(1);
@@ -520,9 +520,9 @@ void interface::resolveHits()
 	
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->pick->aerial) residual.y = -4;
+			if(p[i]->pick()->aerial) residual.y = -4;
 			else{ 
-				if(p[(i+1)%2]->pick->aerial) residual.x = -1;
+				if(p[(i+1)%2]->pick()->aerial) residual.x = -1;
 				else {
 					if(combo[i] > 1) residual.x = -(abs(combo[i]-1));
 					if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
@@ -550,8 +550,8 @@ void interface::doSuperFreeze()
 {
 	int go[2];
 	for(int i = 0; i < 2; i++){
-		go[i] = p[i]->pick->cMove->arbitraryPoll(2);
-		if(go[i] > 0) p[(i+1)%2]->pick->freeze += go[i];
+		go[i] = p[i]->pick()->cMove->arbitraryPoll(2);
+		if(go[i] > 0) p[(i+1)%2]->pick()->freeze += go[i];
 	}
 	if(go[0] > 0 || go[1] > 0)
 		freeze = std::max(go[0], go[1]);
