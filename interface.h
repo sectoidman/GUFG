@@ -35,7 +35,7 @@ public:
 	void unitCollision();
 	void resolveHits();
 	void resolveThrows();
-	void addThing(avatar*);
+	void addThing(instance*);
 	void cullThing(int);
 
 	player * p[2];
@@ -53,7 +53,7 @@ public:
 	int combo[2];
 	int numRounds;
 	bool gameover;
-	avatar ** things;
+	instance ** things;
 	int thingComplexity;
 
 //Variables for cSelectMenu 

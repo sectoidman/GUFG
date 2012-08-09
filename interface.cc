@@ -120,8 +120,10 @@ void interface::roundInit()
 	if(things){ 
 		delete [] things;
 		things = NULL;
+		for(int i = 0; i < 2; i++)
+			addThing(p[i]);
 	}
-	thingComplexity = 0;
+	thingComplexity = 2;
 	bg.x = 400;
 	bg.y = 450;
 
@@ -562,11 +564,11 @@ void interface::doSuperFreeze()
 		freeze = std::max(go[0], go[1]);
 }
 
-void interface::addThing(avatar *v)
+void interface::addThing(instance *v)
 {
 	int i;
-	avatar ** temp;
-	temp = new avatar*[thingComplexity+1];
+	instance ** temp;
+	temp = new instance*[thingComplexity+1];
 	for(i = 0; i < thingComplexity; i++)
 		temp[i] = things[i];
 	temp[i] = v;
