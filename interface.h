@@ -11,6 +11,8 @@
 #include <SDL/SDL_image.h>
 #include <stdio.h>
 #include "player.h"
+#ifndef INTERFACE
+#define INTERFACE
 class interface
 {
 public:
@@ -67,3 +69,4 @@ private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
 };
+#endif

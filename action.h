@@ -8,7 +8,8 @@
 #include <SDL/SDL_image.h>
 #include "auxil.h"
 #include "masks.h"
-
+#ifndef ACTION
+#define ACTION
 struct hStat{
 	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), eatsProjectile() {}
 	int damage;          //How much damage the action does
@@ -272,3 +273,4 @@ public:
 	void build(const char *n) {werf::build(n);}
 	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 };
+#endif

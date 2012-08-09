@@ -83,19 +83,22 @@ public:
 	summon(const char*);
 	virtual int arbitraryPoll(int);
 	virtual bool setParameter(char*);
+	avatar * spawn();
+	virtual void zero();
 
 	avatar * payload;
 	int spawnFrame;
 	int spawnPosX;
 	int spawnPosY;
-	bool spawnGround;
-	bool spawnTrackX;
-	bool spawnTrackY;
+	bool spawnGround:1;
+	bool spawnTrackX:1;
+	bool spawnTrackY:1;
 };
 
 class airSummon : public airMove, public summon {
 public:
 	airSummon() {}
+	virtual void zero();
 	virtual bool setParameter(char*);
 	airSummon(const char*);
 };

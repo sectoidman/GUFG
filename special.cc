@@ -1,4 +1,4 @@
-#include "action.h"
+#include "interface.h"
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -157,4 +157,92 @@ bool luftigeWerf::setParameter(char * buffer)
 	char * token = strtok(buffer, "\t: \n-");
 	if(!strcmp("Landing", token)) return airMove::setParameter(savedBuffer);
 	else return werf::setParameter(savedBuffer);
+}
+
+summon::summon(const char * n)
+{
+	build(n);
+	init();
+}
+
+avatar * summon::spawn()
+{
+	return payload;
+}
+
+void summon::zero()
+{
+	spawnFrame = 0;
+	spawnGround = 0;
+	spawnTrackY = 0;
+	spawnTrackX = 0;
+	spawnPosY = 0;
+	spawnPosX = 0;
+	action::zero();
+}
+
+bool summon::setParameter(char * buffer)
+{
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+
+	char * token = strtok(buffer, "\t: \n-");
+
+	if(!strcmp("SpawnPosition", token)){
+		token = strtok(NULL, "\t: \n");
+		if(token[0] == 'o') spawnTrackX = true;
+		else spawnPosX = atoi(token);
+
+		token = strtok(NULL, "\t: \n");
+		if(token[0] == 'o') spawnTrackY = true;
+		else if(token[0] == 'g') spawnGround = true;
+		else spawnPosY = atoi(token);
+		return 1;
+	} else if(!strcmp("SpawnsOn", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnFrame = atoi(token);
+		return 1;
+	} else if(!strcmp("Payload", token)){
+		token = strtok(NULL, "\t: \n");
+		printf("Placeholder\n");
+		return 1;
+	} else return action::setParameter(savedBuffer);
+}
+
+int summon::arbitraryPoll(int q)
+{
+	if(currentFrame == spawnFrame){
+		switch(q){
+		case 50:
+			if(spawnTrackX) return 1;
+			else break;
+		case 51:
+			if(spawnTrackY) return 1;
+			else if(spawnGround) return 2;
+			else break;
+		case 52:
+			return spawnPosX;
+		case 53:
+			return spawnPosY;
+		default:
+			break;
+		}
+	}
+	return action::arbitraryPoll(q);
+}
+
+void airSummon::zero()
+{
+	summon::zero();
+	airMove::zero();
+}
+
+bool airSummon::setParameter(char * buffer)
+{
+	bool x;
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+	x = summon::setParameter(buffer);
+	if (!x) x = airMove::setParameter(savedBuffer);
+	return x;
 }
