@@ -1,2 +1,114 @@
-#include "character.h"
+#include "interface.h"
 
+summon::summon(const char * n)
+{
+	build(n);
+	init();
+}
+
+airSummon::airSummon(const char * n)
+{
+	build(n);
+	init();
+}
+
+avatar * summon::spawn()
+{
+	return payload;
+}
+
+void summon::zero()
+{
+	spawnFrame = 0;
+	spawnTrackY = 0;
+	spawnTrackX = 0;
+	spawnPosY = 0;
+	spawnPosX = 0;
+	action::zero();
+}
+
+bool summon::setParameter(char * buffer)
+{
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+
+	char * token = strtok(buffer, "\t: \n-");
+
+	if(!strcmp("SpawnPosition", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnPosX = atoi(token);
+
+		token = strtok(NULL, "\t: \n");
+		spawnPosY = atoi(token);
+		return 1;
+	} else if(!strcmp("SpawnsOn", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnFrame = atoi(token);
+		return 1;
+	} else if(!strcmp("Payload", token)){
+		token = strtok(NULL, "\t: \n");
+		tempPayload = new char[strlen(token)+1];
+		strcpy(tempPayload, token);
+		return 1;
+	} else return action::setParameter(savedBuffer);
+}
+
+int summon::arbitraryPoll(int q)
+{
+	if(currentFrame == spawnFrame){
+		switch(q){
+		case 50:
+			return 1;
+		case 51:
+			if(spawnTrackX) return 1;
+			else break;
+		case 52:
+			if(spawnTrackY) return 1;
+			else break;
+		case 53:
+			return spawnPosX;
+		case 54:
+			return spawnPosY;
+		default:
+			break;
+		}
+	}
+	return action::arbitraryPoll(q);
+}
+
+void airSummon::zero()
+{
+	summon::zero();
+	airMove::zero();
+}
+
+bool airSummon::setParameter(char * buffer)
+{
+	bool x;
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+	x = summon::setParameter(buffer);
+	if (!x) x = airMove::setParameter(savedBuffer);
+	return x;
+}
+
+char * summon::request(int code, int i){
+	if(code == 4)
+		return tempPayload;
+	else return action::request(code, i);
+}
+
+void summon::generate(const char* directory, const char* name)
+{
+	payload = new projectile(directory, name);
+	if(tempPayload) delete [] tempPayload;
+	tempPayload = NULL;
+}
+
+char* airSummon::request(int code, int i)
+{
+	char * x;
+	x = summon::request(code, i);
+	if(x == NULL) x = airMove::request(code, i);
+	return x;
+}

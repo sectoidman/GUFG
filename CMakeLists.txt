@@ -26,6 +26,7 @@ set (SOURCES	auxil.cc
 		special.cc 
 		aerial.cc
 		utility.cc
+		projectile.cc
 		trie.cc) 
 
 
