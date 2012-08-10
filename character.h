@@ -87,6 +87,7 @@ public:
 	virtual void zero();
 
 	avatar * payload;
+	char * tempPayload;
 	int spawnFrame;
 	int spawnPosX;
 	int spawnPosY;

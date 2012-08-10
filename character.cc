@@ -124,7 +124,7 @@ void avatar::build(const char* n)
 	char component[2];
 	char * token;
 	int q;
-	std::ifstream read; 
+	std::ifstream read;
 	sprintf(buffer, "%s/%s.ch", n, n);
 
 	read.open(buffer);

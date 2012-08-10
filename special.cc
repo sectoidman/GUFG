@@ -224,6 +224,8 @@ int summon::arbitraryPoll(int q)
 			return spawnPosX;
 		case 53:
 			return spawnPosY;
+		case 54:
+			return 1;
 		default:
 			break;
 		}

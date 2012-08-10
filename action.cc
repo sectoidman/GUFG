@@ -444,7 +444,6 @@ bool action::window()
 	if(currentFrame < attemptStart) return 0;
 	if(currentFrame > attemptEnd) return 0;
 	return 1;
-
 }
 
 bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
