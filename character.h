@@ -19,6 +19,7 @@ public:
 	virtual void build(const char*);
 	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool) {}	//Take input from the game and propagate it to the appropriate actionTrie.
 
+	virtual void connect(hStat&);
 	action * cMove;
 	action * bMove;
 	int freeze;
@@ -26,6 +27,7 @@ public:
 	bool aerial; 	//Flags whether the character is considered "in the air"
 	actionTrie * head;	//Trie for ground actions
 	actionTrie * airHead;	//Trie for air actions
+	int * meter;
 };
 
 class character : public avatar{
@@ -41,7 +43,6 @@ public:
 	virtual void resetAirOptions();
 	virtual void tick() {}
 	virtual void step();
-	virtual void connect(hStat&);
 	virtual void land();
 	virtual int takeHit(hStat&, int);
 	//BRB prepping my hooks
@@ -62,7 +63,6 @@ public:
 	utility * throwBreak;
 
 	int health;
-	int * meter;
 };
 
 class projectile : virtual public avatar {

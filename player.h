@@ -30,6 +30,7 @@ public:
 	virtual void drawBoxen(int, int);
 	virtual void combineDelta();
 	virtual bool spriteCheck();
+	virtual void connect(int, hStat&);
 protected:
 	avatar * v;
 };

@@ -544,8 +544,11 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 	}
 }
 
-instance::~instance(){}
-player::~player(){}
+void instance::connect(int combo, hStat & s)
+{
+//	printf("Hit with %s!\n", pick()->cMove->name);
+	pick()->connect(s);
+}
 
 void player::connect(int combo, hStat & s)
 {
@@ -635,3 +638,6 @@ void player::getThrown(action *toss, int x, int y)
 	pick()->cMove = pick()->reel;
 	updateRects();
 }
+
+instance::~instance(){}
+player::~player(){}

@@ -487,49 +487,56 @@ void interface::resolveThrows()
 
 void interface::resolveHits()
 {
-	hStat s[2];
-	bool hit[2] = {0, 0};
+	hStat s[thingComplexity];
+	bool hit[thingComplexity];
 	bool connect[thingComplexity];
+	bool taken[thingComplexity];
+	int hitBy[thingComplexity];
+	for(int i = 0; i < thingComplexity; i++){
+		taken[i] = 0;
+		hit[i] = 0;
+		connect[i] = 0;
+		hitBy[i] = -1;
+	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(int i = 0; i < thingComplexity; i++){
 		for(int h = 0; h < thingComplexity; h++){
-			if(h != i){
+			if(h != i && taken[h] != -1){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
-						if(aux::checkCollision(p[i]->hitbox[j], p[(i+1)%2]->hitreg[k])){
+						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k]) && things[i]->ID != things[h]->ID){
 							connect[i] = 1;
-							p[i]->pick()->cMove->pollStats(s[i]);
+							things[i]->pick()->cMove->pollStats(s[i]);
 							k = things[h]->regComplexity;
 							j = things[i]->hitComplexity;
-						} else connect[i] = 0;
+							taken[h] = 1;
+							hitBy[h] = i;
+						}
 					}
 				}
 			}
 		}
 	}
 
-	for(int i = 0; i < 2; i++){ 
+	for(int i = 0; i < thingComplexity; i++){
 		if(connect[i]){
-			if(p[(i+1)%2]->CHState()){
-				s[i].stun += s[i].stun / 3;
-				s[i].untech += s[i].untech / 3;
-			}
-			p[i]->connect(combo[i], s[i]);
-			if(!p[i]->pick()->aerial && p[i]->pick()->cMove->allowed.i < 128) p[i]->checkFacing(p[(i+1)%2]);
+			things[i]->connect(combo[things[i]->ID-1], s[i]);
+			if(i < 2 && p[i]->pick()->cMove->allowed.i < 128 && !p[i]->pick()->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 
 	for(int i = 0; i < 2; i++){ 
-		if(connect[i]){
-			hit[i] = p[(i+1)%2]->takeHit(combo[i], s[i]);
-			combo[i] += hit[i];
-			p[i]->pick()->cMove->hitConfirm(hit[i]);
+		if(taken[i]){
+			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
+			combo[(i+1)%2] += hit[hitBy[i]];
+			things[hitBy[i]]->pick()->cMove->hitConfirm(hit[hitBy[i]]);
+			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
+		for(int i = 0; i < 2; i++)
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
-			p[i]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
-			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[(i+1)%2]->invertVectors(1);
 		}
 	}
-	
+
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
 			if(p[i]->pick()->aerial) residual.y = -4;

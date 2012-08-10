@@ -316,7 +316,7 @@ action * avatar::createMove(char * fullName)
 	return m;
 }
 
-void character::connect(hStat & s)
+void avatar::connect(hStat & s)
 {
 	cMove->connect(meter, bMove);
 	if(bMove == cMove){ 
