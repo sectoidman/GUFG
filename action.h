@@ -69,6 +69,7 @@ public:
 	int throwinvuln;
 	bool crouch:1;
 	int armorStart; int armorLength;
+	int armorHits;
 	int guardStart; int guardLength;
 
 	//Properties of a hit. These will only exist for actions that hit.
@@ -179,6 +180,7 @@ public:
 	looping() {}
 	looping(const char*);
 	virtual void step(int *&);
+	virtual void fakeInit();
 };
 
 class airMove : virtual public action {

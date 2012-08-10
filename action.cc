@@ -47,6 +47,7 @@ void action::zero()
 	throwinvuln = 0;
 	crouch = 0;
 	armorStart = 0; armorLength = 0;
+	armorHits = 0;
 	guardStart = 0; guardLength = 0;
 	blockState.i = 0;
 	isProjectile = 0;
@@ -374,6 +375,10 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n-");
 		armorLength = atoi(token); 
 		armorLength = armorLength - armorStart;
+		return 1;
+	} else if (!strcmp("MaxArmor", token)) {
+		token = strtok(NULL, "\t: \n-");
+		armorHits = atoi(token); 
 		return 1;
 	} else return 0;
 }

@@ -27,5 +27,10 @@ looping::looping(const char * n)
 void looping::step(int *& resource)
 {
 	action::step(resource);
-	if(currentFrame >= frames) init();
+	if(currentFrame >= frames) fakeInit();
+}
+
+void looping::fakeInit()
+{
+	currentFrame = 0;
 }
