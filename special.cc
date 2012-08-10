@@ -165,6 +165,12 @@ summon::summon(const char * n)
 	init();
 }
 
+airSummon::airSummon(const char * n)
+{
+	build(n);
+	init();
+}
+
 avatar * summon::spawn()
 {
 	return payload;
@@ -173,7 +179,6 @@ avatar * summon::spawn()
 void summon::zero()
 {
 	spawnFrame = 0;
-	spawnGround = 0;
 	spawnTrackY = 0;
 	spawnTrackX = 0;
 	spawnPosY = 0;
@@ -190,13 +195,10 @@ bool summon::setParameter(char * buffer)
 
 	if(!strcmp("SpawnPosition", token)){
 		token = strtok(NULL, "\t: \n");
-		if(token[0] == 'o') spawnTrackX = true;
-		else spawnPosX = atoi(token);
+		spawnPosX = atoi(token);
 
 		token = strtok(NULL, "\t: \n");
-		if(token[0] == 'o') spawnTrackY = true;
-		else if(token[0] == 'g') spawnGround = true;
-		else spawnPosY = atoi(token);
+		spawnPosY = atoi(token);
 		return 1;
 	} else if(!strcmp("SpawnsOn", token)){
 		token = strtok(NULL, "\t: \n");
@@ -204,7 +206,8 @@ bool summon::setParameter(char * buffer)
 		return 1;
 	} else if(!strcmp("Payload", token)){
 		token = strtok(NULL, "\t: \n");
-		printf("Placeholder\n");
+		tempPayload = new char[strlen(token)+1];
+		strcpy(tempPayload, token);
 		return 1;
 	} else return action::setParameter(savedBuffer);
 }
@@ -214,18 +217,17 @@ int summon::arbitraryPoll(int q)
 	if(currentFrame == spawnFrame){
 		switch(q){
 		case 50:
+			return 1;
+		case 51:
 			if(spawnTrackX) return 1;
 			else break;
-		case 51:
-			if(spawnTrackY) return 1;
-			else if(spawnGround) return 2;
-			else break;
 		case 52:
-			return spawnPosX;
+			if(spawnTrackY) return 1;
+			else break;
 		case 53:
-			return spawnPosY;
+			return spawnPosX;
 		case 54:
-			return 1;
+			return spawnPosY;
 		default:
 			break;
 		}
@@ -246,5 +248,24 @@ bool airSummon::setParameter(char * buffer)
 	strcpy(savedBuffer, buffer);
 	x = summon::setParameter(buffer);
 	if (!x) x = airMove::setParameter(savedBuffer);
+	return x;
+}
+
+char * summon::request(int code, int i){
+	if(code == 4)
+		return tempPayload;
+	else return action::request(code, i);
+}
+
+void summon::generate(const char* directory, const char* name)
+{
+	payload = new projectile(directory, name);
+}
+
+char* airSummon::request(int code, int i)
+{
+	char * x;
+	x = summon::request(code, i);
+	if(x == NULL) x = airMove::request(code, i);
 	return x;
 }

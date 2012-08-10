@@ -9,7 +9,6 @@
 #include <iostream>
 #include <cmath>
 #include "auxil.h"
-
 using namespace std;
 
 // intitializes the screen and returns it (returns null if something went wrong)

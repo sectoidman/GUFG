@@ -3,12 +3,13 @@
  *Written by Alex Kelly in 2012
  *Under MIT OSI license, see the file "COPYING" for details
  */
-
 #include "charlist.h"
-
+#ifndef PLAYER
+#define PLAYER
 class instance{
 public:
 	instance() {}
+	instance(avatar * f) { v = f; }
 	virtual ~instance();
 	virtual avatar * pick() { return v; }
 
@@ -87,3 +88,4 @@ public:
 protected:
 	character * v;
 };
+#endif

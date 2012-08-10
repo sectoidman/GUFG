@@ -35,6 +35,7 @@ public:
 	void unitCollision();
 	void resolveHits();
 	void resolveThrows();
+	void resolveSummons();
 	void addThing(instance*);
 	void cullThing(int);
 

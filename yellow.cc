@@ -3,7 +3,7 @@ yellow::yellow(){
 	head = new actionTrie;
 	airHead = new actionTrie;
 	meter = new int[4];
-	build("Yellow");
+	build("Yellow", "Yellow");
 }
 
 void yellow::resetAirOptions()

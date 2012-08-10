@@ -10,6 +10,8 @@
 #include "masks.h"
 #ifndef ACTION
 #define ACTION
+class avatar;
+
 struct hStat{
 	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), eatsProjectile() {}
 	int damage;          //How much damage the action does
@@ -42,6 +44,7 @@ public:
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 	virtual action * blockSuccess(int);
 	virtual int arbitraryPoll(int q) {return 0;}
@@ -54,6 +57,7 @@ public:
 	virtual void step(int *&);
 	virtual action * land() { return this; }
 	virtual action * connect(int *&, action *&);
+	virtual avatar * spawn() { return NULL; }
 	virtual void hitConfirm(int);
 	virtual int takeHit(hStat&, int); 
 	bool spriteCheck();
@@ -95,7 +99,7 @@ public:
 	int * active;
 	int cFlag;
 	int hFlag;
-	
+
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
 	char * name;

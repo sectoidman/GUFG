@@ -7,7 +7,7 @@ red::red()
 	
 	airHead = new actionTrie;
 	head = new actionTrie;
-	build("Red");
+	build("Red", "Red");
 	backup = new red(this);
 
 	init();	
@@ -21,7 +21,7 @@ red::red(red* b)
 	
 	airHead = new actionTrie;
 	head = new actionTrie;
-	build("Red");
+	build("Red", "Red");
 	backup = b;
 
 	init();

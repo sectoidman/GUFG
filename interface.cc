@@ -245,9 +245,10 @@ void interface::resolve()
 
 		/*Draw the sprites*/
 		draw();
-		for(int i = 0; i < 2; i++){
-			p[i]->pick()->step();
+		for(int i = 0; i < thingComplexity; i++){
+			things[i]->pick()->step();
 		}
+		resolveSummons();
 		checkWin();
 		runTimer();
 	}
@@ -261,6 +262,36 @@ void interface::resolve()
 
 }
 
+void interface::resolveSummons()
+{
+	action * temp;
+	instance * larva;
+	int x, y, f;
+	for(int i = 0; i < thingComplexity; i++){
+		if(things[i]->pick()->cMove){
+			temp = things[i]->pick()->cMove;
+			if(temp->arbitraryPoll(50)){
+				larva = new instance(temp->spawn());
+				larva->ID = things[i]->ID;
+				if(temp->arbitraryPoll(51)){
+					x = p[(things[i]->ID)%2]->posX;
+					f = p[(things[i]->ID)%2]->facing;
+				} else {
+					x = p[(things[i]->ID)-1]->posX;
+					f = p[(things[i]->ID)-1]->facing;
+				}
+				if(temp->arbitraryPoll(52))
+					y = p[(things[i]->ID)%2]->posY;
+				else
+					y = p[(things[i]->ID)-1]->posY;
+				x += temp->arbitraryPoll(53)*f;
+				y += temp->arbitraryPoll(54);
+				larva->setPosition(x, y);
+				addThing(larva);
+			}
+		}
+	}
+}
 
 /*Check if someone won*/
 void interface::checkWin()

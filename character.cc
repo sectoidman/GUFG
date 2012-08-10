@@ -112,7 +112,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 	} 
 }
 
-void avatar::build(const char* n)
+void avatar::build(const char* directory, const char* file)
 {
 	char buffer[101];
 	char buffer2[101];
@@ -125,7 +125,7 @@ void avatar::build(const char* n)
 	char * token;
 	int q;
 	std::ifstream read;
-	sprintf(buffer, "%s/%s.ch", n, n);
+	sprintf(buffer, "%s/%s.ch", directory, file);
 
 	read.open(buffer);
 	assert(!read.fail());
@@ -172,59 +172,57 @@ void avatar::build(const char* n)
 		}
 	}
 	read.close();	
-
 }
 
-void character::build(const char *n)
+void character::build(const char *directory, const char *file)
 {
+	avatar::build(directory, file);
 	char buffer[101];
-	sprintf(buffer, "%s/NS", n);
+	sprintf(buffer, "%s/NS", name);
 	neutral = new looping(buffer);
 
-	sprintf(buffer, "%s/NL", n);
+	sprintf(buffer, "%s/NL", name);
 	crouch = new looping(buffer);
 
-	sprintf(buffer, "%s/NJ", n);
+	sprintf(buffer, "%s/NJ", name);
 	airNeutral = new airLooping(buffer);
 	airNeutral->feed(neutral, 1, 0);
 
-	sprintf(buffer, "%s/HS", n);
+	sprintf(buffer, "%s/HS", name);
 	reel = new hitstun(buffer);
 
-	sprintf(buffer, "%s/Fall", n);
+	sprintf(buffer, "%s/Fall", name);
 	fall = new airLooping(buffer);
-	
-	sprintf(buffer, "%s/UT", n);
+
+	sprintf(buffer, "%s/UT", name);
 	untech = new untechState(buffer);
 	untech->feed(fall, 0, 0);
 
-	sprintf(buffer, "%s/down", n);
+	sprintf(buffer, "%s/down", name);
 	down = new utility(buffer);
 	untech->feed(down, 1, 0);
 	fall->feed(down, 1, 0);
 
-	sprintf(buffer, "%s/BA", n);
+	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);
 
-	sprintf(buffer, "%s/HL", n);
+	sprintf(buffer, "%s/HL", name);
 	crouchReel = new hitstun(buffer);
 
-	sprintf(buffer, "%s/BH", n);
+	sprintf(buffer, "%s/BH", name);
 	standBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BL", n);
+
+	sprintf(buffer, "%s/BL", name);
 	crouchBlock = new hitstun(buffer);
-	
-	sprintf(buffer, "%s/BA", n);
+
+	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);	
 
-	sprintf(buffer, "%s/break", n);
+	sprintf(buffer, "%s/break", name);
 	throwBreak = new utility(buffer);
 
-	avatar::build(n);
-
 	head->insert(5, neutral);
-	
+
 	head->insert(2, crouch);
 	head->insert(3, crouch);
 	head->insert(1, crouch);
@@ -249,7 +247,7 @@ void avatar::processMove(action * m)
 {
 	char* temp = NULL;
 	action* t = NULL;
-	for(int i = 0; i < 4; i++){
+	for(int i = 0; i < 5; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
 				temp = m->request(i, j);
@@ -258,6 +256,11 @@ void avatar::processMove(action * m)
 					m->feed(t, i, j);
 					processMove(t);
 				}
+			}
+		} else if (i == 4) {
+			temp = m->request(i, 0);
+			if(temp != NULL){
+				m->generate(name, temp);
 			}
 		} else {
 			temp = m->request(i, 0);
@@ -305,6 +308,10 @@ action * avatar::createMove(char * fullName)
 	case '_':
 		if(type[1] == 'j') m = new luftigeWerf(actionName);
 		else m = new werf(actionName);
+		break;
+	case '>':
+		if(type[1] == 'j') m = new airSummon(actionName);
+		else m = new summon(actionName);
 		break;
 	case 'j':
 		m = new airMove(actionName);
@@ -375,7 +382,7 @@ void character::land()
 	resetAirOptions();
 }
 
-void character::step()
+void avatar::step()
 {
 	if(freeze <= 0) {
 		cMove->step(meter);

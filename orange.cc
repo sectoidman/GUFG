@@ -3,7 +3,7 @@ orange::orange()
 {
 	head = new actionTrie;
 	airHead = new actionTrie;
-	build("Orange");
+	build("Orange", "Orange");
 	init();
 }
 

@@ -35,12 +35,14 @@ void interface::draw()
 	}
 
 	glEnable( GL_TEXTURE_2D );
-	for(int i = 0; i < 2; i++){
-		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
+	for(int i = 0; i < thingComplexity; i++){
+		if(things[i]->spriteCheck()) 
+			things[i]->draw(bg.x, bg.y);
 		glDisable( GL_TEXTURE_2D );
-		if(!p[i]->spriteCheck()) 
-			p[i]->drawBoxen(bg.x, bg.y);
-		p[i]->drawHitParticle(bg.x, bg.y);
+		if(!things[i]->spriteCheck())
+			things[i]->drawBoxen(bg.x, bg.y);
+		if(i < 2)
+			p[i]->drawHitParticle(bg.x, bg.y);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnable( GL_TEXTURE_2D );
 	}

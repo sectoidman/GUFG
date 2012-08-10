@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-
-
+#ifndef MOVETRIE
+#define MOVETRIE
 /*Move trie class. Essentially a recursive trie-search algorithm that looks for input hooks*/
 
 class actionTrie{
@@ -31,3 +31,4 @@ public:
 private:
 	int * button;
 };
+#endif
