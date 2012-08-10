@@ -30,6 +30,8 @@ public:
 	actionTrie * head;	//Trie for ground actions
 	actionTrie * airHead;	//Trie for air actions
 	int * meter;
+
+	action * neutral;
 };
 class character : public avatar{
 public:
@@ -47,7 +49,6 @@ public:
 	//BRB prepping my hooks
 	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 
-	action * neutral;
 	action * airNeutral;
 	action * crouch;
 	hitstun * reel;
