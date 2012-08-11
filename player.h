@@ -22,6 +22,7 @@ public:
 	int ID;
 	int inputBuffer[30];
 	int currentFrame;
+	action * cMove;
 	int cFlag;
 	bool dead:1;
 	virtual void init();
@@ -40,7 +41,6 @@ public:
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
 	virtual void pushInput(bool*);
-	action * cMove;
 protected:
 	avatar * v;
 };

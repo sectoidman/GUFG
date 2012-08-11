@@ -5,6 +5,7 @@ class beam : public projectile {
 public:
 	beam();
 	beam(const char*, const char*);
+	virtual void build(const char*, const char*);
 	virtual void init();
 	virtual action * createMove(char*);
 };
