@@ -40,6 +40,7 @@ public:
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
 	virtual void pushInput(bool*);
+	action * cMove;
 protected:
 	avatar * v;
 };
