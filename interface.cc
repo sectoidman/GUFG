@@ -238,10 +238,11 @@ void interface::resolve()
 				p[i]->elasticX = 0;
 				p[i]->elasticY = 0;
 			}
-
 		}
-		if(p[1]->hitbox[0].w > 0) p[0]->checkBlocking();
-		if(p[0]->hitbox[0].w > 0) p[1]->checkBlocking();
+
+		for(int i = 0; i < thingComplexity; i++)
+			if(things[i]->hitbox[0].w > 0) p[(things[i]->ID)%2]->checkBlocking();
+
 
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
@@ -525,7 +526,7 @@ void interface::resolveThrows()
 void interface::resolveHits()
 {
 	hStat s[thingComplexity];
-	bool hit[thingComplexity];
+	int hit[thingComplexity];
 	bool connect[thingComplexity];
 	bool taken[thingComplexity];
 	int hitBy[thingComplexity];

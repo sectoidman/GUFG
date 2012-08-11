@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <fstream>
 #include "player.h"
-
 player::player()
 {
 	init();
@@ -14,6 +13,17 @@ player::player()
 player::player(int id)
 {
 	ID = id;
+	init();
+}
+
+instance::instance()
+{
+	init();
+}
+
+instance::instance(avatar * f)
+{
+	v = f;
 	init();
 }
 
@@ -472,14 +482,16 @@ void instance::pullVolition()
 		}
 	}
 	if(pick()->freeze < 1){
-		SDL_Rect * temp = pick()->cMove->delta[currentFrame];
-		for(int i = 0; i < pick()->cMove->deltaComplexity[currentFrame]; i++){
-			if(temp[i].x || temp[i].y || temp[i].h){
-				if(abs((short)temp[i].h) >= top || top == 0){
-					addVector(temp[i]);
+		if(currentFrame < pick()->cMove->frames){
+			SDL_Rect * temp = pick()->cMove->delta[currentFrame];
+			for(int i = 0; i < pick()->cMove->deltaComplexity[currentFrame]; i++){
+				if(temp[i].x || temp[i].y || temp[i].h){
+					if(abs((short)temp[i].h) >= top || top == 0){
+						addVector(temp[i]);
+					}
 				}
-			} 
-		} 
+			}
+		}
 	}
 }
 

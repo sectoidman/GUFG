@@ -8,8 +8,8 @@
 #define PLAYER
 class instance{
 public:
-	instance() {}
-	instance(avatar * f) { v = f; }
+	instance();
+	instance(avatar * f);
 	virtual ~instance();
 	virtual avatar * pick() { return v; }
 

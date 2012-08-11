@@ -472,6 +472,7 @@ bool action::check(SDL_Rect &p)
 
 void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f)
 {
+	if(f >= frames) return;
 	if(rc > 0 && r) delete [] r;
 	if(hc > 0 && b) delete [] b;
 	rc = regComplexity[f];
