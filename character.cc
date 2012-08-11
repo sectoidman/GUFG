@@ -365,6 +365,11 @@ action * avatar::createMove(char * fullName)
 	return m;
 }
 
+avatar * avatar::spawn(action * source)
+{
+	return source->spawn();
+}
+
 void avatar::connect(hStat & s)
 {
 	cMove->connect(meter, bMove);

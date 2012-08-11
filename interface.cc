@@ -276,7 +276,7 @@ void interface::resolveSummons()
 		if(things[i]->pick()->cMove){
 			temp = things[i]->pick()->cMove;
 			if(temp->arbitraryPoll(50, things[i]->currentFrame)){
-				larva = new instance(temp->spawn());
+				larva = new instance(things[i]->pick()->spawn(temp));
 				larva->ID = things[i]->ID;
 				if(temp->arbitraryPoll(51, things[i]->currentFrame)){
 					x = p[(things[i]->ID)%2]->posX;

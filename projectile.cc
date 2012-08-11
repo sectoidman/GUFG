@@ -4,7 +4,7 @@ projectile::projectile(const char* directory, const char* file)
 	head = new actionTrie;
 	airHead = new actionTrie;
 	build(directory, file);
-	meter = new int[3];
+	meter = new int[4];
 	init();
 }
 
@@ -27,7 +27,7 @@ void projectile::init()
 	}
 	neutral->init();
 	cMove = neutral;
-	meter[0] = 60 * 30;
+	meter[3] = 60 * 30;
 	freeze = 0;
 	dead = false;
 	freeze = 0;
@@ -70,13 +70,13 @@ bool projectile::step(int &f)
 			return true;
 		}
 	}
-	if (meter[0] <= 0) return true;
+	if (meter[3] <= 0) return true;
 	return false;
 }
 
 void projectile::tick()
 {
-	meter[0]--;
+	meter[3]--;
 }
 
 bool summon::setParameter(char * buffer)

@@ -165,7 +165,7 @@ void flashStep::execute(action * last, int *& resource)
 	action::execute(last, resource);
 }
 
-void flashSummon::step(int *& resource, int f)
+void flashSummon::step(int *& resource, int &f)
 {
 	if(uFlag){
 		if(f == frames - 1) resource[3] = 0;

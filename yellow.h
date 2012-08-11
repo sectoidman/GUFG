@@ -32,7 +32,7 @@ public:
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	void execute(action *, int *&);
 	bool setParameter(char*);
-	void step(int *&, int);
+	void step(int *&, int&);
 	virtual void zero() { flashMeterGain = 0; special::zero(); }
 private:
 	bool uFlag;

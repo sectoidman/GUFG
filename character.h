@@ -21,6 +21,7 @@ public:
 
 	virtual void connect(hStat&);
 	virtual bool step(int&);
+	virtual avatar * spawn(action*);
 	virtual void tick() {}
 	virtual void neutralize();
 	action * cMove;
