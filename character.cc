@@ -82,14 +82,46 @@ character::~character()
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
+void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
+{
+	action * t = NULL;
+	if (cMove == NULL) neutralize();
+	t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+
+	if(t == NULL && cMove->window()){
+		if(cMove->attempt->check(p)) t = cMove->attempt;
+	}
+
+	if(t != NULL){
+		if(freeze > 0){
+			if(bMove == NULL) 
+				if(!dryrun) bMove = t;
+		}
+		else {
+			if(!dryrun) t->execute(cMove, meter);
+			cMove = t;
+		}
+	} else if (bMove != NULL && freeze <= 0) {
+		if(!dryrun) bMove->execute(cMove, meter);
+		cMove = bMove;
+		if(!dryrun) bMove = NULL;
+	} 
+}
+
+void avatar::neutralize(){
+	cMove = neutral;
+}
+
+void character::neutralize(){
+	if(aerial) cMove = airNeutral;
+	else cMove = neutral;
+}
+
 void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * t = NULL;
-	if (cMove == NULL) {
-		if(aerial) cMove = airNeutral;
-		else cMove = neutral;
-	}
-	
+	if (cMove == NULL) neutralize();
+
 	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
 	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
 	if(t == NULL && cMove->window()){
@@ -145,10 +177,10 @@ void avatar::build(const char* directory, const char* file)
 
 			m = createMove(buffer);
 			processMove(m);
-			token = strtok(buffer2, " \t-?%@$&_!\n");
+			token = strtok(buffer2, " \t=>-&?@%$_!\n");
 			while (token){
 				token = NULL;
-				token = strtok(NULL, " \t=-&?@%$_!\n");
+				token = strtok(NULL, " \t=>-&?@%$_!\n");
 				if(token) {
 					switch (token[0]){
 					case 'h':
@@ -279,7 +311,7 @@ action * avatar::createMove(char * fullName)
 	char type[2] = {fullName[0], fullName[1]};
 	char actionName[151];
 
-	token = strtok(fullName, " \t-@?%_$!\n");
+	token = strtok(fullName, " \t=>-&?@%$_!\n");
 	sprintf(actionName, "%s/%s", name, token);
 
 	action * m;

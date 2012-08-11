@@ -177,13 +177,15 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
-		for(int i = 0; i < 2; i++) p[i]->pushInput(sAxis[i]);
+		for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
-		for(int i = 0; i < 2; i++){
-			if(p[(i+1)%2]->pick()->aerial) prox.y = 1;
-			else prox.y = 0;
-			prox.x = p[(i+1)%2]->throwInvuln;
-			p[i]->getMove(posEdge[i], negEdge[i], prox, 0);
+		for(int i = 0; i < thingComplexity; i++){
+			if(i < 2){
+				if(p[(i+1)%2]->pick()->aerial) prox.y = 1;
+				else prox.y = 0;
+				prox.x = p[(i+1)%2]->throwInvuln;
+			}
+			things[i]->getMove(posEdge[things[i]->ID - 1], negEdge[things[i]->ID - 1], prox, 0);
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -197,19 +199,20 @@ void interface::resolve()
 		6. Initialize sprites.
 	*/
 
-		p[0]->updateRects();
-		p[1]->updateRects();
+		for(int i = 0; i < thingComplexity; i++)
+			things[i]->updateRects();
 
 		resolveThrows();
 		doSuperFreeze();
 
-		p[0]->updateRects();
-		p[1]->updateRects();
-		for(int i = 0; i < 2; i++){
-			if(!p[i]->pick()->freeze){
-				p[i]->pullVolition();
-				p[i]->combineDelta();
-				p[i]->enforceGravity(grav, floor);
+		for(int i = 0; i < thingComplexity; i++)
+			things[i]->updateRects();
+
+		for(int i = 0; i < thingComplexity; i++){
+			if(!things[i]->pick()->freeze){
+				things[i]->pullVolition();
+				things[i]->combineDelta();
+				if(i < 2) p[i]->enforceGravity(grav, floor);
 			}
 		}
 
@@ -247,6 +250,7 @@ void interface::resolve()
 		draw();
 		for(int i = 0; i < thingComplexity; i++){
 			things[i]->pick()->step();
+			if(i > 1 && things[i]->pick()->dead) cullThing(i);
 		}
 		resolveSummons();
 		checkWin();
@@ -286,8 +290,10 @@ void interface::resolveSummons()
 					y = p[(things[i]->ID)-1]->posY;
 				x += temp->arbitraryPoll(53)*f;
 				y += temp->arbitraryPoll(54);
+				larva->facing = f;
 				larva->setPosition(x, y);
 				addThing(larva);
+				larva->init();
 			}
 		}
 	}
@@ -535,13 +541,15 @@ void interface::resolveHits()
 			if(h != i && taken[h] != -1){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
-						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k]) && things[i]->ID != things[h]->ID){
-							connect[i] = 1;
-							things[i]->pick()->cMove->pollStats(s[i]);
-							k = things[h]->regComplexity;
-							j = things[i]->hitComplexity;
-							taken[h] = 1;
-							hitBy[h] = i;
+						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k])){
+							if(things[i]->ID != things[h]->ID){
+								connect[i] = 1;
+								things[i]->pick()->cMove->pollStats(s[i]);
+								k = things[h]->regComplexity;
+								j = things[i]->hitComplexity;
+								taken[h] = 1;
+								hitBy[h] = i;
+							}
 						}
 					}
 				}

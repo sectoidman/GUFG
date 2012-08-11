@@ -117,8 +117,9 @@ void action::build(const char * n)
 	}
 	read.close();
 
-	for(int i = 0; i < 5; i++)
+	for(int i = 0; i < 5; i++){
 		button[i] = 0;
+	}
 	int r = strlen(n);
 	for(int i = 0; i < r; i++){
 		switch(n[i]){
@@ -457,7 +458,6 @@ bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_R
 		if(button[i] == 1){
 			if(!pos[i]) return 0;
 		}
-
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;

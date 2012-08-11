@@ -17,6 +17,17 @@ player::player(int id)
 	init();
 }
 
+void instance::init()
+{
+	momentumComplexity = 0;
+	momentum = NULL;
+	deltaX = 0;
+	deltaY = 0;
+	regComplexity = 0;
+	hitComplexity = 0;
+	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
+}
+
 void player::init()
 {
 	/*Initialize input containers*/
@@ -41,19 +52,14 @@ void player::init()
 
 	v = NULL;
 	rounds = 0;
+	instance::init();
 }
 
 void player::roundInit()
 {
-	if(v){
-		pick()->init();
-	}
-	deltaX = 0;
-	deltaY = 0;
-	regComplexity = 0;
-	hitComplexity = 0;
-	momentumComplexity = 0;
-	momentum = NULL;
+	instance::init();
+	if(v) pick()->init();
+	updateRects();
 	lCorner = 0;
 	rCorner = 0;
 	elasticX = 0;
@@ -72,7 +78,7 @@ void player::roundInit()
 		facing = -1;
 		posX = 900;
 	}
-		updateRects();
+	updateRects();
 }
 
 bool player::readConfig()
@@ -415,7 +421,7 @@ int player::dragBG(int left, int right)
 	else return 0;
 }
 
-void player::pushInput(bool axis[4])
+void instance::pushInput(bool axis[4])
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
 	inputBuffer[0] = temp;
@@ -423,6 +429,14 @@ void player::pushInput(bool axis[4])
 	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];
 	}
+}
+
+void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
+{
+	action * heldMove;
+	if(dryrun) heldMove = pick()->cMove;
+	pick()->prepHooks(inputBuffer, down, up, p, dryrun);
+	if(dryrun) pick()->cMove = heldMove;
 }
 
 void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)

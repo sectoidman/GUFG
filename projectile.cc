@@ -1,4 +1,38 @@
 #include "interface.h"
+projectile::projectile(const char* directory, const char* file)
+{
+	head = new actionTrie;
+	airHead = new actionTrie;
+	build(directory, file);
+	meter = new int[3];
+	init();
+}
+
+void projectile::build(const char* directory, const char* file)
+{
+	avatar::build(directory, file);
+	char buffer[101];
+	sprintf(buffer, "%s/NS", name);
+	neutral = new looping(buffer);
+	sprintf(buffer, "%s/die", name);
+	die = new action(buffer);
+	head->insert(die);
+	airHead->insert(die);
+}
+
+void projectile::init()
+{
+	if(cMove){
+		if(cMove != neutral) cMove->init();
+	}
+	neutral->init();
+	cMove = neutral;
+	meter[0] = 60 * 30;
+	freeze = 0;
+	dead = false;
+	freeze = 0;
+	aerial = 0;
+}
 
 summon::summon(const char * n)
 {
@@ -14,6 +48,7 @@ airSummon::airSummon(const char * n)
 
 avatar * summon::spawn()
 {
+	payload->init();
 	return payload;
 }
 
@@ -25,6 +60,22 @@ void summon::zero()
 	spawnPosY = 0;
 	spawnPosX = 0;
 	action::zero();
+}
+
+void projectile::step()
+{
+	avatar::step();
+	if(cMove == die){
+		if(cMove->currentFrame == cMove->frames - 1){
+			dead = true;
+		}
+	}
+	if (meter[0] <= 0) dead = true;
+}
+
+void projectile::tick()
+{
+	meter[0]--;
 }
 
 bool summon::setParameter(char * buffer)

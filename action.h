@@ -279,4 +279,33 @@ public:
 	void build(const char *n) {werf::build(n);}
 	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 };
+
+class summon : virtual public action {
+public:
+	summon() {}
+	summon(const char*);
+	virtual int arbitraryPoll(int);
+	virtual bool setParameter(char*);
+	virtual void generate(const char*, const char*);
+	virtual char* request(int, int);
+	avatar * spawn();
+	virtual void zero();
+
+	avatar * payload;
+	char * tempPayload;
+	int spawnFrame;
+	int spawnPosX;
+	int spawnPosY;
+	bool spawnTrackX:1;
+	bool spawnTrackY:1;
+};
+
+class airSummon : virtual public airMove, virtual public summon {
+public:
+	airSummon() {}
+	airSummon(const char*);
+	virtual void zero();
+	virtual bool setParameter(char*);
+	virtual char* request(int, int);
+};
 #endif

@@ -20,4 +20,5 @@ Orange
 ?BackTech = a4 a7 a1
 ?ForwardTech = a6 a9 a3
 ?StopTech = a8
+>A = h
 #Moves

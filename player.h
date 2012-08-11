@@ -20,7 +20,10 @@ public:
 	int facing;
 	int deltaX, deltaY; 
 	int ID;
+	int inputBuffer[30];
+	virtual void init();
 
+	virtual void getMove(bool*, bool*, SDL_Rect &, bool);
 	virtual void invertVectors(int);
 	virtual void addVector(SDL_Rect&);
 	virtual void removeVector(int);
@@ -32,6 +35,7 @@ public:
 	virtual void combineDelta();
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
+	virtual void pushInput(bool*);
 protected:
 	avatar * v;
 };
@@ -55,7 +59,6 @@ public:
 	void drawHitParticle(int, int);
 
 	void land();
-	void pushInput(bool*);
 	void drawMeters(int);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void roundInit();
@@ -83,7 +86,6 @@ public:
 	void checkCorners(int, int, int);
 	void getThrown(action*, int, int);
 
-	int inputBuffer[30];
 	void init();
 protected:
 	character * v;
