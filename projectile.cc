@@ -62,15 +62,16 @@ void summon::zero()
 	action::zero();
 }
 
-void projectile::step()
+bool projectile::step(int &f)
 {
-	avatar::step();
+	avatar::step(f);
 	if(cMove == die){
-		if(cMove->currentFrame == cMove->frames - 1){
-			dead = true;
+		if(f == cMove->frames - 1){
+			return true;
 		}
 	}
-	if (meter[0] <= 0) dead = true;
+	if (meter[0] <= 0) return true;
+	return false;
 }
 
 void projectile::tick()
@@ -104,27 +105,26 @@ bool summon::setParameter(char * buffer)
 	} else return action::setParameter(savedBuffer);
 }
 
-int summon::arbitraryPoll(int q)
+int summon::arbitraryPoll(int q, int f)
 {
-	if(currentFrame == spawnFrame){
-		switch(q){
-		case 50:
-			return 1;
-		case 51:
-			if(spawnTrackX) return 1;
-			else break;
-		case 52:
-			if(spawnTrackY) return 1;
-			else break;
-		case 53:
-			return spawnPosX;
-		case 54:
-			return spawnPosY;
-		default:
-			break;
-		}
+	switch(q){
+	case 50:
+		if(f == spawnFrame) return 1;
+		else break;
+	case 51:
+		if(spawnTrackX) return 1;
+		else break;
+	case 52:
+		if(spawnTrackY) return 1;
+		else break;
+	case 53:
+		return spawnPosX;
+	case 54:
+		return spawnPosY;
+	default:
+		break;
 	}
-	return action::arbitraryPoll(q);
+	return action::arbitraryPoll(q, f);
 }
 
 void airSummon::zero()

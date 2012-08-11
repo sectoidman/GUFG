@@ -12,15 +12,15 @@ class avatar {
 public:
 	avatar() : cMove(NULL), bMove(NULL) {}
 	virtual void init() = 0;
-	bool spriteCheck();
-	virtual void draw(int, int, int);//Pass sprite information up.
+	bool spriteCheck(int);
+	virtual void draw(int, int, int, int);//Pass sprite information up.
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
 	virtual void build(const char*, const char*);
-	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 
 	virtual void connect(hStat&);
-	virtual void step();
+	virtual bool step(int&);
 	virtual void tick() {}
 	virtual void neutralize();
 	action * cMove;
@@ -47,9 +47,9 @@ public:
 	virtual void drawMeters(int);
 	virtual void init();
 	virtual void resetAirOptions();
-	virtual void land();
-	virtual int takeHit(hStat&, int);
-	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void land(int &);
+	virtual int takeHit(hStat&, int, int&);
+	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 
 	action * airNeutral;
@@ -75,7 +75,7 @@ public:
 	virtual void build(const char*, const char*);
 
 	virtual void tick();
-	virtual void step();
+	virtual bool step(int&);
 	virtual void init();
 	action * die;
 };

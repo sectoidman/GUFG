@@ -24,13 +24,9 @@ looping::looping(const char * n)
 	init();
 }
 
-void looping::step(int *& resource)
+void looping::step(int *& resource, int &f)
 {
-	action::step(resource);
-	if(currentFrame >= frames) fakeInit();
+	action::step(resource, f);
+	if(f >= frames) f = 0;
 }
 
-void looping::fakeInit()
-{
-	currentFrame = 0;
-}

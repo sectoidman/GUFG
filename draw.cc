@@ -140,7 +140,7 @@ void instance::draw(int x, int y)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(facing, realPosX - x, realPosY - y);
+	pick()->draw(facing, realPosX - x, realPosY - y, currentFrame);
 }
 
 void player::drawHitParticle(int x, int y)
@@ -164,40 +164,40 @@ void player::drawHitParticle(int x, int y)
 	}
 }
 
-void avatar::draw(int facing, int x, int y)
+void avatar::draw(int facing, int x, int y, int f)
 {
-	cMove->draw(facing, x, y);
+	cMove->draw(facing, x, y, f);
 }
 
-void action::draw(int facing, int x, int y)
+void action::draw(int facing, int x, int y, int f)
 {
-	if(sprite[currentFrame]){
-		glBindTexture(GL_TEXTURE_2D, sprite[currentFrame]);
+	if(sprite[f]){
+		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
 		if(facing == 1){
 			glTexCoord2i(0, 0);
 			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x + width[f]), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x + width[f]), (GLfloat)(y + height[f]), 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[f]), 0.f);
 		} else {
 			glTexCoord2i(0, 0);
 			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x - width[f]), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x - width[f]), (GLfloat)(y + height[f]), 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[f]), 0.f);
 		}
 		glEnd();
 	}
@@ -206,16 +206,16 @@ void action::draw(int facing, int x, int y)
 
 bool instance::spriteCheck()
 {
-	return pick()->spriteCheck();
+	return pick()->spriteCheck(currentFrame);
 }
-bool avatar::spriteCheck()
+bool avatar::spriteCheck(int f)
 {
 	if(cMove == NULL) return 0;
-	else return cMove->spriteCheck();
+	else return cMove->spriteCheck(f);
 }
 
-bool action::spriteCheck()
+bool action::spriteCheck(int f)
 {
-	if(sprite[currentFrame]) return 1;
+	if(sprite[f]) return 1;
 	else return 0;
 }

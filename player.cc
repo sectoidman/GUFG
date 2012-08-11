@@ -25,6 +25,7 @@ void instance::init()
 	deltaY = 0;
 	regComplexity = 0;
 	hitComplexity = 0;
+	currentFrame = 0;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
@@ -204,7 +205,7 @@ void player::characterSelect(int i)
 void instance::updateRects()
 {
 	if(pick()->cMove != NULL) {
-		pick()->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity);
+		pick()->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity, currentFrame);
 		for(int i = 0; i < hitComplexity; i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
@@ -257,7 +258,7 @@ void player::checkBlocking()
 	int st;
 	bool block = false;
 	if(pick()->cMove == pick()->airBlock || pick()->cMove == pick()->standBlock || pick()->cMove == pick()->crouchBlock)
-		st = pick()->cMove->arbitraryPoll(1);
+		st = pick()->cMove->arbitraryPoll(1, currentFrame);
 	else st = 0;
 	
 
@@ -389,7 +390,12 @@ void player::land()
 	for(int i = 0; i < momentumComplexity; i++){
 		if(momentum[i].y < 0) removeVector(i);
 	}
-	pick()->land();
+	pick()->land(currentFrame);
+}
+
+void instance::step()
+{
+	dead = pick()->step(currentFrame);
 }
 
 void player::checkFacing(player * other){
@@ -435,7 +441,7 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = pick()->cMove;
-	pick()->prepHooks(inputBuffer, down, up, p, dryrun);
+	pick()->prepHooks(inputBuffer, down, up, p, currentFrame, dryrun);
 	if(dryrun) pick()->cMove = heldMove;
 }
 
@@ -443,7 +449,7 @@ void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = pick()->cMove;
-	pick()->prepHooks(inputBuffer, down, up, p, dryrun);
+	pick()->prepHooks(inputBuffer, down, up, p, currentFrame, dryrun);
 	if(pick()->cMove){
 		if(pick()->cMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(pick()->cMove->throwinvuln == 2) throwInvuln = 6;
@@ -459,15 +465,15 @@ void instance::pullVolition()
 			top = (short)momentum[i].h;
 		}
 	if(pick()->cMove->stop){
-		if(pick()->cMove->currentFrame == 0){ 
+		if(currentFrame == 0){ 
 			deltaX = 0; deltaY = 0;
 			if(pick()->cMove->stop == 2)
 				momentumComplexity = 0;
 		}
 	}
 	if(pick()->freeze < 1){
-		SDL_Rect * temp = pick()->cMove->delta[pick()->cMove->currentFrame];
-		for(int i = 0; i < pick()->cMove->deltaComplexity[pick()->cMove->currentFrame]; i++){
+		SDL_Rect * temp = pick()->cMove->delta[currentFrame];
+		for(int i = 0; i < pick()->cMove->deltaComplexity[currentFrame]; i++){
 			if(temp[i].x || temp[i].y || temp[i].h){
 				if(abs((short)temp[i].h) >= top || top == 0){
 					addVector(temp[i]);
@@ -583,7 +589,7 @@ int player::takeHit(int combo, hStat & s)
 	}
 	s.untech -= combo;
 	if(slide) s.lift += 7 - s.lift/5;
-	particleType = pick()->takeHit(s, blockType);
+	particleType = pick()->takeHit(s, blockType, currentFrame);
 	particleLife = 8;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick()->aerial) v.y = -s.lift;
@@ -633,7 +639,7 @@ void instance::invertVectors(int operation)
 bool player::CHState()
 {
 	if(hitbox[0].w > 0) return true;
-	else return pick()->cMove->CHState();
+	else return pick()->cMove->CHState(currentFrame);
 }
 
 void instance::setPosition(int x, int y)
@@ -646,7 +652,7 @@ void instance::setPosition(int x, int y)
 void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
-	setPosition(toss->arbitraryPoll(27)*xSign + abs(x), toss->arbitraryPoll(26) + y);
+	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
 	pick()->cMove->init();
 	pick()->reel->init(1);
 	pick()->cMove = pick()->reel;

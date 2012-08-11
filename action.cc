@@ -444,11 +444,11 @@ void action::parseProperties(char * buffer)
 //	printf("\n");
 }
 
-bool action::window()
+bool action::window(int f)
 {
 	if(!attempt) return 0;
-	if(currentFrame < attemptStart) return 0;
-	if(currentFrame > attemptEnd) return 0;
+	if(f < attemptStart) return 0;
+	if(f > attemptEnd) return 0;
 	return 1;
 }
 
@@ -470,24 +470,24 @@ bool action::check(SDL_Rect &p)
 	return 1;
 }
 
-void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
+void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f)
 {
 	if(rc > 0 && r) delete [] r;
 	if(hc > 0 && b) delete [] b;
-	rc = regComplexity[currentFrame];
-	hc = hitComplexity[currentFrame];
+	rc = regComplexity[f];
+	hc = hitComplexity[f];
 	r = new SDL_Rect[rc];
 	b = new SDL_Rect[hc];
 
-	c.x = collision[currentFrame].x; c.w = collision[currentFrame].w;
-	c.y = collision[currentFrame].y; c.h = collision[currentFrame].h;
+	c.x = collision[f].x; c.w = collision[f].w;
+	c.y = collision[f].y; c.h = collision[f].h;
 
-	SDL_Rect * tempreg = hitreg[currentFrame];
+	SDL_Rect * tempreg = hitreg[f];
 	for(int i = 0; i < rc; i++){
 		r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
 		r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
 	}
-	SDL_Rect * temphit = hitbox[currentFrame];
+	SDL_Rect * temphit = hitbox[f];
 	for(int i = 0; i < hc; i++){
 		if(cFlag > currentHit) {
 			b[i].x = 0; b[i].w = 0;
@@ -539,21 +539,20 @@ bool action::operator>(action * x)
 	return 0;
 }
 
-void action::step(int *& resource)
+void action::step(int *& resource, int &f)
 {
-	if(currentFrame == 0){
+	if(f == 0){
 		if(resource[0] + gain[0] < 200) resource[0] += gain[0];
 		else resource[0] = 200;
 	}
-	currentFrame++;
-	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
+	f++;
+	if(currentHit < hits-1 && f > totalStartup[currentHit+1]) currentHit++;
 }
 
 void action::init()
 {
 	cFlag = 0;
 	hFlag = 0;
-	currentFrame = 0;
 	currentHit = 0;
 }
 
@@ -621,23 +620,24 @@ char * action::request(int code, int i)
 	}
 }
 
-int action::takeHit(hStat & s, int b)
+int action::takeHit(hStat & s, int b, int &f)
 {
-	if(s.blockMask.i & blockState.i && currentFrame > guardStart && currentFrame < guardStart + guardLength)
+	if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength)
 		return 0;
-	else if (currentFrame > armorStart && currentFrame < armorStart + armorLength){
+	else if (f > armorStart && f < armorStart + armorLength){
 		s.stun = 0;
 		return 1;
 	} else {
+		f = 0;
 		init();
 		return 1;
 	}
 }
 
-bool action::CHState()
+bool action::CHState(int f)
 {
 	if(hits < 1) return false;
-	else if(currentFrame < totalStartup[hits-1]) return true;
+	else if(f < totalStartup[hits-1]) return true;
 	else return false;
 }
 

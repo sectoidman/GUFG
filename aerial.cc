@@ -11,8 +11,9 @@ airMove::airMove(const char * n)
 	init();
 }
 
-action * airMove::land()
+action * airMove::land(int &f)
 {
+	f = 0;
 	init();
 	return landing;
 }
@@ -84,5 +85,4 @@ airLooping::airLooping(const char * n)
 untechState::untechState(const char* n)
 {
 	airMove::build(n);
-	currentFrame = 0;
 }

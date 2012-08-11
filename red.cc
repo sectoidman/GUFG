@@ -34,10 +34,10 @@ void red::tick()
 	if(meter[3] < 0) meter[3] = 0;
 }
 
-void red::step()
+bool red::step(int &f)
 {
 	if(meter[4] > 0) meter[4]--;
-	character::step();
+	return character::step(f);
 }
 
 void red::drawMeters(int ID)
@@ -134,10 +134,10 @@ void redCancel::execute(action * last, int *& resource)
 	action::execute(last, resource);
 }
 
-int redSuper::arbitraryPoll(int q)
+int redSuper::arbitraryPoll(int q, int f)
 {
 	if(q == 31) return 11;
-	else return super::arbitraryPoll(q);
+	else return super::arbitraryPoll(q, f);
 }
 
 redCancel::~redCancel() {}

@@ -29,10 +29,10 @@ void yellow::tick()
 	}
 }
 
-void yellow::step()
+bool yellow::step(int &f)
 {
 	if(meter[3] < 0) meter[3]++;
-	character::step();
+	return character::step(f);
 }
 
 action * yellow::createMove(char * fullName)
@@ -86,9 +86,9 @@ void yellow::drawMeters(int ID)
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
-int yellow::takeHit(hStat & s, int b)
+int yellow::takeHit(hStat & s, int b, int &f)
 {
-	int x = character::takeHit(s, b);
+	int x = character::takeHit(s, b, f);
 	if(x == 1 && meter[3] > 0) meter[3] = 0;
 	return x;
 }
@@ -165,11 +165,11 @@ void flashStep::execute(action * last, int *& resource)
 	action::execute(last, resource);
 }
 
-void flashSummon::step(int *& resource)
+void flashSummon::step(int *& resource, int f)
 {
 	if(uFlag){
-		if(currentFrame == frames - 1) resource[3] = 0;
+		if(f == frames - 1) resource[3] = 0;
 	} else resource[3] += flashMeterGain / frames + 1;
 	if(resource[3] > 540) resource[3] = 540;
-	action::step(resource);
+	action::step(resource, f);
 }

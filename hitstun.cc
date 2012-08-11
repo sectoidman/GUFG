@@ -3,14 +3,13 @@
 
 void hitstun::init(int n)
 {
-	currentFrame = 0;
 	counter = n;
 	cFlag = 0;
 }
 
-void hitstun::step(int *& resource)
+void hitstun::step(int *& resource, int &f)
 {
-	if(counter <= 0) currentFrame++;
+	if(counter <= 0) f++;
 	else counter--;
 }
 
@@ -19,13 +18,15 @@ action * hitstun::blockSuccess(int st){
 	return this;
 }
 
-int hitstun::takeHit(hStat & s, int b){
+int hitstun::takeHit(hStat & s, int b, int &f){
 	if(s.blockMask.i & blockState.i){
 		if(b == 1){ 
+			f = 0;
 			init(s.stun - 1  - s.stun/5);
 			s.push = (s.push*4)/5;
 			return -1;
 		} else {
+			f = 0;
 			init(s.stun - std::max(0, 1 - s.stun/15));
 			return 0;
 		}
@@ -36,10 +37,9 @@ int hitstun::takeHit(hStat & s, int b){
 hitstun::hitstun(const char * n)
 {
 	build(n);
-	currentFrame = 0;
 }
 
-int hitstun::arbitraryPoll(int q)
+int hitstun::arbitraryPoll(int q, int f)
 {
 	if(q == 1) return counter;
 	else return 0;

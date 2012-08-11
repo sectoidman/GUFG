@@ -21,7 +21,11 @@ public:
 	int deltaX, deltaY; 
 	int ID;
 	int inputBuffer[30];
+	int currentFrame;
+	int cFlag;
+	bool dead:1;
 	virtual void init();
+	virtual void step();
 
 	virtual void getMove(bool*, bool*, SDL_Rect &, bool);
 	virtual void invertVectors(int);

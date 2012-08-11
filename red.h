@@ -9,7 +9,7 @@ public:
 	action * createMove(char*);
 	void drawMeters(int);
 	void tick();
-	void step();
+	bool step(int&);
 	void init();
 	red * backup;
 };
@@ -28,6 +28,6 @@ public:
 	redSuper();
 	~redSuper();
 	redSuper(const char* n) { build(n); init(); }
-	int arbitraryPoll(int);
+	int arbitraryPoll(int, int);
 };
 #endif

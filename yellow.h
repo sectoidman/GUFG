@@ -6,11 +6,11 @@ public:
 	yellow();
 	void resetAirOptions();
 	action * createMove(char*);
-	int takeHit(hStat&, int);
+	int takeHit(hStat&, int, int&);
 	void drawMeters(int);
 	void tick();
 	void init();
-	void step();
+	bool step(int&);
 };
 
 class flashStep : public airMove {
@@ -32,7 +32,7 @@ public:
 	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
 	void execute(action *, int *&);
 	bool setParameter(char*);
-	void step(int *&);
+	void step(int *&, int);
 	virtual void zero() { flashMeterGain = 0; special::zero(); }
 private:
 	bool uFlag;

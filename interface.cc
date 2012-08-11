@@ -162,7 +162,7 @@ void interface::runTimer()
 		if(select[i] == true){
 			if(p[i]->pick()->cMove != NULL)
 			{
-				timer += (p[i]->pick()->cMove->arbitraryPoll(31));
+				timer += (p[i]->pick()->cMove->arbitraryPoll(31, p[i]->currentFrame));
 				if(timer > 60*99) timer = 60*99;
 			}
 		}
@@ -249,8 +249,8 @@ void interface::resolve()
 		/*Draw the sprites*/
 		draw();
 		for(int i = 0; i < thingComplexity; i++){
-			things[i]->pick()->step();
-			if(i > 1 && things[i]->pick()->dead) cullThing(i);
+			things[i]->step();
+			if(i > 1 && things[i]->dead) cullThing(i);
 		}
 		resolveSummons();
 		checkWin();
@@ -274,22 +274,22 @@ void interface::resolveSummons()
 	for(int i = 0; i < thingComplexity; i++){
 		if(things[i]->pick()->cMove){
 			temp = things[i]->pick()->cMove;
-			if(temp->arbitraryPoll(50)){
+			if(temp->arbitraryPoll(50, things[i]->currentFrame)){
 				larva = new instance(temp->spawn());
 				larva->ID = things[i]->ID;
-				if(temp->arbitraryPoll(51)){
+				if(temp->arbitraryPoll(51, things[i]->currentFrame)){
 					x = p[(things[i]->ID)%2]->posX;
 					f = p[(things[i]->ID)%2]->facing;
 				} else {
 					x = p[(things[i]->ID)-1]->posX;
 					f = p[(things[i]->ID)-1]->facing;
 				}
-				if(temp->arbitraryPoll(52))
+				if(temp->arbitraryPoll(52, things[i]->currentFrame))
 					y = p[(things[i]->ID)%2]->posY;
 				else
 					y = p[(things[i]->ID)-1]->posY;
-				x += temp->arbitraryPoll(53)*f;
-				y += temp->arbitraryPoll(54);
+				x += temp->arbitraryPoll(53, things[i]->currentFrame)*f;
+				y += temp->arbitraryPoll(54, things[i]->currentFrame);
 				larva->facing = f;
 				larva->setPosition(x, y);
 				addThing(larva);
@@ -507,7 +507,7 @@ void interface::resolveThrows()
 {
 	bool isThrown[2] = {false, false};
 	for(int i = 0; i < 2; i++){
-		if(p[i]->pick()->cMove->arbitraryPoll(28)) isThrown[(i+1)%2] = true;
+		if(p[i]->pick()->cMove->arbitraryPoll(28, p[i]->currentFrame)) isThrown[(i+1)%2] = true;
 	}
 	if(isThrown[0] && isThrown[1]){
 		p[0]->pick()->cMove = p[0]->pick()->throwBreak;
@@ -608,7 +608,7 @@ void interface::doSuperFreeze()
 {
 	int go[2];
 	for(int i = 0; i < 2; i++){
-		go[i] = p[i]->pick()->cMove->arbitraryPoll(2);
+		go[i] = p[i]->pick()->cMove->arbitraryPoll(2, p[i]->currentFrame);
 		if(go[i] > 0) p[(i+1)%2]->pick()->freeze += go[i];
 	}
 	if(go[0] > 0 || go[1] > 0)

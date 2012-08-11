@@ -59,9 +59,9 @@ bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect
 	return 0;
 }
 
-int super::arbitraryPoll(int q)
+int super::arbitraryPoll(int q, int f)
 {
-	if(q == 2 && currentFrame == freezeFrame) return freezeLength;
+	if(q == 2 && f == freezeFrame) return freezeLength;
 	else return 0;
 }
 
@@ -93,11 +93,11 @@ bool airSuper::setParameter(char * buffer)
 	return x;
 }
 
-int werf::arbitraryPoll(int n)
+int werf::arbitraryPoll(int n, int f)
 {
 	switch (n){
 	case 28:
-		if(currentFrame == 0) return 1;
+		if(f == 0) return 1;
 		break;
 	case 27:
 		return startPosX;
