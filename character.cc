@@ -100,6 +100,7 @@ void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &
 		else {
 			f = 0;
 			cFlag = 0;
+			hFlag = 0;
 			if(!dryrun) t->execute(cMove, meter);
 			cMove = t;
 		}
@@ -107,6 +108,7 @@ void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &
 		if(!dryrun){ 
 			bMove->execute(cMove, meter);
 			f = 0;
+			hFlag = 0;
 			cFlag = 0;
 		}
 		cMove = bMove;
@@ -143,6 +145,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 			if(!dryrun){ 
 				f = 0;
 				cFlag = 0;
+				hFlag = 0;
 				t->execute(cMove, meter);
 			}
 			cMove = t;
@@ -151,6 +154,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 		if(!dryrun){ 
 			f = 0;
 			cFlag = 0;
+			hFlag = 0;
 			bMove->execute(cMove, meter);
 		}
 		cMove = bMove;
@@ -420,13 +424,13 @@ void character::resetAirOptions()
 	meter[2] = 1;
 }
 
-void character::land(int &f)
+void character::land(int &f, int &c, int &h)
 {
 	if(cMove == airBlock){
 		standBlock->init(airBlock->counter);
 		cMove = standBlock;
 	} else { 
-		cMove = cMove->land(f);
+		cMove = cMove->land(f, c, h);
 		if(!cMove) cMove = neutral;
 	}
 	aerial = 0; 

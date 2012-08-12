@@ -401,7 +401,7 @@ void player::land()
 	for(int i = 0; i < momentumComplexity; i++){
 		if(momentum[i].y < 0) removeVector(i);
 	}
-	pick()->land(currentFrame);
+	pick()->land(currentFrame, connectFlag, hitFlag);
 }
 
 void instance::step()

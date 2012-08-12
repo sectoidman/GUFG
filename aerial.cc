@@ -11,9 +11,11 @@ airMove::airMove(const char * n)
 	init();
 }
 
-action * airMove::land(int &f)
+action * airMove::land(int &f, int &c, int &h)
 {
 	f = 0;
+	c = 0;
+	h = 0;
 	init();
 	return landing;
 }

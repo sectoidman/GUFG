@@ -55,7 +55,7 @@ public:
 	virtual bool cancel(action*, int&, int&); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&, int&);
-	virtual action * land(int &f) { return this; }
+	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, action *&, int&);
 	virtual avatar * spawn() { return NULL; }
 	virtual int takeHit(hStat&, int, int&); 
@@ -188,7 +188,7 @@ public:
 	airMove() {}
 	airMove(const char*);
 	virtual void build (const char *);
-	virtual action * land(int&);
+	virtual action * land(int&, int&, int&);
 	char * tempLanding;
 	virtual bool setParameter(char*);
 	virtual void feed(action *, int, int);
