@@ -36,6 +36,7 @@ void instance::init()
 	regComplexity = 0;
 	hitComplexity = 0;
 	currentFrame = 0;
+	connectFlag = 0;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
@@ -215,7 +216,7 @@ void player::characterSelect(int i)
 void instance::updateRects()
 {
 	if(pick()->cMove != NULL) {
-		pick()->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity, currentFrame);
+		pick()->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity, currentFrame, connectFlag);
 		for(int i = 0; i < hitComplexity; i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
@@ -275,11 +276,11 @@ void player::checkBlocking()
 	switch(inputBuffer[0]){
 	case 7:
 	case 4:
-		if(pick()->aerial && (*pick()->airBlock) > pick()->cMove) {
+		if(pick()->aerial && pick()->airBlock->cancel(pick()->cMove, connectFlag, hitFlag)) {
 			pick()->airBlock->init(st);
 			pick()->cMove = pick()->airBlock;
 		}
-		else if((*pick()->standBlock) > pick()->cMove) {
+		else if(pick()->standBlock->cancel(pick()->cMove, connectFlag, hitFlag)) {
 			pick()->standBlock->init(st);
 			pick()->cMove = pick()->standBlock;
 		}
@@ -287,11 +288,11 @@ void player::checkBlocking()
 		block = true;
 		break;
 	case 1:
-		if(pick()->aerial && (*pick()->airBlock) > pick()->cMove) {
+		if(pick()->aerial && pick()->airBlock->cancel(pick()->cMove, connectFlag, hitFlag)) {
 			pick()->airBlock->init(st);
 			pick()->cMove = pick()->airBlock;
 		}
-		else if((*pick()->crouchBlock) > pick()->cMove) {
+		else if(pick()->crouchBlock->cancel(pick()->cMove, connectFlag, hitFlag)) {
 			pick()->crouchBlock->init(st);
 			pick()->cMove = pick()->crouchBlock;
 		}
@@ -406,6 +407,14 @@ void player::land()
 void instance::step()
 {
 	dead = pick()->step(currentFrame);
+	if(pick()->cMove && currentFrame == pick()->cMove->frames){
+		pick()->cMove->init();
+		pick()->cMove = pick()->cMove->next;
+		if(pick()->cMove) pick()->cMove->init();
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 }
 
 void player::checkFacing(player * other){
@@ -451,7 +460,7 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = pick()->cMove;
-	pick()->prepHooks(inputBuffer, down, up, p, currentFrame, dryrun);
+	pick()->prepHooks(inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(dryrun) pick()->cMove = heldMove;
 }
 
@@ -459,7 +468,7 @@ void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = pick()->cMove;
-	pick()->prepHooks(inputBuffer, down, up, p, currentFrame, dryrun);
+	pick()->prepHooks(inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(pick()->cMove){
 		if(pick()->cMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(pick()->cMove->throwinvuln == 2) throwInvuln = 6;
@@ -579,7 +588,7 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 void instance::connect(int combo, hStat & s)
 {
 //	printf("Hit with %s!\n", pick()->cMove->name);
-	pick()->connect(s);
+	pick()->connect(s, connectFlag);
 }
 
 void player::connect(int combo, hStat & s)
@@ -589,7 +598,7 @@ void player::connect(int combo, hStat & s)
 	if(combo < 2) v.x = 0;
 	else if (!pick()->aerial) v.x = -combo;
 	addVector(v);
-	pick()->connect(s);
+	pick()->connect(s, connectFlag);
 }
 
 int player::takeHit(int combo, hStat & s)

@@ -23,7 +23,7 @@ public:
 	int inputBuffer[30];
 	int currentFrame;
 	action * cMove;
-	int cFlag;
+	int connectFlag, hitFlag;
 	bool dead:1;
 	virtual void init();
 	virtual void step();

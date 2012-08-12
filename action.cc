@@ -470,7 +470,7 @@ bool action::check(SDL_Rect &p)
 	return 1;
 }
 
-void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f)
+void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)
 {
 	if(f >= frames) return;
 	if(rc > 0 && r) delete [] r;
@@ -518,19 +518,19 @@ void action::pollStats(hStat & s)
 	s.blockMask.i = stats[currentHit].blockMask.i;
 }
 
-bool action::operator>(action * x)
+bool action::cancel(action * x, int& c, int &h)
 {
 	cancelField r;
-	r.i = x->state[x->cFlag].i;
-	if(x->hFlag > 0 && x->hFlag == x->cFlag){ 
-		r.i = r.i + x->stats[x->hFlag - 1].hitState.i;
+	r.i = x->state[c].i;
+	if(h > 0 && h == c){ 
+		r.i = r.i + x->stats[h - 1].hitState.i;
 	}
 	if(x == NULL) return 1;
 	else{
 		if(allowed.i & r.i){
 //			if(r.i > 1) printf("%i allows %i\n", r.i, allowed.i);
 			if(x == this){
-				if(x->cFlag == 0) return 0;
+				if(c == 0) return 0;
 				else if(allowed.i & 4) return 1;
 				else return 0;
 			}
@@ -552,28 +552,20 @@ void action::step(int *& resource, int &f)
 
 void action::init()
 {
-	cFlag = 0;
 	hFlag = 0;
 	currentHit = 0;
 }
 
-action * action::connect(int *& resource, action *& temp)
+action * action::connect(int *& resource, action *& temp, int &c)
 {
-	cFlag = currentHit+1;
-	if(resource[0] + gain[cFlag] < 200) resource[0] += gain[cFlag];
+	c = currentHit+1;
+	if(resource[0] + gain[c] < 200) resource[0] += gain[c];
 	else resource[0] = 200;
-	if(onConnect[cFlag-1] != NULL){
-		onConnect[cFlag-1]->init();
-		temp = onConnect[cFlag-1];
+	if(onConnect[c-1] != NULL){
+		onConnect[c-1]->init();
+		temp = onConnect[c-1];
 	}
 	return temp;
-}
-
-void action::hitConfirm(int a)
-{
-	if(a == 1){ 
-		hFlag = cFlag;
-	}
 }
 
 action * action::blockSuccess(int st)

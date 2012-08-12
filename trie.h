@@ -21,7 +21,7 @@ public:
 	actionTrie(action*);
 	actionTrie(action*, char*);
 	~actionTrie();
-	action * actionHook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&);
+	action * actionHook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 	actionTrie * child[10];
 	action ** fish;       //Because it's what a hook catches! Okay, this name probably needs to change.
 	actionTrie * insert(int);

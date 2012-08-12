@@ -50,15 +50,14 @@ public:
 	virtual int arbitraryPoll(int q, int f) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
-	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int);
+	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollStats(hStat&);
-	bool operator>(action*); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
+	virtual bool cancel(action*, int&, int&); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&, int&);
 	virtual action * land(int &f) { return this; }
-	virtual action * connect(int *&, action *&);
+	virtual action * connect(int *&, action *&, int&);
 	virtual avatar * spawn() { return NULL; }
-	virtual void hitConfirm(int);
 	virtual int takeHit(hStat&, int, int&); 
 	bool spriteCheck(int);
 
@@ -96,7 +95,6 @@ public:
 	int currentHit;
 	int * totalStartup;
 	int * active;
-	int cFlag;
 	int hFlag;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;

@@ -82,11 +82,11 @@ character::~character()
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, bool dryrun)
+void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
 	if (cMove == NULL) neutralize();
-	t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+	t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
 
 	if(t == NULL && cMove->window(f)){
 		if(cMove->attempt->check(p)) t = cMove->attempt;
@@ -99,6 +99,7 @@ void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &
 		}
 		else {
 			f = 0;
+			cFlag = 0;
 			if(!dryrun) t->execute(cMove, meter);
 			cMove = t;
 		}
@@ -106,6 +107,7 @@ void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &
 		if(!dryrun){ 
 			bMove->execute(cMove, meter);
 			f = 0;
+			cFlag = 0;
 		}
 		cMove = bMove;
 		if(!dryrun) bMove = NULL;
@@ -121,13 +123,13 @@ void character::neutralize(){
 	else cMove = neutral;
 }
 
-void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, bool dryrun)
+void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
 	if (cMove == NULL) neutralize();
 
-	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
-	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p);
+	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
+	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
 	if(t == NULL && cMove->window(f)){
 		if(cMove->attempt->check(p)) t = cMove->attempt;
 	}
@@ -140,6 +142,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 		else {
 			if(!dryrun){ 
 				f = 0;
+				cFlag = 0;
 				t->execute(cMove, meter);
 			}
 			cMove = t;
@@ -147,6 +150,7 @@ void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rec
 	} else if (bMove != NULL && freeze <= 0) {
 		if(!dryrun){ 
 			f = 0;
+			cFlag = 0;
 			bMove->execute(cMove, meter);
 		}
 		cMove = bMove;
@@ -370,9 +374,9 @@ avatar * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(hStat & s)
+void avatar::connect(hStat & s, int & c)
 {
-	cMove->connect(meter, bMove);
+	cMove->connect(meter, bMove, c);
 	if(bMove == cMove){ 
 		bMove = NULL;
 	}
@@ -436,11 +440,5 @@ bool avatar::step(int &currentFrame)
 		tick();
 	}
 	if(freeze > 0) freeze--;
-	if(cMove && currentFrame == cMove->frames){
-		cMove->init();
-		cMove = cMove->next;
-		if(cMove) cMove->init();
-		currentFrame = 0;
-	}
 	return false;
 }

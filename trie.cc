@@ -61,7 +61,7 @@ actionTrie::~actionTrie()
 	fish = NULL;
 }
 
-action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool pos[5], bool neg[5], action * c, SDL_Rect &p)
+action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool pos[5], bool neg[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
 {
 	actionTrie * test = NULL;
 	action * result = NULL;
@@ -69,8 +69,8 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool
 	for(j = i; j < 30; j++){
 		test = child[inputBuffer[j]];
 		if(test != NULL){
-			if (f < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, p);
-			else result = test->actionHook(inputBuffer, j, f, r, pos, neg, c, p);
+			if (f < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, p, cFlag, hFlag);
+			else result = test->actionHook(inputBuffer, j, f, r, pos, neg, c, p, cFlag, hFlag);
 			if(result != NULL) return result; 
 		}
 	}
@@ -78,7 +78,7 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool
 		for(int k = 0; k < occupants; k++){
 			if(fish[k] != NULL){
 				if(fish[k]->check(pos, neg, i, f, r, p) == 1){
-					if((*fish[k]) > c){
+					if(fish[k]->cancel(c, cFlag, hFlag)){
 						return fish[k];
 					}
 				}

@@ -223,9 +223,9 @@ void interface::resolve()
 		
 		unitCollision();
 		
-		if(p[0]->pick()->cMove->state[p[0]->pick()->cMove->cFlag].i & 1 && p[0]->pick()->cMove != p[0]->pick()->airNeutral) 
+		if(p[0]->pick()->cMove->state[p[0]->connectFlag].i & 1 && p[0]->pick()->cMove != p[0]->pick()->airNeutral) 
 			p[0]->checkFacing(p[1]);
-		if(p[1]->pick()->cMove->state[p[1]->pick()->cMove->cFlag].i & 1 && p[1]->pick()->cMove != p[1]->pick()->airNeutral) 
+		if(p[1]->pick()->cMove->state[p[1]->connectFlag].i & 1 && p[1]->pick()->cMove != p[1]->pick()->airNeutral) 
 			p[1]->checkFacing(p[0]);
 
 		for(int i = 0; i < 2; i++){
@@ -569,7 +569,7 @@ void interface::resolveHits()
 		if(taken[i]){
 			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
 			combo[(i+1)%2] += hit[hitBy[i]];
-			things[hitBy[i]]->pick()->cMove->hitConfirm(hit[hitBy[i]]);
+			things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
 		for(int i = 0; i < 2; i++)
