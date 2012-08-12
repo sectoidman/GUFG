@@ -49,7 +49,7 @@ public:
 	virtual void init();
 	virtual void resetAirOptions();
 	virtual void land(int &, int &, int &);
-	virtual int takeHit(hStat&, int, int&);
+	virtual int takeHit(hStat&, int, int&, int&, int&);
 	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 

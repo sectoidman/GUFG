@@ -58,7 +58,7 @@ public:
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, action *&, int&);
 	virtual avatar * spawn() { return NULL; }
-	virtual int takeHit(hStat&, int, int&); 
+	virtual int takeHit(hStat&, int, int&, int&, int&); 
 	bool spriteCheck(int);
 
 	virtual void feed(action *, int, int);

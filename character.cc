@@ -387,11 +387,11 @@ void avatar::connect(hStat & s, int & c)
 	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
-int character::takeHit(hStat & s, int b, int &f)
+int character::takeHit(hStat & s, int b, int &f, int &c, int &h)
 {
 	if(s.ghostHit) freeze = 0;
 	else freeze = s.stun/4+10;
-	int x = cMove->takeHit(s, b, f);
+	int x = cMove->takeHit(s, b, f, c, h);
 	if (x == 1){
 		if(s.launch) aerial = 1;
 		health -= s.damage; 

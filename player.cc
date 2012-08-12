@@ -610,7 +610,7 @@ int player::takeHit(int combo, hStat & s)
 	}
 	s.untech -= combo;
 	if(slide) s.lift += 7 - s.lift/5;
-	particleType = pick()->takeHit(s, blockType, currentFrame);
+	particleType = pick()->takeHit(s, blockType, currentFrame, connectFlag, hitFlag);
 	particleLife = 8;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;
 	if(pick()->aerial) v.y = -s.lift;

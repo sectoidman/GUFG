@@ -613,7 +613,7 @@ char * action::request(int code, int i)
 	}
 }
 
-int action::takeHit(hStat & s, int b, int &f)
+int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 {
 	if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength)
 		return 0;
@@ -622,6 +622,8 @@ int action::takeHit(hStat & s, int b, int &f)
 		return 1;
 	} else {
 		f = 0;
+		c = 0;
+		h = 0;
 		init();
 		return 1;
 	}
