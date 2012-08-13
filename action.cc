@@ -490,7 +490,7 @@ void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc
 	}
 	SDL_Rect * temphit = hitbox[f];
 	for(int i = 0; i < hc; i++){
-		if(cFlag > currentHit) {
+		if(cFlag > calcCurrentHit(f)) {
 			b[i].x = 0; b[i].w = 0;
 			b[i].y = 0; b[i].h = 0;
 		} else {
@@ -548,8 +548,6 @@ void action::step(int *& resource, int &f)
 		else resource[0] = 200;
 	}
 	f++;
-	if(currentHit < hits-1 && f > totalStartup[currentHit+1]) currentHit++;
-	calcCurrentHit(f);
 }
 
 int action::calcCurrentHit(int frame)
@@ -563,12 +561,11 @@ int action::calcCurrentHit(int frame)
 
 void action::init()
 {
-	currentHit = 0;
 }
 
-action * action::connect(int *& resource, action *& temp, int &c)
+action * action::connect(int *& resource, action *& temp, int &c, int f)
 {
-	c = currentHit+1;
+	c = calcCurrentHit(f)+1;
 	if(resource[0] + gain[c] < 200) resource[0] += gain[c];
 	else resource[0] = 200;
 	if(onConnect[c-1] != NULL){

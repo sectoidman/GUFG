@@ -19,7 +19,7 @@ public:
 	virtual void build(const char*, const char*);
 	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 
-	virtual void connect(action *&, hStat&, int&);
+	virtual void connect(action *&, hStat&, int&, int);
 	virtual bool step(action *&, int&);
 	virtual avatar * spawn(action*);
 	virtual void tick() {}

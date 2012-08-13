@@ -595,7 +595,7 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 void instance::connect(int combo, hStat & s)
 {
 //	printf("Hit with %s!\n", cMove->name);
-	pick()->connect(cMove, s, connectFlag);
+	pick()->connect(cMove, s, connectFlag, currentFrame);
 }
 
 void player::connect(int combo, hStat & s)
@@ -605,7 +605,7 @@ void player::connect(int combo, hStat & s)
 	if(combo < 2) v.x = 0;
 	else if (!pick()->aerial) v.x = -combo;
 	addVector(v);
-	pick()->connect(cMove, s, connectFlag);
+	instance::connect(combo, s);
 }
 
 int player::takeHit(int combo, hStat & s)

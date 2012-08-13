@@ -372,9 +372,9 @@ avatar * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(action *& cMove, hStat & s, int & c)
+void avatar::connect(action *& cMove, hStat & s, int & c, int f)
 {
-	cMove->connect(meter, bMove, c);
+	cMove->connect(meter, bMove, c, f);
 	if(bMove == cMove){ 
 		bMove = NULL;
 	}

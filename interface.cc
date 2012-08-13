@@ -607,7 +607,7 @@ void interface::resolveHits()
 
 void interface::doSuperFreeze()
 {
-	int go[2];
+	int go[2] = {0, 0};
 	for(int i = 0; i < 2; i++){
 		go[i] = p[i]->cMove->arbitraryPoll(2, p[i]->currentFrame);
 		if(go[i] > 0) p[(i+1)%2]->pick()->freeze += go[i];

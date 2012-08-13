@@ -56,7 +56,7 @@ public:
 	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
-	virtual action * connect(int *&, action *&, int&);
+	virtual action * connect(int *&, action *&, int&, int);
 	virtual avatar * spawn() { return NULL; }
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
 	bool spriteCheck(int);
@@ -92,7 +92,6 @@ public:
 
 	int frames;	//Number of frames.
 	int hits;
-	int currentHit;
 	int * totalStartup;
 	int * active;
 
