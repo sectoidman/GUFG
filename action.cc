@@ -500,22 +500,23 @@ void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc
 	}
 }
 
-void action::pollStats(hStat & s)
+void action::pollStats(hStat & s, int f)
 {
-	s.damage = stats[currentHit].damage;
-	s.stun = stats[currentHit].stun;
-	s.push = stats[currentHit].push;
-	s.lift = stats[currentHit].lift;
-	s.untech = stats[currentHit].untech;
-	s.launch = stats[currentHit].launch;
-	s.hover = stats[currentHit].hover;
-	s.wallBounce = stats[currentHit].wallBounce;
-	s.floorBounce = stats[currentHit].floorBounce;
-	s.slide = stats[currentHit].slide;
-	s.stick = stats[currentHit].stick;
-	s.ghostHit = stats[currentHit].ghostHit;
-	s.blowback = stats[currentHit].blowback;
-	s.blockMask.i = stats[currentHit].blockMask.i;
+	int c = calcCurrentHit(f);
+	s.damage = stats[c].damage;
+	s.stun = stats[c].stun;
+	s.push = stats[c].push;
+	s.lift = stats[c].lift;
+	s.untech = stats[c].untech;
+	s.launch = stats[c].launch;
+	s.hover = stats[c].hover;
+	s.wallBounce = stats[c].wallBounce;
+	s.floorBounce = stats[c].floorBounce;
+	s.slide = stats[c].slide;
+	s.stick = stats[c].stick;
+	s.ghostHit = stats[c].ghostHit;
+	s.blowback = stats[c].blowback;
+	s.blockMask.i = stats[c].blockMask.i;
 }
 
 bool action::cancel(action * x, int& c, int &h)

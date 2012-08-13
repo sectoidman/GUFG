@@ -545,7 +545,7 @@ void interface::resolveHits()
 						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k])){
 							if(things[i]->ID != things[h]->ID){
 								connect[i] = 1;
-								things[i]->cMove->pollStats(s[i]);
+								things[i]->cMove->pollStats(s[i], things[i]->currentFrame);
 								k = things[h]->regComplexity;
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
