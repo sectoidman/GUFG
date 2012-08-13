@@ -9,7 +9,6 @@
 
 character::character()
 {
-	bMove = NULL;
 	meter = new int[3];
 }
 
@@ -56,7 +55,6 @@ character::character(const char*)
 	
 	throwBreak = new utility("White/break");
 	
-	bMove = NULL;
 
 	meter = new int[3];
 }
@@ -80,7 +78,7 @@ character::~character()
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void avatar::prepHooks(int freeze, action *& cMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
+void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
 	if (cMove == NULL) neutralize(cMove);
@@ -358,7 +356,7 @@ instance * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(action *& cMove, hStat & s, int & c, int f)
+void avatar::connect(action *& cMove, action *& bMove, hStat & s, int & c, int f)
 {
 	cMove->connect(meter, bMove, c, f);
 	if(bMove == cMove){ 

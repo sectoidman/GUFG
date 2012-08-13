@@ -39,6 +39,7 @@ void instance::init()
 	connectFlag = 0;
 	hitFlag = 0;
 	cMove = NULL;
+	bMove = NULL;
 	freeze = 0;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
@@ -463,7 +464,7 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = cMove;
-	pick()->prepHooks(freeze, cMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
+	pick()->prepHooks(freeze, cMove, bMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(dryrun) cMove = heldMove;
 }
 
@@ -471,7 +472,7 @@ void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = cMove;
-	pick()->prepHooks(freeze, cMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
+	pick()->prepHooks(freeze, cMove, bMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(cMove){
 		if(cMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(cMove->throwinvuln == 2) throwInvuln = 6;
@@ -592,7 +593,7 @@ void instance::connect(int combo, hStat & s)
 {
 //	printf("Hit with %s!\n", cMove->name);
 	if(!s.ghostHit) freeze = s.stun/4+10;
-	pick()->connect(cMove, s, connectFlag, currentFrame);
+	pick()->connect(cMove, bMove, s, connectFlag, currentFrame);
 }
 
 void player::connect(int combo, hStat & s)

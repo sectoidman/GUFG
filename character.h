@@ -18,12 +18,12 @@ public:
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
 	virtual void build(const char*, const char*);
-	virtual void prepHooks(int, action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(int, action *&, action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 	virtual bool death(action *&, int) { return 0; }
 
 	virtual void getName(const char*, const char*);
-	virtual void connect(action *&, hStat&, int&, int);
+	virtual void connect(action *&, action *&, hStat&, int&, int);
 	virtual void step(action *&, int&, int&);
 	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 	virtual instance * spawn(action*);
