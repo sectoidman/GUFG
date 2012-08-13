@@ -95,7 +95,6 @@ public:
 	int currentHit;
 	int * totalStartup;
 	int * active;
-	int hFlag;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];
@@ -118,6 +117,7 @@ public:
 	int attemptStart;
 	int attemptEnd;
 	bool window(int);
+	int calcCurrentHit(int);
 
 	char * tempNext;
 	char ** tempOnConnect;

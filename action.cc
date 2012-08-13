@@ -87,7 +87,7 @@ void action::build(const char * n)
 	delta = new SDL_Rect*[frames];
 	deltaComplexity = new int[frames];
 
-	currentHit = 0;
+	int currHit = 0;
 
 	for(int i = 0; i < frames; i++){
 		while(read.get() != '$'); read.ignore(2);
@@ -99,11 +99,11 @@ void action::build(const char * n)
 		read.get(buffer, 100, '\n');
 		deltaComplexity[i] = aux::defineRectArray(buffer, delta[i]);
 		if(hits > 0){
-			if(i > totalStartup[currentHit] && i <= totalStartup[currentHit]+active[currentHit]){
+			if(i > totalStartup[currHit] && i <= totalStartup[currHit]+active[currHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
 				hitComplexity[i] = aux::defineRectArray(buffer, hitbox[i]);
-				if(i == totalStartup[currentHit]+active[currentHit]) currentHit++;
+				if(i == totalStartup[currHit]+active[currHit]) currHit++;
 			} else {
 				hitComplexity[i] = 1;
 				hitbox[i] = new SDL_Rect[1];
@@ -548,11 +548,20 @@ void action::step(int *& resource, int &f)
 	}
 	f++;
 	if(currentHit < hits-1 && f > totalStartup[currentHit+1]) currentHit++;
+	calcCurrentHit(f);
+}
+
+int action::calcCurrentHit(int frame)
+{
+	int b = 0;
+	for(int i = 0; i < hits; i++){
+		if(frame > totalStartup[i]) b = i;
+	} 
+	return b;
 }
 
 void action::init()
 {
-	hFlag = 0;
 	currentHit = 0;
 }
 
