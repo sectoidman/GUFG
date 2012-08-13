@@ -279,7 +279,6 @@ void character::build(const char *directory, const char *file)
 }
 
 void character::init(action *& cMove){
-	neutral->init();
 	health = 300;
 	meter[0] = 0;
 	resetAirOptions();

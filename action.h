@@ -53,7 +53,6 @@ public:
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollStats(hStat&, int);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
-	virtual void init();           //Really just sets current frame to 0. I wanted current frame to be private for now, so I don't break anything.
 	virtual void step(int *&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, action *&, int&, int);
@@ -206,13 +205,13 @@ public:
 class airSpecial : public airMove, public special {
 public:
 	airSpecial() {}
-	airSpecial(const char* n) {build(n); init();}
+	airSpecial(const char* n) {build(n); }
 };
 
 class airNegNormal : public airMove, public negNormal {
 public:
 	airNegNormal() {}
-	airNegNormal(const char* n) {build(n); init();}
+	airNegNormal(const char* n) {build(n); }
 };
 
 class airUtility : public airMove, public utility {
@@ -242,21 +241,21 @@ public:
 class airSuper : public airMove, public super {
 public:
 	airSuper() {}
-	airSuper(const char* n) {build(n); init();}
+	airSuper(const char* n) {build(n); }
 	virtual bool setParameter(char*);
 };
 
 class mash : virtual public action {
 public:
 	mash() {}
-	mash(const char* n) {build(n); init();}
+	mash(const char* n) {build(n); }
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class werf : virtual public action {
 public:
 	werf() {}
-	werf(const char* n) {build(n); init();}
+	werf(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
 	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
 	virtual int arbitraryPoll(int, int);
@@ -269,7 +268,7 @@ public:
 class luftigeWerf : public airMove, public werf {
 public:
 	luftigeWerf() {}
-	luftigeWerf(const char* n) {build(n); init();}
+	luftigeWerf(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
 	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.

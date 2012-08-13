@@ -13,7 +13,6 @@ action::action() : frames(0), hits(0), name(NULL)
 action::action(const char * n) : frames(0), hits(0)
 {
 	build(n);
-	init();
 }
 
 action::~action()
@@ -559,17 +558,12 @@ int action::calcCurrentHit(int frame)
 	return b;
 }
 
-void action::init()
-{
-}
-
 action * action::connect(int *& resource, action *& temp, int &c, int f)
 {
 	c = calcCurrentHit(f)+1;
 	if(resource[0] + gain[c] < 200) resource[0] += gain[c];
 	else resource[0] = 200;
 	if(onConnect[c-1] != NULL){
-		onConnect[c-1]->init();
 		temp = onConnect[c-1];
 	}
 	return temp;
@@ -583,7 +577,6 @@ action * action::blockSuccess(int st)
 void action::execute(action * last, int *& resource)
 {
 	resource[0] -= cost;
-	last->init();
 }
 
 void action::feed(action * c, int code, int i)
@@ -631,7 +624,6 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 		f = 0;
 		c = 0;
 		h = 0;
-		init();
 		return 1;
 	}
 }

@@ -99,13 +99,11 @@ flashSummon::flashSummon() {}
 flashStep::flashStep(const char * n)
 {
 	build(n);
-	init();
 }
 
 flashSummon::flashSummon(const char * n)
 {
 	build(n);
-	init();
 }
 
 bool flashStep::setParameter(char * buffer)

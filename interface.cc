@@ -304,7 +304,6 @@ void interface::resolveSummons()
 void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
-		for(int i = 0; i < 2; i++) p[i]->cMove->init();
 		if(p[0]->pick()->health > p[1]->pick()->health) {
 			printf("Player 1 wins!\n");
 			p[0]->rounds++;

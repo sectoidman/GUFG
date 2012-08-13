@@ -27,7 +27,7 @@ class redSuper : virtual public super{
 public:
 	redSuper();
 	~redSuper();
-	redSuper(const char* n) { build(n); init(); }
+	redSuper(const char* n) { build(n); }
 	int arbitraryPoll(int, int);
 };
 #endif

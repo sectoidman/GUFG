@@ -72,10 +72,6 @@ void player::init()
 void player::roundInit()
 {
 	instance::init();
-	if(cMove != NULL){
-		printf("%s\n", cMove->name);
-		if(cMove != pick()->neutral) cMove->init();
-	}
 	cMove = pick()->neutral;
 	if(v) pick()->init(cMove);
 	updateRects();
@@ -415,9 +411,7 @@ void instance::step()
 {
 	dead = pick()->step(cMove, currentFrame);
 	if(cMove && currentFrame == cMove->frames){
-		cMove->init();
 		cMove = cMove->next;
-		if(cMove) cMove->init();
 		currentFrame = 0;
 		connectFlag = 0;
 		hitFlag = 0;
@@ -681,7 +675,6 @@ void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
 	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
-	cMove->init();
 	pick()->reel->init(1);
 	cMove = pick()->reel;
 	updateRects();

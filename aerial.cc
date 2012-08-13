@@ -8,7 +8,6 @@
 airMove::airMove(const char * n)
 {
 	build(n);
-	init();
 }
 
 action * airMove::land(int &f, int &c, int &h)
@@ -16,7 +15,6 @@ action * airMove::land(int &f, int &c, int &h)
 	f = 0;
 	c = 0;
 	h = 0;
-	init();
 	return landing;
 }
 
@@ -62,7 +60,6 @@ bool airMove::setParameter(char * buffer)
 airUtility::airUtility(const char * n)
 {
 	airMove::build(n);
-	airMove::init();
 }
 
 bool airUtility::check(bool* pos, bool* neg, int t, int f, int* resource, SDL_Rect &p) //Check to see if the action is possible right now.
@@ -81,7 +78,6 @@ void airUtility::execute(action * last, int *& resource){
 airLooping::airLooping(const char * n)
 {
 	airMove::build(n);
-	airMove::init();
 }
 
 untechState::untechState(const char* n)

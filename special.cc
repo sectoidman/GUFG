@@ -8,13 +8,11 @@ using namespace std;
 special::special(const char * n)
 {
 	build(n);
-	init();
 }
 
 negNormal::negNormal(const char * n)
 {
 	build(n);
-	init();
 }
 
 bool negNormal::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
@@ -46,7 +44,6 @@ bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_R
 super::super(const char * n)
 {
 	build(n);
-	init();
 }
 
 bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)

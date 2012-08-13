@@ -103,7 +103,6 @@ action * red::createMove(char * fullName)
 redCancel::redCancel(const char* n) 
 { 
 	build(n); 
-	init();
 }
 
 bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect&)

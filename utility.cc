@@ -2,7 +2,6 @@
 utility::utility(const char * n)
 {
 	build(n);
-	init();
 }
 
 bool utility::check(bool pos[5], bool neg[5], int t, int f, int * resource, SDL_Rect &p)
@@ -21,7 +20,6 @@ bool utility::check(bool pos[5], bool neg[5], int t, int f, int * resource, SDL_
 looping::looping(const char * n)
 {
 	build(n);
-	init();
 }
 
 void looping::step(int *& resource, int &f)

@@ -21,10 +21,6 @@ void projectile::build(const char* directory, const char* file)
 
 void projectile::init(action *& cMove)
 {
-	if(cMove){
-		if(cMove != neutral) cMove->init();
-	}
-	neutral->init();
 	cMove = neutral;
 	meter[3] = 60 * 30;
 	freeze = 0;
@@ -36,13 +32,11 @@ void projectile::init(action *& cMove)
 summon::summon(const char * n)
 {
 	build(n);
-	init();
 }
 
 airSummon::airSummon(const char * n)
 {
 	build(n);
-	init();
 }
 
 avatar * summon::spawn()
