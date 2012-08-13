@@ -12,4 +12,11 @@ public:
 	int matrixComplexity;
 	instance * spawn(action *);
 };
+/*
+class beam : public instance {
+public:
+	beam() {}
+	beam(const char*, const char*);
+	void init();
+};*/
 #endif

@@ -30,7 +30,6 @@ void projectile::processMove(action * m)
 	avatar::processMove(m);
 	if(m->dies){ 
 		m->feed(die, 2, m->hits-1);
-		printf("%s-%s\n", m->name, m->onConnect[0]->name);
 	}
 }
 

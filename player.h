@@ -22,7 +22,9 @@ public:
 	int ID;
 	int inputBuffer[30];
 	int currentFrame;
+	int freeze;
 	action * cMove;
+	action * bMove;
 	int connectFlag, hitFlag;
 	bool dead:1;
 	virtual void init();

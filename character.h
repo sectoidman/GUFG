@@ -19,11 +19,13 @@ public:
 	virtual void processMove(action * m);
 	virtual void build(const char*, const char*);
 	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	//BRB prepping my hooks
 	virtual bool death(action *&, int) { return 0; }
 
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, hStat&, int&, int);
 	virtual void step(action *&, int&);
+	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 	virtual instance * spawn(action*);
 	virtual void tick() {}
 	virtual void neutralize(action *&);
@@ -52,8 +54,7 @@ public:
 	virtual void resetAirOptions();
 	virtual void land(action *&, int &, int &, int &);
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&);
-	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
-	//BRB prepping my hooks
+	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 
 	action * airNeutral;
 	action * crouch;

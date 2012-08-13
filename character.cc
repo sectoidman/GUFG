@@ -84,7 +84,7 @@ void avatar::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bool 
 {
 	action * t = NULL;
 	if (cMove == NULL) neutralize(cMove);
-	t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
+	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
 
 	if(t == NULL && cMove->window(f)){
 		if(cMove->attempt->check(p)) t = cMove->attempt;
@@ -114,6 +114,17 @@ void avatar::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bool 
 	} 
 }
 
+action * avatar::hook(int inputBuffer[30], int i, int f, int * r, bool down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
+{
+	return head->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
+}
+
+action * character::hook(int inputBuffer[30], int i, int f, int * r, bool down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
+{
+	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
+	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
+}
+
 void avatar::neutralize(action *& cMove){
 	cMove = neutral;
 }
@@ -123,43 +134,6 @@ void character::neutralize(action *& cMove){
 	else cMove = neutral;
 }
 
-void character::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
-{
-	action * t = NULL;
-	if (cMove == NULL) neutralize(cMove);
-
-	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
-	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
-	if(t == NULL && cMove->window(f)){
-		if(cMove->attempt->check(p)) t = cMove->attempt;
-	}
-
-	if(t != NULL){
-		if(freeze > 0){
-			if(bMove == NULL) 
-				if(!dryrun) bMove = t;
-		}
-		else {
-			if(!dryrun){ 
-				f = 0;
-				cFlag = 0;
-				hFlag = 0;
-				t->execute(cMove, meter);
-			}
-			cMove = t;
-		}
-	} else if (bMove != NULL && freeze <= 0) {
-		if(!dryrun){ 
-			f = 0;
-			cFlag = 0;
-			hFlag = 0;
-			bMove->execute(cMove, meter);
-		}
-		cMove = bMove;
-		if(!dryrun) bMove = NULL;
-	} 
-}
-	
 void avatar::getName(const char* directory, const char* file)
 {
 	char buffer[101];
