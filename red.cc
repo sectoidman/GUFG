@@ -30,10 +30,10 @@ void red::tick()
 	if(meter[3] < 0) meter[3] = 0;
 }
 
-void red::step(action *& cMove, int &f)
+void red::step(action *& cMove, int &f, int &freeze)
 {
 	if(meter[4] > 0) meter[4]--;
-	character::step(cMove, f);
+	character::step(cMove, f, freeze);
 }
 
 void red::drawMeters(int ID)

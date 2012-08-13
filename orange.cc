@@ -13,12 +13,12 @@ void orange::init(action *& cMove)
 	matrix = NULL;
 }
 
-void orange::step(action *& cMove, int &f)
+void orange::step(action *& cMove, int &f, int &freeze)
 {
 	for(int i = 0; i < matrixComplexity; i++){
 		if(matrix[i]->dead) cull(i);
 	}
-	character::step(cMove, f);
+	character::step(cMove, f, freeze);
 }
 
 void orange::cull(int q)

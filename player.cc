@@ -39,6 +39,7 @@ void instance::init()
 	connectFlag = 0;
 	hitFlag = 0;
 	cMove = NULL;
+	freeze = 0;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
@@ -261,7 +262,7 @@ void player::enforceGravity(int grav, int floor)
 		pick()->aerial = 1;
 	}
 
-	else if(pick()->aerial && !pick()->freeze){ 
+	else if(pick()->aerial && !freeze){ 
 		if(hover > 0 && deltaY + 3 > 0) g.y = -deltaY;
 		addVector(g);
 	}
@@ -410,7 +411,7 @@ void player::land()
 void instance::step()
 {
 	if(pick()->death(cMove, currentFrame)) dead = true;
-	pick()->step(cMove, currentFrame);
+	pick()->step(cMove, currentFrame, freeze);
 	if(cMove && currentFrame == cMove->frames){
 		cMove = cMove->next;
 		currentFrame = 0;
@@ -462,7 +463,7 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = cMove;
-	pick()->prepHooks(cMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
+	pick()->prepHooks(freeze, cMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(dryrun) cMove = heldMove;
 }
 
@@ -470,7 +471,7 @@ void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * heldMove;
 	if(dryrun) heldMove = cMove;
-	pick()->prepHooks(cMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
+	pick()->prepHooks(freeze, cMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(cMove){
 		if(cMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(cMove->throwinvuln == 2) throwInvuln = 6;
@@ -492,7 +493,7 @@ void instance::pullVolition()
 				momentumComplexity = 0;
 		}
 	}
-	if(pick()->freeze < 1){
+	if(freeze < 1){
 		if(currentFrame < cMove->frames){
 			SDL_Rect * temp = cMove->delta[currentFrame];
 			for(int i = 0; i < cMove->deltaComplexity[currentFrame]; i++){
@@ -590,6 +591,7 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 void instance::connect(int combo, hStat & s)
 {
 //	printf("Hit with %s!\n", cMove->name);
+	if(!s.ghostHit) freeze = s.stun/4+10;
 	pick()->connect(cMove, s, connectFlag, currentFrame);
 }
 
@@ -612,6 +614,8 @@ int player::takeHit(int combo, hStat & s)
 	}
 	s.untech -= combo;
 	if(slide) s.lift += 7 - s.lift/5;
+	if(s.ghostHit) freeze = 0;
+	else freeze = s.stun/4+10;
 	particleType = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag);
 	particleLife = 8;
 	deltaX = 0; deltaY = 0; momentumComplexity = 0;

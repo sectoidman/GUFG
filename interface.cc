@@ -209,7 +209,7 @@ void interface::resolve()
 			things[i]->updateRects();
 
 		for(int i = 0; i < thingComplexity; i++){
-			if(!things[i]->pick()->freeze){
+			if(!things[i]->freeze){
 				things[i]->pullVolition();
 				things[i]->combineDelta();
 				if(i < 2) p[i]->enforceGravity(grav, floor);
@@ -609,7 +609,7 @@ void interface::doSuperFreeze()
 	int go[2] = {0, 0};
 	for(int i = 0; i < 2; i++){
 		go[i] = p[i]->cMove->arbitraryPoll(2, p[i]->currentFrame);
-		if(go[i] > 0) p[(i+1)%2]->pick()->freeze += go[i];
+		if(go[i] > 0) p[(i+1)%2]->freeze += go[i];
 	}
 	if(go[0] > 0 || go[1] > 0)
 		freeze = std::max(go[0], go[1]);

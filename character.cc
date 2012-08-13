@@ -80,7 +80,7 @@ character::~character()
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void avatar::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
+void avatar::prepHooks(int freeze, action *& cMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
 	if (cMove == NULL) neutralize(cMove);
@@ -271,7 +271,6 @@ void character::init(action *& cMove){
 	meter[0] = 0;
 	resetAirOptions();
 	aerial = 0;
-	freeze = 0;
 }
 
 void avatar::processMove(action * m)
@@ -365,13 +364,10 @@ void avatar::connect(action *& cMove, hStat & s, int & c, int f)
 	if(bMove == cMove){ 
 		bMove = NULL;
 	}
-	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h)
 {
-	if(s.ghostHit) freeze = 0;
-	else freeze = s.stun/4+10;
 	int x = cMove->takeHit(s, b, f, c, h);
 	if (x == 1){
 		if(s.launch) aerial = 1;
@@ -418,11 +414,10 @@ void character::land(action *& cMove, int &f, int &c, int &h)
 	resetAirOptions();
 }
 
-void avatar::step(action *& cMove, int &currentFrame)
+void avatar::step(action *& cMove, int &currentFrame, int &freeze)
 {
 	if(freeze <= 0) {
 		cMove->step(meter, currentFrame);
 		tick();
-	}
-	if(freeze > 0) freeze--;
+	} else freeze--;
 }

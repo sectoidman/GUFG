@@ -7,7 +7,7 @@ public:
 	void init(action *&);
 
 	void cull(int);
-	void step(action *&, int&);
+	void step(action *&, int&, int&);
 	instance ** matrix;
 	int matrixComplexity;
 	instance * spawn(action *);

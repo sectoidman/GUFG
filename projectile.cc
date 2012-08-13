@@ -20,8 +20,6 @@ void projectile::build(const char* directory, const char* file)
 void projectile::init(action *& cMove)
 {
 	cMove = neutral;
-	freeze = 0;
-	freeze = 0;
 	aerial = 0;
 }
 
