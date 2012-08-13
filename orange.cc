@@ -4,12 +4,11 @@ orange::orange()
 	head = new actionTrie;
 	airHead = new actionTrie;
 	build("Orange", "Orange");
-	init();
 }
 
-void orange::init()
+void orange::init(action *& cMove)
 {
-	character::init();
+	character::init(cMove);
 	matrixComplexity = 0;
 	matrix = NULL;
 }

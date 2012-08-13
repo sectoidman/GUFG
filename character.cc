@@ -10,7 +10,6 @@
 character::character()
 {
 	bMove = NULL;
-	cMove = NULL;
 	meter = new int[3];
 }
 
@@ -57,7 +56,6 @@ character::character(const char*)
 	
 	throwBreak = new utility("White/break");
 	
-	cMove = neutral;
 	bMove = NULL;
 
 	meter = new int[3];
@@ -82,10 +80,10 @@ character::~character()
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
+void avatar::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
-	if (cMove == NULL) neutralize();
+	if (cMove == NULL) neutralize(cMove);
 	t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
 
 	if(t == NULL && cMove->window(f)){
@@ -116,19 +114,19 @@ void avatar::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &
 	} 
 }
 
-void avatar::neutralize(){
+void avatar::neutralize(action *& cMove){
 	cMove = neutral;
 }
 
-void character::neutralize(){
+void character::neutralize(action *& cMove){
 	if(aerial) cMove = airNeutral;
 	else cMove = neutral;
 }
 
-void character::prepHooks(int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
+void character::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
-	if (cMove == NULL) neutralize();
+	if (cMove == NULL) neutralize(cMove);
 
 	if(aerial) t = airHead->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
 	else t = head->actionHook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
@@ -280,12 +278,8 @@ void character::build(const char *directory, const char *file)
 	airHead->insert(5, airNeutral);
 }
 
-void character::init(){
-	if(cMove){
-		if(cMove != neutral) cMove->init();
-	}
+void character::init(action *& cMove){
 	neutral->init();
-	cMove = neutral;
 	health = 300;
 	meter[0] = 0;
 	resetAirOptions();
@@ -378,7 +372,7 @@ avatar * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(hStat & s, int & c)
+void avatar::connect(action *& cMove, hStat & s, int & c)
 {
 	cMove->connect(meter, bMove, c);
 	if(bMove == cMove){ 
@@ -387,7 +381,7 @@ void avatar::connect(hStat & s, int & c)
 	if(!s.ghostHit) freeze = s.stun/4+10;
 }
 
-int character::takeHit(hStat & s, int b, int &f, int &c, int &h)
+int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h)
 {
 	if(s.ghostHit) freeze = 0;
 	else freeze = s.stun/4+10;
@@ -424,7 +418,7 @@ void character::resetAirOptions()
 	meter[2] = 1;
 }
 
-void character::land(int &f, int &c, int &h)
+void character::land(action *& cMove, int &f, int &c, int &h)
 {
 	if(cMove == airBlock){
 		standBlock->init(airBlock->counter);
@@ -437,7 +431,7 @@ void character::land(int &f, int &c, int &h)
 	resetAirOptions();
 }
 
-bool avatar::step(int &currentFrame)
+bool avatar::step(action *& cMove, int &currentFrame)
 {
 	if(freeze <= 0) {
 		cMove->step(meter, currentFrame);

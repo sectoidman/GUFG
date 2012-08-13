@@ -13,7 +13,7 @@ public:
 class orange : public character {
 public:
 	orange();
-	void init();
+	void init(action *&);
 
 	beam * matrix;
 	int matrixComplexity;

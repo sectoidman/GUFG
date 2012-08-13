@@ -10,21 +10,20 @@
 #define CHARACTER
 class avatar {
 public:
-	avatar() : cMove(NULL), bMove(NULL) {}
-	virtual void init() = 0;
-	bool spriteCheck(int);
-	virtual void draw(int, int, int, int);//Pass sprite information up.
+	avatar() : bMove(NULL) {}
+	virtual void init(action *&) = 0;
+	bool spriteCheck(action *&, int);
+	virtual void draw(action *&, int, int, int, int);//Pass sprite information up.
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
 	virtual void build(const char*, const char*);
-	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 
-	virtual void connect(hStat&, int&);
-	virtual bool step(int&);
+	virtual void connect(action *&, hStat&, int&);
+	virtual bool step(action *&, int&);
 	virtual avatar * spawn(action*);
 	virtual void tick() {}
-	virtual void neutralize();
-	action * cMove;
+	virtual void neutralize(action *&);
 	action * bMove;
 	int freeze;
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
@@ -36,6 +35,7 @@ public:
 
 	action * neutral;
 };
+
 class character : virtual public avatar{
 public:
 	character(const char*);
@@ -44,13 +44,13 @@ public:
 
 	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
 
-	virtual void neutralize();
+	virtual void neutralize(action *&);
 	virtual void drawMeters(int);
-	virtual void init();
+	virtual void init(action *&);
 	virtual void resetAirOptions();
-	virtual void land(int &, int &, int &);
-	virtual int takeHit(hStat&, int, int&, int&, int&);
-	virtual void prepHooks(int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void land(action *&, int &, int &, int &);
+	virtual int takeHit(action *&, hStat&, int, int&, int&, int&);
+	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 
 	action * airNeutral;
@@ -76,8 +76,8 @@ public:
 	virtual void build(const char*, const char*);
 
 	virtual void tick();
-	virtual bool step(int&);
-	virtual void init();
+	virtual bool step(action *&, int&);
+	virtual void init(action *&);
 	action * die;
 };
 #endif

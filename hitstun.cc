@@ -17,7 +17,8 @@ action * hitstun::blockSuccess(int st){
 	return this;
 }
 
-int hitstun::takeHit(hStat & s, int b, int &f){
+int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
+{
 	if(s.blockMask.i & blockState.i){
 		if(b == 1){ 
 			f = 0;

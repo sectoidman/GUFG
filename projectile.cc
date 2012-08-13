@@ -5,7 +5,6 @@ projectile::projectile(const char* directory, const char* file)
 	airHead = new actionTrie;
 	build(directory, file);
 	meter = new int[4];
-	init();
 }
 
 void projectile::build(const char* directory, const char* file)
@@ -20,7 +19,7 @@ void projectile::build(const char* directory, const char* file)
 	airHead->insert(die);
 }
 
-void projectile::init()
+void projectile::init(action *& cMove)
 {
 	if(cMove){
 		if(cMove != neutral) cMove->init();
@@ -48,7 +47,7 @@ airSummon::airSummon(const char * n)
 
 avatar * summon::spawn()
 {
-	payload->init();
+	payload->init(payload->neutral);
 	return payload;
 }
 
@@ -62,9 +61,9 @@ void summon::zero()
 	action::zero();
 }
 
-bool projectile::step(int &f)
+bool projectile::step(action *& cMove, int &f)
 {
-	avatar::step(f);
+	avatar::step(cMove, f);
 	if(cMove == die){
 		if(f == cMove->frames - 1){
 			return true;

@@ -148,7 +148,7 @@ public:
 	int counter;
 	virtual void step(int *&, int&);
 	virtual action * blockSuccess(int);
-	virtual int takeHit(hStat &, int, int&);
+	virtual int takeHit(hStat&, int, int&, int&, int&); 
 	virtual int arbitraryPoll(int, int);
 	hitstun(char *, int);
 	hitstun(const char *);

@@ -6,11 +6,11 @@ public:
 	yellow();
 	void resetAirOptions();
 	action * createMove(char*);
-	int takeHit(hStat&, int, int&, int&, int&);
+	int takeHit(action *&, hStat&, int, int&, int&, int&);
 	void drawMeters(int);
 	void tick();
-	void init();
-	bool step(int&);
+	void init(action *&);
+	bool step(action *&, int&);
 };
 
 class flashStep : public airMove {

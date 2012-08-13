@@ -140,7 +140,7 @@ void instance::draw(int x, int y)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(facing, realPosX - x, realPosY - y, currentFrame);
+	pick()->draw(cMove, facing, realPosX - x, realPosY - y, currentFrame);
 }
 
 void player::drawHitParticle(int x, int y)
@@ -164,7 +164,7 @@ void player::drawHitParticle(int x, int y)
 	}
 }
 
-void avatar::draw(int facing, int x, int y, int f)
+void avatar::draw(action *& cMove, int facing, int x, int y, int f)
 {
 	cMove->draw(facing, x, y, f);
 }
@@ -206,9 +206,9 @@ void action::draw(int facing, int x, int y, int f)
 
 bool instance::spriteCheck()
 {
-	return pick()->spriteCheck(currentFrame);
+	return pick()->spriteCheck(cMove, currentFrame);
 }
-bool avatar::spriteCheck(int f)
+bool avatar::spriteCheck(action *& cMove, int f)
 {
 	if(cMove == NULL) return 0;
 	else return cMove->spriteCheck(f);

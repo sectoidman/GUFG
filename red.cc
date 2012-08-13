@@ -9,8 +9,6 @@ red::red()
 	head = new actionTrie;
 	build("Red", "Red");
 	backup = new red(this);
-
-	init();	
 }
 
 red::red(red* b)
@@ -23,8 +21,6 @@ red::red(red* b)
 	head = new actionTrie;
 	build("Red", "Red");
 	backup = b;
-
-	init();
 }
 
 void red::tick()
@@ -34,10 +30,10 @@ void red::tick()
 	if(meter[3] < 0) meter[3] = 0;
 }
 
-bool red::step(int &f)
+bool red::step(action *& cMove, int &f)
 {
 	if(meter[4] > 0) meter[4]--;
-	return character::step(f);
+	return character::step(cMove, f);
 }
 
 void red::drawMeters(int ID)
@@ -73,9 +69,9 @@ void red::drawMeters(int ID)
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
-void red::init()
+void red::init(action *& cMove)
 {
-	character::init();
+	character::init(cMove);
 	meter[3] = 540;
 	meter[4] = 0;
 }
