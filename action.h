@@ -94,6 +94,7 @@ public:
 	int hits;
 	int * totalStartup;
 	int * active;
+	bool dies:1;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	int button[5];

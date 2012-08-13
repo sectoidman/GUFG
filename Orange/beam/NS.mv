@@ -3,7 +3,7 @@ Buffer: 0 : 0
 Hits: 1
 Frames: 2 : 0 : 2
 Check: 0
-State: 1 : 2048
+State: 1 : 1024
 Gain: 0 : 0
 Cost: 0
 Blocks: 0
@@ -12,7 +12,7 @@ Stun: 1
 Push: 5
 Lift: 5
 Blockable: 7
-Properties: S
+Properties: dS
 #0 
 $C	0 0 0 0
 $R	0 0 0 0

@@ -15,10 +15,10 @@ void orange::init(action *& cMove)
 
 void orange::step(action *& cMove, int &f)
 {
-	character::step(cMove, f);
 	for(int i = 0; i < matrixComplexity; i++){
 		if(matrix[i]->dead) cull(i);
 	}
+	character::step(cMove, f);
 }
 
 void orange::cull(int q)

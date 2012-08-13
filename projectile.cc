@@ -11,18 +11,27 @@ void projectile::build(const char* directory, const char* file)
 {
 	getName(directory, file);
 	char buffer[101];
-	sprintf(buffer, "%s/NS", name);
+	sprintf(buffer, "%s/die", name);
 	die = new action(buffer);
+	head->insert(die);
 	avatar::build(directory, file);
 }
 
 void projectile::init(action *& cMove)
 {
 	cMove = neutral;
-	meter[3] = 60 * 30;
 	freeze = 0;
 	freeze = 0;
 	aerial = 0;
+}
+
+void projectile::processMove(action * m)
+{
+	avatar::processMove(m);
+	if(m->dies){ 
+		m->feed(die, 2, m->hits-1);
+		printf("%s-%s\n", m->name, m->onConnect[0]->name);
+	}
 }
 
 summon::summon(const char * n)

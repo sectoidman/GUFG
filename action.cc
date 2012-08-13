@@ -52,6 +52,7 @@ void action::zero()
 	isProjectile = 0;
 	stats = NULL;
 	cost = 0;
+	dies = 0;
 	tempNext = NULL;
 	tempAttempt = NULL;
 }
@@ -436,6 +437,9 @@ void action::parseProperties(char * buffer)
 		case 'P':
 			stats[ch].eatsProjectile = 1;
 			break;
+		case 'd':
+			dies = 1;
+			break;
 		default:
 			break;
 		}
@@ -587,7 +591,6 @@ void action::feed(action * c, int code, int i)
 		if(tempNext) delete [] tempNext;
 		break;
 	case 2:
-		onConnect[i] = new action;
 		onConnect[i] = c;
 		if(tempOnConnect[i]) delete [] tempOnConnect[i];
 //		printf("%s-%i: %s\n", name, i, onConnect[i]->name);

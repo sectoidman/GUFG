@@ -77,6 +77,7 @@ public:
 	projectile() {}
 	virtual void build(const char*, const char*);
 
+	virtual void processMove(action * m);
 	virtual bool death(action *&, int);
 	virtual void init(action *&);
 	action * die;
