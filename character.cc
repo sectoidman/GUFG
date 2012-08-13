@@ -159,6 +159,20 @@ void character::prepHooks(action *& cMove, int inputBuffer[30], bool down[5], bo
 		if(!dryrun) bMove = NULL;
 	} 
 }
+	
+void avatar::getName(const char* directory, const char* file)
+{
+	char buffer[101];
+	std::ifstream read;
+	sprintf(buffer, "%s/%s.ch", directory, file);
+
+	read.open(buffer);
+	assert(!read.fail());
+
+	read.get(buffer, 50); read.ignore(100, '\n');
+	name = new char[strlen(buffer)+1];
+	strcpy(name, buffer);
+}
 
 void avatar::build(const char* directory, const char* file)
 {
@@ -172,6 +186,8 @@ void avatar::build(const char* directory, const char* file)
 	char component[2];
 	char * token;
 	int q;
+	sprintf(buffer, "%s/NS", name);
+	neutral = new looping(buffer);
 	std::ifstream read;
 	sprintf(buffer, "%s/%s.ch", directory, file);
 
@@ -179,11 +195,7 @@ void avatar::build(const char* directory, const char* file)
 	assert(!read.fail());
 
 	read.get(buffer, 50); read.ignore(100, '\n');
-	name = new char[strlen(buffer)+1];
-	strcpy(name, buffer);
 
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
 
 	while(!read.eof()){
 		commentFlag = 0;
@@ -227,6 +239,7 @@ void avatar::build(const char* directory, const char* file)
 
 void character::build(const char *directory, const char *file)
 {
+	getName(directory, file);
 	avatar::build(directory, file);
 	char buffer[101];
 

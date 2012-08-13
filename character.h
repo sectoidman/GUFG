@@ -21,6 +21,7 @@ public:
 	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	virtual bool death(action *&, int) { return 0; }
 
+	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, hStat&, int&, int);
 	virtual void step(action *&, int&);
 	virtual instance * spawn(action*);
@@ -76,7 +77,6 @@ public:
 	projectile() {}
 	virtual void build(const char*, const char*);
 
-	virtual void tick();
 	virtual bool death(action *&, int);
 	virtual void init(action *&);
 	action * die;

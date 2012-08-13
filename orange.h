@@ -6,6 +6,8 @@ public:
 	orange();
 	void init(action *&);
 
+	void cull(int);
+	void step(action *&, int&);
 	instance ** matrix;
 	int matrixComplexity;
 	instance * spawn(action *);

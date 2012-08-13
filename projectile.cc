@@ -9,12 +9,11 @@ projectile::projectile(const char* directory, const char* file)
 
 void projectile::build(const char* directory, const char* file)
 {
-	avatar::build(directory, file);
+	getName(directory, file);
 	char buffer[101];
 	sprintf(buffer, "%s/NS", name);
 	die = new action(buffer);
-	head->insert(die);
-	airHead->insert(die);
+	avatar::build(directory, file);
 }
 
 void projectile::init(action *& cMove)
@@ -60,13 +59,7 @@ bool projectile::death(action *& cMove, int f)
 			return true;
 		}
 	}
-	if (meter[3] <= 0) return true;
 	return false;
-}
-
-void projectile::tick()
-{
-	meter[3]--;
 }
 
 bool summon::setParameter(char * buffer)

@@ -13,12 +13,27 @@ void orange::init(action *& cMove)
 	matrix = NULL;
 }
 
+void orange::step(action *& cMove, int &f)
+{
+	character::step(cMove, f);
+	for(int i = 0; i < matrixComplexity; i++){
+		if(matrix[i]->dead) cull(i);
+	}
+}
+
+void orange::cull(int q)
+{
+	for(int i = q; i < matrixComplexity - 1; i++)
+		matrix[i] = matrix[i+1];
+	matrixComplexity--;
+}
+
 instance * orange::spawn(action * source)
 {
 	instance * n = source->spawn();
 	if(!n) return NULL;
 	else {
-		instance ** temp; 
+		instance ** temp;
 		if(matrixComplexity < 7) temp = new instance*[matrixComplexity+1];
 		else{
 			temp = new instance*[7];
@@ -31,6 +46,7 @@ instance * orange::spawn(action * source)
 		temp[0] = n;
 		if(matrix) delete [] matrix;
 		matrix = temp;
+		if(matrixComplexity < 7) matrixComplexity++;
 		return matrix[0];
 	}
 }
