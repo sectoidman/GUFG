@@ -10,7 +10,7 @@ public:
 	void drawMeters(int);
 	void tick();
 	void init(action *&);
-	bool step(action *&, int&);
+	void step(action *&, int&);
 };
 
 class flashStep : public airMove {

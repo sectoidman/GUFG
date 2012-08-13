@@ -6,8 +6,8 @@ public:
 	orange();
 	void init(action *&);
 
-	avatar ** matrix;
+	instance ** matrix;
 	int matrixComplexity;
-	avatar * spawn(action *);
+	instance * spawn(action *);
 };
 #endif

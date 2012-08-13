@@ -8,6 +8,7 @@
 #include "trie.h"
 #ifndef CHARACTER
 #define CHARACTER
+class instance;
 class avatar {
 public:
 	avatar() : bMove(NULL) {}
@@ -18,10 +19,11 @@ public:
 	virtual void processMove(action * m);
 	virtual void build(const char*, const char*);
 	virtual void prepHooks(action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual bool death(action *&, int) { return 0; }
 
 	virtual void connect(action *&, hStat&, int&, int);
-	virtual bool step(action *&, int&);
-	virtual avatar * spawn(action*);
+	virtual void step(action *&, int&);
+	virtual instance * spawn(action*);
 	virtual void tick() {}
 	virtual void neutralize(action *&);
 	action * bMove;
@@ -31,7 +33,6 @@ public:
 	actionTrie * head;	//Trie for ground actions
 	actionTrie * airHead;	//Trie for air actions
 	int * meter;
-	bool dead:1;
 
 	action * neutral;
 };
@@ -76,7 +77,7 @@ public:
 	virtual void build(const char*, const char*);
 
 	virtual void tick();
-	virtual bool step(action *&, int&);
+	virtual bool death(action *&, int);
 	virtual void init(action *&);
 	action * die;
 };

@@ -12,8 +12,6 @@ void projectile::build(const char* directory, const char* file)
 	avatar::build(directory, file);
 	char buffer[101];
 	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
-	sprintf(buffer, "%s/die", name);
 	die = new action(buffer);
 	head->insert(die);
 	airHead->insert(die);
@@ -24,7 +22,6 @@ void projectile::init(action *& cMove)
 	cMove = neutral;
 	meter[3] = 60 * 30;
 	freeze = 0;
-	dead = false;
 	freeze = 0;
 	aerial = 0;
 }
@@ -39,10 +36,11 @@ airSummon::airSummon(const char * n)
 	build(n);
 }
 
-avatar * summon::spawn()
+instance * summon::spawn()
 {
 	payload->init(payload->neutral);
-	return payload;
+	instance * ret = new instance(payload);
+	return ret;
 }
 
 void summon::zero()
@@ -55,9 +53,8 @@ void summon::zero()
 	action::zero();
 }
 
-bool projectile::step(action *& cMove, int &f)
+bool projectile::death(action *& cMove, int f)
 {
-	avatar::step(cMove, f);
 	if(cMove == die){
 		if(f == cMove->frames - 1){
 			return true;

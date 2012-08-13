@@ -11,6 +11,7 @@
 #ifndef ACTION
 #define ACTION
 class avatar;
+class instance;
 
 struct hStat{
 	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), eatsProjectile() {}
@@ -56,7 +57,7 @@ public:
 	virtual void step(int *&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, action *&, int&, int);
-	virtual avatar * spawn() { return NULL; }
+	virtual instance * spawn() { return NULL; }
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
 	bool spriteCheck(int);
 
@@ -282,7 +283,7 @@ public:
 	virtual bool setParameter(char*);
 	virtual void generate(const char*, const char*);
 	virtual char* request(int, int);
-	avatar * spawn();
+	instance * spawn();
 	virtual void zero();
 
 	avatar * payload;

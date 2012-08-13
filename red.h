@@ -9,7 +9,7 @@ public:
 	action * createMove(char*);
 	void drawMeters(int);
 	void tick();
-	bool step(action *&, int&);
+	void step(action *&, int&);
 	void init(action *&);
 	red * backup;
 };

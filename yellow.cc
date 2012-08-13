@@ -29,10 +29,10 @@ void yellow::tick()
 	}
 }
 
-bool yellow::step(action *& cMove, int &f)
+void yellow::step(action *& cMove, int &f)
 {
 	if(meter[3] < 0) meter[3]++;
-	return character::step(cMove, f);
+	character::step(cMove, f);
 }
 
 action * yellow::createMove(char * fullName)

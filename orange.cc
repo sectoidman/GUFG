@@ -13,20 +13,20 @@ void orange::init(action *& cMove)
 	matrix = NULL;
 }
 
-avatar * orange::spawn(action * source)
+instance * orange::spawn(action * source)
 {
-	avatar * n = source->spawn();
+	instance * n = source->spawn();
 	if(!n) return NULL;
 	else {
-		avatar ** temp; 
-		if(matrixComplexity < 6) temp = new avatar*[matrixComplexity+1];
+		instance ** temp; 
+		if(matrixComplexity < 7) temp = new instance*[matrixComplexity+1];
 		else{
-			temp = new avatar*[6];
-			matrix[5]->dead = true;
+			temp = new instance*[7];
+			matrix[6]->dead = true;
 		}
 		int i;
 		for(i = matrixComplexity; i > 0; i--){
-			if(i != 6) temp[i] = matrix[i - 1];
+			if(i != 7) temp[i] = matrix[i - 1];
 		}
 		temp[0] = n;
 		if(matrix) delete [] matrix;

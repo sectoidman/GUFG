@@ -409,7 +409,8 @@ void player::land()
 
 void instance::step()
 {
-	dead = pick()->step(cMove, currentFrame);
+	if(pick()->death(cMove, currentFrame)) dead = true;
+	pick()->step(cMove, currentFrame);
 	if(cMove && currentFrame == cMove->frames){
 		cMove = cMove->next;
 		currentFrame = 0;

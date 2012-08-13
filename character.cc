@@ -182,6 +182,9 @@ void avatar::build(const char* directory, const char* file)
 	name = new char[strlen(buffer)+1];
 	strcpy(name, buffer);
 
+	sprintf(buffer, "%s/NS", name);
+	neutral = new looping(buffer);
+
 	while(!read.eof()){
 		commentFlag = 0;
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
@@ -226,8 +229,6 @@ void character::build(const char *directory, const char *file)
 {
 	avatar::build(directory, file);
 	char buffer[101];
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
 
 	sprintf(buffer, "%s/NL", name);
 	crouch = new looping(buffer);
@@ -366,7 +367,7 @@ action * avatar::createMove(char * fullName)
 	return m;
 }
 
-avatar * avatar::spawn(action * source)
+instance * avatar::spawn(action * source)
 {
 	return source->spawn();
 }
@@ -430,12 +431,11 @@ void character::land(action *& cMove, int &f, int &c, int &h)
 	resetAirOptions();
 }
 
-bool avatar::step(action *& cMove, int &currentFrame)
+void avatar::step(action *& cMove, int &currentFrame)
 {
 	if(freeze <= 0) {
 		cMove->step(meter, currentFrame);
 		tick();
 	}
 	if(freeze > 0) freeze--;
-	return false;
 }
