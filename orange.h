@@ -9,7 +9,7 @@ public:
 	void cull(int);
 	void step(action *&, int&, int&);
 	instance ** matrix;
-	
+
 	int matrixComplexity;
 	instance * spawn(action *);
 };

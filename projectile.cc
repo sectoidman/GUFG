@@ -103,7 +103,9 @@ int summon::arbitraryPoll(int q, int f)
 {
 	switch(q){
 	case 50:
-		if(f == spawnFrame) return 1;
+		if(f == spawnFrame){ 
+			return 1;
+		}
 		else break;
 	case 51:
 		if(spawnTrackX) return 1;
