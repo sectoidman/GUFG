@@ -11,7 +11,7 @@
 class instance;
 class avatar {
 public:
-	avatar() : bMove(NULL) {}
+	avatar() {}
 	virtual void init(action *&) = 0;
 	bool spriteCheck(action *&, int);
 	virtual void draw(action *&, int, int, int, int);//Pass sprite information up.
@@ -29,7 +29,6 @@ public:
 	virtual instance * spawn(action*);
 	virtual void tick() {}
 	virtual void neutralize(action *&);
-	action * bMove;
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	bool aerial; //Flags whether the character is considered "in the air"
 	actionTrie * head;	//Trie for ground actions

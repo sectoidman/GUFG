@@ -10,7 +10,12 @@ projectile::projectile(const char* directory, const char* file)
 void projectile::build(const char* directory, const char* file)
 {
 	getName(directory, file);
+
 	char buffer[101];
+
+	sprintf(buffer, "%s/%s", directory, file);
+	neutral = new looping(buffer);
+
 	sprintf(buffer, "%s/die", name);
 	die = new action(buffer);
 	head->insert(die);

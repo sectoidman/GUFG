@@ -5,7 +5,7 @@ Frames: 18 : 4 : 5 : 9
 Check: 5 
 State: 256 : 510
 Damage: 6
-Payload: beam/beam
+Payload: beam/A
 SpawnsOn: 10
 SpawnPosition: 90 : 30
 Stun: 10
@@ -14,6 +14,7 @@ Push: 1
 Lift: 7
 Blowback: 0
 Gain: 0 : 2
+Connect: 0 : >fA
 Cost: 0
 Blockable: 3 
 Blocks: 0

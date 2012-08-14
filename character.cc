@@ -158,8 +158,6 @@ void avatar::build(const char* directory, const char* file)
 	char component[2];
 	char * token;
 	int q;
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
 	std::ifstream read;
 	sprintf(buffer, "%s/%s.ch", directory, file);
 
@@ -212,8 +210,13 @@ void avatar::build(const char* directory, const char* file)
 void character::build(const char *directory, const char *file)
 {
 	getName(directory, file);
-	avatar::build(directory, file);
+
 	char buffer[101];
+
+	sprintf(buffer, "%s/NS", name);
+	neutral = new looping(buffer);
+
+	avatar::build(directory, file);
 
 	sprintf(buffer, "%s/NL", name);
 	crouch = new looping(buffer);
