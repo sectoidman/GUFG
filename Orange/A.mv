@@ -2,8 +2,8 @@ Name: A
 Buffer: 30 : 30
 Hits: 1
 Frames: 18 : 4 : 5 : 9
-Check: 5 
-State: 256 : 510
+Check: 5
+State: 256 : 508
 Damage: 6
 Payload: beam/A
 SpawnsOn: 10

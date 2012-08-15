@@ -1,0 +1,26 @@
+Name: NS
+Buffer: 0 : 0
+Hits: 1
+Frames: 2 : 0 : 2
+Check: 0
+State: 1 : 1024
+Gain: 0 : 0
+Cost: 0
+Blocks: 0
+Damage: 24
+Stun: 5
+Untech: 15
+Push: 5
+Lift: 15
+Blockable: 3
+Properties: dS
+#0 
+$C	0 0 0 0
+$R	0 0 0 0
+$D	2 -9 0 0
+$A	0 0 50 50
+#0 
+$C	0 0 0 0
+$R	0 0 0 0
+$D	2 -9 0 0
+$A	0 0 50 50

@@ -21,4 +21,7 @@ Orange
 ?ForwardTech = a6 a9 a3
 ?StopTech = a8
 >A = h
+>2E = h
+22E = h252
+22D = h252
 #Moves

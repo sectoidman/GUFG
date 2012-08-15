@@ -2,7 +2,7 @@ Name: Fa
 Buffer: 30 : 30
 Hits: 0
 Frames: 9
-Check: 5 
+Check: 5
 State: 510
 Payload: beam/Dstopa
 SpawnsOn: 1
