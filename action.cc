@@ -98,7 +98,7 @@ void action::build(const char * n)
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
 		deltaComplexity[i] = aux::defineRectArray(buffer, delta[i]);
-		if(hits > 0){
+		if(hits > 0 && currHit < hits){
 			if(i > totalStartup[currHit] && i <= totalStartup[currHit]+active[currHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
