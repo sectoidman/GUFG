@@ -240,9 +240,11 @@ void interface::resolve()
 			}
 		}
 
-		for(int i = 0; i < thingComplexity; i++)
-			if(things[i]->hitbox[0].w > 0) p[(things[i]->ID)%2]->checkBlocking();
-
+		for(int i = 0; i < thingComplexity; i++){
+			if(things[i]->hitbox[0].w > 0){
+				if(!freeze) p[(things[i]->ID)%2]->checkBlocking();
+			}
+		}
 
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
@@ -609,7 +611,10 @@ void interface::doSuperFreeze()
 	int go[2] = {0, 0};
 	for(int i = 0; i < 2; i++){
 		go[i] = p[i]->cMove->arbitraryPoll(2, p[i]->currentFrame);
-		if(go[i] > 0) p[(i+1)%2]->freeze += go[i];
+		if(go[i] > 0){ 
+			p[(i+1)%2]->checkBlocking();
+			p[(i+1)%2]->freeze += go[i];
+		}
 	}
 	if(go[0] > 0 || go[1] > 0)
 		freeze = std::max(go[0], go[1]);
