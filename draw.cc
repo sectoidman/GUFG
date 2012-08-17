@@ -38,7 +38,7 @@ void interface::draw()
 	for(int i = 0; i < thingComplexity; i++){
 		if(things[i]->spriteCheck()) 
 			things[i]->draw(bg.x, bg.y);
-		glDisable( GL_TEXTURE_2D );
+		glDisable(GL_TEXTURE_2D);
 		if(!things[i]->spriteCheck())
 			things[i]->drawBoxen(bg.x, bg.y);
 		if(i < 2)
@@ -116,12 +116,17 @@ void instance::drawBoxen(int x, int y)
 		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
 	}
 	glFlush();
+	glDisable( GL_TEXTURE_2D );
 }
 
 void instance::draw(int x, int y)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
+	if(!freeze){
+		dFrame = currentFrame;
+		dMove = cMove;
+	}
 	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
 		if(facing == 1){
@@ -140,7 +145,7 @@ void instance::draw(int x, int y)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(cMove, facing, realPosX - x, realPosY - y, currentFrame);
+	pick()->draw(dMove, facing, realPosX - x, realPosY - y, dFrame);
 }
 
 void player::drawHitParticle(int x, int y)

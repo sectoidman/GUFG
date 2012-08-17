@@ -23,6 +23,8 @@ public:
 	int inputBuffer[30];
 	int currentFrame;
 	int freeze;
+	int dFrame;
+	action * dMove;
 	action * cMove;
 	action * bMove;
 	int connectFlag, hitFlag;
