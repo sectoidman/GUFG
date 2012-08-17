@@ -5,6 +5,7 @@ Frames: 87 : 32 : 10 : 45
 Check: 257
 SuperFreeze: 7 - 33
 State: 0 : 0
+HitAllows: 8192
 Damage: 60
 Stun: 15
 Cost: 100
