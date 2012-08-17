@@ -94,10 +94,12 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, int inputBu
 				if(!dryrun) bMove = t;
 		}
 		else {
-			f = 0;
-			cFlag = 0;
-			hFlag = 0;
-			if(!dryrun) t->execute(cMove, meter);
+			if(!dryrun){ 
+				t->execute(cMove, meter);
+				f = 0;
+				cFlag = 0;
+				hFlag = 0;
+			}
 			cMove = t;
 		}
 	} else if (bMove != NULL && freeze <= 0) {
