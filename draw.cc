@@ -123,10 +123,7 @@ void instance::draw(int x, int y)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
-	if(!freeze){
-		dFrame = currentFrame;
-		dMove = cMove;
-	}
+
 	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
 		if(facing == 1){
@@ -145,7 +142,7 @@ void instance::draw(int x, int y)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(dMove, facing, realPosX - x, realPosY - y, dFrame);
+	pick()->draw(cMove, facing, realPosX - x, realPosY - y, currentFrame);
 }
 
 void player::drawHitParticle(int x, int y)
