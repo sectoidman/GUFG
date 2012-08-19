@@ -111,7 +111,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, int inputBu
 		}
 		cMove = bMove;
 		if(!dryrun) bMove = NULL;
-	} 
+	}
 }
 
 action * avatar::hook(int inputBuffer[30], int i, int f, int * r, bool down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)

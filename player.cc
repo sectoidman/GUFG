@@ -463,14 +463,6 @@ void instance::pushInput(bool axis[4])
 
 void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
-	action * heldMove;
-	if(dryrun) heldMove = cMove;
-	pick()->prepHooks(freeze, cMove, bMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
-	if(dryrun) cMove = heldMove;
-}
-
-void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
-{
 	action * dummyMove, *save;
 	dummyMove = cMove;
 	save = cMove;
