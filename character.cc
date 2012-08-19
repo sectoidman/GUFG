@@ -364,9 +364,6 @@ instance * avatar::spawn(action * source)
 void avatar::connect(action *& cMove, action *& bMove, hStat & s, int & c, int f)
 {
 	cMove->connect(meter, bMove, c, f);
-	if(bMove == cMove){ 
-		bMove = NULL;
-	}
 }
 
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h)

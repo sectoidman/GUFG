@@ -589,6 +589,7 @@ void instance::connect(int combo, hStat & s)
 //	printf("Hit with %s!\n", cMove->name);
 	if(!s.ghostHit) freeze = s.stun/4+10;
 	pick()->connect(cMove, bMove, s, connectFlag, currentFrame);
+	if(bMove == cMove) bMove = NULL;
 }
 
 void player::connect(int combo, hStat & s)
