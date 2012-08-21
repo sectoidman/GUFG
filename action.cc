@@ -53,6 +53,7 @@ void action::zero()
 	stats = NULL;
 	cost = 0;
 	dies = 0;
+	fch = 0;
 	tempNext = NULL;
 	tempAttempt = NULL;
 }
@@ -440,6 +441,9 @@ void action::parseProperties(char * buffer)
 		case 'd':
 			dies = 1;
 			break;
+		case 'C':
+			fch = 1;
+			break;
 		default:
 			break;
 		}
@@ -635,7 +639,6 @@ bool action::CHState(int f)
 {
 	if(hits < 1) return false;
 	else if(f < totalStartup[hits-1]) return true;
-	else return false;
+	else return fch;
 }
-
 
