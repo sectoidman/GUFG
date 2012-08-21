@@ -87,7 +87,7 @@ void character::drawMeters(int ID, float scalingFactor)
 
 	int R = 0, G = 255, B = 0;
 	if(meter[0] >= 0) m.w = meter[0]*2; else m.w = 1; 
-	if(ID == 1) m.x = 100;
+	if(ID == 1) m.x = 200;
 	else m.x = 1000 + (400 - m.w);
 	m.h = 10; m.y = 860;
 

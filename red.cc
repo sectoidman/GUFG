@@ -48,12 +48,12 @@ void red::drawMeters(int ID, float scalingFactor)
 		c1.w = 270; c2.w = (meter[3] - 270);
 	} else c2.w = 0;
 	if(ID == 1){
-		c1.x = 200; 
-		c2.x = 200;
+		c1.x = 265; 
+		c2.x = 265;
 	}
 	else { 
-		c1.x = 1090 + (270 - c1.w);
-		c2.x = 1090 + (270 - c2.w);
+		c1.x = 1065 + (270 - c1.w);
+		c2.x = 1065 + (270 - c2.w);
 	}
 	c1.h = 10; c2.h = 10;
 	c1.y = 876; c2.y = 876;
