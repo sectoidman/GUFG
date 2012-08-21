@@ -60,9 +60,9 @@ void player::drawMeters(int n)
 {
 	SDL_Rect r[n];
 	for(int i = 0; i < n; i++){
-		r[i].y = 12; r[i].w = 10; r[i].h = 5;
-		if(ID == 1) r[i].x = 340 - 12 * i; 
-		else r[i].x = 450 + 12 * i;
+		r[i].y = 24; r[i].w = 20; r[i].h = 10;
+		if(ID == 1) r[i].x = 680 - 24 * i; 
+		else r[i].x = 900 + 24 * i;
 	}
 	for(int i = 0; i < n; i++){
 		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
@@ -78,21 +78,21 @@ void character::drawMeters(int ID)
 {
 	SDL_Rect m;
 	SDL_Rect h;
-	if(health >= 0) h.w = health; else h.w = 1; 
+	if(health >= 0) h.w = health*2; else h.w = 1; 
 
-	if(ID == 1) h.x = 50 + (300 - h.w); 
-	else h.x = 450;
-	h.h = 5;
-	h.y = 5;
+	if(ID == 1) h.x = 100 + (600 - h.w); 
+	else h.x = 900;
+	h.h = 10;
+	h.y = 10;
 
 	int R = 0, G = 255, B = 0;
-	if(meter[0] >= 0) m.w = meter[0]; else m.w = 1; 
+	if(meter[0] >= 0) m.w = meter[0]*2; else m.w = 1; 
 	if(ID == 1) m.x = 100; 
-	else m.x = 500 + (200 - m.w);
-	m.h = 5; m.y = 430;
+	else m.x = 1000 + (400 - m.w);
+	m.h = 10; m.y = 860;
 
-	if(m.w < 100) R = 191;
-	else if(m.w < 200) B = 255;
+	if(m.w < 200) R = 191;
+	else if(m.w < 400) B = 255;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
@@ -160,7 +160,7 @@ void player::drawHitParticle(int x, int y)
 			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
 			break;
 		}
-		glRectf((GLfloat)(posX - 5 * facing - x), (GLfloat)(posY - y), (GLfloat)(posX - 25*facing - x), (GLfloat)(posY + 20 - y));
+		glRectf((GLfloat)(posX - 10 * facing - x), (GLfloat)(posY - y), (GLfloat)(posX - 50*facing - x), (GLfloat)(posY + 40 - y));
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
@@ -181,25 +181,25 @@ void action::draw(int facing, int x, int y, int f)
 			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[f]), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x + width[f]*2), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x + width[f]), (GLfloat)(y + height[f]), 0.f);
+			glVertex3f((GLfloat)(x + width[f]*2), (GLfloat)(y + height[f]*2), 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x), (GLfloat)(y + height[f]), 0.f);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[f]*2), 0.f);
 		} else {
 			glTexCoord2i(0, 0);
 			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[f]), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x - width[f]*2), (GLfloat)(y), 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x - width[f]), (GLfloat)(y + height[f]), 0.f);
+			glVertex3f((GLfloat)(x - width[f]*2), (GLfloat)(y + height[f]*2), 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x), (GLfloat)(y + height[f]), 0.f);
+			glVertex3f((GLfloat)(x), (GLfloat)(y + height[f]*2), 0.f);
 		}
 		glEnd();
 	}

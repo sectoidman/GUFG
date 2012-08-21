@@ -90,10 +90,10 @@ void player::roundInit()
 	particleType = 0;
 	if(ID == 1){ 
 		facing = 1;
-		posX = 700;
+		posX = 1400;
 	} else {
 		facing = -1;
-		posX = 900;
+		posX = 1800;
 	}
 	updateRects();
 }
@@ -257,7 +257,7 @@ void instance::combineDelta()
 
 void player::enforceGravity(int grav, int floor)
 {
-	SDL_Rect g; g.x = 0; g.y = 3; g.w = 0; g.h = 0;
+	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
 	if(collision.y + collision.h < floor && pick()->aerial == 0){
 		pick()->aerial = 1;
@@ -366,7 +366,7 @@ void player::checkCorners(int floor, int left, int right)
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
 		} 
-		if(collision.x <= 25){ 
+		if(collision.x <= 50){ 
 			if(facing == 1) lCorner = 1;
 			if (stick) {
 				if(cMove == pick()->untech){
@@ -384,7 +384,7 @@ void player::checkCorners(int floor, int left, int right)
 			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
 		} 
-		if(collision.x + collision.w >= 1575){ 
+		if(collision.x + collision.w >= 3150){ 
 			if(facing == -1) rCorner = 1;
 			if (stick) {
 				if(cMove == pick()->untech){

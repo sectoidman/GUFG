@@ -16,12 +16,12 @@ interface::interface()
 	numChars = 3;
 	char buffer[50];
 	/*Initialize some pseudo-constants*/
-	screenWidth = 800; //By screen, I mean the window the game occurs in.
-	screenHeight = 450;
-	bg.w = 1600;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
-	bg.h = 900;
-	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
-	wall = 25;         //The size of the offset at which characters start to scroll the background, and get stuck.
+	screenWidth = 1600; //By screen, I mean the window the game occurs in.
+	screenHeight = 900;
+	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
+	bg.h = 1800;
+	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
+	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
 	assert(screenInit() != false);
 
@@ -69,7 +69,7 @@ bool interface::screenInit()
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
 	/*WM stuff*/
 	SDL_WM_SetCaption("GUFG", "GUFG");
-	if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL)) == NULL)
+	if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
 		return false;
 	SDL_ShowCursor(SDL_DISABLE);
 
@@ -125,8 +125,8 @@ void interface::roundInit()
 	for(int i = 0; i < 2; i++)
 		addThing(p[i]);
 	thingComplexity = 2;
-	bg.x = 400;
-	bg.y = 450;
+	bg.x = 800;
+	bg.y = 900;
 
 	for(int i = 0; i < 2; i++){
 		p[i]->posY = floor - p[i]->pick()->neutral->collision[0].h;
@@ -147,7 +147,7 @@ void interface::roundInit()
 
 	combo[0] = 0;
 	combo[1] = 0;
-	grav = 3;
+	grav = 6;
 	timer = 60 * 99;
 	prox.w = 200;
 	prox.h = 0;
@@ -399,32 +399,32 @@ void interface::cSelectMenu()
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f(175.0f, 0.0f, 0.f);
+		glVertex3f(350.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f(625.0f, 0.0f, 0.f);
+		glVertex3f(1250.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(625.0f, 450.0f, 0.f);
+		glVertex3f(1250.0f, 900.0f, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f(175.0f, 450.0f, 0.f);
+		glVertex3f(350.0f, 900.0f, 0.f);
 	glEnd();
 	
 	for(int i = 0; i < 2; i++){
 		glBindTexture(GL_TEXTURE_2D, cursor[i]);
 		glBegin(GL_QUADS);
 			glTexCoord2i(0, 0);
-			glVertex3f(175.0f, 0.0f, 0.f);
+			glVertex3f(350.0f, 0.0f, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f(625.0f, 0.0f, 0.f);
+			glVertex3f(1250.0f, 0.0f, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f(625.0f, 450.0f, 0.f);
+			glVertex3f(1250.0f, 900.0f, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f(175.0f, 450.0f, 0.f);
+			glVertex3f(350.0f, 900.0f, 0.f);
 		glEnd();
 	}
 	glDisable( GL_TEXTURE_2D );
@@ -442,7 +442,7 @@ void interface::dragBG(int deltaX)
 {
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
-	else if(bg.x > 800) bg.x = 800;
+	else if(bg.x > 1600) bg.x = 1600;
 }
 
 interface::~interface()
@@ -489,11 +489,11 @@ void interface::unitCollision()
 			right->posX = totalMiddle + right->collision.w + rROffset;
 			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
-		if(left->collision.x < 25) {
+		if(left->collision.x < 50) {
 //			left->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			left->updateRects();
 			right->posX = left->collision.x + left->collision.w + rLOffset;
-		} else if (right->collision.x + right->collision.w > 1575) {
+		} else if (right->collision.x + right->collision.w > 3150) {
 //			right->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			right->updateRects();
 			left->posX = right->collision.x + lROffset;
@@ -580,13 +580,13 @@ void interface::resolveHits()
 
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->pick()->aerial) residual.y = -4;
+			if(p[i]->pick()->aerial) residual.y = -8;
 			else{ 
-				if(p[(i+1)%2]->pick()->aerial) residual.x = -1;
+				if(p[(i+1)%2]->pick()->aerial) residual.x = -2;
 				else {
-					if(combo[i] > 1) residual.x = -(abs(combo[i]-1));
+					if(combo[i] > 1) residual.x = -2*(abs(combo[i]-1));
 					if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
-						residual.x -= 1;
+						residual.x -= 2;
 						residual.x -= s[i].push/2;
 						residual.x -= abs(combo[i]);
 					}

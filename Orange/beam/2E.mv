@@ -10,17 +10,17 @@ Blocks: 0
 Damage: 24
 Stun: 5
 Untech: 15
-Push: 5
-Lift: 15
+Push: 10
+Lift: 30
 Blockable: 3
 Properties: dS
 #0 
 $C	0 0 0 0
-$R	0 0 50 50
-$D	2 -9 0 0
-$A	0 0 50 50
+$R	0 0 100 100
+$D	4 -18 0 0
+$A	0 0 100 100
 #0 
 $C	0 0 0 0
-$R	0 0 50 50
-$D	2 -9 0 0
-$A	0 0 50 50
+$R	0 0 100 100
+$D	4 -18 0 0
+$A	0 0 100 100

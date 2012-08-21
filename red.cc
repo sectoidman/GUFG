@@ -42,21 +42,21 @@ void red::drawMeters(int ID)
 	character::drawMeters(ID);
 	SDL_Rect c1, c2;
 	if(meter[3] >= 0){
-		c1.w = meter[3]/2; 
+		c1.w = meter[3]; 
 	} else c1.w = 1; 
 	if(meter[3] > 270){
-		c1.w = 135; c2.w = (meter[3] - 270)/2;
+		c1.w = 270; c2.w = (meter[3] - 270);
 	} else c2.w = 0;
 	if(ID == 1){
-		c1.x = 130; 
-		c2.x = 130;
+		c1.x = 200; 
+		c2.x = 200;
 	}
 	else { 
-		c1.x = 530 + (135 - c1.w);
-		c2.x = 530 + (135 - c2.w);
+		c1.x = 1090 + (270 - c1.w);
+		c2.x = 1090 + (270 - c2.w);
 	}
-	c1.h = 5; c2.h = 5;
-	c1.y = 438; c2.y = 438;
+	c1.h = 10; c2.h = 10;
+	c1.y = 876; c2.y = 876;
 	if(meter[3] >= 270 && meter[4] < 1) color1 = 255;
 	else color1 = 127;
 	if(meter[3] >= 540 && meter[4] < 1) color2 = 255;
