@@ -566,15 +566,15 @@ int action::calcCurrentHit(int frame)
 	return b;
 }
 
-action * action::connect(int *& resource, action *& temp, int &c, int f)
+action * action::connect(int *& resource, int &c, int f)
 {
 	c = calcCurrentHit(f)+1;
 	if(resource[0] + gain[c] < 200) resource[0] += gain[c];
 	else resource[0] = 200;
 	if(onConnect[c-1] != NULL){
-		temp = onConnect[c-1];
+		return onConnect[c-1];
 	}
-	return temp;
+	else return NULL;
 }
 
 action * action::blockSuccess(int st)

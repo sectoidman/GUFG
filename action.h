@@ -56,7 +56,7 @@ public:
 	virtual bool cancel(action*, int&, int&); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
-	virtual action * connect(int *&, action *&, int&, int);
+	virtual action * connect(int *&, int&, int);
 	virtual instance * spawn() { return NULL; }
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
 	bool spriteCheck(int);

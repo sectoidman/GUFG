@@ -78,7 +78,7 @@ character::~character()
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
 
-void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
+void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
 	if (cMove == NULL) neutralize(cMove);
@@ -90,8 +90,11 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, int inputBu
 
 	if(t != NULL){
 		if(freeze > 0){
-			if(bMove == NULL) 
+			if(bMove == NULL){ 
 				if(!dryrun) bMove = t;
+			} else if(sMove == NULL){
+				if(!dryrun) sMove = t;
+			}
 		}
 		else {
 			if(!dryrun){ 
@@ -111,6 +114,17 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, int inputBu
 		}
 		cMove = bMove;
 		if(!dryrun) bMove = NULL;
+	} else if (sMove != NULL && freeze <= 0) {
+		if(sMove->check(p) && sMove->cancel(cMove, cFlag, hFlag)){
+			cMove = sMove;
+			if(!dryrun){
+				sMove->execute(cMove, meter);
+				f = 0;
+				cFlag = 0;
+				hFlag = 0;
+				sMove = NULL;
+			}
+		}
 	}
 }
 
@@ -361,9 +375,13 @@ instance * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(action *& cMove, action *& bMove, hStat & s, int & c, int f)
+void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & s, int & c, int f)
 {
-	cMove->connect(meter, bMove, c, f);
+	action * t = cMove->connect(meter, c, f);
+	if(t != NULL){
+		if(bMove != NULL) sMove = bMove;
+		bMove = t;
+	}
 }
 
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h)

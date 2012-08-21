@@ -25,6 +25,7 @@ public:
 	int freeze;
 	action * cMove;
 	action * bMove;
+	action * sMove;
 	int connectFlag, hitFlag;
 	bool dead:1;
 	int throwInvuln;
