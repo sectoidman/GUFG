@@ -5,7 +5,7 @@ Frames: 9
 Check: 5
 State: 510
 Payload: beam/Dstopa
-SpawnsOn: 2
+SpawnsOn: 1
 SpawnPosition: 180 : 60
 Blowback: 0
 Gain: 0

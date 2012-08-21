@@ -6,19 +6,19 @@ Check: 65
 State: 256 : 384 : 256
 Damage: 23 : 0
 Payload: beam/2E
-SpawnsOn: 36
+SpawnsOn: 19
 SpawnPosition: 120 : 260
 Connect: 0 : >f2E
 Connect: 1 : >f2E
 Stun: 16 : 10
 Untech: 10 : 20
 Push: 16 : 0
-Lift: 16 : -200
+Lift: -40 : -200
 Blowback: 2 : 0
 Gain: 0 : 2 : 4
 Cost: 0
 Blockable: 7 : 1
-Properties: : ^
+Properties: v : ^
 #0
 $C	8 124 110 196
 $R	-2 124 130 196

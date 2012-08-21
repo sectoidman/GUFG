@@ -5,7 +5,7 @@ Frames: 22 : 22
 Check: 65
 State: 384
 Payload: beam/Dstop2e
-SpawnsOn: 2
+SpawnsOn: 1
 SpawnPosition: 120 : 260
 Properties: 
 #18

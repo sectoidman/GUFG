@@ -6,7 +6,7 @@ Check: 5
 State: 256 : 508
 Damage: 6
 Payload: beam/A
-SpawnsOn: 20
+SpawnsOn: 9
 SpawnPosition: 180 : 60
 Stun: 10
 Untech: 7

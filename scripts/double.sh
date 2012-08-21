@@ -36,7 +36,7 @@ awk '{
 			if($30 || $31 || $32 || $33)
 				print "\t" 2*$30, 2*$31, 2*$32, 2*$33
 		} else {
-			effect = match($0, /SpawnsOn|SpawnPosition|Proximity|Position|Lift|Push|Blowback/, e)
+			effect = match($0, /SpawnPosition|Proximity|Position|Lift|Push|Blowback/, e)
 			if(effect) {
 				print $1, 2*$2
 				if($3) print " " $3, 2*$4
