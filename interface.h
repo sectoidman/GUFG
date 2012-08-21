@@ -50,7 +50,7 @@ public:
 	SDL_Rect bg;
 	SDL_Rect prox;
 	int grav;		//Gravitational constant. 
-	bool fullscreen:1;	//For use with later
+	bool fullscreen;	//For use with later
 	bool initd:1;
 	int combo[2];
 	int numRounds;

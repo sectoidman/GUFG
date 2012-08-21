@@ -11,10 +11,13 @@
 #include <assert.h>
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 interface::interface()
 {
 	char buffer[50];
 	numChars = 3;
+	std::ifstream read;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
 	screenHeight = 900;
@@ -24,9 +27,17 @@ interface::interface()
 	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
-	scalingFactor = (float)screenWidth / 1600.0;
+	read.open("Misc/.res.conf");
+	if(read.fail()){ 
+		scalingFactor = 1.0;
+		fullscreen = true;
+	} else { 
+		read >> scalingFactor;
+		read.ignore(100, '\n');
+		read >> fullscreen;
+	}
+	read.close();
 	sf = scalingFactor;
-	fullscreen = true;
 	assert(screenInit() != false);
 
 	/*Initialize players.*/
@@ -394,6 +405,10 @@ void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
 	if(!initd){ 
+		std::ofstream write;
+		write.open("Misc/.res.conf");
+		write << sf << '\n' << fullscreen;
+		write.close();
 		scalingFactor = sf;
 		assert(screenInit() != false);
 	}
