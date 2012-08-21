@@ -1,0 +1,21 @@
+Name: E
+Buffer: 30 : 30
+Hits: 3
+Frames: 39 : 10 : 3 : 0 : 3 : 0 : 3 : 20
+Check: 65
+State: 256 : 8448 : 8448 : 8576
+Damage: 11 : 12 : 13
+Stun: 8 : 18 : 13
+Untech: 38 : 0 : 17
+Push: 5 : 5 : 5
+Lift: 6 : 6 : 6
+Blowback: -1 : -1 : 5
+Gain: 0 : 3 : 3 : 4
+Cost: 0
+Blockable: 7 : 7 : 7
+Blocks: 0
+Properties: 
+#0
+$C	
+$R
+$D
