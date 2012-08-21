@@ -13,18 +13,21 @@
 #include <algorithm>
 interface::interface()
 {
-	numChars = 3;
 	char buffer[50];
+	numChars = 3;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
 	screenHeight = 900;
+	screen = NULL;
 	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 1800;
 	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
+	scalingFactor = (float)screenWidth / 1600.0;
+	sf = scalingFactor;
+	fullscreen = true;
 	assert(screenInit() != false);
-	initd = true;
 
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
@@ -32,11 +35,11 @@ interface::interface()
 		sAxis[i] = new bool[4];
 		posEdge[i] = new bool[5]; 
 		negEdge[i] = new bool[5];
-		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, 1);
-		cursor[i] = aux::load_texture(buffer);
 		counter[i] = 0;
 		select[i] = 0;
 		selection[i] = 1;
+		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, selection[i]);
+		cursor[i] = aux::load_texture(buffer);
 	}
 
 	for(int i = 0; i < 5; i++){
@@ -56,8 +59,6 @@ interface::interface()
 
 	SDL_Event temp;
 	while(SDL_PollEvent(&temp));
-	/*Select characters.*/
-	selectScreen = aux::load_texture("Misc/Select.png");
 
 	/*Start a match*/
 	things = NULL;
@@ -69,12 +70,22 @@ bool interface::screenInit()
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
 	/*WM stuff*/
+	int h, w;
+	if(scalingFactor == 1.0){ 
+		w = 1600; h = 900;
+	} else {
+		h = 450; w = 800;
+	}
+	if(screen){ 
+		SDL_FreeSurface(screen);
+		screen = NULL;
+	}
 	SDL_WM_SetCaption("GUFG", "GUFG");
 	if(!fullscreen){
-		if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL)) == NULL)
+		if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
 			return false;
 	} else {
-		if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
+		if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
 			return false;
 	}
 	SDL_ShowCursor(SDL_DISABLE);
@@ -85,22 +96,24 @@ bool interface::screenInit()
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable( GL_BLEND );
+	glEnable (GL_BLEND);
 	glEnable (GL_POINT_SMOOTH);
 	glEnable (GL_LINE_SMOOTH);
 	glEnable (GL_POLYGON_SMOOTH);
 
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1.0f);
-	glViewport(0, 0, screenWidth, screenHeight);
+	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
+	glOrtho(0, w, h, 0, 1, -1);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	initd = true;
 	return true;
 }
 
@@ -108,6 +121,7 @@ bool interface::screenInit()
 void interface::matchInit()
 {
 	SDL_Event event;
+	selectScreen = aux::load_texture("Misc/Select.png");
 	select[0] = 0;
 	select[1] = 0;
 	printf("Please select a character:\n");
@@ -358,6 +372,11 @@ void interface::readInput()
 				case SDLK_ESCAPE:
 					gameover = 1;
 					break;
+				case SDLK_F10:
+					if(scalingFactor == 1.0) sf = 0.5;
+					else sf = 1.0;
+					initd = false;
+					break;
 				case SDLK_F11:
 					fullscreen = !fullscreen;
 					initd = false;
@@ -375,8 +394,8 @@ void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
 	if(!initd){ 
+		scalingFactor = sf;
 		assert(screenInit() != false);
-		initd = true;
 	}
 	char base[2][40];
 
@@ -406,39 +425,39 @@ void interface::cSelectMenu()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
+	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f(350.0f, 0.0f, 0.f);
+		glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 		glTexCoord2i(1, 0);
-		glVertex3f(1250.0f, 0.0f, 0.f);
+		glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(1250.0f, 900.0f, 0.f);
+		glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 
 		glTexCoord2i(0, 1);
-		glVertex3f(350.0f, 900.0f, 0.f);
+		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 	glEnd();
 	
 	for(int i = 0; i < 2; i++){
 		glBindTexture(GL_TEXTURE_2D, cursor[i]);
 		glBegin(GL_QUADS);
 			glTexCoord2i(0, 0);
-			glVertex3f(350.0f, 0.0f, 0.f);
+			glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 			glTexCoord2i(1, 0);
-			glVertex3f(1250.0f, 0.0f, 0.f);
+			glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 			glTexCoord2i(1, 1);
-			glVertex3f(1250.0f, 900.0f, 0.f);
+			glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 
 			glTexCoord2i(0, 1);
-			glVertex3f(350.0f, 900.0f, 0.f);
+			glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 		glEnd();
 	}
 	glDisable( GL_TEXTURE_2D );

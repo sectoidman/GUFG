@@ -38,8 +38,8 @@ public:
 	virtual void pullVolition();
 	virtual void setPosition(int, int);
 	virtual void updateRects();
-	virtual void draw(int, int);
-	virtual void drawBoxen(int, int);
+	virtual void draw(int, int, float);
+	virtual void drawBoxen(int, int, float);
 	virtual void combineDelta();
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
@@ -63,10 +63,10 @@ public:
 	void writeConfig();
 	bool readConfig();
 	void characterSelect(int);
-	void drawHitParticle(int, int);
+	void drawHitParticle(int, int, float);
 
 	void land();
-	void drawMeters(int);
+	void drawMeters(int, float);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void roundInit();
 	int takeHit(int, hStat&);

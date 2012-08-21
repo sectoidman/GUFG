@@ -55,6 +55,7 @@ public:
 	int combo[2];
 	int numRounds;
 	bool gameover;
+	float scalingFactor, sf;
 	instance ** things;
 	int thingComplexity;
 
