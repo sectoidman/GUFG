@@ -36,37 +36,37 @@ void red::step(action *& cMove, int &f, int &freeze)
 	character::step(cMove, f, freeze);
 }
 
-void red::drawMeters(int ID)
+void red::drawMeters(int ID, float scalingFactor)
 {
 	int color1, color2;
-	character::drawMeters(ID);
+	character::drawMeters(ID, scalingFactor);
 	SDL_Rect c1, c2;
 	if(meter[3] >= 0){
-		c1.w = meter[3]/2; 
+		c1.w = meter[3]; 
 	} else c1.w = 1; 
 	if(meter[3] > 270){
-		c1.w = 135; c2.w = (meter[3] - 270)/2;
+		c1.w = 270; c2.w = (meter[3] - 270);
 	} else c2.w = 0;
 	if(ID == 1){
-		c1.x = 130; 
-		c2.x = 130;
+		c1.x = 265; 
+		c2.x = 265;
 	}
 	else { 
-		c1.x = 530 + (135 - c1.w);
-		c2.x = 530 + (135 - c2.w);
+		c1.x = 1065 + (270 - c1.w);
+		c2.x = 1065 + (270 - c2.w);
 	}
-	c1.h = 5; c2.h = 5;
-	c1.y = 438; c2.y = 438;
+	c1.h = 10; c2.h = 10;
+	c1.y = 876; c2.y = 876;
 	if(meter[3] >= 270 && meter[4] < 1) color1 = 255;
 	else color1 = 127;
 	if(meter[3] >= 540 && meter[4] < 1) color2 = 255;
 	else color2 = 127;
 	glColor4f(0.0f, 0.0f, (float)color1, 1.0f);
-	glRectf((GLfloat)(c1.x), (GLfloat)(c1.y), (GLfloat)(c1.x + c1.w), (GLfloat)(c1.y + c1.h));
+	glRectf((GLfloat)(c1.x)*scalingFactor, (GLfloat)(c1.y)*scalingFactor, (GLfloat)(c1.x + c1.w)*scalingFactor, (GLfloat)(c1.y + c1.h)*scalingFactor);
 	glColor4f((float)color2, 0.0f, (float)color2, 1.0f);
-	glRectf((GLfloat)(c2.x), (GLfloat)(c2.y), (GLfloat)(c2.x + c2.w), (GLfloat)(c2.y + c2.h));
+	glRectf((GLfloat)(c2.x)*scalingFactor, (GLfloat)(c2.y)*scalingFactor, (GLfloat)(c2.x + c2.w)*scalingFactor, (GLfloat)(c2.y + c2.h)*scalingFactor);
 //	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
-//	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
+//	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2));
 }
 
 void red::init(action *& cMove)

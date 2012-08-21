@@ -14,7 +14,7 @@ public:
 	avatar() {}
 	virtual void init(action *&) = 0;
 	bool spriteCheck(action *&, int);
-	virtual void draw(action *&, int, int, int, int);//Pass sprite information up.
+	virtual void draw(action *&, int, int, int, int, float);//Pass sprite information up.
 	virtual action * createMove(char*);
 	virtual void processMove(action * m);
 	virtual void build(const char*, const char*);
@@ -47,7 +47,7 @@ public:
 	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
 
 	virtual void neutralize(action *&);
-	virtual void drawMeters(int);
+	virtual void drawMeters(int, float);
 	virtual void init(action *&);
 	virtual void resetAirOptions();
 	virtual void land(action *&, int &, int &, int &);

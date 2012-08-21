@@ -61,27 +61,27 @@ action * yellow::createMove(char * fullName)
 	return m;
 }
 
-void yellow::drawMeters(int ID)
+void yellow::drawMeters(int ID, float scalingFactor)
 {
 	int color;
-	character::drawMeters(ID);
+	character::drawMeters(ID, scalingFactor);
 	SDL_Rect c1;
 	if(meter[3] >= 0){
-		c1.w = meter[3]/3; 
+		c1.w = meter[3]/3*2; 
 		color = 255;
 	} else {
-		c1.w = 180 + (meter[3]/2);
+		c1.w = 360 + (meter[3]);
 		color = 0;
 	}
 	if(ID == 1){
-		c1.x = 110; 
+		c1.x = 220; 
 	} else { 
-		c1.x = 510 + (180 - c1.w);
+		c1.x = 1020 + (360 - c1.w);
 	}
-	c1.h = 5;
-	c1.y = 438;
+	c1.h = 10;
+	c1.y = 876;
 	glColor4f(1.0f, (float)color, 0.0f, 1.0f);
-	glRectf((GLfloat)(c1.x), (GLfloat)(c1.y), (GLfloat)(c1.x + c1.w), (GLfloat)(c1.y + c1.h));
+	glRectf((GLfloat)(c1.x)*scalingFactor, (GLfloat)(c1.y)*scalingFactor, (GLfloat)(c1.x + c1.w)*scalingFactor, (GLfloat)(c1.y + c1.h)*scalingFactor);
 //	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }

@@ -11,18 +11,33 @@
 #include <assert.h>
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 interface::interface()
 {
-	numChars = 3;
 	char buffer[50];
+	numChars = 3;
+	std::ifstream read;
 	/*Initialize some pseudo-constants*/
-	screenWidth = 800; //By screen, I mean the window the game occurs in.
-	screenHeight = 450;
-	bg.w = 1600;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
-	bg.h = 900;
-	floor = bg.h - 25; //Value of the floor. This is the maximum distance downward that characters can travel.
-	wall = 25;         //The size of the offset at which characters start to scroll the background, and get stuck.
+	screenWidth = 1600; //By screen, I mean the window the game occurs in.
+	screenHeight = 900;
+	screen = NULL;
+	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
+	bg.h = 1800;
+	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
+	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
+	read.open("Misc/.res.conf");
+	if(read.fail()){ 
+		scalingFactor = 1.0;
+		fullscreen = true;
+	} else { 
+		read >> scalingFactor;
+		read.ignore(100, '\n');
+		read >> fullscreen;
+	}
+	read.close();
+	sf = scalingFactor;
 	assert(screenInit() != false);
 
 	/*Initialize players.*/
@@ -31,11 +46,11 @@ interface::interface()
 		sAxis[i] = new bool[4];
 		posEdge[i] = new bool[5]; 
 		negEdge[i] = new bool[5];
-		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, 1);
-		cursor[i] = aux::load_texture(buffer);
 		counter[i] = 0;
 		select[i] = 0;
 		selection[i] = 1;
+		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, selection[i]);
+		cursor[i] = aux::load_texture(buffer);
 	}
 
 	for(int i = 0; i < 5; i++){
@@ -55,8 +70,6 @@ interface::interface()
 
 	SDL_Event temp;
 	while(SDL_PollEvent(&temp));
-	/*Select characters.*/
-	selectScreen = aux::load_texture("Misc/Select.png");
 
 	/*Start a match*/
 	things = NULL;
@@ -68,9 +81,24 @@ bool interface::screenInit()
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
 	/*WM stuff*/
+	int h, w;
+	if(scalingFactor == 1.0){ 
+		w = 1600; h = 900;
+	} else {
+		h = 450; w = 800;
+	}
+	if(screen){ 
+		SDL_FreeSurface(screen);
+		screen = NULL;
+	}
 	SDL_WM_SetCaption("GUFG", "GUFG");
-	if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL)) == NULL)
-		return false;
+	if(!fullscreen){
+		if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
+			return false;
+	} else {
+		if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
+			return false;
+	}
 	SDL_ShowCursor(SDL_DISABLE);
 
 	/*Set up input buffers and joysticks*/
@@ -79,22 +107,24 @@ bool interface::screenInit()
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable( GL_BLEND );
+	glEnable (GL_BLEND);
 	glEnable (GL_POINT_SMOOTH);
 	glEnable (GL_LINE_SMOOTH);
 	glEnable (GL_POLYGON_SMOOTH);
 
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	glClearColor(0, 0, 0, 0);
 	glClearDepth(1.0f);
-	glViewport(0, 0, screenWidth, screenHeight);
+	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, screenWidth, screenHeight, 0, 1, -1);
+	glOrtho(0, w, h, 0, 1, -1);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	initd = true;
 	return true;
 }
 
@@ -102,6 +132,7 @@ bool interface::screenInit()
 void interface::matchInit()
 {
 	SDL_Event event;
+	selectScreen = aux::load_texture("Misc/Select.png");
 	select[0] = 0;
 	select[1] = 0;
 	printf("Please select a character:\n");
@@ -125,8 +156,8 @@ void interface::roundInit()
 	for(int i = 0; i < 2; i++)
 		addThing(p[i]);
 	thingComplexity = 2;
-	bg.x = 400;
-	bg.y = 450;
+	bg.x = 800;
+	bg.y = 900;
 
 	for(int i = 0; i < 2; i++){
 		p[i]->posY = floor - p[i]->pick()->neutral->collision[0].h;
@@ -147,7 +178,7 @@ void interface::roundInit()
 
 	combo[0] = 0;
 	combo[1] = 0;
-	grav = 3;
+	grav = 6;
 	timer = 60 * 99;
 	prox.w = 200;
 	prox.h = 0;
@@ -352,6 +383,15 @@ void interface::readInput()
 				case SDLK_ESCAPE:
 					gameover = 1;
 					break;
+				case SDLK_F10:
+					if(scalingFactor == 1.0) sf = 0.5;
+					else sf = 1.0;
+					initd = false;
+					break;
+				case SDLK_F11:
+					fullscreen = !fullscreen;
+					initd = false;
+					break;
 				default:
 					break;
 				}
@@ -364,6 +404,14 @@ void interface::readInput()
 void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
+	if(!initd){ 
+		std::ofstream write;
+		write.open("Misc/.res.conf");
+		write << sf << '\n' << fullscreen;
+		write.close();
+		scalingFactor = sf;
+		assert(screenInit() != false);
+	}
 	char base[2][40];
 
 	for(int i = 0; i < 2; i++){
@@ -392,39 +440,39 @@ void interface::cSelectMenu()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-	glRectf(0.0f, 0.0f, (GLfloat)(screenWidth), (GLfloat)(screenHeight));
+	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f(175.0f, 0.0f, 0.f);
+		glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 		glTexCoord2i(1, 0);
-		glVertex3f(625.0f, 0.0f, 0.f);
+		glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(625.0f, 450.0f, 0.f);
+		glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 
 		glTexCoord2i(0, 1);
-		glVertex3f(175.0f, 450.0f, 0.f);
+		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 	glEnd();
 	
 	for(int i = 0; i < 2; i++){
 		glBindTexture(GL_TEXTURE_2D, cursor[i]);
 		glBegin(GL_QUADS);
 			glTexCoord2i(0, 0);
-			glVertex3f(175.0f, 0.0f, 0.f);
+			glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 			glTexCoord2i(1, 0);
-			glVertex3f(625.0f, 0.0f, 0.f);
+			glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
 			glTexCoord2i(1, 1);
-			glVertex3f(625.0f, 450.0f, 0.f);
+			glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 
 			glTexCoord2i(0, 1);
-			glVertex3f(175.0f, 450.0f, 0.f);
+			glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 		glEnd();
 	}
 	glDisable( GL_TEXTURE_2D );
@@ -442,7 +490,7 @@ void interface::dragBG(int deltaX)
 {
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
-	else if(bg.x > 800) bg.x = 800;
+	else if(bg.x > 1600) bg.x = 1600;
 }
 
 interface::~interface()
@@ -489,11 +537,11 @@ void interface::unitCollision()
 			right->posX = totalMiddle + right->collision.w + rROffset;
 			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
-		if(left->collision.x < 25) {
+		if(left->collision.x < 50) {
 //			left->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			left->updateRects();
 			right->posX = left->collision.x + left->collision.w + rLOffset;
-		} else if (right->collision.x + right->collision.w > 1575) {
+		} else if (right->collision.x + right->collision.w > 3150) {
 //			right->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			right->updateRects();
 			left->posX = right->collision.x + lROffset;
@@ -580,13 +628,13 @@ void interface::resolveHits()
 
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->pick()->aerial) residual.y = -4;
+			if(p[i]->pick()->aerial) residual.y = -8;
 			else{ 
-				if(p[(i+1)%2]->pick()->aerial) residual.x = -1;
+				if(p[(i+1)%2]->pick()->aerial) residual.x = -2;
 				else {
-					if(combo[i] > 1) residual.x = -(abs(combo[i]-1));
+					if(combo[i] > 1) residual.x = -2*(abs(combo[i]-1));
 					if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
-						residual.x -= 1;
+						residual.x -= 2;
 						residual.x -= s[i].push/2;
 						residual.x -= abs(combo[i]);
 					}

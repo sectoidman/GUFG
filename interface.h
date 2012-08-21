@@ -51,9 +51,11 @@ public:
 	SDL_Rect prox;
 	int grav;		//Gravitational constant. 
 	bool fullscreen;	//For use with later
+	bool initd:1;
 	int combo[2];
 	int numRounds;
 	bool gameover;
+	float scalingFactor, sf;
 	instance ** things;
 	int thingComplexity;
 
