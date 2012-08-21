@@ -24,6 +24,7 @@ interface::interface()
 	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
 	assert(screenInit() != false);
+	initd = true;
 
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
@@ -69,8 +70,13 @@ bool interface::screenInit()
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
 	/*WM stuff*/
 	SDL_WM_SetCaption("GUFG", "GUFG");
-	if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
-		return false;
+	if(!fullscreen){
+		if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL)) == NULL)
+			return false;
+	} else {
+		if((screen = SDL_SetVideoMode(screenWidth, screenHeight, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
+			return false;
+	}
 	SDL_ShowCursor(SDL_DISABLE);
 
 	/*Set up input buffers and joysticks*/
@@ -352,6 +358,10 @@ void interface::readInput()
 				case SDLK_ESCAPE:
 					gameover = 1;
 					break;
+				case SDLK_F11:
+					fullscreen = !fullscreen;
+					initd = false;
+					break;
 				default:
 					break;
 				}
@@ -364,6 +374,10 @@ void interface::readInput()
 void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
+	if(!initd){ 
+		assert(screenInit() != false);
+		initd = true;
+	}
 	char base[2][40];
 
 	for(int i = 0; i < 2; i++){
