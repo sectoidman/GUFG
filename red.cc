@@ -38,9 +38,9 @@ void red::step(action *& cMove, int &f, int &freeze)
 
 void red::drawMeters(int ID, float scalingFactor)
 {
-	int color1, color2;
+//	int color1, color2;
 	character::drawMeters(ID, scalingFactor);
-	SDL_Rect c1, c2;
+/*	SDL_Rect c1, c2;
 	if(meter[3] >= 0){
 		c1.w = meter[3]; 
 	} else c1.w = 1; 
@@ -66,7 +66,7 @@ void red::drawMeters(int ID, float scalingFactor)
 	glColor4f((float)color2, 0.0f, (float)color2, 1.0f);
 	glRectf((GLfloat)(c2.x)*scalingFactor, (GLfloat)(c2.y)*scalingFactor, (GLfloat)(c2.x + c2.w)*scalingFactor, (GLfloat)(c2.y + c2.h)*scalingFactor);
 //	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
-//	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2));
+//	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2));*/
 }
 
 void red::init(action *& cMove)
@@ -114,8 +114,8 @@ bool redCancel::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
-	if(resource[3] < 270) return 0;
+//	if(resource[0] < cost) return 0;
+//	if(resource[3] < 270) return 0;
 	if(resource[4] > 0) return 0;
 	return 1;
 }

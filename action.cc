@@ -551,8 +551,8 @@ bool action::cancel(action * x, int& c, int &h)
 void action::step(int *& resource, int &f)
 {
 	if(f == 0){
-		if(resource[0] + gain[0] < 200) resource[0] += gain[0];
-		else resource[0] = 200;
+		if(resource[0] + gain[0] < 300) resource[0] += gain[0];
+		else resource[0] = 300;
 	}
 	f++;
 }
@@ -569,8 +569,8 @@ int action::calcCurrentHit(int frame)
 action * action::connect(int *& resource, int &c, int f)
 {
 	c = calcCurrentHit(f)+1;
-	if(resource[0] + gain[c] < 200) resource[0] += gain[c];
-	else resource[0] = 200;
+	if(resource[0] + gain[c] < 300) resource[0] += gain[c];
+	else resource[0] = 300;
 	if(onConnect[c-1] != NULL){
 		return onConnect[c-1];
 	}

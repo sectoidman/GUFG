@@ -12,7 +12,7 @@ Push: 50
 Lift: 40
 Blowback: 20
 Gain: 0 : 0
-Cost: 100
+Cost: 150
 Blockable: 3 
 Blocks: 0
 Properties: ^t

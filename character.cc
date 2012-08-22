@@ -405,11 +405,11 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 			}
 		}
 	} else if (x == -1) {
-		if(meter[0] + 4 < 200) meter[0] += 4;
-		else meter[0] = 200;
+		if(meter[0] + 6 < 300) meter[0] += 6;
+		else meter[0] = 300;
 	}
-	if(meter[0] + 1 < 200) meter[0] += 1;
-	else meter[0] = 200;
+	if(meter[0] + 1 < 300) meter[0] += 1;
+	else meter[0] = 300;
 	return x;
 }
 

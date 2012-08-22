@@ -14,7 +14,7 @@ Push: 40
 Blowback: 22
 Lift: 10
 Gain: 0 : 0
-Cost: 100
+Cost: 150
 Blockable: 7
 Blocks: 0
 Properties: c^=v 
