@@ -26,6 +26,7 @@ public:
 	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
 	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
 	bool screenInit();
+	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();
@@ -38,6 +39,7 @@ public:
 	void resolveSummons();
 	void addThing(instance*);
 	void cullThing(int);
+	void writeImage(const char*, int, action*);
 
 	player * p[2];
 	bool * sAxis[2];	//Initial input buffering.

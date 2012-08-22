@@ -83,7 +83,7 @@ bool interface::screenInit()
 	/*WM stuff*/
 	int h, w;
 	if(scalingFactor == 1.0){ 
-		w = 1600; h = 900;
+		w = screenWidth; h = screenHeight;
 	} else {
 		h = 450; w = 800;
 	}

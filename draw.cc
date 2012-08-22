@@ -221,3 +221,130 @@ bool action::spriteCheck(int f)
 	if(sprite[f]) return 1;
 	else return 0;
 }
+
+void interface::writeImage(const char * movename, int frame, action * move)
+{
+	int realPosY = move->collision[frame].y;
+	int realPosX = 0;
+	SDL_Surface * image = NULL;
+	int maxY = move->collision[frame].y + move->collision[frame].h, 
+	    maxX = move->collision[frame].x + move->collision[frame].w;
+	for(int i = 0; i < move->regComplexity[frame]; i++){
+		if(move->hitreg[frame][i].y < realPosY) 
+			realPosY = move->hitreg[frame][i].y;
+		if(move->hitreg[frame][i].x < realPosX) 
+			realPosX = move->hitreg[frame][i].x;
+		if(move->hitreg[frame][i].x + move->hitreg[frame][i].w > maxX)
+			maxX = move->hitreg[frame][i].x + move->hitreg[frame][i].w;
+		if(move->hitreg[frame][i].y + move->hitreg[frame][i].h > maxY)
+			maxY = move->hitreg[frame][i].y + move->hitreg[frame][i].h;
+	}
+	for(int i = 0; i < move->hitComplexity[frame]; i++){
+		if(move->hitbox[frame][i].y < realPosY) 
+			realPosY = move->hitbox[frame][i].y;
+		if(move->hitbox[frame][i].x < realPosX) 
+			realPosX = move->hitbox[frame][i].x;
+		if(move->hitbox[frame][i].x + move->hitbox[frame][i].w > maxX)
+			maxX = move->hitbox[frame][i].x + move->hitbox[frame][i].w;
+		if(move->hitbox[frame][i].y + move->hitbox[frame][i].h > maxY)
+			maxY = move->hitbox[frame][i].y + move->hitbox[frame][i].h;
+	}
+	char fname[200];
+	int w = maxX + 5;
+	int h = maxY + 5;
+	int x = 0;
+	int y = 0;
+	if(realPosY < 0){ 
+		h -= realPosY;
+		y = realPosY;
+	}
+	if(realPosX < 0){
+		w -= realPosX;
+		x = realPosX;
+	}
+	x -= 10; y -= 10; w += 20; h += 20;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	Uint32 rmask = 0xff000000;
+	Uint32 gmask = 0x00ff0000;
+	Uint32 bmask = 0x0000ff00;
+	Uint32 amask = 0x000000ff;
+#else
+	Uint32 rmask = 0x000000ff;
+	Uint32 gmask = 0x0000ff00;
+	Uint32 bmask = 0x00ff0000;
+	Uint32 amask = 0xff000000;
+#endif
+	image = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
+				 rmask, gmask, bmask, amask);
+	screenInit(w, h);
+
+	sprintf(fname, "%s#%i.bmp", movename, frame);
+
+	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
+
+	move->drawBoxen(frame, x, y);
+
+	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
+
+	SDL_GL_SwapBuffers();
+
+	if(SDL_SaveBMP(image, fname)) printf("You dun fucked up\n");
+}
+
+void action::drawBoxen(int frame, int x, int y){
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(collision[frame].y + collision[frame].h - y));
+	for(int i = 0; i < regComplexity[frame]; i++){
+		glFlush();
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(hitreg[frame][i].y + hitreg[frame][i].h - y));
+	}
+	for(int i = 0; i < hitComplexity[frame]; i++){
+		glFlush();
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(hitbox[frame][i].y + hitbox[frame][i].h - y));
+	}
+	glFlush();
+}
+
+bool interface::screenInit(int w, int h)
+{
+	/*Initialize SDL*/
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	/*WM stuff*/
+	if(screen){ 
+		SDL_FreeSurface(screen);
+		screen = NULL;
+	}
+	SDL_WM_SetCaption("GUFG", "GUFG");
+	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
+		return false;
+	SDL_ShowCursor(SDL_DISABLE);
+
+	/*Set up input buffers and joysticks*/
+	for(int i = 0; i < SDL_NumJoysticks(); i++)
+		SDL_JoystickOpen(i);
+//	glDisable (GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable (GL_BLEND);
+	glEnable (GL_POINT_SMOOTH);
+	glEnable (GL_LINE_SMOOTH);
+	glEnable (GL_POLYGON_SMOOTH);
+
+	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+	glClearColor(0, 0, 0, 0);
+	glClearDepth(1.0f);
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, w, h, 0, 1, -1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	initd = true;
+	return true;
+}

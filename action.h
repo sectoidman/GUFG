@@ -66,6 +66,7 @@ public:
 
 	bool CHState(int);
 	virtual void draw(int, int, int, int, float);
+	virtual void drawBoxen(int, int, int);
 
 	hStat *stats;
 	int stop;
