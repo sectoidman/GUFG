@@ -9,7 +9,10 @@ void hitstun::init(int n)
 void hitstun::step(int *& resource, int &f)
 {
 	if(counter <= 0) f++;
-	else counter--;
+	else {
+		if(f < frames - 1) f++;
+		counter--;
+	}
 }
 
 action * hitstun::blockSuccess(int st){

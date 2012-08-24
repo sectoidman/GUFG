@@ -15,10 +15,10 @@ class instance;
 
 struct hStat{
 	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), eatsProjectile() {}
-	int damage;          //How much damage the action does
-	int stun;            //How much stun the action does
-	int push;            //How much pushback the action does
-	int lift;            //How much the action lifts an aerial opponent.
+	int damage;         //How much damage the action does
+	int stun;           //How much stun the action does
+	int push;           //How much pushback the action does
+	int lift;           //How much the action lifts an aerial opponent.
 	int untech;
 	int blowback;
 	int hover;
@@ -68,7 +68,7 @@ public:
 	virtual void draw(int, int, int, int, float);
 	virtual void drawBoxen(int, int, int);
 
-	hStat *stats;
+	hStat *stats, *CHStats;
 	int stop;
 	int throwinvuln;
 	bool crouch:1;

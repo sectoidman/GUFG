@@ -185,6 +185,7 @@ bool action::setParameter(char * buffer)
 		hits = atoi(token);
 		if(hits > 0){
 			stats = new hStat[hits];
+			CHStats = new hStat[hits];
 			onConnect = new action*[hits];
 			tempOnConnect = new char*[hits];
 			for (int i = 0; i < hits; i++){
@@ -331,6 +332,7 @@ bool action::setParameter(char * buffer)
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
 			stats[i].stun = atoi(token);
+			CHStats[i].stun = stats[i].stun / 2 + stats[i].stun;
 //			printf(": %i ", stats[i].stun);
 		}
 //		printf("\n");
@@ -340,6 +342,7 @@ bool action::setParameter(char * buffer)
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
 			stats[i].untech = atoi(token);
+			CHStats[i].untech = 10;
 //			printf(": %i ", stats[i].untech);
 		}
 //		printf("\n");
