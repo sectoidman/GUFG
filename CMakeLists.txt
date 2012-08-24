@@ -57,14 +57,15 @@ if (WIN32)
 endif (WIN32)
 
 add_executable (gufg 
-		WIN32 
+		WIN32
 		MACOSX_BUNDLE
 		keytest.cc
 		${SOURCES})
 
 add_executable (bmpout
-       		WIN32	
+		WIN32
 		MACOSX_BUNDLE
+		EXCLUDE_FROM_ALL
 		bmp.cc
 		${SOURCES})
 
@@ -105,11 +106,6 @@ INSTALL(DIRECTORY .
 		PATTERN "NSIS/*" EXCLUDE)
 
 INSTALL(FILES dumpboxes.sh
-	DESTINATION .
-	COMPONENT utilities)
-
-INSTALL(TARGETS bmpout
-	RUNTIME
 	DESTINATION .
 	COMPONENT utilities)
 

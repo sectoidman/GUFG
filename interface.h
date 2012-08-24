@@ -69,6 +69,8 @@ public:
 	int counter[2];
 
 	bool q;
+	bool matchIntro:1;
+	bool roundIntro:1;
 	int timer;
 private:
 	int screenHeight, screenWidth, floor, wall;

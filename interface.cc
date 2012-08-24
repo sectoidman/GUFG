@@ -73,6 +73,7 @@ interface::interface()
 
 	/*Start a match*/
 	things = NULL;
+	selectScreen = aux::load_texture("Misc/Select.png");
 	matchInit();
 }
 
@@ -132,16 +133,17 @@ bool interface::screenInit()
 void interface::matchInit()
 {
 	SDL_Event event;
-	selectScreen = aux::load_texture("Misc/Select.png");
 	select[0] = 0;
 	select[1] = 0;
-	printf("Please select a character:\n");
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	p[0]->secondInstance = 0;
 	p[1]->secondInstance = 0;
 	background = aux::load_texture("Misc/BG1.png");
 	q = 0;
+	matchIntro = 1;
+	matchIntro = 0; //To be removed later, when match intro stuff actually exists
+	printf("Please select a character:\n");
 	while (SDL_PollEvent(&event));
 }
 
@@ -180,6 +182,8 @@ void interface::roundInit()
 	combo[1] = 0;
 	grav = 6;
 	timer = 60 * 99;
+	roundIntro = 1;
+	roundIntro = 0;
 	prox.w = 200;
 	prox.h = 0;
 	freeze = 0;
@@ -199,8 +203,10 @@ void interface::runTimer()
 		}
 	}
 	if(timer > 0) timer--;
-//	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);
-//	printf("%i frames remaining\n", timer);
+/*
+	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);
+	printf("%i frames remaining\n", timer);
+//*/
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
@@ -287,8 +293,10 @@ void interface::resolve()
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
 		resolveSummons();
-		checkWin();
-		runTimer();
+		if(!matchIntro && !roundIntro){
+			checkWin();
+			runTimer();
+		}
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
