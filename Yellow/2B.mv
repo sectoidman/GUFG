@@ -3,13 +3,13 @@ Buffer: 30 : 0
 Hits: 1
 Frames: 21 : 8 : 4 : 11
 Check: 9
-State: 256 : 8694
+State: 256 : 8698
 Damage: 10
 Stun: 12
 Untech: 10
-Push: 10
+Push: 16
 Lift: 24
-Blowback: 6
+Blowback: 4
 Gain: 0 : 2
 Cost: 0
 Blockable: 3

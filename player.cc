@@ -45,6 +45,12 @@ void instance::init()
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
+bool instance::acceptTarget(instance * m)
+{
+	if(m->ID == ID) return 0;
+	else return 1;
+}
+
 void player::init()
 {
 	/*Initialize input containers*/
