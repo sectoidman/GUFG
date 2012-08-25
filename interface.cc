@@ -602,7 +602,7 @@ void interface::resolveHits()
 						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k])){
 							if(things[i]->ID != things[h]->ID){
 								connect[i] = 1;
-								things[i]->cMove->pollStats(s[i], things[i]->currentFrame);
+								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
 								k = things[h]->regComplexity;
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
@@ -633,6 +633,7 @@ void interface::resolveHits()
 			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 		}
 	}
+
 
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){

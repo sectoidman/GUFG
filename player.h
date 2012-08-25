@@ -29,6 +29,7 @@ public:
 	int connectFlag, hitFlag;
 	bool dead:1;
 	int throwInvuln;
+	virtual bool CHState() { return 0; }
 	virtual void init();
 	virtual void step();
 

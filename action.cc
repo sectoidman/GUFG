@@ -510,22 +510,33 @@ void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc
 	}
 }
 
-void action::pollStats(hStat & s, int f)
+void action::pollStats(hStat & s, int f, bool CH)
 {
 	int c = calcCurrentHit(f);
-	s.damage = stats[c].damage;
-	s.stun = stats[c].stun;
-	s.push = stats[c].push;
-	s.lift = stats[c].lift;
-	s.untech = stats[c].untech;
-	s.launch = stats[c].launch;
-	s.hover = stats[c].hover;
-	s.wallBounce = stats[c].wallBounce;
-	s.floorBounce = stats[c].floorBounce;
-	s.slide = stats[c].slide;
-	s.stick = stats[c].stick;
-	s.ghostHit = stats[c].ghostHit;
-	s.blowback = stats[c].blowback;
+	s.damage = stats[c].damage + CHStats[c].damage * CH;
+	s.stun = stats[c].stun + CHStats[c].stun * CH;
+	s.push = stats[c].push + CHStats[c].push * CH;
+	s.lift = stats[c].lift + CHStats[c].lift * CH;
+	s.untech = stats[c].untech + CHStats[c].untech * CH;
+	if(CH){
+		s.launch = CHStats[c].launch;
+		s.hover = CHStats[c].hover;
+		s.wallBounce = CHStats[c].wallBounce;
+		s.floorBounce = CHStats[c].floorBounce;
+		s.slide = CHStats[c].slide;
+		s.stick = CHStats[c].stick;
+		s.ghostHit = CHStats[c].ghostHit;
+		s.blowback = CHStats[c].blowback;
+	} else {
+		s.launch = stats[c].launch;
+		s.hover = stats[c].hover;
+		s.wallBounce = stats[c].wallBounce;
+		s.floorBounce = stats[c].floorBounce;
+		s.slide = stats[c].slide;
+		s.stick = stats[c].stick;
+		s.ghostHit = stats[c].ghostHit;
+		s.blowback = stats[c].blowback;
+	}
 	s.blockMask.i = stats[c].blockMask.i;
 }
 
