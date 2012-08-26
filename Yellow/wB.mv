@@ -1,12 +1,11 @@
 Name: 236B
 Buffer: 30 : 15
 Hits: 1
-Frames: 19 : 12 : 7
-Next: 236Br
-Check: 129
+Frames: 28 : 7 : 8 : 14
+Check: 16384
 State: 256 : 41216
-Damage: 25
-Stun: 18
+Damage: 10
+Stun: 15
 Untech: 16
 Push: 20
 Lift: 32
@@ -16,7 +15,7 @@ Gain: 0 : 4
 Cost: 0
 Blockable: 7
 Blocks: 0
-Properties: Sc=t
+Properties: Sc=
 #0 
 $C	10 5 110 295
 $R	10 5 112 295
@@ -24,18 +23,10 @@ $D	0 0 0 0
 #1 
 $C	10 10 110 290
 $R	10 10 112 290
-$D	0 0 0 0
-#1 
-$C	10 15 110 285
-$R	10 15 112 285
-$D	0 0 0 0
-#1 
-$C	10 20 110 280
-$R	10 20 112 280
 $D	34 -20 0 0
 #2 
-$C	10 25 110 275
-$R	10 25 114 275
+$C	10 20 110 280
+$R	10 20 114 280
 $D	0 0 0 0
 #3 
 $C	10 30 110 270

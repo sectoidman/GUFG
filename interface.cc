@@ -596,7 +596,7 @@ void interface::resolveHits()
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(int i = 0; i < thingComplexity; i++){
 		for(int h = 0; h < thingComplexity; h++){
-			if(h != i && taken[h] != -1){
+			if(h != i && !taken[h]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
 						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k])){
