@@ -25,6 +25,7 @@ public:
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, action *&, action *&, hStat&, int&, int);
 	virtual void step(action *&, int&, int&);
+	virtual bool acceptTarget(action*, int);
 	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 	virtual instance * spawn(action*);
 	virtual void tick() {}
@@ -75,6 +76,7 @@ public:
 	projectile(const char* directory, const char* file);
 	projectile() {}
 	virtual void build(const char*, const char*);
+	virtual bool acceptTarget(action*, int);
 
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int);

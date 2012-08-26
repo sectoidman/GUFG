@@ -419,6 +419,11 @@ void character::resetAirOptions()
 	meter[2] = 1;
 }
 
+bool avatar::acceptTarget(action * c, int f)
+{
+	return 1;
+}
+
 void character::land(action *& cMove, int &f, int &c, int &h)
 {
 	if(cMove == airBlock){

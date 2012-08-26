@@ -22,6 +22,12 @@ void projectile::build(const char* directory, const char* file)
 	avatar::build(directory, file);
 }
 
+bool projectile::acceptTarget(action * c, int f)
+{
+	if(c->stats[c->calcCurrentHit(f)].hitsProjectile) return 1;
+	else return 0;
+}
+
 void projectile::init(action *& cMove)
 {
 	cMove = neutral;

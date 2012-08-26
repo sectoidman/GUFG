@@ -14,7 +14,7 @@ class avatar;
 class instance;
 
 struct hStat{
-	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), eatsProjectile() {}
+	hStat() : damage(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
 	int damage;         //How much damage the action does
 	int stun;           //How much stun the action does
 	int push;           //How much pushback the action does
@@ -28,7 +28,7 @@ struct hStat{
 	bool floorBounce:1;
 	bool slide:1;
 	bool stick:1;
-	bool eatsProjectile:1;
+	bool hitsProjectile:1;
 	blockField blockMask;
 	cancelField hitState;
 };

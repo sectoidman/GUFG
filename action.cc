@@ -436,10 +436,7 @@ void action::parseProperties(char * buffer)
 			stats[ch].stick = 1;
 			break;
 		case 'p':
-			isProjectile = 1;
-			break;
-		case 'P':
-			stats[ch].eatsProjectile = 1;
+			stats[ch].hitsProjectile = 1;
 			break;
 		case 'd':
 			dies = 1;

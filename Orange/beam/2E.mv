@@ -13,7 +13,7 @@ Untech: 15
 Push: 10
 Lift: 30
 Blockable: 3
-Properties: dS
+Properties: pdS
 #0 
 $C	0 0 0 0
 $R	0 0 100 100

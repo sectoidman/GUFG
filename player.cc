@@ -48,7 +48,7 @@ void instance::init()
 bool instance::acceptTarget(instance * m)
 {
 	if(m->ID == ID) return 0;
-	else return 1;
+	else return m->pick()->acceptTarget(cMove, currentFrame);
 }
 
 void player::init()

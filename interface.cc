@@ -600,7 +600,7 @@ void interface::resolveHits()
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
 						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k])){
-							if(things[h]->acceptTarget(things[i])){
+							if(things[i]->acceptTarget(things[h])){
 								connect[i] = 1;
 								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
 								k = things[h]->regComplexity;

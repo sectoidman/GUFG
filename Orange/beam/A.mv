@@ -12,7 +12,7 @@ Stun: 1
 Push: 10
 Lift: 10
 Blockable: 7
-Properties: dS
+Properties: pdS
 #0 
 $C	0 0 0 0
 $R	0 0 50 50
