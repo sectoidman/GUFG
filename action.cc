@@ -332,7 +332,7 @@ bool action::setParameter(char * buffer)
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
 			stats[i].stun = atoi(token);
-			CHStats[i].stun = stats[i].stun / 2 + stats[i].stun;
+			CHStats[i].stun = (stats[i].stun - 5) / 2;
 //			printf(": %i ", stats[i].stun);
 		}
 //		printf("\n");
@@ -550,7 +550,7 @@ bool action::cancel(action * x, int& c, int &h)
 //			if(r.i > 1) printf("%i allows %i\n", r.i, allowed.i);
 			if(x == this){
 				if(c == 0) return 0;
-				else if(allowed.i & 4) return 1;
+				else if(allowed.b.chain1) return 1;
 				else return 0;
 			}
 			else return 1;
