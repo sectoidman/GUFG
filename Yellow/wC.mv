@@ -1,0 +1,19 @@
+Name: wB
+Buffer: 30 : 15
+Hits: 1
+Frames: 29 : 7 : 8 : 14
+Check: 16384
+State: 256 : 41216
+Damage: 10
+Stun: 15
+Untech: 16
+Push: 20
+Lift: 32
+Float: 18
+Blowback: 2
+Gain: 0 : 4
+Cost: 0
+Blockable: 7
+Blocks: 0
+Properties: ^
+
