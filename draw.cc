@@ -208,7 +208,7 @@ void action::draw(int facing, int x, int y, int f, float scalingFactor)
 
 bool instance::spriteCheck()
 {
-	return pick()->spriteCheck(cMove, currentFrame);
+	return cMove->spriteCheck(currentFrame);
 }
 bool avatar::spriteCheck(action *& cMove, int f)
 {
@@ -218,7 +218,9 @@ bool avatar::spriteCheck(action *& cMove, int f)
 
 bool action::spriteCheck(int f)
 {
-	if(sprite[f]) return 1;
+	if(sprite[f] != 0) { 
+		return 1;
+	}
 	else return 0;
 }
 
