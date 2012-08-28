@@ -442,5 +442,7 @@ void avatar::step(action *& cMove, int &currentFrame, int &freeze)
 	if(freeze <= 0) {
 		cMove->step(meter, currentFrame);
 		tick();
-	} else freeze--;
+	} else {
+		freeze--;
+	}
 }
