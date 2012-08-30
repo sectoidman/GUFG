@@ -52,7 +52,7 @@ public:
 	virtual void init(action *&);
 	virtual void resetAirOptions();
 	virtual void land(action *&, int &, int &, int &);
-	virtual int takeHit(action *&, hStat&, int, int&, int&, int&);
+	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&);
 	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 
 	action * airNeutral;

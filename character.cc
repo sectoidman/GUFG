@@ -384,12 +384,13 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 	}
 }
 
-int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h)
+int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
-	int x = cMove->takeHit(s, b, f, c, h);
-	if (x == 1){
+	int freeze = s.stun/4 + 10;
+	p = cMove->takeHit(s, b, f, c, h);
+	if (p == 1){
 		if(s.launch) aerial = 1;
-		health -= s.damage; 
+		health -= s.damage;
 		if(health < 0) health = 0;
 		if(s.stun > 0){
 			if(aerial){
@@ -404,13 +405,13 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 				cMove = reel;
 			}
 		}
-	} else if (x == -1) {
+	} else if (p == -1) {
 		if(meter[0] + 6 < 300) meter[0] += 6;
 		else meter[0] = 300;
 	}
 	if(meter[0] + 1 < 300) meter[0] += 1;
 	else meter[0] = 300;
-	return x;
+	return freeze;
 }
 
 void character::resetAirOptions()

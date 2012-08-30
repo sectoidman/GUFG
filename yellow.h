@@ -6,7 +6,7 @@ public:
 	yellow();
 	void resetAirOptions();
 	action * createMove(char*);
-	int takeHit(action *&, hStat&, int, int&, int&, int&);
+	int takeHit(action *&, hStat&, int, int&, int&, int&, int&);
 	void drawMeters(int, float);
 	void tick();
 	void init(action *&);

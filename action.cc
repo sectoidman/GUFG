@@ -56,6 +56,10 @@ void action::zero()
 	fch = 0;
 	tempNext = NULL;
 	tempAttempt = NULL;
+	tempRiposte = NULL;
+	next = NULL;
+	attempt = NULL;
+	riposte = NULL;
 }
 
 void action::build(const char * n)
@@ -70,8 +74,6 @@ void action::build(const char * n)
 	sprintf(fname, "%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
-	next = NULL;
-	attempt = NULL;
 
 	do {
 		read.getline(buffer, 100);
@@ -202,6 +204,11 @@ bool action::setParameter(char * buffer)
 		for(int i = 0; i < hits+1; i++)
 			gain[i] = 0;
 //		printf("Hits: %i\n", hits);
+		return 1;
+	} else if (!strcmp("Riposte", token)) {
+		token = strtok(NULL, "\t: \n");
+		tempRiposte = new char[strlen(token)+1];
+		strcpy(tempRiposte, token);
 		return 1;
 	} else if (!strcmp("Next", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -588,9 +595,10 @@ action * action::connect(int *& resource, int &c, int f)
 	else return NULL;
 }
 
-action * action::blockSuccess(int st)
+action * action::blockSuccess()
 {
-	return this;
+	if(riposte) return riposte;
+	else return this;
 }
 
 void action::execute(action * last, int *& resource)
@@ -614,6 +622,10 @@ void action::feed(action * c, int code, int i)
 		attempt = c;
 		if(tempAttempt) delete [] tempAttempt;
 		break;
+	case 5:
+		riposte = c;
+		if(tempRiposte) delete [] tempRiposte;
+		break;
 	}
 }
 
@@ -626,6 +638,8 @@ char * action::request(int code, int i)
 		return tempOnConnect[i];
 	case 3:
 		return tempAttempt;
+	case 5:
+		return tempRiposte;
 	default:
 		return NULL;
 	}

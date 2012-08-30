@@ -612,6 +612,7 @@ void player::connect(int combo, hStat & s)
 int player::takeHit(int combo, hStat & s)
 {
 	SDL_Rect v = {0, 0, 1, 0};
+	action * temp = NULL;
 	if(s.damage > 0){
 		if(combo >= s.damage) s.damage = 1;
 		else s.damage -= combo; 
@@ -619,25 +620,31 @@ int player::takeHit(int combo, hStat & s)
 	s.untech -= combo;
 	if(slide) s.lift += 7 - s.lift/5;
 	if(s.ghostHit) freeze = 0;
-	else freeze = s.stun/4+10;
-	particleType = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag);
-	particleLife = 8;
-	deltaX = 0; deltaY = 0; momentumComplexity = 0;
-	if(pick()->aerial) v.y = -s.lift;
-	else v.y = 0;
-	if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
-	else v.x = -s.push;
-	addVector(v);
-	if(pick()->aerial && s.hover) hover = s.hover;
-	else hover = 0;
-	if(pick()->aerial && s.wallBounce) elasticX = true;
-	else elasticX = false;
-	if(pick()->aerial && s.floorBounce) elasticY = true;
-	else elasticY = false;
-	if(pick()->aerial && s.slide) slide = true;
-	else slide = false;
-	if(pick()->aerial && s.stick) stick = true;
-	else stick = false;
+	else freeze = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
+	if(particleType != 1) temp = cMove->blockSuccess();
+	if(temp != cMove){
+		combo = 0;
+		bMove = temp;
+		freeze = 0;
+	} else {
+		particleLife = 8;
+		deltaX = 0; deltaY = 0; momentumComplexity = 0;
+		if(pick()->aerial) v.y = -s.lift;
+		else v.y = 0;
+		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
+		else v.x = -s.push;
+		addVector(v);
+		if(pick()->aerial && s.hover) hover = s.hover;
+		else hover = 0;
+		if(pick()->aerial && s.wallBounce) elasticX = true;
+		else elasticX = false;
+		if(pick()->aerial && s.floorBounce) elasticY = true;
+		else elasticY = false;
+		if(pick()->aerial && s.slide) slide = true;
+		else slide = false;
+		if(pick()->aerial && s.stick) stick = true;
+		else stick = false;
+	}
 	updateRects();
 	if(s.ghostHit && combo < 1) return 0;
 	else if(particleType == 1) return particleType;

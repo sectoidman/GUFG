@@ -155,4 +155,3 @@ bool luftigeWerf::setParameter(char * buffer)
 	if(!strcmp("Landing", token)) return airMove::setParameter(savedBuffer);
 	else return werf::setParameter(savedBuffer);
 }
-
