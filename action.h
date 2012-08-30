@@ -306,4 +306,24 @@ public:
 	virtual bool setParameter(char*);
 	virtual char* request(int, int);
 };
+
+class counter : virtual public move {
+public:
+	counter();
+	counter(const char*);
+	virtual int takeHit(hStat&, int, int&, int&, int&); 
+	virtual bool setParameter(char*);
+	virtual void feed(action *, int, int);
+	virtual char* request(int, int);
+	virtual action * blockSuccess(int);
+
+	action * payload;
+	char * tempPayload;
+}
+
+class specialCounter : virtual public counter, virtual public special {
+public:
+	specialCounter();
+	specialCounter(const char*);
+}
 #endif
