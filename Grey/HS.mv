@@ -1,0 +1,18 @@
+Name: H
+Buffer: 0 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 0
+State: 0
+Gain: 1
+Cost: 0
+Blocks: 0
+Properties: T
+#0 
+$C	10 0 110 300
+$R	10 0 110 300
+$D	0 0 0 0
+#0 
+$C	10 0 110 300
+$R	10 0 110 300
+$D	0 0 0 0

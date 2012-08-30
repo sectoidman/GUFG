@@ -1,0 +1,18 @@
+Name: NC
+Buffer: 0 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 1
+State: 511
+Gain: 0
+Cost: 0
+Blocks: 0
+Properties: 
+#0 
+$C	10 150 130 150
+$R	10 150 130 150
+$D	0 0 0 0
+#0 
+$C	10 150 130 150
+$R	10 150 130 150
+$D	0 0 0 0

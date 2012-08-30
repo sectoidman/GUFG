@@ -1,0 +1,18 @@
+Name: Dash
+Buffer: 15 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 1
+State: 66046
+Gain: 2
+Cost: 0
+Blocks: 0
+Properties: 
+#0 
+$C	10 0 110 300
+$R	10 0 110 300
+$D	8 0 4 0
+#0 
+$C	10 0 110 300
+$R	10 0 110 300
+$D	8 0 4 0

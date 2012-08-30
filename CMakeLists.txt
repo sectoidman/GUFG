@@ -22,6 +22,7 @@ set (SOURCES	auxil.cc
 		player.cc 
 		red.cc
 		yellow.cc 
+		grey.cc
 		special.cc 
 		aerial.cc
 		utility.cc

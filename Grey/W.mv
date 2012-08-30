@@ -1,0 +1,18 @@
+Name: W
+Buffer: 0 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 1
+State: 1
+Gain: 1
+Cost: 0
+Blocks: 0
+Properties: 
+#0 
+$C	10 0 110 300
+$R	10 0 110 300
+$D	6 0 0 0
+#0 
+$C	10 0 110 300
+$R	10 0 110 300
+$D	6 0 0 0

@@ -1,0 +1,18 @@
+Name: Fall
+Buffer: 0 : 0
+Hits: 0
+Frames: 1 : 1
+Check: 0
+State: 1024
+Gain: 0
+Cost: 0
+Blocks: 0
+Properties: t
+#0 
+$C	10 30 100 110
+$R	-40 30 200 130
+$D	0 0 0 0
+#1
+$C	10 30 100 110
+$R	-40 30 200 130
+$D	0 0 0 0
