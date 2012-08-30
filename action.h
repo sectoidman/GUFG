@@ -47,7 +47,7 @@ public:
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
-	virtual action * blockSuccess(int);
+	virtual action * blockSuccess();
 	virtual int arbitraryPoll(int q, int f) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
@@ -116,6 +116,7 @@ public:
 	action * next;
 	action ** onConnect;
 	action * attempt;
+	action * riposte;
 	int attemptStart;
 	int attemptEnd;
 	bool window(int);
@@ -124,6 +125,7 @@ public:
 	char * tempNext;
 	char ** tempOnConnect;
 	char * tempAttempt;
+	char * tempRiposte;
 
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
@@ -305,25 +307,5 @@ public:
 	virtual void zero();
 	virtual bool setParameter(char*);
 	virtual char* request(int, int);
-};
-
-class counter : virtual public action {
-public:
-	counter();
-	counter(const char*);
-	virtual int takeHit(hStat&, int, int&, int&, int&); 
-	virtual bool setParameter(char*);
-	virtual void feed(action *, int, int);
-	virtual char* request(int, int);
-	virtual action * blockSuccess(int);
-
-	action * payload;
-	char * tempPayload;
-};
-
-class specialCounter : virtual public counter, virtual public special {
-public:
-	specialCounter();
-	specialCounter(const char*);
 };
 #endif
