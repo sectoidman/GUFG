@@ -307,7 +307,7 @@ public:
 	virtual char* request(int, int);
 };
 
-class counter : virtual public move {
+class counter : virtual public action {
 public:
 	counter();
 	counter(const char*);
@@ -319,11 +319,11 @@ public:
 
 	action * payload;
 	char * tempPayload;
-}
+};
 
 class specialCounter : virtual public counter, virtual public special {
 public:
 	specialCounter();
 	specialCounter(const char*);
-}
+};
 #endif
