@@ -22,7 +22,6 @@ set (SOURCES	auxil.cc
 		player.cc 
 		red.cc
 		yellow.cc 
-		orange.cc
 		special.cc 
 		aerial.cc
 		utility.cc
