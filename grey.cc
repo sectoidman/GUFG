@@ -10,9 +10,9 @@ grey::grey(){
 int grey::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
 	int freeze = character::takeHit(cMove, s, b, f, c, h, p);
-	if(p == -1) meter[4] += 204;
+	if(p == -1) meter[4] += 205;
 	if(meter[4] >= 1020){
-		meter[4] = 1020;
+		meter[4] = 1023;
 		freeze = 0;
 		cMove = noirActivate;
 	}
