@@ -294,7 +294,7 @@ void avatar::processMove(action * m)
 {
 	char* temp = NULL;
 	action* t = NULL;
-	for(int i = 0; i < 5; i++){
+	for(int i = 0; i < 6; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
 				temp = m->request(i, j);
