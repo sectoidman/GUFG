@@ -615,9 +615,11 @@ int player::takeHit(int combo, hStat & s)
 		else s.damage -= combo; 
 	}
 	s.untech -= combo;
+	int f;
 	if(slide) s.lift += 7 - s.lift/5;
+	f = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
 	if(s.ghostHit) freeze = 0;
-	else freeze = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
+	else freeze = f;
 	if(particleType != 1){ 
 		temp = cMove->blockSuccess();
 	}
