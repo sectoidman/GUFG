@@ -82,5 +82,6 @@ public:
 	virtual bool death(action *&, int);
 	virtual void init(action *&);
 	action * die;
+	action * first;
 };
 #endif
