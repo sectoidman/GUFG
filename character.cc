@@ -166,8 +166,6 @@ void avatar::build(const char* directory, const char* file)
 {
 	char buffer[101];
 	char buffer2[101];
-//	char actionName[151];
-//	char type[2];
 	actionTrie * t = NULL;
 	action * m = NULL;
 	bool commentFlag;
