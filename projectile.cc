@@ -3,7 +3,7 @@ projectile::projectile(const char* directory, const char* file)
 {
 	head = new actionTrie;
 	airHead = new actionTrie;
-	first = NULL;
+	neutral = NULL;
 	build(directory, file);
 	meter = new int[4];
 }
@@ -13,8 +13,6 @@ void projectile::build(const char* directory, const char* file)
 	getName(directory, file);
 
 	char buffer[101];
-
-	neutral = first;
 
 	sprintf(buffer, "%s/die", name);
 	die = new action(buffer);
@@ -36,7 +34,10 @@ void projectile::init(action *& cMove)
 
 void projectile::processMove(action * m)
 {
-	if(!first) first = m;
+	if(neutral == NULL){ 
+		neutral = m;
+		printf("%s\n", neutral->name);
+	}
 	avatar::processMove(m);
 	if(m->dies){ 
 		m->feed(die, 2, m->hits-1);
