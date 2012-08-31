@@ -16,7 +16,7 @@
 interface::interface()
 {
 	char buffer[50];
-	numChars = 2;
+	numChars = 3;
 	std::ifstream read;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
