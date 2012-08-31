@@ -22,7 +22,6 @@ int grey::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int
 void grey::tick()
 {
 	if(meter[4] > 0) meter[4]--;
-	printf("%i\n", meter[4]);
 }
 
 void grey::init(action *& cMove)
