@@ -532,6 +532,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 	s.push = stats[c].push + CHStats[c].push * CH;
 	s.lift = stats[c].lift + CHStats[c].lift * CH;
 	s.untech = stats[c].untech + CHStats[c].untech * CH;
+	s.blowback = stats[c].blowback + CHStats[c].blowback;
 	if(CH){
 		s.launch = CHStats[c].launch;
 		s.hover = CHStats[c].hover;
@@ -540,7 +541,6 @@ void action::pollStats(hStat & s, int f, bool CH)
 		s.slide = CHStats[c].slide;
 		s.stick = CHStats[c].stick;
 		s.ghostHit = CHStats[c].ghostHit;
-		s.blowback = CHStats[c].blowback;
 	} else {
 		s.launch = stats[c].launch;
 		s.hover = stats[c].hover;
@@ -549,7 +549,6 @@ void action::pollStats(hStat & s, int f, bool CH)
 		s.slide = stats[c].slide;
 		s.stick = stats[c].stick;
 		s.ghostHit = stats[c].ghostHit;
-		s.blowback = stats[c].blowback;
 	}
 	s.blockMask.i = stats[c].blockMask.i;
 }
