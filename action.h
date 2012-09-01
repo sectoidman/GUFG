@@ -141,7 +141,7 @@ public:
 
 	bool isProjectile:1;
 	virtual bool setParameter(char*);
-	virtual void parseProperties(char*);
+	virtual void parseProperties(char*, bool);
 	virtual void zero();
 };
 
