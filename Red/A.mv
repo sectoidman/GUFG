@@ -14,7 +14,7 @@ Gain: 0 : 2
 Cost: 0
 Blockable: 3 
 Blocks: 0
-Properties: C
+Properties: 
 #1
 $C	10 0 110 300
 $R	10 0 110 300	120 70 50 20

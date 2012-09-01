@@ -672,7 +672,7 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 bool action::CHState(int f)
 {
 	if(hits < 1) return false;
-	else if(f < totalStartup[hits-1]) return true;
+	else if(f < totalStartup[hits-1] + active[hits-1]) return true;
 	else return fch;
 }
 
