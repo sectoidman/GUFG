@@ -36,7 +36,6 @@ void projectile::processMove(action * m)
 {
 	if(neutral == NULL){ 
 		neutral = m;
-		printf("%s\n", neutral->name);
 	}
 	avatar::processMove(m);
 	if(m->dies){ 

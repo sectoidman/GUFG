@@ -80,7 +80,7 @@ void action::build(const char * n)
 		strcpy(savedBuffer, buffer);
 	} while (setParameter(buffer));
 
-	parseProperties(savedBuffer);
+	parseProperties(savedBuffer, 0);
 
 	collision = new SDL_Rect[frames];
 	hitbox = new SDL_Rect*[frames];
@@ -167,6 +167,8 @@ void action::build(const char * n)
 
 bool action::setParameter(char * buffer)
 {
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
 	char* token = strtok(buffer, "\t: \n");
 
 	if(!strcmp("Name", token)){
@@ -181,6 +183,9 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		activation = atoi(token);
 //		printf("Buffer: %i : %i\n", tolerance, activation);
+		return 1;
+	} else if (!strcmp("Counterhit", token)) {
+		parseProperties(savedBuffer, 1);
 		return 1;
 	} else if (!strcmp("Hits", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -395,7 +400,7 @@ bool action::setParameter(char * buffer)
 	} else return 0;
 }
 
-void action::parseProperties(char * buffer)
+void action::parseProperties(char * buffer, bool counter)
 {
 	char * token = strtok(buffer, " \t\n:");
 	token = strtok(NULL, "\n");
@@ -406,50 +411,55 @@ void action::parseProperties(char * buffer)
 	for(unsigned int i = 0; i < strlen(token); i++){
 //		printf("%c ", token[i]);
 		switch(token[i]){
-		case '^': 
-			stats[ch].launch = 1;
-			break;
-		case 'g':
-			stats[ch].ghostHit = 1;
+		case '^':
+			if(counter) CHStats[ch].launch = 1;
+			else stats[ch].launch = 1;
 			break;
 		case '>':
-			stats[ch].wallBounce = 1;
+			if(counter) CHStats[ch].wallBounce = 1;
+			else stats[ch].wallBounce = 1;
 			break;
 		case 'v':
-			stats[ch].floorBounce = 1;
+			if(counter) CHStats[ch].floorBounce = 1;
+			else stats[ch].floorBounce = 1;
 			break;
 		case '_':
-			stats[ch].slide = 1;
+			if(counter) CHStats[ch].slide = 1;
+			else stats[ch].slide = 1;
+			break;
+		case '=':
+			if(counter) CHStats[ch].stick = 1;
+			else stats[ch].stick = 1;
 			break;
 		case 's':
-			stop = 1;
+			if(!counter) stop = 1;
 			break;
 		case 'S': 
-			stop = 2;
+			if(!counter) stop = 2;
 			break;
 		case 'c':
-			crouch = 1;
+			if(!counter) crouch = 1;
 			break;
 		case ':':
 			ch++;
 			break;
 		case 't':
-			throwinvuln = 1;
+			if(!counter) throwinvuln = 1;
 			break;
 		case 'T':
-			throwinvuln = 2;
+			if(!counter) throwinvuln = 2;
 			break;
-		case '=':
-			stats[ch].stick = 1;
+		case 'g':
+			if(!counter) stats[ch].ghostHit = 1;
 			break;
 		case 'p':
-			stats[ch].hitsProjectile = 1;
+			if(!counter) stats[ch].hitsProjectile = 1;
 			break;
 		case 'd':
-			dies = 1;
+			if(!counter) dies = 1;
 			break;
 		case 'C':
-			fch = 1;
+			if(!counter) fch = 1;
 			break;
 		default:
 			break;
