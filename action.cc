@@ -169,7 +169,7 @@ bool action::setParameter(char * buffer)
 {
 	char savedBuffer[100];
 	strcpy(savedBuffer, buffer);
-	char* token = strtok(buffer, "\t: \n");
+	char* token = strtok(buffer, "\t:+ \n");
 
 	if(!strcmp("Name", token)){
 		token = strtok(NULL, "\t:\n");
@@ -298,7 +298,9 @@ bool action::setParameter(char * buffer)
 //		printf("Damage");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].damage = atoi(token);
+			if(savedBuffer[0] == '+') 
+				CHStats[i].damage = atoi(token);
+			else stats[i].damage = atoi(token);
 //			printf(": %i ", stats[i].damage);
 		}
 //		printf("\n");
@@ -307,7 +309,9 @@ bool action::setParameter(char * buffer)
 //		printf("Push");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].push = atoi(token);
+			if(savedBuffer[0] == '+') 
+				CHStats[i].push = atoi(token);
+			else stats[i].push = atoi(token);
 //			printf(": %i ", stats[i].push);
 		}
 //		printf("\n");
@@ -316,7 +320,9 @@ bool action::setParameter(char * buffer)
 //		printf("Lift");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].lift = atoi(token);
+			if(savedBuffer[0] == '+')
+				CHStats[i].lift = atoi(token);
+			else stats[i].lift = atoi(token);
 //			printf(": %i ", stats[i].lift);
 		}
 //		printf("\n");
@@ -325,7 +331,9 @@ bool action::setParameter(char * buffer)
 //		printf("Float");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].hover = atoi(token);
+			if(savedBuffer[0] == '+')
+				CHStats[i].hover = atoi(token);
+			else stats[i].hover = atoi(token);
 //			printf(": %i ", stats[i].hover);
 		}
 //		printf("\n");
@@ -334,7 +342,9 @@ bool action::setParameter(char * buffer)
 //		printf("Blowback");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].blowback = atoi(token);
+			if(savedBuffer[0] == '+')
+				CHStats[i].blowback = atoi(token);
+			else stats[i].blowback = atoi(token);
 //			printf(": %i ", stats[i].blowback);
 		}
 //		printf("\n");
@@ -343,8 +353,12 @@ bool action::setParameter(char * buffer)
 //		printf("Stun");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].stun = atoi(token);
-			CHStats[i].stun = (stats[i].stun - 5) / 2;
+			if(savedBuffer[0] == '+')
+				CHStats[i].stun = atoi(token);
+			else {
+				stats[i].stun = atoi(token);
+				CHStats[i].stun = (stats[i].stun - 5) / 2;
+			}
 //			printf(": %i ", stats[i].stun);
 		}
 //		printf("\n");
@@ -353,8 +367,12 @@ bool action::setParameter(char * buffer)
 //		printf("Untech");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].untech = atoi(token);
-			CHStats[i].untech = 10;
+			if(savedBuffer[0] == '+')
+				CHStats[i].untech = atoi(token);
+			else{
+				stats[i].untech = atoi(token);
+				CHStats[i].untech = 10;
+			}
 //			printf(": %i ", stats[i].untech);
 		}
 //		printf("\n");
