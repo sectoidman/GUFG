@@ -7,7 +7,6 @@ actionTrie::actionTrie()
 	occupants = 0;
 }
 
-
 actionTrie::actionTrie(action * a)
 {
 	for(int i = 0; i < 10; i++)

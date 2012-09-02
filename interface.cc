@@ -16,7 +16,7 @@
 interface::interface()
 {
 	char buffer[50];
-	numChars = 2;
+	numChars = 3;
 	std::ifstream read;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
@@ -162,8 +162,8 @@ void interface::roundInit()
 	bg.y = 900;
 
 	for(int i = 0; i < 2; i++){
-		p[i]->posY = floor - p[i]->pick()->neutral->collision[0].h;
 		p[i]->roundInit();
+		p[i]->posY = floor - p[i]->cMove->collision[0].h;
 	}
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
@@ -268,9 +268,7 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++){
 			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(p[i]->cMove != p[i]->pick()->reel && p[i]->cMove != p[i]->pick()->untech && 
-			   p[i]->cMove != p[i]->pick()->crouchReel && p[i]->cMove != p[i]->pick()->crouchBlock && 
-			   p[i]->cMove != p[i]->pick()->standBlock && p[i]->cMove != p[i]->pick()->airBlock){
+			if(!p[i]->cMove->arbitraryPoll(1, 0)){
 				combo[(i+1)%2] = 0;
 				p[i]->elasticX = 0;
 				p[i]->elasticY = 0;

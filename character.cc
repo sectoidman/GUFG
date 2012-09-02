@@ -54,7 +54,6 @@ character::character(const char*)
 	head->insert(9, new utility("White/JF"));
 	
 	throwBreak = new utility("White/break");
-	
 
 	meter = new int[3];
 }
@@ -62,18 +61,21 @@ character::character(const char*)
 character::~character()
 	//Character destructor. Might not need this if we aren't working with any dynamic memory, but it might be worthwhile to have.
 {
-	delete head;
-	delete airHead;
-	delete neutral;
-	delete crouch;
-	delete reel;
-	delete untech;
-	delete crouchReel;
-	delete crouchBlock;
-	delete standBlock;
-	delete airBlock;
-	delete [] meter;
-	if(name) delete [] name;
+	if(!dFlag){
+		if(head) delete head;
+		if(airHead) delete airHead;
+		delete neutral;
+		delete crouch;
+		delete reel;
+		delete untech;
+		delete crouchReel;
+		delete crouchBlock;
+		delete standBlock;
+		delete airBlock;
+		delete down;
+		delete [] meter;
+		if(name) delete [] name;
+	}
 }
 
 /*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
@@ -262,6 +264,7 @@ void character::build(const char *directory, const char *file)
 
 	sprintf(buffer, "%s/NS", name);
 	neutral = new looping(buffer);
+	dFlag = 0;
 
 	avatar::build(directory, file);
 
@@ -495,7 +498,7 @@ bool avatar::acceptTarget(action * c, int f)
 
 void character::land(action *& cMove, int &f, int &c, int &h)
 {
-	if(cMove == airBlock){
+	if(cMove->arbitraryPoll(1, 0)){
 		standBlock->init(airBlock->counter);
 		cMove = standBlock;
 	} else { 

@@ -41,6 +41,7 @@ public:
 
 class character : virtual public avatar{
 public:
+	bool dFlag:1;
 	character(const char*);
 	actionTrie * airHead;	//Trie for air actions
 	character();		//Load the entire character into memory. This should happen once per player per match.

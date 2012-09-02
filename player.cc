@@ -81,7 +81,7 @@ void player::init()
 void player::roundInit()
 {
 	instance::init();
-	cMove = pick()->neutral;
+	pick()->neutralize(cMove);
 	if(v) pick()->init(cMove);
 	updateRects();
 	lCorner = 0;
@@ -215,6 +215,9 @@ void player::characterSelect(int i)
 		break;
 	case 2:
 		v = new yellow;
+		break;
+	case 3:
+		v = new teal;
 		break;
 	default:
 		v = new character("White");
