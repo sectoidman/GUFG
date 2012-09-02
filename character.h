@@ -62,7 +62,6 @@ public:
 	untechState * untech;
 	airLooping * fall;
 	utility * down;
-	mash * tech;
 	hitstun * crouchReel;
 	hitstun * crouchBlock;
 	hitstun * standBlock;
