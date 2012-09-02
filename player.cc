@@ -81,7 +81,7 @@ void player::init()
 void player::roundInit()
 {
 	instance::init();
-	cMove = pick()->neutral;
+	pick()->neutralize(cMove);
 	if(v) pick()->init(cMove);
 	updateRects();
 	lCorner = 0;
@@ -278,43 +278,8 @@ void player::enforceGravity(int grav, int floor)
 
 void player::checkBlocking()
 {
-	int st;
-	bool block = false;
-	if(cMove == pick()->airBlock || cMove == pick()->standBlock || cMove == pick()->crouchBlock)
-		st = cMove->arbitraryPoll(1, currentFrame);
-	else st = 0;
-	
-
-	switch(inputBuffer[0]){
-	case 7:
-	case 4:
-		if(pick()->aerial && pick()->airBlock->cancel(cMove, connectFlag, hitFlag)) {
-			pick()->airBlock->init(st);
-			cMove = pick()->airBlock;
-		}
-		else if(pick()->standBlock->cancel(cMove, connectFlag, hitFlag)) {
-			pick()->standBlock->init(st);
-			cMove = pick()->standBlock;
-		}
-		updateRects();
-		block = true;
-		break;
-	case 1:
-		if(pick()->aerial && pick()->airBlock->cancel(cMove, connectFlag, hitFlag)) {
-			pick()->airBlock->init(st);
-			cMove = pick()->airBlock;
-		}
-		else if(pick()->crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
-			pick()->crouchBlock->init(st);
-			cMove = pick()->crouchBlock;
-		}
-		updateRects();
-		block = true;
-		break;
-	default:
-		break;
-	}
-
+	bool block = pick()->checkBlocking(cMove, inputBuffer[0], connectFlag, hitFlag);
+	updateRects();
 	blockType = 0;
 	if(block){
 		for(int i = 1; i < 7; i++){
@@ -694,9 +659,11 @@ void instance::setPosition(int x, int y)
 void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
+	hStat dummy;
+	dummy.stun = 1;
+	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
-	pick()->reel->init(1);
-	cMove = pick()->reel;
+	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType);
 	updateRects();
 }
 

@@ -2,7 +2,6 @@
 projectile::projectile(const char* directory, const char* file)
 {
 	head = new actionTrie;
-	airHead = new actionTrie;
 	neutral = NULL;
 	build(directory, file);
 	meter = new int[4];
