@@ -78,8 +78,6 @@ character::~character()
 	}
 }
 
-/*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
-
 void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
@@ -322,6 +320,7 @@ void character::init(action *& cMove){
 	meter[0] = 0;
 	resetAirOptions();
 	aerial = 0;
+	neutralize(cMove);
 }
 
 void avatar::processMove(action * m)
@@ -421,9 +420,7 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 bool character::checkBlocking(action *& cMove, int input, int &connectFlag, int &hitFlag)
 {
 	int st;
-	if(cMove == airBlock || cMove == standBlock || cMove == crouchBlock)
-		st = cMove->arbitraryPoll(1, 0);
-	else st = 0;
+	st = cMove->arbitraryPoll(1, 0);
 	switch(input){
 	case 7:
 	case 4:
