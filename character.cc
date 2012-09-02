@@ -288,9 +288,6 @@ void character::build(const char *directory, const char *file)
 	untech->feed(down, 1, 0);
 	fall->feed(down, 1, 0);
 
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);
-
 	sprintf(buffer, "%s/HL", name);
 	crouchReel = new hitstun(buffer);
 
