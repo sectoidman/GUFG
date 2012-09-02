@@ -78,8 +78,6 @@ character::~character()
 	}
 }
 
-/*Here begin action functions. Actually contemplating making this a class instead, but this might be simpler for now*/
-
 void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], bool down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
 {
 	action * t = NULL;
@@ -192,7 +190,7 @@ void avatar::build(const char* directory, const char* file)
 			sortMove(m, buffer2);
 		}
 	}
-	read.close();	
+	read.close();
 }
 
 void avatar::sortMove(action * m, char* buffer)
@@ -290,9 +288,6 @@ void character::build(const char *directory, const char *file)
 	untech->feed(down, 1, 0);
 	fall->feed(down, 1, 0);
 
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);
-
 	sprintf(buffer, "%s/HL", name);
 	crouchReel = new hitstun(buffer);
 
@@ -322,6 +317,7 @@ void character::init(action *& cMove){
 	meter[0] = 0;
 	resetAirOptions();
 	aerial = 0;
+	neutralize(cMove);
 }
 
 void avatar::processMove(action * m)
@@ -421,9 +417,7 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 bool character::checkBlocking(action *& cMove, int input, int &connectFlag, int &hitFlag)
 {
 	int st;
-	if(cMove == airBlock || cMove == standBlock || cMove == crouchBlock)
-		st = cMove->arbitraryPoll(1, 0);
-	else st = 0;
+	st = cMove->arbitraryPoll(1, 0);
 	switch(input){
 	case 7:
 	case 4:
@@ -498,7 +492,7 @@ bool avatar::acceptTarget(action * c, int f)
 
 void character::land(action *& cMove, int &f, int &c, int &h)
 {
-	if(cMove->arbitraryPoll(1, 0)){
+	if(cMove->allowed.b.block){
 		standBlock->init(airBlock->counter);
 		cMove = standBlock;
 	} else { 

@@ -386,6 +386,7 @@ void instance::step()
 	if(pick()->death(cMove, currentFrame)) dead = true;
 	if(posX > 3300 || posX < -100) dead = true;
 	pick()->step(cMove, currentFrame, freeze);
+
 	if(cMove && currentFrame >= cMove->frames){
 		cMove = cMove->next;
 		currentFrame = 0;

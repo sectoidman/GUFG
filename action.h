@@ -160,7 +160,7 @@ public:
 
 class special : virtual public action {
 public:
-	special() {} 
+	special() {}
 	special(const char*);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int chip;
