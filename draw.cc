@@ -78,7 +78,7 @@ void character::drawMeters(int ID, float scalingFactor)
 {
 	SDL_Rect m;
 	SDL_Rect h;
-	if(health >= 0) h.w = health*2; else h.w = 1; 
+	if(health >= 0) h.w = health; else h.w = 1; 
 
 	if(ID == 1) h.x = 100 + (600 - h.w); 
 	else h.x = 900;

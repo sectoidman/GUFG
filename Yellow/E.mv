@@ -9,10 +9,11 @@ Stun: 20
 Untech: 9
 Push: 26
 Lift: 34
-+Lift: -10
++Lift: 9
 Float: 15
++Float: 27
 Blowback: 8
-+Blowback: -22
++Blowback: -19
 Gain: 0 : 8
 Cost: 0
 Blockable: 5 
