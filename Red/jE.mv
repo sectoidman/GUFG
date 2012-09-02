@@ -6,15 +6,20 @@ Check: 33
 State: 256 : 384
 Damage: 21
 Stun: 16
++Stun: 10
 Untech: 20
++Untech: 25
 Push: 4
 Lift: 20
++Lift: -60
 Float: 14
 Blowback: 4
++Blowback: 15
 Gain: 0 : 2
 Cost: 0
 Blockable: 6
 Blocks: 0
+Counterhit: ^v>
 Properties: 
 #0 
 $C	10 10 110 240
