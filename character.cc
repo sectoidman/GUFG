@@ -382,6 +382,42 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 	}
 }
 
+bool character::checkBlocking(action *& cMove, int input, int &connectFlag, int &hitFlag)
+{
+	int st;
+	if(cMove == airBlock || cMove == standBlock || cMove == crouchBlock)
+		st = cMove->arbitraryPoll(1, 0);
+	else st = 0;
+	switch(input){
+	case 7:
+	case 4:
+		if(aerial && airBlock->cancel(cMove, connectFlag, hitFlag)) {
+			airBlock->init(st);
+			cMove = airBlock;
+		}
+		else if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
+			standBlock->init(st);
+			cMove = standBlock;
+		}
+		return true;
+		break;
+	case 1:
+		if(aerial && airBlock->cancel(cMove, connectFlag, hitFlag)) {
+			airBlock->init(st);
+			cMove = airBlock;
+		}
+		else if(crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
+			crouchBlock->init(st);
+			cMove = crouchBlock;
+		}
+		return true;
+		break;
+	default:
+		return false;
+		break;
+	}
+}
+
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
 	int freeze = s.stun/4 + 10;
