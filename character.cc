@@ -190,7 +190,7 @@ void avatar::build(const char* directory, const char* file)
 			sortMove(m, buffer2);
 		}
 	}
-	read.close();	
+	read.close();
 }
 
 void avatar::sortMove(action * m, char* buffer)
@@ -492,7 +492,7 @@ bool avatar::acceptTarget(action * c, int f)
 
 void character::land(action *& cMove, int &f, int &c, int &h)
 {
-	if(cMove->arbitraryPoll(1, 0)){
+	if(cMove->allowed.b.block){
 		standBlock->init(airBlock->counter);
 		cMove = standBlock;
 	} else { 
