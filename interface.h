@@ -48,6 +48,7 @@ public:
 	bool select[2];
 	int selection[2];
 	SDL_Surface *screen;
+	GLuint glyph[91];
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
