@@ -21,7 +21,6 @@ class aux{
 		static SDL_Surface* init_screen(int width, int height, int bpp);
 		static void update_screen(SDL_Surface* source, SDL_Surface* destination);
 
-		static char * arabicToRoman(int);
 		static SDL_Surface* load_image(std::string filename);
 		static void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination);
 		static bool checkCollision(SDL_Rect, SDL_Rect);
