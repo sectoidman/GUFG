@@ -43,6 +43,7 @@ void action::zero()
 	attemptStart = 0;
 	attemptEnd = 0;
 	stop = 0;
+	hits = 0;
 	throwinvuln = 0;
 	crouch = 0;
 	armorStart = 0; armorLength = 0;
