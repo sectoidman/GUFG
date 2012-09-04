@@ -178,7 +178,7 @@ void player::writeConfig()
 			if (SDL_PollEvent(&temp)) {
 				switch (temp.type) {
 				case SDL_JOYAXISMOTION:
-					if(temp.jaxis.value != 0){
+					if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
 						input[i] = temp;
 						write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value << "\n";
 						printf("Set to Joystick %i axis %i value %i\n", input[i].jaxis.which, input[i].jaxis.axis, input[i].jaxis.value);
@@ -520,12 +520,20 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
+		for(int i = 0; i < 4; i++) {
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+				sAxis[i] = 1;
+		}
 		for(int i = 4; i < 9; i++){
 			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				posEdge[i-4] = 1;
 		}
 		break;
 	case SDL_JOYBUTTONUP:
+		for(int i = 0; i < 4; i++) {
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+				sAxis[i] = 0;
+		}
 		for(int i = 4; i < 9; i++){
 			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				negEdge[i-4] = 1;
