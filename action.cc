@@ -679,7 +679,7 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 {
 	if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength)
 		return 0;
-	else if (f > armorStart && f < armorStart + armorLength && armorHits > 0 && armorHits < armorCounter){
+	else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
 		s.stun = 0;
 		armorCounter++;
 		return 1;
