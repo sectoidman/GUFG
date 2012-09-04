@@ -55,6 +55,7 @@ void action::zero()
 	cost = 0;
 	dies = 0;
 	fch = 0;
+	armorCounter = 0;
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
@@ -631,6 +632,7 @@ action * action::blockSuccess()
 
 void action::execute(action * last, int *& resource)
 {
+	armorCounter = 0;
 	resource[0] -= cost;
 }
 
@@ -677,8 +679,9 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 {
 	if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength)
 		return 0;
-	else if (f > armorStart && f < armorStart + armorLength){
+	else if (f > armorStart && f < armorStart + armorLength && armorHits > 0 && armorHits < armorCounter){
 		s.stun = 0;
+		armorCounter++;
 		return 1;
 	} else {
 		f = 0;
