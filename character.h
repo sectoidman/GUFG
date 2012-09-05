@@ -4,7 +4,13 @@
  *Under MIT OSI license, see "COPYING" for details
  */
 #include <SDL/SDL.h>
+
+#ifdef _APPLE
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
+
 #include "trie.h"
 #ifndef CHARACTER
 #define CHARACTER

@@ -44,7 +44,7 @@ link_libraries (
 )
 
 if (WIN32)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -D_BOOST")
 	find_package (Boost 1.45 COMPONENTS thread chrono system REQUIRED)
 	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
 	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
@@ -54,6 +54,10 @@ if (WIN32)
 		${Boost_SYSTEM_LIBRARY}
 	)
 endif (WIN32)
+
+if (APPLE)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -D_BOOST")
+endif (APPLE)
 
 add_executable (gufg 
 		WIN32
