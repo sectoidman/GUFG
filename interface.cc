@@ -75,7 +75,7 @@ interface::interface()
 	things = NULL;
 	selectScreen = aux::load_texture("Misc/Select.png");
 	for(int i = 0; i < 91; i++){
-		sprintf(buffer, "%i.png", i);
+		sprintf(buffer, "Misc/Glyphs/%i.png", i);
 		glyph[i] = aux::load_texture(buffer);
 	}
 	matchInit();
