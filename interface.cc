@@ -138,7 +138,7 @@ bool interface::screenInit()
 void interface::writeConfig(int ID)
 {
 	char buffer[200];
-	char pident[30];
+//	char pident[30];
 	char fname[30];
 	SDL_Event temp;
 //	sprintf(pident, "Player %i\n", ID);
