@@ -35,6 +35,7 @@ public:
 	void dragBG(int);
 	void doSuperFreeze();
 	void unitCollision();
+	void loadMisc();
 	void writeConfig(int);
 	void resolveHits();
 	void resolveThrows();

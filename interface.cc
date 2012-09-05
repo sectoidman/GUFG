@@ -40,11 +40,6 @@ interface::interface()
 	sf = scalingFactor;
 	assert(screenInit() != false);
 
-	for(int i = 0; i < 91; i++){
-		sprintf(buffer, "Misc/Glyphs/%i.png", i);
-		glyph[i] = aux::load_texture(buffer);
-	}
-
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
@@ -79,8 +74,17 @@ interface::interface()
 
 	/*Start a match*/
 	things = NULL;
-	selectScreen = aux::load_texture("Misc/Select.png");
 	matchInit();
+}
+
+void interface::loadMisc()
+{
+	char buffer[200];
+	for(int i = 0; i < 91; i++){
+		sprintf(buffer, "Misc/Glyphs/%i.png", i);
+		glyph[i] = aux::load_texture(buffer);
+	}
+	selectScreen = aux::load_texture("Misc/Select.png");
 }
 
 bool interface::screenInit()
@@ -132,6 +136,7 @@ bool interface::screenInit()
 	glLoadIdentity();
 
 	initd = true;
+	loadMisc();
 	return true;
 }
 
