@@ -54,16 +54,7 @@ if (WIN32)
 endif (WIN32)
 
 if (APPLE)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -D_BOOST")
-	find_package (Boost)
-	IF (Boost_FOUND)
-		INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIR})
-		LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
-		link_libraries (
-			${Boost_CHRONO_LIBRARY}
-			${Boost_SYSTEM_LIBRARY}
-		)
-	ENDIF(Boost_FOUND)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -std=c++11 -stdlib=libc++")
 endif (APPLE)
 
 add_executable (gufg 
