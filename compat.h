@@ -7,7 +7,7 @@
 
 
 namespace internal {
-	#ifdef _WIN32
+	#ifdef _BOOST
 		using namespace boost::chrono;
 		using namespace boost;
 	#else

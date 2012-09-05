@@ -47,8 +47,7 @@ if (WIN32)
 	find_package (Boost 1.45 COMPONENTS chrono system REQUIRED)
 	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
 	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
-	link_libraries (
-		${Boost_THREAD_LIBRARY} 
+	link_libraries ( 
 		${Boost_CHRONO_LIBRARY}
 		${Boost_SYSTEM_LIBRARY}
 	)
@@ -56,6 +55,15 @@ endif (WIN32)
 
 if (APPLE)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -D_BOOST")
+	find_package (Boost)
+	IF (Boost_FOUND)
+		INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIR})
+		LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
+		link_libraries (
+			${Boost_CHRONO_LIBRARY}
+			${Boost_SYSTEM_LIBRARY}
+		)
+	ENDIF(Boost_FOUND)
 endif (APPLE)
 
 add_executable (gufg 
