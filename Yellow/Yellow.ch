@@ -51,9 +51,12 @@ qB = h
 qC = h
 wA = h
 wB = h
+wC = h
 wD = h
 %j236C = a236
 &22D = h252
 %236B = h236
-!214E = h214
+%236B214B = h214
+%236B236B = h236
+!214E = h214 h
 #Moves

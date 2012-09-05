@@ -74,6 +74,7 @@ public:
 	bool crouch:1;
 	int armorStart; int armorLength;
 	int armorHits;
+	int armorCounter;
 	int guardStart; int guardLength;
 
 	//Properties of a hit. These will only exist for actions that hit.

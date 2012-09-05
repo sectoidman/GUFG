@@ -9,8 +9,8 @@ Damage: 24
 Stun: 15
 Untech: 0
 Push: 10
-Lift: 40
-Blowback: 0
+Lift: 20
+Blowback: 5
 Gain: 1 : 6
 Cost: 0
 Blockable: 7

@@ -40,9 +40,15 @@ interface::interface()
 	sf = scalingFactor;
 	assert(screenInit() != false);
 
+	for(int i = 0; i < 91; i++){
+		sprintf(buffer, "Misc/Glyphs/%i.png", i);
+		glyph[i] = aux::load_texture(buffer);
+	}
+
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
+		if(!p[i]->readConfig()) writeConfig(i);
 		sAxis[i] = new bool[4];
 		posEdge[i] = new bool[5]; 
 		negEdge[i] = new bool[5];
@@ -127,6 +133,59 @@ bool interface::screenInit()
 
 	initd = true;
 	return true;
+}
+
+void interface::writeConfig(int ID)
+{
+	char buffer[200];
+	char pident[30];
+	char fname[30];
+	SDL_Event temp;
+//	sprintf(pident, "Player %i\n", ID);
+	sprintf(fname, "Misc/.p%i.conf", ID + 1);
+	std::ofstream write;
+	write.open(fname);
+	for(int i = 0; i < 10; i++){
+		//glClear(GL_COLOR_BUFFER_BIT);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+		glEnable( GL_TEXTURE_2D );
+//		drawGlyph(pident, 0, 1600, 250, 80, 1);
+		sprintf(buffer, "Please enter a");
+		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		sprintf(buffer, "command for %s", p[ID]->inputName[i]);
+		drawGlyph(buffer, 0, 1600, 450, 80, 1);
+		SDL_GL_SwapBuffers();
+		glDisable( GL_TEXTURE_2D );
+		//glClear(GL_COLOR_BUFFER_BIT);
+		temp = p[ID]->writeConfig(i);
+		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+		glEnable( GL_TEXTURE_2D );
+//		drawGlyph(pident, 0, 1600, 250, 80, 1);
+		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		sprintf(buffer, "Please enter a");
+		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		switch(temp.type){
+		case SDL_JOYAXISMOTION:
+			if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
+				write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value << "\n";
+//				sprintf(buffer, "Set to Joystick %i axis %i value %i\n", temp.jaxis.which, temp.jaxis.axis, temp.jaxis.value);
+			}
+			break;
+		case SDL_JOYBUTTONDOWN:
+			write << (int)temp.type << " : " << (int)temp.jbutton.which << " " << (int)temp.jbutton.button << "\n";
+//			sprintf(buffer, "Set to Joystick %i button %i\n", temp.jbutton.which, temp.jbutton.button);
+			break;
+		case SDL_KEYDOWN:
+			write << (int)temp.type << " : " << (int)temp.key.keysym.sym << "\n";
+//			sprintf(buffer, "Set to keyboard %s\n", SDL_GetKeyName(temp.key.keysym.sym));
+			break;
+		}
+//		drawGlyph(buffer, 0, 1600, 450, 80, 1);
+		SDL_GL_SwapBuffers();
+		glDisable( GL_TEXTURE_2D );
+	}
+	write.close();
 }
 
 /*This functions sets things up for a new match. Initializes some things and draws the background*/

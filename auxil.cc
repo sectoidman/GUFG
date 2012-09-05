@@ -275,3 +275,4 @@ GLuint aux::load_texture (string filename)
 {
 	return surface_to_texture(load_image(filename));
 }
+

@@ -6,6 +6,9 @@
 
 #include "interface.h"
 #include <math.h>
+#include <iomanip>
+#include <sstream>
+#include <string>
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
@@ -27,6 +30,13 @@ void interface::draw()
 		glTexCoord2i(0, 1);
 		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
 	glEnd();
+
+	for(int i = 0; i < 2; i++){
+		if(i == 0) 
+			drawGlyph(p[i]->pick()->name, 100, 500, 30, 40, 0);
+		else
+			drawGlyph(p[i]->pick()->name, 1000, 500, 30, 40, 2);
+	}
 
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
@@ -78,7 +88,7 @@ void character::drawMeters(int ID, float scalingFactor)
 {
 	SDL_Rect m;
 	SDL_Rect h;
-	if(health >= 0) h.w = health*2; else h.w = 1; 
+	if(health >= 0) h.w = health; else h.w = 1; 
 
 	if(ID == 1) h.x = 100 + (600 - h.w); 
 	else h.x = 900;
@@ -169,6 +179,57 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalingFactor)
 {
 	cMove->draw(facing, x, y, f, scalingFactor);
+}
+
+int interface::drawGlyph(char * string, int x, int space, int y, int height, int just)
+{
+	int w, h, width, padding = 0, totalWidth = 0;
+	if(just != 0){	
+		for(unsigned int i = 0; i < strlen(string); i++){
+			if(string[i] == ' ') totalWidth += w * sf / 2;
+			else if(string[i] == '\0');
+			else{
+				glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
+
+				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+				sf = (float)height / (float)h;
+				totalWidth += w * sf;
+			}
+		}
+		if(just == 2) padding = space - totalWidth;
+		else padding = (space - totalWidth) / 2;
+	}
+
+	float sf;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	for(unsigned int i = 0; i < strlen(string); i++){
+		if(string[i] == ' ') x += (float)width / 2.0;
+		else{
+			glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
+
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+			sf = (float)height / (float)h;
+			width = w * sf;
+			glBegin(GL_QUADS);
+			glTexCoord2i(0, 0);
+			glVertex3f((x + padding) *scalingFactor, y * scalingFactor, 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f((x + padding) * scalingFactor + width * scalingFactor, y * scalingFactor, 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f((x + padding) * scalingFactor + width * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f((x + padding) * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
+			glEnd();
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			x += (float)width;
+		}
+	}
+	return x;
 }
 
 void action::draw(int facing, int x, int y, int f, float scalingFactor)

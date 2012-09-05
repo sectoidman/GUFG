@@ -35,7 +35,6 @@ set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
-find_package (GLUT REQUIRED)
 find_package (OpenGL REQUIRED)
 link_libraries (
    ${SDL_LIBRARY}

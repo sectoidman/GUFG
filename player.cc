@@ -69,8 +69,6 @@ void player::init()
 	inputName[8] = "E";
 	inputName[9] = "Start";
 
-	if(!readConfig()) writeConfig();
-
 	/*Set up the sprite*/
 
 	v = NULL;
@@ -157,53 +155,40 @@ bool player::aerial()
 	return pick()->aerial;
 }
 
-void player::writeConfig()
+SDL_Event player::writeConfig(int i)
 {
-	char fname[30];
-	printf("Player %i:\n", ID);
-	sprintf(fname, "Misc/.p%i.conf", ID);
-	std::ofstream write;
 	SDL_Event temp; 
-	write.open(fname);
 	/*Set up ALL the inputs*/
-	for(int i = 0; i < 10; i++){
-		printf("Please enter a command for %s\n", inputName[i]);
-		/*Set up dummy event*/
 
-		/*Flag for breaking the loop*/
-		bool configFlag = 0;
+	/*Set up dummy event*/
 
-		while(SDL_PollEvent(&temp));
-		while (configFlag == 0){
-			if (SDL_PollEvent(&temp)) {
-				switch (temp.type) {
-				case SDL_JOYAXISMOTION:
-					if(temp.jaxis.value != 0){
-						input[i] = temp;
-						write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value << "\n";
-						printf("Set to Joystick %i axis %i value %i\n", input[i].jaxis.which, input[i].jaxis.axis, input[i].jaxis.value);
-						configFlag = 1;
-					}
-					break;
-				case SDL_JOYBUTTONDOWN:
+	/*Flag for breaking the loop*/
+	bool configFlag = 0;
+
+	while(SDL_PollEvent(&temp));
+	while (configFlag == 0){
+		if (SDL_PollEvent(&temp)) {
+			switch (temp.type) {
+			case SDL_JOYAXISMOTION:
+				if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
 					input[i] = temp;
-					write << (int)temp.type << " : " << (int)temp.jbutton.which << " " << (int)temp.jbutton.button << "\n";
-					printf("Set to Joystick %i button %i\n", input[i].jbutton.which, input[i].jbutton.button);
 					configFlag = 1;
-					break;
-				case SDL_KEYDOWN:
-					input[i] = temp;
-					write << (int)temp.type << " : " << (int)temp.key.keysym.sym << "\n";
-					printf("Set to keyboard %s\n", SDL_GetKeyName(input[i].key.keysym.sym));
-					configFlag = 1;
-					break;
-				default: 
-					break;
 				}
+				break;
+			case SDL_JOYBUTTONDOWN:
+				input[i] = temp;
+				configFlag = 1;
+				break;
+			case SDL_KEYDOWN:
+				input[i] = temp;
+				configFlag = 1;
+				break;
+			default: 
+				break;
 			}
 		}
 	}
-	write.close();
+	return temp;
 }
 
 void player::characterSelect(int i)
@@ -523,12 +508,20 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
+		for(int i = 0; i < 4; i++) {
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+				sAxis[i] = 1;
+		}
 		for(int i = 4; i < 9; i++){
 			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				posEdge[i-4] = 1;
 		}
 		break;
 	case SDL_JOYBUTTONUP:
+		for(int i = 0; i < 4; i++) {
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+				sAxis[i] = 0;
+		}
 		for(int i = 4; i < 9; i++){
 			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				negEdge[i-4] = 1;
