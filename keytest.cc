@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	/*Spawn the interface*/
 	typedef chrono::duration<int,micro> microsecs_t ;
 	chrono::high_resolution_clock::time_point frameStart;
-	chrono::high_resolution_clock::time_point frameEnd; 
+	chrono::high_resolution_clock::time_point frameEnd;
 	interface game;
 	int rounds = 2;
 //	int count = 0;
@@ -28,13 +28,17 @@ int main(int argc, char* argv[])
 
 	/*Loop of everything*/
 	while (!game.gameover){
-		frameStart = chrono::high_resolution_clock::now(); 
+		frameStart = chrono::high_resolution_clock::now();
 		game.readInput();
 		game.resolve();
-		frameEnd = chrono::high_resolution_clock::now(); 
-		microsecs_t frameDuration(chrono::duration_cast<microsecs_t>(frameEnd - frameStart) );
-		chrono::microseconds sleepDuration(16667 - frameDuration.count()); 
-		this_thread::sleep_for(sleepDuration);
+		int dur;
+		do {
+			frameEnd = chrono::high_resolution_clock::now();
+			microsecs_t frameDuration(chrono::duration_cast<microsecs_t>(frameEnd - frameStart));
+			microsecs_t duration(16667 - frameDuration.count());
+			dur = duration.count();
+		} while(dur > 0);
 	}
+    return 0;
 }
 
