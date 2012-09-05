@@ -23,10 +23,10 @@ public:
 	void readInput();	//Reads input from players.
 	void resolve();		//Main resolution function per frame. Happens exactly once per frame.
 	void draw();		//The primary function in charge of drawing things on the screen.
-	int drawGlyph(char *, int, int, int, int, float, int);
 	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
 	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
 	bool screenInit();
+	int drawGlyph(char *, int, int, int, int, int);
 	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
@@ -35,6 +35,7 @@ public:
 	void dragBG(int);
 	void doSuperFreeze();
 	void unitCollision();
+	void writeConfig(int);
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
