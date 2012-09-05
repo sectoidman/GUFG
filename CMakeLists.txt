@@ -44,7 +44,7 @@ link_libraries (
 
 if (WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
-	find_package (Boost 1.45 COMPONENTS thread chrono system REQUIRED)
+	find_package (Boost 1.45 COMPONENTS chrono system REQUIRED)
 	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
 	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
 	link_libraries (
