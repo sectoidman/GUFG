@@ -9,8 +9,8 @@ Damage: 30
 Stun: 19
 Untech: 19
 Push: 10
-Float: 30
-Lift: 12
+Float: 10
+Lift: 19
 Blowback: 10
 Gain: 1 : 6
 Cost: 0
@@ -24,7 +24,7 @@ $D	-4 0 0 0
 #1
 $C	10 0 110 300
 $R	0 0 0 0
-$D	-2 -12 3 0
+$D	-1 -12 3 0
 #2
 $C	10 0 110 280
 $R	0 0 0 0

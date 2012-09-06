@@ -245,7 +245,7 @@ void interface::roundInit()
 	combo[0] = 0;
 	combo[1] = 0;
 	grav = 6;
-	timer = 60 * 99;
+	timer = 60 * 101;
 	roundIntro = 1;
 	roundIntro = 0;
 	prox.w = 200;
@@ -257,12 +257,16 @@ void interface::roundInit()
 /*Pretty simple timer modifier*/
 void interface::runTimer()
 {
+	int plus;
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
 			if(p[i]->cMove != NULL)
 			{
-				timer += (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
-				if(timer > 60*99) timer = 60*99;
+				plus = (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
+				if(plus != 0){ 
+					timer += plus;
+					if(timer > 60*99) timer = 60*99;
+				}
 			}
 		}
 	}
@@ -278,7 +282,16 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
-		for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+		if(timer > 99 * 60){
+			for(int i = 0; i < 2; i++){
+				if(timer == 106 * 60) p[i]->inputBuffer[0] = 0;
+				else(p[i]->inputBuffer[0] = 5);
+				for(int j = 0; j < 5; j++){
+					posEdge[i][j] = 0;
+					negEdge[i][j] = 0;
+				}
+			}
+		} else for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < thingComplexity; i++){
 			if(i < 2){
@@ -355,10 +368,8 @@ void interface::resolve()
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
 		resolveSummons();
-		if(!matchIntro && !roundIntro){
-			checkWin();
-			runTimer();
-		}
+		checkWin();
+		runTimer();
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){

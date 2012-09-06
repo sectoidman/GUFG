@@ -32,7 +32,7 @@ public:
 	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
 	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
 	bool screenInit();
-	int drawGlyph(char *, int, int, int, int, int);
+	int drawGlyph(const char *, int, int, int, int, int);
 	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
