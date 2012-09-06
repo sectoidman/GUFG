@@ -29,7 +29,7 @@ set (SOURCES	auxil.cc
 		trie.cc) 
 
 
-set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
+set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
@@ -56,6 +56,7 @@ endif (WIN32)
 if (APPLE)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -std=c++11 -stdlib=libc++")
 endif (APPLE)
+
 
 add_executable (gufg 
 		WIN32
