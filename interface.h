@@ -79,9 +79,8 @@ public:
 	int counter[2];
 
 	bool q;
-	bool matchIntro:1;
-	bool roundIntro:1;
 	int timer;
+	bool roundEnd:1;
 private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
