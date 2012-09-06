@@ -12,6 +12,7 @@
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
+	char buffer[200];
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -37,6 +38,12 @@ void interface::draw()
 		else
 			drawGlyph(p[i]->pick()->name, 1000, 500, 30, 40, 2);
 	}
+
+	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
+		sprintf(buffer, "Round %i", 1 + p[0]->rounds + p[1]->rounds);
+		drawGlyph("Round n", 0, 1600, 300, 200, 1);
+	}
+	else if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 300, 200, 1);
 
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
@@ -181,7 +188,7 @@ void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalin
 	cMove->draw(facing, x, y, f, scalingFactor);
 }
 
-int interface::drawGlyph(char * string, int x, int space, int y, int height, int just)
+int interface::drawGlyph(const char * string, int x, int space, int y, int height, int just)
 {
 	int w, h, width = 0, padding = 0, totalWidth = 0;
 	if(just != 0){	
