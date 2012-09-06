@@ -3,7 +3,13 @@
  */
 
 #include <SDL/SDL.h>
+
+#ifdef _APPLE
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
+
 #include <SDL/SDL_opengl.h>
 #include <string>
 #include <iostream>

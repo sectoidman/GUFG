@@ -40,11 +40,6 @@ interface::interface()
 	sf = scalingFactor;
 	assert(screenInit() != false);
 
-	for(int i = 0; i < 91; i++){
-		sprintf(buffer, "Misc/Glyphs/%i.png", i);
-		glyph[i] = aux::load_texture(buffer);
-	}
-
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
@@ -79,8 +74,17 @@ interface::interface()
 
 	/*Start a match*/
 	things = NULL;
-	selectScreen = aux::load_texture("Misc/Select.png");
 	matchInit();
+}
+
+void interface::loadMisc()
+{
+	char buffer[200];
+	for(int i = 0; i < 91; i++){
+		sprintf(buffer, "Misc/Glyphs/%i.png", i);
+		glyph[i] = aux::load_texture(buffer);
+	}
+	selectScreen = aux::load_texture("Misc/Select.png");
 }
 
 bool interface::screenInit()
@@ -132,6 +136,7 @@ bool interface::screenInit()
 	glLoadIdentity();
 
 	initd = true;
+	loadMisc();
 	return true;
 }
 
@@ -200,8 +205,6 @@ void interface::matchInit()
 	p[1]->secondInstance = 0;
 	background = aux::load_texture("Misc/BG1.png");
 	q = 0;
-	matchIntro = 1;
-	matchIntro = 0; //To be removed later, when match intro stuff actually exists
 	printf("Please select a character:\n");
 	while (SDL_PollEvent(&event));
 }
@@ -209,6 +212,7 @@ void interface::matchInit()
 /*Sets stuff up for a new round. This initializes the characters, the timer, and the background.*/
 void interface::roundInit()
 {
+	roundEnd = false;
 	if(things){ 
 		delete [] things;
 	}
@@ -240,9 +244,8 @@ void interface::roundInit()
 	combo[0] = 0;
 	combo[1] = 0;
 	grav = 6;
-	timer = 60 * 99;
-	roundIntro = 1;
-	roundIntro = 0;
+	timer = 60 * 101;
+//	if(p[0]->rounds + p[1]->rounds < 1) timer += 60 * 6;
 	prox.w = 200;
 	prox.h = 0;
 	freeze = 0;
@@ -252,12 +255,16 @@ void interface::roundInit()
 /*Pretty simple timer modifier*/
 void interface::runTimer()
 {
+	int plus;
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
 			if(p[i]->cMove != NULL)
 			{
-				timer += (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
-				if(timer > 60*99) timer = 60*99;
+				plus = (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
+				if(plus != 0){ 
+					timer += plus;
+					if(timer > 60*99) timer = 60*99;
+				}
 			}
 		}
 	}
@@ -273,7 +280,20 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
-		for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+		if(timer > 99 * 60 && !roundEnd){
+			for(int i = 0; i < 2; i++){
+				if(timer == 106 * 60) p[i]->inputBuffer[0] = 0;
+				if(timer == 106 * 60 - 1) p[i]->inputBuffer[0] = i;
+				if(timer == 106 * 60 - 2) p[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
+				if(timer == 106 * 60 - 3) p[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
+				if(timer == 106 * 60 - 4) p[i]->inputBuffer[0] = 0;
+				else(p[i]->inputBuffer[0] = 5);
+				for(int j = 0; j < 5; j++){
+					posEdge[i][j] = 0;
+					negEdge[i][j] = 0;
+				}
+			}
+		} else for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < thingComplexity; i++){
 			if(i < 2){
@@ -350,10 +370,8 @@ void interface::resolve()
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
 		resolveSummons();
-		if(!matchIntro && !roundIntro){
-			checkWin();
-			runTimer();
-		}
+		checkWin();
+		runTimer();
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
@@ -402,6 +420,9 @@ void interface::resolveSummons()
 void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
+		roundEnd = true;
+		if(p[0]->pick()->health > 0 && p[0]->pick()->health > 0) printf("Time Out\n");
+		else printf("Down!\n");
 		if(p[0]->pick()->health > p[1]->pick()->health) {
 			printf("Player 1 wins!\n");
 			p[0]->rounds++;

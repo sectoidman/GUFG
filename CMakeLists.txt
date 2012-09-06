@@ -30,7 +30,7 @@ set (SOURCES	auxil.cc
 		trie.cc) 
 
 
-set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul --std=c++0x")
+set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
@@ -45,15 +45,19 @@ link_libraries (
 
 if (WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
-	find_package (Boost 1.45 COMPONENTS thread chrono system REQUIRED)
+	find_package (Boost 1.45 COMPONENTS chrono system REQUIRED)
 	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
 	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
-	link_libraries (
-		${Boost_THREAD_LIBRARY} 
+	link_libraries ( 
 		${Boost_CHRONO_LIBRARY}
 		${Boost_SYSTEM_LIBRARY}
 	)
 endif (WIN32)
+
+if (APPLE)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -std=c++11 -stdlib=libc++")
+endif (APPLE)
+
 
 add_executable (gufg 
 		WIN32
@@ -69,8 +73,8 @@ add_executable (bmpout
 		${SOURCES})
 
 INSTALL(TARGETS gufg
-	RUNTIME
-	DESTINATION .
+	RUNTIME DESTINATION .
+	BUNDLE DESTINATION .
 	COMPONENT gufg)
 
 INSTALL(DIRECTORY White

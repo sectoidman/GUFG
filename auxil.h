@@ -4,7 +4,13 @@
  */
 
 #include <SDL/SDL.h>
+
+#ifdef _APPLE
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
+
 #include <string>
 #include <SDL/SDL_opengl.h>
 #include <stdio.h>

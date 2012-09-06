@@ -6,7 +6,13 @@
 
 #include "action.h"
 #include <SDL/SDL.h>
+
+#ifdef _APPLE
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
+
 #include <cstring>
 #include <stdio.h>
 #include <iostream>
