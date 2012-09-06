@@ -280,7 +280,7 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
-		if(timer > 99 * 60 || timer < -60){
+		if(timer > 99 * 60 && !roundEnd){
 			for(int i = 0; i < 2; i++){
 				if(timer == 106 * 60) p[i]->inputBuffer[0] = 0;
 				if(timer == 106 * 60 - 1) p[i]->inputBuffer[0] = i;
