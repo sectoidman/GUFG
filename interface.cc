@@ -420,8 +420,9 @@ void interface::resolveSummons()
 void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
-		printf("Down!\n");
 		roundEnd = true;
+		if(p[0]->pick()->health > 0 && p[0]->pick()->health > 0) printf("Time Out\n");
+		else printf("Down!\n");
 		if(p[0]->pick()->health > p[1]->pick()->health) {
 			printf("Player 1 wins!\n");
 			p[0]->rounds++;

@@ -73,8 +73,8 @@ public:
 	int counter[2];
 
 	bool q;
-	bool roundEnd:1;
 	int timer;
+	bool roundEnd:1;
 private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
