@@ -42,6 +42,7 @@ public:
 	actionTrie * head;	//Trie for ground actions
 	int * meter;
 
+	action * die;
 	action * neutral;
 };
 
@@ -90,6 +91,5 @@ public:
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int);
 	virtual void init(action *&);
-	action * die;
 };
 #endif
