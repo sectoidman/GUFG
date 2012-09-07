@@ -12,6 +12,7 @@
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
+
 	char buffer[200];
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -32,6 +33,11 @@ void interface::draw()
 		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
 	glEnd();
 
+	if(timer / 60 > 99) sprintf(buffer, "99");
+	else if(timer / 60 < 10) sprintf(buffer, "0%i", timer / 60);
+	else sprintf(buffer, "%i", timer / 60);
+
+	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	for(int i = 0; i < 2; i++){
 		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(combo[i] > 1){
