@@ -5,13 +5,7 @@
  */
 
 #include <SDL/SDL.h>
-
-#ifdef _APPLE
-#include <SDL_image/SDL_image.h>
-#else
-#include <SDL/SDL_image.h>
-#endif
-
+#include "compat.h"
 #include "auxil.h"
 #include "masks.h"
 #ifndef ACTION

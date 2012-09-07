@@ -4,19 +4,15 @@
  *Licensed under MIT OSI, see "COPYING" for details
  */
 
-#include "action.h"
+
 #include <SDL/SDL.h>
-
-#ifdef _APPLE
-#include <SDL_image/SDL_image.h>
-#else
-#include <SDL/SDL_image.h>
-#endif
-
 #include <cstring>
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include "action.h"
+#include "compat.h"
+
 #ifndef MOVETRIE
 #define MOVETRIE
 /*Move trie class. Essentially a recursive trie-search algorithm that looks for input hooks*/
