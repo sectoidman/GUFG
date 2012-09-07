@@ -33,19 +33,10 @@ void interface::draw()
 	glEnd();
 
 	for(int i = 0; i < 2; i++){
-		if(i == 0){ 
-			drawGlyph(p[i]->pick()->name, 100, 500, 30, 40, 0);
-			if(combo[i] > 1){
-				sprintf(buffer, "%i hit combo", combo[i]);
-				drawGlyph(buffer, 100, 600, 400, 50, 0);
-			}
-		}
-		else{
-			drawGlyph(p[i]->pick()->name, 1000, 500, 30, 40, 2);
-			if(combo[i] > 1){
-				sprintf(buffer, "%i hit combo", combo[i]);
-				drawGlyph(buffer, 900, 600, 400, 50, 2);
-			}
+		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
+		if(combo[i] > 1){
+			sprintf(buffer, "%i hits", combo[i]);
+			drawGlyph(buffer, 100+800*i, 600, 400, 50, 0+2*i);
 		}
 	}
 
