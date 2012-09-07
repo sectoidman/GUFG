@@ -143,10 +143,10 @@ bool interface::screenInit()
 void interface::writeConfig(int ID)
 {
 	char buffer[200];
-//	char pident[30];
+	char pident[30];
 	char fname[30];
 	SDL_Event temp;
-//	sprintf(pident, "Player %i\n", ID);
+	sprintf(pident, "Player %i", ID + 1);
 	sprintf(fname, "Misc/.p%i.conf", ID + 1);
 	std::ofstream write;
 	write.open(fname);
@@ -155,21 +155,21 @@ void interface::writeConfig(int ID)
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
-//		drawGlyph(pident, 0, 1600, 250, 80, 1);
+		drawGlyph(pident, 0, 1600, 300, 80, 1);
 		sprintf(buffer, "Please enter a");
-		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		drawGlyph(buffer, 0, 1600, 400, 80, 1);
 		sprintf(buffer, "command for %s", p[ID]->inputName[i]);
-		drawGlyph(buffer, 0, 1600, 450, 80, 1);
+		drawGlyph(buffer, 0, 1600, 500, 80, 1);
 		SDL_GL_SwapBuffers();
 		glDisable( GL_TEXTURE_2D );
 		//glClear(GL_COLOR_BUFFER_BIT);
 		temp = p[ID]->writeConfig(i);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
-//		drawGlyph(pident, 0, 1600, 250, 80, 1);
-		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		drawGlyph(pident, 0, 1600, 300, 80, 1);
+		drawGlyph(buffer, 0, 1600, 500, 80, 1);
 		sprintf(buffer, "Please enter a");
-		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		drawGlyph(buffer, 0, 1600, 400, 80, 1);
 		switch(temp.type){
 		case SDL_JOYAXISMOTION:
 			if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
