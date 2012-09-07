@@ -1,3 +1,6 @@
+#ifndef COMPAT_H
+#define COMPAT_H
+
 /* 
  * Switch between boost::chrono and c++11 chrono for platforms
  * without a good C++11 implementation
@@ -30,3 +33,4 @@ namespace internal {
 	#endif
 }
 
+#endif /* ndef COMPAT_H */
