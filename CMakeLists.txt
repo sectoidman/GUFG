@@ -35,14 +35,14 @@ find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
 find_package (OpenGL REQUIRED)
 link_libraries (
-   ${SDL_LIBRARY}
-   ${SDLIMAGE_LIBRARY}
-   ${OPENGL_LIBRARIES}
-   SDLmain # not included in SDL_LIBRARY variable
+	${SDL_LIBRARY}
+	${SDLIMAGE_LIBRARY}
+	${OPENGL_LIBRARIES}
+	SDLmain # not included in SDL_LIBRARY variable
 )
 
 if (WIN32)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -D_BOOST")
 	find_package (Boost 1.45 COMPONENTS chrono system REQUIRED)
 	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
 	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
@@ -131,7 +131,8 @@ INSTALL(FILES dumpboxes.sh
 
 set (CPACK_PACKAGE_NAME "GUFG")
 set (CPACK_PACKAGE_VENDOR "The GUFG Team")
-set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "GUFG - A General Universal Fighting Game")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY
+	"GUFG - A General Universal Fighting Game")
 set (CPACK_PACKAGE_VERSION "0.0.1")
 set (CPACK_PACKAGE_VERSION_MAJOR "0")
 set (CPACK_PACKAGE_VERSION_MINOR "0")
@@ -144,26 +145,24 @@ set (CPACK_COMPONENTS_ALL gufg utilities source)
 set (CPACK_COMPONENT_GUFG_DISPLAY_NAME "General Universal Fighting Game")
 set (CPACK_COMPONENT_UTILITIES_DISPLAY_NAME "Character Creation Utilities")
 set (CPACK_COMPONENT_SOURCE_DISPLAY_NAME "Source code")
-
-set (CPACK_COMPONENT_GUFG_DESCRIPTION 
-     "A fighting game.")
-set (CPACK_COMPONENT_UTILITIES_DESCRIPTION
-     "A set of utilities to aid in creating or modifying characters.")
+set (CPACK_COMPONENT_GUFG_DESCRIPTION "A fighting game.")
+set (CPACK_COMPONENT_UTILITIES_DESCRIPTION 
+	"A set of utilities to aid in creating or modifying characters.")
 set (CPACK_COMPONENT_SOURCE_DESCRIPTION
-     "The source code of this project.")
+	"The source code of this project.")
 
 
 if (WIN32 AND NOT UNIX)
-  #SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/creative\\\\InstallIcon.bmp")
-  set (CPACK_NSIS_INSTALLED_ICON_NAME "gufg.exe")
-  set (CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-  set (CPACK_NSIS_HELP_LINK "http:\\\\\\\\advael.github.com\\\\gufg")
-  set (CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\advael.github.com\\\\gufg")
-  set (CPACK_NSIS_CONTACT "eshink@gmail.com")
-  set (CPACK_NSIS_MODIFY_PATH OFF)
-  set (CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+	#SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/creative\\\\InstallIcon.bmp")
+	set (CPACK_NSIS_INSTALLED_ICON_NAME "gufg.exe")
+	set (CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+	set (CPACK_NSIS_HELP_LINK "http:\\\\\\\\advael.github.com\\\\gufg")
+	set (CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\advael.github.com\\\\gufg")
+	set (CPACK_NSIS_CONTACT "eshink@gmail.com")
+	set (CPACK_NSIS_MODIFY_PATH OFF)
+	set (CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 else (WIN32 AND NOT UNIX)
-  set (CPACK_STRIP_FILES "gufg bmpout")
+	set (CPACK_STRIP_FILES "gufg bmpout")
 endif (WIN32 AND NOT UNIX)
 
 set (CPACK_PACKAGE_EXECUTABLES "gufg" "General Universal Fighting Game")

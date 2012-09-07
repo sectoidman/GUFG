@@ -3,18 +3,12 @@
  */
 
 #include <SDL/SDL.h>
-
-#ifdef _APPLE
-#include <SDL_image/SDL_image.h>
-#else
-#include <SDL/SDL_image.h>
-#endif
-
 #include <SDL/SDL_opengl.h>
 #include <string>
 #include <iostream>
 #include <cmath>
 #include "auxil.h"
+
 using namespace std;
 
 // intitializes the screen and returns it (returns null if something went wrong)
