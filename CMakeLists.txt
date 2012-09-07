@@ -53,7 +53,7 @@ if (WIN32)
 endif (WIN32)
 
 if (APPLE)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -std=c++11 -stdlib=libc++")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -stdlib=libc++")
 endif (APPLE)
 
 
