@@ -155,6 +155,7 @@ void interface::writeConfig(int ID)
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
+		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 		drawGlyph(pident, 0, 1600, 300, 80, 1);
 		sprintf(buffer, "Please enter a");
 		drawGlyph(buffer, 0, 1600, 400, 80, 1);

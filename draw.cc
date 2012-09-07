@@ -210,7 +210,6 @@ int interface::drawGlyph(const char * string, int x, int space, int y, int heigh
 	}
 
 	float sf;
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	for(unsigned int i = 0; i < strlen(string); i++){
 		if(string[i] == ' ') x += (float)width / 2.0;
 		else{
@@ -233,7 +232,6 @@ int interface::drawGlyph(const char * string, int x, int space, int y, int heigh
 			glTexCoord2i(0, 1);
 			glVertex3f((x + padding) * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
 			glEnd();
-			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			x += (float)width;
 		}
 	}
