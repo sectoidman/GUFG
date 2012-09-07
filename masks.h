@@ -1,3 +1,5 @@
+#ifndef MASKS
+#define MASKS
 //A 6-bit field to keep track of block states.
 struct bf{
 	bool low:1;
@@ -47,7 +49,7 @@ typedef union {
 } cancelField;
 
 typedef union {
-	unsigned int i = 0;
+	unsigned int i;
 	bf b; 
 } blockField;
 
@@ -60,3 +62,4 @@ typedef union{
 	unsigned int i;
 	gpf b;
 } status;
+#endif

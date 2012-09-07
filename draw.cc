@@ -6,9 +6,13 @@
 
 #include "interface.h"
 #include <math.h>
+#include <iomanip>
+#include <sstream>
+#include <string>
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
+	char buffer[200];
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -16,110 +20,137 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, background);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(-bg.x), (GLfloat)(-bg.y), 0.f);
+		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(-bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(-bg.y), 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(-bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(bg.w - bg.x), (GLfloat)(bg.h - bg.y), 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(-bg.x), (GLfloat)(bg.h - bg.y), 0.f);
+		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
 	glEnd();
+
+	for(int i = 0; i < 2; i++){
+		if(i == 0){ 
+			drawGlyph(p[i]->pick()->name, 100, 500, 30, 40, 0);
+			if(combo[i] > 1){
+				sprintf(buffer, "%i hit combo", combo[i]);
+				drawGlyph(buffer, 100, 600, 400, 50, 0);
+			}
+		}
+		else{
+			drawGlyph(p[i]->pick()->name, 1000, 500, 30, 40, 2);
+			if(combo[i] > 1){
+				sprintf(buffer, "%i hit combo", combo[i]);
+				drawGlyph(buffer, 900, 600, 400, 50, 2);
+			}
+		}
+	}
+
+	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
+		sprintf(buffer, "Round %i", 1 + p[0]->rounds + p[1]->rounds);
+		drawGlyph(buffer, 0, 1600, 300, 200, 1);
+	}
+	else if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 300, 200, 1);
 
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
-		p[i]->drawMeters(numRounds);
+		p[i]->drawMeters(numRounds, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	glEnable( GL_TEXTURE_2D );
-	for(int i = 0; i < 2; i++){
-		if(p[i]->spriteCheck()) p[i]->draw(bg.x, bg.y);
-		glDisable( GL_TEXTURE_2D );
-		if(!p[i]->spriteCheck()) 
-			p[i]->drawBoxen(bg.x, bg.y);
-		p[i]->drawHitParticle(bg.x, bg.y);
+	for(int i = 0; i < thingComplexity; i++){
+		if(things[i]->spriteCheck()) 
+			things[i]->draw(bg.x, bg.y, scalingFactor);
+		glDisable(GL_TEXTURE_2D);
+		if(!things[i]->spriteCheck())
+			things[i]->drawBoxen(bg.x, bg.y, scalingFactor);
+		if(i < 2)
+			p[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnable( GL_TEXTURE_2D );
 	}
 	glDisable( GL_TEXTURE_2D );
 	if(freeze > 0){
 		glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-		glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
+		glRectf(0.0f, 0.0f, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		freeze--;
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 }
 
-void player::drawMeters(int n)
+void player::drawMeters(int n, float scalingFactor)
 {
 	SDL_Rect r[n];
 	for(int i = 0; i < n; i++){
-		r[i].y = 12; r[i].w = 10; r[i].h = 5;
-		if(ID == 1) r[i].x = 340 - 12 * i; 
-		else r[i].x = 450 + 12 * i;
+		r[i].y = 24; r[i].w = 20; r[i].h = 10;
+		if(ID == 1) r[i].x = 680 - 24 * i; 
+		else r[i].x = 900 + 24 * i;
 	}
 	for(int i = 0; i < n; i++){
 		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
+		glRectf((GLfloat)(r[i].x)*scalingFactor, (GLfloat)(r[i].y)*scalingFactor, (GLfloat)(r[i].x + r[i].w)*scalingFactor, (GLfloat)(r[i].y + r[i].h)*scalingFactor);
 	}
 	glFlush();
-	pick->drawMeters(ID);
+	pick()->drawMeters(ID, scalingFactor);
 	glFlush();
 }
 
-void character::drawMeters(int ID)
+void character::drawMeters(int ID, float scalingFactor)
 {
 	SDL_Rect m;
 	SDL_Rect h;
 	if(health >= 0) h.w = health; else h.w = 1; 
 
-	if(ID == 1) h.x = 50 + (300 - h.w); 
-	else h.x = 450;
-	h.h = 5;
-	h.y = 5;
+	if(ID == 1) h.x = 100 + (600 - h.w); 
+	else h.x = 900;
+	h.h = 10;
+	h.y = 10;
 
 	int R = 0, G = 255, B = 0;
-	if(meter[0] >= 0) m.w = meter[0]; else m.w = 1; 
-	if(ID == 1) m.x = 100; 
-	else m.x = 500 + (200 - m.w);
-	m.h = 5; m.y = 430;
+	if(meter[0] >= 0) m.w = meter[0]*2; else m.w = 1; 
+	if(ID == 1) m.x = 100;
+	else m.x = 900 + (600 - m.w);
+	m.h = 10; m.y = 860;
 
-	if(m.w < 100) R = 191;
-	else if(m.w < 200) B = 255;
+	if(m.w < 300) R = 191;
+	else if(m.w < 600) B = 255;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
+	glRectf((GLfloat)(h.x)*scalingFactor, (GLfloat)(h.y)*scalingFactor, (GLfloat)(h.x + h.w)*scalingFactor, (GLfloat)(h.y + h.h)*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f((float)R, (float)G, (float)B, 1.0f);
-	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
+	glRectf((GLfloat)(m.x)*scalingFactor, (GLfloat)(m.y)*scalingFactor, (GLfloat)(m.x + m.w)*scalingFactor, (GLfloat)(m.y + m.h)*scalingFactor);
 }
 
-void player::drawBoxen(int x, int y)
+void instance::drawBoxen(int x, int y, float scalingFactor)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x), (GLfloat)(collision.y - y), (GLfloat)(collision.x + collision.w - x), (GLfloat)(collision.y + collision.h - y));
+	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(collision.y - y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(collision.y + collision.h - y)*scalingFactor);
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[i].x - x), (GLfloat)(hitreg[i].y - y), (GLfloat)(hitreg[i].x + hitreg[i].w - x), (GLfloat)(hitreg[i].y + hitreg[i].h - y));
+		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(hitreg[i].y - y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(hitreg[i].y + hitreg[i].h - y)*scalingFactor);
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x), (GLfloat)(hitbox[i].y - y), (GLfloat)(hitbox[i].x + hitbox[i].w - x), (GLfloat)(hitbox[i].y + hitbox[i].h - y));
+		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(hitbox[i].y - y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(hitbox[i].y + hitbox[i].h - y)*scalingFactor);
 	}
 	glFlush();
+	glDisable( GL_TEXTURE_2D );
 }
 
-void player::draw(int x, int y)
+void instance::draw(int x, int y, float scalingFactor)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
+
 	for(int i = 0; i < hitComplexity; i++){
 		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
 		if(facing == 1){
@@ -138,10 +169,10 @@ void player::draw(int x, int y)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick->draw(facing, realPosX - x, realPosY - y);
+	pick()->draw(cMove, facing, realPosX - x, realPosY - y, currentFrame, scalingFactor);
 }
 
-void player::drawHitParticle(int x, int y)
+void player::drawHitParticle(int x, int y, float scalingFactor)
 {
 	/*Stand-in for now, just to indicate block type*/
 	if(particleLife > 0){
@@ -156,64 +187,244 @@ void player::drawHitParticle(int x, int y)
 			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
 			break;
 		}
-		glRectf((GLfloat)(posX - 5 * facing - x), (GLfloat)(posY - y), (GLfloat)(posX - 25*facing - x), (GLfloat)(posY + 20 - y));
+		glRectf((GLfloat)(posX - 10 * facing - x)*scalingFactor, (GLfloat)(posY - y)*scalingFactor, (GLfloat)(posX - 50*facing - x)*scalingFactor, (GLfloat)(posY + 40 - y)*scalingFactor);
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 }
 
-void character::draw(int facing, int x, int y)
+void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalingFactor)
 {
-	cMove->draw(facing, x, y);
+	cMove->draw(facing, x, y, f, scalingFactor);
 }
 
-void action::draw(int facing, int x, int y)
+int interface::drawGlyph(const char * string, int x, int space, int y, int height, int just)
 {
-	if(sprite[currentFrame]){
-		glBindTexture(GL_TEXTURE_2D, sprite[currentFrame]);
+	int w, h, width = 0, padding = 0, totalWidth = 0;
+	if(just != 0){	
+		for(unsigned int i = 0; i < strlen(string); i++){
+			if(string[i] == ' ') totalWidth += w * sf / 2;
+			else if(string[i] == '\0');
+			else{
+				glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
+
+				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+				sf = (float)height / (float)h;
+				totalWidth += w * sf;
+			}
+		}
+		if(just == 2) padding = space - totalWidth;
+		else padding = (space - totalWidth) / 2;
+	}
+
+	float sf;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	for(unsigned int i = 0; i < strlen(string); i++){
+		if(string[i] == ' ') x += (float)width / 2.0;
+		else{
+			glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
+
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+			sf = (float)height / (float)h;
+			width = w * sf;
+			glBegin(GL_QUADS);
+			glTexCoord2i(0, 0);
+			glVertex3f((x + padding) *scalingFactor, y * scalingFactor, 0.f);
+
+			glTexCoord2i(1, 0);
+			glVertex3f((x + padding) * scalingFactor + width * scalingFactor, y * scalingFactor, 0.f);
+
+			glTexCoord2i(1, 1);
+			glVertex3f((x + padding) * scalingFactor + width * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
+
+			glTexCoord2i(0, 1);
+			glVertex3f((x + padding) * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
+			glEnd();
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			x += (float)width;
+		}
+	}
+	return x;
+}
+
+void action::draw(int facing, int x, int y, int f, float scalingFactor)
+{
+	if(sprite[f]){
+		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
 		if(facing == 1){
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x + width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 		} else {
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y), 0.f);
+			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x - width[currentFrame]), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x), (GLfloat)(y + height[currentFrame]), 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 		}
 		glEnd();
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-bool player::spriteCheck()
+bool instance::spriteCheck()
 {
-	return pick->spriteCheck();
+	return cMove->spriteCheck(currentFrame);
 }
-bool character::spriteCheck()
+bool avatar::spriteCheck(action *& cMove, int f)
 {
 	if(cMove == NULL) return 0;
-	else return cMove->spriteCheck();
+	else return cMove->spriteCheck(f);
 }
 
-bool action::spriteCheck()
+bool action::spriteCheck(int f)
 {
-	if(sprite[currentFrame]) return 1;
+	if(sprite[f] != 0) { 
+		return 1;
+	}
 	else return 0;
+}
+
+void interface::writeImage(const char * movename, int frame, action * move)
+{
+	int realPosY = move->collision[frame].y;
+	int realPosX = 0;
+	SDL_Surface * image = NULL;
+	int maxY = move->collision[frame].y + move->collision[frame].h, 
+	    maxX = move->collision[frame].x + move->collision[frame].w;
+	for(int i = 0; i < move->regComplexity[frame]; i++){
+		if(move->hitreg[frame][i].y < realPosY) 
+			realPosY = move->hitreg[frame][i].y;
+		if(move->hitreg[frame][i].x < realPosX) 
+			realPosX = move->hitreg[frame][i].x;
+		if(move->hitreg[frame][i].x + move->hitreg[frame][i].w > maxX)
+			maxX = move->hitreg[frame][i].x + move->hitreg[frame][i].w;
+		if(move->hitreg[frame][i].y + move->hitreg[frame][i].h > maxY)
+			maxY = move->hitreg[frame][i].y + move->hitreg[frame][i].h;
+	}
+	for(int i = 0; i < move->hitComplexity[frame]; i++){
+		if(move->hitbox[frame][i].y < realPosY) 
+			realPosY = move->hitbox[frame][i].y;
+		if(move->hitbox[frame][i].x < realPosX) 
+			realPosX = move->hitbox[frame][i].x;
+		if(move->hitbox[frame][i].x + move->hitbox[frame][i].w > maxX)
+			maxX = move->hitbox[frame][i].x + move->hitbox[frame][i].w;
+		if(move->hitbox[frame][i].y + move->hitbox[frame][i].h > maxY)
+			maxY = move->hitbox[frame][i].y + move->hitbox[frame][i].h;
+	}
+	char fname[200];
+	int w = maxX + 5;
+	int h = maxY + 5;
+	int x = 0;
+	int y = 0;
+	if(realPosY < 0){ 
+		h -= realPosY;
+		y = realPosY;
+	}
+	if(realPosX < 0){
+		w -= realPosX;
+		x = realPosX;
+	}
+	x -= 10; y -= 10; w += 20; h += 20;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	Uint32 rmask = 0xff000000;
+	Uint32 gmask = 0x00ff0000;
+	Uint32 bmask = 0x0000ff00;
+	Uint32 amask = 0x000000ff;
+#else
+	Uint32 rmask = 0x000000ff;
+	Uint32 gmask = 0x0000ff00;
+	Uint32 bmask = 0x00ff0000;
+	Uint32 amask = 0xff000000;
+#endif
+	image = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
+				 rmask, gmask, bmask, amask);
+	screenInit(w, h);
+
+	sprintf(fname, "%s#%i.bmp", movename, frame);
+
+	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
+
+	move->drawBoxen(frame, x, y);
+
+	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
+
+	SDL_GL_SwapBuffers();
+
+	if(SDL_SaveBMP(image, fname)) printf("You dun fucked up\n");
+}
+
+void action::drawBoxen(int frame, int x, int y){
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(collision[frame].y + collision[frame].h - y));
+	for(int i = 0; i < regComplexity[frame]; i++){
+		glFlush();
+		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(hitreg[frame][i].y + hitreg[frame][i].h - y));
+	}
+	for(int i = 0; i < hitComplexity[frame]; i++){
+		glFlush();
+		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(hitbox[frame][i].y + hitbox[frame][i].h - y));
+	}
+	glFlush();
+}
+
+bool interface::screenInit(int w, int h)
+{
+	/*Initialize SDL*/
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	/*WM stuff*/
+	if(screen){ 
+		SDL_FreeSurface(screen);
+		screen = NULL;
+	}
+	SDL_WM_SetCaption("GUFG", "GUFG");
+	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
+		return false;
+	SDL_ShowCursor(SDL_DISABLE);
+
+	/*Set up input buffers and joysticks*/
+	for(int i = 0; i < SDL_NumJoysticks(); i++)
+		SDL_JoystickOpen(i);
+//	glDisable (GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable (GL_BLEND);
+	glEnable (GL_POINT_SMOOTH);
+	glEnable (GL_LINE_SMOOTH);
+	glEnable (GL_POLYGON_SMOOTH);
+
+	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+	glClearColor(0, 0, 0, 0);
+	glClearDepth(1.0f);
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, w, h, 0, 1, -1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	initd = true;
+	return true;
 }

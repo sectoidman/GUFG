@@ -1,22 +1,13 @@
-#ifdef _WIN32
-
-/*
-  Nobody's written a decent free C++11 thread library implementation yet,
-  so we'll have to just use boost in the mean time.  
-*/
-#include <boost/thread.hpp>
+#ifdef _BOOST
 #include <boost/chrono.hpp>
-
 #else
-
 //other platforms can use the C++11 standard library
-#include <thread>
 #include <chrono>
-
 #endif
 
+
 namespace internal {
-	#ifdef _WIN32
+	#ifdef _BOOST
 		using namespace boost::chrono;
 		using namespace boost;
 	#else

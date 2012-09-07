@@ -1,4 +1,4 @@
-#include "action.h"
+#include "interface.h"
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -8,13 +8,11 @@ using namespace std;
 special::special(const char * n)
 {
 	build(n);
-	init();
 }
 
 negNormal::negNormal(const char * n)
 {
 	build(n);
-	init();
 }
 
 bool negNormal::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
@@ -46,7 +44,6 @@ bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_R
 super::super(const char * n)
 {
 	build(n);
-	init();
 }
 
 bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
@@ -59,9 +56,9 @@ bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect
 	return 0;
 }
 
-int super::arbitraryPoll(int q)
+int super::arbitraryPoll(int q, int f)
 {
-	if(q == 2 && currentFrame == freezeFrame) return freezeLength;
+	if(q == 2 && f == freezeFrame) return freezeLength;
 	else return 0;
 }
 
@@ -93,11 +90,11 @@ bool airSuper::setParameter(char * buffer)
 	return x;
 }
 
-int werf::arbitraryPoll(int n)
+int werf::arbitraryPoll(int n, int f)
 {
 	switch (n){
 	case 28:
-		if(currentFrame == 0) return 1;
+		if(f == 0) return 1;
 		break;
 	case 27:
 		return startPosX;
@@ -109,32 +106,16 @@ int werf::arbitraryPoll(int n)
 	return 0;
 }
 
-bool werf::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool werf::check(SDL_Rect &p)
 {
-	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
-			if(!pos[i]) return 0;
-		}
-	}
-	if(t > tolerance) return 0;
-	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
 	if(p.w > xRequisite) return 0;
 	if(p.y != 0) return 0;
 	if(p.x > 0) return 0;
 	return 1;
 }
 
-bool luftigeWerf::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool luftigeWerf::check(SDL_Rect &p)
 {
-	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
-			if(!pos[i]) return 0;
-		}
-	}
-	if(t > tolerance) return 0;
-	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
 	if(p.w > xRequisite) return 0;
 	if(p.h > yRequisite) return 0;
 	if(p.y == 0) return 0;

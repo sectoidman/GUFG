@@ -13,7 +13,6 @@ action::action() : frames(0), hits(0), name(NULL)
 action::action(const char * n) : frames(0), hits(0)
 {
 	build(n);
-	init();
 }
 
 action::~action()
@@ -39,8 +38,35 @@ action::~action()
 	if(onConnect) delete [] onConnect;
 }
 
+void action::zero()
+{
+	attemptStart = 0;
+	attemptEnd = 0;
+	stop = 0;
+	hits = 0;
+	throwinvuln = 0;
+	crouch = 0;
+	armorStart = 0; armorLength = 0;
+	armorHits = 0;
+	guardStart = 0; guardLength = 0;
+	blockState.i = 0;
+	isProjectile = 0;
+	stats = NULL;
+	cost = 0;
+	dies = 0;
+	fch = 0;
+	armorCounter = 0;
+	tempNext = NULL;
+	tempAttempt = NULL;
+	tempRiposte = NULL;
+	next = NULL;
+	attempt = NULL;
+	riposte = NULL;
+}
+
 void action::build(const char * n)
 {
+	zero();
 	ifstream read;
 	char fname[40];
 	char buffer[100];
@@ -56,7 +82,7 @@ void action::build(const char * n)
 		strcpy(savedBuffer, buffer);
 	} while (setParameter(buffer));
 
-	parseProperties(savedBuffer);
+	parseProperties(savedBuffer, 0);
 
 	collision = new SDL_Rect[frames];
 	hitbox = new SDL_Rect*[frames];
@@ -66,7 +92,7 @@ void action::build(const char * n)
 	delta = new SDL_Rect*[frames];
 	deltaComplexity = new int[frames];
 
-	currentHit = 0;
+	int currHit = 0;
 
 	for(int i = 0; i < frames; i++){
 		while(read.get() != '$'); read.ignore(2);
@@ -77,12 +103,12 @@ void action::build(const char * n)
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
 		deltaComplexity[i] = aux::defineRectArray(buffer, delta[i]);
-		if(hits > 0){
-			if(i > totalStartup[currentHit] && i <= totalStartup[currentHit]+active[currentHit]){
+		if(hits > 0 && currHit < hits){
+			if(i > totalStartup[currHit] && i <= totalStartup[currHit]+active[currHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
 				hitComplexity[i] = aux::defineRectArray(buffer, hitbox[i]);
-				if(i == totalStartup[currentHit]+active[currentHit]) currentHit++;
+				if(i == totalStartup[currHit]+active[currHit]) currHit++;
 			} else {
 				hitComplexity[i] = 1;
 				hitbox[i] = new SDL_Rect[1];
@@ -94,11 +120,11 @@ void action::build(const char * n)
 			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
 		}
 	}
-	next = NULL;
 	read.close();
 
-	for(int i = 0; i < 5; i++)
+	for(int i = 0; i < 5; i++){
 		button[i] = 0;
+	}
 	int r = strlen(n);
 	for(int i = 0; i < r; i++){
 		switch(n[i]){
@@ -143,26 +169,30 @@ void action::build(const char * n)
 
 bool action::setParameter(char * buffer)
 {
-	char* token = strtok(buffer, "\t: \n");
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+	char* token = strtok(buffer, "\t:+ \n");
 
 	if(!strcmp("Name", token)){
 		token = strtok(NULL, "\t:\n");
 		name = new char[strlen(token)+1];
 		sprintf(name, "%s", token);
-//		printf(": %s\n", name);
 		return 1;
 	} else if (!strcmp("Buffer", token)) {
 		token = strtok(NULL, "\t: \n");
 		tolerance = atoi(token);
 		token = strtok(NULL, "\t: \n");
 		activation = atoi(token);
-//		printf("Buffer: %i : %i\n", tolerance, activation);
+		return 1;
+	} else if (!strcmp("Counterhit", token)) {
+		parseProperties(savedBuffer, 1);
 		return 1;
 	} else if (!strcmp("Hits", token)) {
 		token = strtok(NULL, "\t: \n");
 		hits = atoi(token);
 		if(hits > 0){
 			stats = new hStat[hits];
+			CHStats = new hStat[hits];
 			onConnect = new action*[hits];
 			tempOnConnect = new char*[hits];
 			for (int i = 0; i < hits; i++){
@@ -178,12 +208,27 @@ bool action::setParameter(char * buffer)
 		gain = new int[hits+1];
 		for(int i = 0; i < hits+1; i++)
 			gain[i] = 0;
-//		printf("Hits: %i\n", hits);
+		return 1;
+	} else if (!strcmp("Riposte", token)) {
+		token = strtok(NULL, "\t: \n");
+		tempRiposte = new char[strlen(token)+1];
+		strcpy(tempRiposte, token);
 		return 1;
 	} else if (!strcmp("Next", token)) {
 		token = strtok(NULL, "\t: \n");
 		tempNext = new char[strlen(token)+1];
 		strcpy(tempNext, token);
+		return 1;
+	} else if (!strcmp("Attempt", token)) {
+		token = strtok(NULL, "\t: \n-");
+		attemptStart = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		attemptEnd = atoi(token); 
+
+		token = strtok(NULL, "\t: \n");
+		tempAttempt = new char[strlen(token)+1];
+		strcpy(tempAttempt, token);
 		return 1;
 	} else if (!strcmp("Connect", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -195,22 +240,18 @@ bool action::setParameter(char * buffer)
 	} else if (!strcmp("Blocks", token)) {
 		token = strtok(NULL, "\t: \n");
 		blockState.i = atoi(token);
-//		printf("Blocks: %i\n", blockState.i);
 		return 1;
 	} else if (!strcmp("Check", token)) {
 		token = strtok(NULL, "\t: \n");
 		allowed.i = atoi(token);
-//		printf("Check: %i\n", allowed.i);
 		return 1;
 	} else if (!strcmp("Cost", token)) {
 		token = strtok(NULL, "\t: \n");
 		cost = atoi(token);
-//		printf("Cost: %i\n", cost);
 		return 1;
 	} else if (!strcmp("Frames", token)) {
 		token = strtok(NULL, "\t: \n");
 		frames = atoi(token);
-//		printf("Frames: %i\n", frames);
 		int startup, countFrames = -1;
 		if(hits > 0) {
 			totalStartup = new int[hits];
@@ -231,103 +272,96 @@ bool action::setParameter(char * buffer)
 		}
 		return 1;
 	} else if (!strcmp("State", token)) {
-//		printf("State");
 		for(int i = 0; i < hits+1; i++){
 			token = strtok(NULL, "\t: \n");
 			state[i].i = atoi(token);
-//			printf(": %i ", state[i].i);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("HitAllows", token)) {
-//		printf("HitAllows");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
 			stats[i].hitState.i = atoi(token);
-//			printf(": %i ", hitState[i].i);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Damage", token)) {
-//		printf("Damage");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].damage = atoi(token);
-//			printf(": %i ", stats[i].damage);
+			if(savedBuffer[0] == '+') 
+				CHStats[i].damage = atoi(token);
+			else stats[i].damage = atoi(token);
 		}
-//		printf("\n");
+		return 1;
+	} else if (!strcmp("Chip", token)) {
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			stats[i].chip = atoi(token);
+		}
 		return 1;
 	} else if (!strcmp("Push", token)) {
-//		printf("Push");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].push = atoi(token);
-//			printf(": %i ", stats[i].push);
+			if(savedBuffer[0] == '+') 
+				CHStats[i].push = atoi(token);
+			else stats[i].push = atoi(token);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Lift", token)) {
-//		printf("Lift");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].lift = atoi(token);
-//			printf(": %i ", stats[i].lift);
+			if(savedBuffer[0] == '+')
+				CHStats[i].lift = atoi(token);
+			else stats[i].lift = atoi(token);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Float", token)) {
-//		printf("Float");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].hover = atoi(token);
-//			printf(": %i ", stats[i].hover);
+			if(savedBuffer[0] == '+')
+				CHStats[i].hover = atoi(token);
+			else stats[i].hover = atoi(token);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Blowback", token)) {
-//		printf("Blowback");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].blowback = atoi(token);
-//			printf(": %i ", stats[i].blowback);
+			if(savedBuffer[0] == '+')
+				CHStats[i].blowback = atoi(token);
+			else stats[i].blowback = atoi(token);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Stun", token)) {
-//		printf("Stun");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].stun = atoi(token);
-//			printf(": %i ", stats[i].stun);
+			if(savedBuffer[0] == '+')
+				CHStats[i].stun = atoi(token);
+			else {
+				stats[i].stun = atoi(token);
+				CHStats[i].stun = (stats[i].stun - 5) / 2;
+			}
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Untech", token)) {
-//		printf("Untech");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			stats[i].untech = atoi(token);
-//			printf(": %i ", stats[i].untech);
+			if(savedBuffer[0] == '+')
+				CHStats[i].untech = atoi(token);
+			else{
+				stats[i].untech = atoi(token);
+				CHStats[i].untech = 10;
+			}
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Blockable", token)) {
-//		printf("Blockable");
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
 			stats[i].blockMask.i = atoi(token);
-//			printf(": %i ", stats[i].blockMask.i);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Gain", token)) {
-//		printf("Gain");
 		for(int i = 0; i < hits+1; i++){
 			token = strtok(NULL, "\t: \n");
 			gain[i] = atoi(token);
-//			printf(": %i ", gain[i]);
 		}
-//		printf("\n");
 		return 1;
 	} else if (!strcmp("Autoguard", token)) {
 		token = strtok(NULL, "\t: \n-");
@@ -345,10 +379,14 @@ bool action::setParameter(char * buffer)
 		armorLength = atoi(token); 
 		armorLength = armorLength - armorStart;
 		return 1;
+	} else if (!strcmp("MaxArmor", token)) {
+		token = strtok(NULL, "\t: \n-");
+		armorHits = atoi(token); 
+		return 1;
 	} else return 0;
 }
 
-void action::parseProperties(char * buffer)
+void action::parseProperties(char * buffer, bool counter)
 {
 	char * token = strtok(buffer, " \t\n:");
 	token = strtok(NULL, "\n");
@@ -359,41 +397,55 @@ void action::parseProperties(char * buffer)
 	for(unsigned int i = 0; i < strlen(token); i++){
 //		printf("%c ", token[i]);
 		switch(token[i]){
-		case '^': 
-			stats[ch].launch = 1;
-			break;
-		case 'g':
-			stats[ch].ghostHit = 1;
+		case '^':
+			if(counter) CHStats[ch].launch = 1;
+			else stats[ch].launch = 1;
 			break;
 		case '>':
-			stats[ch].wallBounce = 1;
+			if(counter) CHStats[ch].wallBounce = 1;
+			else stats[ch].wallBounce = 1;
 			break;
 		case 'v':
-			stats[ch].floorBounce = 1;
+			if(counter) CHStats[ch].floorBounce = 1;
+			else stats[ch].floorBounce = 1;
 			break;
 		case '_':
-			stats[ch].slide = 1;
+			if(counter) CHStats[ch].slide = 1;
+			else stats[ch].slide = 1;
+			break;
+		case '=':
+			if(counter) CHStats[ch].stick = 1;
+			else stats[ch].stick = 1;
 			break;
 		case 's':
-			stop = 1;
+			if(!counter) stop = 1;
 			break;
 		case 'S': 
-			stop = 2;
+			if(!counter) stop = 2;
 			break;
 		case 'c':
-			crouch = 1;
+			if(!counter) crouch = 1;
 			break;
 		case ':':
 			ch++;
 			break;
 		case 't':
-			throwinvuln = 1;
+			if(!counter) throwinvuln = 1;
 			break;
 		case 'T':
-			throwinvuln = 2;
+			if(!counter) throwinvuln = 2;
 			break;
-		case '=':
-			stats[ch].stick = 1;
+		case 'g':
+			if(!counter) stats[ch].ghostHit = 1;
+			break;
+		case 'p':
+			if(!counter) stats[ch].hitsProjectile = 1;
+			break;
+		case 'd':
+			if(!counter) dies = 1;
+			break;
+		case 'C':
+			if(!counter) fch = 1;
 			break;
 		default:
 			break;
@@ -402,40 +454,53 @@ void action::parseProperties(char * buffer)
 //	printf("\n");
 }
 
+bool action::window(int f)
+{
+	if(!attempt) return 0;
+	if(f < attemptStart) return 0;
+	if(f > attemptEnd) return 0;
+	return 1;
+}
+
 bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
 			if(!pos[i]) return 0;
 		}
-
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
 	if(cost > resource[0]) return 0;
+	return check(p);
+}
+
+bool action::check(SDL_Rect &p)
+{
 	return 1;
 }
 
-void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc)
+void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)
 {
-	if(rc > 0) delete [] r;
-	if(hc > 0) delete [] b;
-	rc = regComplexity[currentFrame];
-	hc = hitComplexity[currentFrame];
+	if(f >= frames) f = frames-1;
+	if(rc > 0 && r) delete [] r;
+	if(hc > 0 && b) delete [] b;
+	rc = regComplexity[f];
+	hc = hitComplexity[f];
 	r = new SDL_Rect[rc];
 	b = new SDL_Rect[hc];
 
-	c.x = collision[currentFrame].x; c.w = collision[currentFrame].w;
-	c.y = collision[currentFrame].y; c.h = collision[currentFrame].h;
+	c.x = collision[f].x; c.w = collision[f].w;
+	c.y = collision[f].y; c.h = collision[f].h;
 
-	SDL_Rect * tempreg = hitreg[currentFrame];
+	SDL_Rect * tempreg = hitreg[f];
 	for(int i = 0; i < rc; i++){
 		r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
 		r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
 	}
-	SDL_Rect * temphit = hitbox[currentFrame];
+	SDL_Rect * temphit = hitbox[f];
 	for(int i = 0; i < hc; i++){
-		if(cFlag > currentHit) {
+		if(cFlag > calcCurrentHit(f)) {
 			b[i].x = 0; b[i].w = 0;
 			b[i].y = 0; b[i].h = 0;
 		} else {
@@ -445,38 +510,50 @@ void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc
 	}
 }
 
-void action::pollStats(hStat & s)
+void action::pollStats(hStat & s, int f, bool CH)
 {
-	s.damage = stats[currentHit].damage;
-	s.stun = stats[currentHit].stun;
-	s.push = stats[currentHit].push;
-	s.lift = stats[currentHit].lift;
-	s.untech = stats[currentHit].untech;
-	s.launch = stats[currentHit].launch;
-	s.hover = stats[currentHit].hover;
-	s.wallBounce = stats[currentHit].wallBounce;
-	s.floorBounce = stats[currentHit].floorBounce;
-	s.slide = stats[currentHit].slide;
-	s.stick = stats[currentHit].stick;
-	s.ghostHit = stats[currentHit].ghostHit;
-	s.blowback = stats[currentHit].blowback;
-	s.blockMask.i = stats[currentHit].blockMask.i;
+	int c = calcCurrentHit(f);
+	s.damage = stats[c].damage + CHStats[c].damage * CH;
+	s.chip = stats[c].chip;
+	s.stun = stats[c].stun + CHStats[c].stun * CH;
+	s.push = stats[c].push + CHStats[c].push * CH;
+	s.lift = stats[c].lift + CHStats[c].lift * CH;
+	s.untech = stats[c].untech + CHStats[c].untech * CH;
+	s.blowback = stats[c].blowback + CHStats[c].blowback;
+	if(CH){
+		s.launch = CHStats[c].launch;
+		s.hover = CHStats[c].hover;
+		s.wallBounce = CHStats[c].wallBounce;
+		s.floorBounce = CHStats[c].floorBounce;
+		s.slide = CHStats[c].slide;
+		s.stick = CHStats[c].stick;
+		s.ghostHit = CHStats[c].ghostHit;
+	} else {
+		s.launch = stats[c].launch;
+		s.hover = stats[c].hover;
+		s.wallBounce = stats[c].wallBounce;
+		s.floorBounce = stats[c].floorBounce;
+		s.slide = stats[c].slide;
+		s.stick = stats[c].stick;
+		s.ghostHit = stats[c].ghostHit;
+	}
+	s.blockMask.i = stats[c].blockMask.i;
 }
 
-bool action::operator>(action * x)
+bool action::cancel(action * x, int& c, int &h)
 {
 	cancelField r;
-	r.i = x->state[x->cFlag].i;
-	if(x->hFlag > 0 && x->hFlag == x->cFlag){ 
-		r.i = r.i + x->stats[x->hFlag - 1].hitState.i;
+	r.i = x->state[c].i;
+	if(h > 0 && h == c){ 
+		r.i = r.i + x->stats[h - 1].hitState.i;
 	}
 	if(x == NULL) return 1;
 	else{
 		if(allowed.i & r.i){
 //			if(r.i > 1) printf("%i allows %i\n", r.i, allowed.i);
 			if(x == this){
-				if(x->cFlag == 0) return 0;
-				else if(allowed.i & 4) return 1;
+				if(c == 0) return 0;
+				else if(allowed.b.chain1) return 1;
 				else return 0;
 			}
 			else return 1;
@@ -485,93 +562,108 @@ bool action::operator>(action * x)
 	return 0;
 }
 
-void action::step(int *& resource)
+void action::step(int *& resource, int &f)
 {
-	if(currentFrame == 0){
-		if(resource[0] + gain[0] < 200) resource[0] += gain[0];
-		else resource[0] = 200;
+	if(f == 0){
+		if(resource[0] + gain[0] < 300) resource[0] += gain[0];
+		else resource[0] = 300;
 	}
-	currentFrame++;
-	if(currentHit < hits-1 && currentFrame > totalStartup[currentHit+1]) currentHit++;
+	f++;
 }
 
-void action::init()
+int action::calcCurrentHit(int frame)
 {
-	cFlag = 0;
-	hFlag = 0;
-	currentFrame = 0;
-	currentHit = 0;
+	int b = 0;
+	for(int i = 0; i < hits; i++){
+		if(frame > totalStartup[i]) b = i;
+	} 
+	return b;
 }
 
-action * action::connect(int *& resource, action *& temp)
+action * action::connect(int *& resource, int &c, int f)
 {
-	cFlag = currentHit+1;
-	if(resource[0] + gain[cFlag] < 200) resource[0] += gain[cFlag];
-	else resource[0] = 200;
-	if(onConnect[cFlag-1] != NULL){
-		onConnect[cFlag-1]->init();
-		temp = onConnect[cFlag-1];
+	c = calcCurrentHit(f)+1;
+	if(resource[0] + gain[c] < 300) resource[0] += gain[c];
+	else resource[0] = 300;
+	if(onConnect[c-1] != NULL){
+		return onConnect[c-1];
 	}
-	return temp;
+	else return NULL;
 }
 
-void action::hitConfirm(int a)
+action * action::blockSuccess()
 {
-	if(a == 1){ 
-		hFlag = cFlag;
-	}
-}
-
-action * action::blockSuccess(int st)
-{
-	return this;
+	if(riposte) return riposte;
+	else return this;
 }
 
 void action::execute(action * last, int *& resource)
 {
+	armorCounter = 0;
 	resource[0] -= cost;
-	last->init();
 }
 
 void action::feed(action * c, int code, int i)
 {
-	if(code == 0){ 
+	switch(code){
+	case 0:
 		next = c;
 		if(tempNext) delete [] tempNext;
-	}
-	else if(code == 2){
-		onConnect[i] = new action;
+		break;
+	case 2:
 		onConnect[i] = c;
 		if(tempOnConnect[i]) delete [] tempOnConnect[i];
 //		printf("%s-%i: %s\n", name, i, onConnect[i]->name);
+		break;
+	case 3:
+		attempt = c;
+		if(tempAttempt) delete [] tempAttempt;
+		break;
+	case 5:
+		riposte = c;
+		if(tempRiposte) delete [] tempRiposte;
+		break;
 	}
 }
 
 char * action::request(int code, int i)
 {
-	if(code == 0) return tempNext;
-	else if(code == 2) return tempOnConnect[i];
-	else return NULL;
+	switch(code){
+	case 0: 
+		return tempNext;
+	case 2: 
+		return tempOnConnect[i];
+	case 3:
+		return tempAttempt;
+	case 5:
+		return tempRiposte;
+	default:
+		return NULL;
+	}
 }
 
-int action::takeHit(hStat & s, int b)
+int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 {
-	if(s.blockMask.i & blockState.i && currentFrame > guardStart && currentFrame < guardStart + guardLength)
-		return 0;
-	else if (currentFrame > armorStart && currentFrame < armorStart + armorLength){
+	if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
+		if(riposte != NULL) return -2;
+		else return 0;
+	}
+	else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
 		s.stun = 0;
+		armorCounter++;
 		return 1;
 	} else {
-		init();
+		f = 0;
+		c = 0;
+		h = 0;
 		return 1;
 	}
 }
 
-bool action::CHState()
+bool action::CHState(int f)
 {
 	if(hits < 1) return false;
-	else if(currentFrame < totalStartup[hits-1]) return true;
-	else return false;
+	else if(f < totalStartup[hits-1] + active[hits-1]) return true;
+	else return fch;
 }
-
 

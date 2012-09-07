@@ -3,7 +3,7 @@ yellow::yellow(){
 	head = new actionTrie;
 	airHead = new actionTrie;
 	meter = new int[4];
-	build("Yellow");
+	build("Yellow", "Yellow");
 }
 
 void yellow::resetAirOptions()
@@ -12,9 +12,9 @@ void yellow::resetAirOptions()
 	meter[2] = 2;
 }
 
-void yellow::init()
+void yellow::init(action *& cMove)
 {
-	character::init();
+	character::init(cMove);
 	meter[3] = 0;
 }
 
@@ -29,10 +29,10 @@ void yellow::tick()
 	}
 }
 
-void yellow::step()
+void yellow::step(action *& cMove, int &f, int &freeze)
 {
 	if(meter[3] < 0) meter[3]++;
-	character::step();
+	character::step(cMove, f, freeze);
 }
 
 action * yellow::createMove(char * fullName)
@@ -61,34 +61,34 @@ action * yellow::createMove(char * fullName)
 	return m;
 }
 
-void yellow::drawMeters(int ID)
+void yellow::drawMeters(int ID, float scalingFactor)
 {
 	int color;
-	character::drawMeters(ID);
+	character::drawMeters(ID, scalingFactor);
 	SDL_Rect c1;
 	if(meter[3] >= 0){
-		c1.w = meter[3]/3; 
+		c1.w = meter[3]/3*2; 
 		color = 255;
 	} else {
-		c1.w = 180 + (meter[3]/2);
+		c1.w = 360 + (meter[3]);
 		color = 0;
 	}
 	if(ID == 1){
-		c1.x = 110; 
+		c1.x = 220; 
 	} else { 
-		c1.x = 510 + (180 - c1.w);
+		c1.x = 1020 + (360 - c1.w);
 	}
-	c1.h = 5;
-	c1.y = 438;
+	c1.h = 10;
+	c1.y = 876;
 	glColor4f(1.0f, (float)color, 0.0f, 1.0f);
-	glRectf((GLfloat)(c1.x), (GLfloat)(c1.y), (GLfloat)(c1.x + c1.w), (GLfloat)(c1.y + c1.h));
+	glRectf((GLfloat)(c1.x)*scalingFactor, (GLfloat)(c1.y)*scalingFactor, (GLfloat)(c1.x + c1.w)*scalingFactor, (GLfloat)(c1.y + c1.h)*scalingFactor);
 //	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
-int yellow::takeHit(hStat & s, int b)
+int yellow::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
-	int x = character::takeHit(s, b);
+	int x = character::takeHit(cMove, s, b, f, c, h, p);
 	if(x == 1 && meter[3] > 0) meter[3] = 0;
 	return x;
 }
@@ -98,16 +98,12 @@ flashSummon::flashSummon() {}
 
 flashStep::flashStep(const char * n)
 {
-	flashMeterCost = 0;
 	build(n);
-	init();
 }
 
 flashSummon::flashSummon(const char * n)
 {
-	flashMeterGain = 0;
 	build(n);
-	init();
 }
 
 bool flashStep::setParameter(char * buffer)
@@ -148,8 +144,15 @@ bool flashStep::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL
 bool flashSummon::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect& p)
 {
 	if(!special::check(pos, neg, t, f, resource, p)) return 0;
-	if(resource[3] != 0) return 0;
+	if(resource[3] < 0) return 0;
 	return 1;
+}
+
+void flashSummon::execute(action * last, int *& resource)
+{
+	if(resource[3] > 0) uFlag = 1;
+	else uFlag = 0;
+	action::execute(last, resource);
 }
 
 void flashStep::execute(action * last, int *& resource)
@@ -160,9 +163,11 @@ void flashStep::execute(action * last, int *& resource)
 	action::execute(last, resource);
 }
 
-void flashSummon::step(int *& resource)
+void flashSummon::step(int *& resource, int &f)
 {
-	resource[3] += flashMeterGain / frames + 1;
+	if(uFlag){
+		if(f == frames - 1) resource[3] = 0;
+	} else resource[3] += flashMeterGain / frames + 1;
 	if(resource[3] > 540) resource[3] = 540;
-	action::step(resource);
+	action::step(resource, f);
 }

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <fstream>
 #include "player.h"
-
 player::player()
 {
 	init();
@@ -15,6 +14,41 @@ player::player(int id)
 {
 	ID = id;
 	init();
+}
+
+instance::instance()
+{
+	init();
+}
+
+instance::instance(avatar * f)
+{
+	v = f;
+	init();
+}
+
+void instance::init()
+{
+	momentumComplexity = 0;
+	momentum = NULL;
+	deltaX = 0;
+	deltaY = 0;
+	regComplexity = 0;
+	hitComplexity = 0;
+	currentFrame = 0;
+	connectFlag = 0;
+	hitFlag = 0;
+	cMove = NULL;
+	bMove = NULL;
+	sMove = NULL;
+	freeze = 0;
+	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
+}
+
+bool instance::acceptTarget(instance * m)
+{
+	if(m->ID == ID) return 0;
+	else return m->pick()->acceptTarget(cMove, currentFrame);
 }
 
 void player::init()
@@ -35,27 +69,19 @@ void player::init()
 	inputName[8] = "E";
 	inputName[9] = "Start";
 
-	if(!readConfig()) writeConfig();
-
 	/*Set up the sprite*/
 
-	pick = NULL;
+	v = NULL;
 	rounds = 0;
-	roundInit();
+	instance::init();
 }
 
 void player::roundInit()
 {
-	if(pick){
-		pick->init();
-		updateRects();
-	}
-	deltaX = 0;
-	deltaY = 0;
-	regComplexity = 0;
-	hitComplexity = 0;
-	momentumComplexity = 0;
-	momentum = NULL;
+	instance::init();
+	pick()->neutralize(cMove);
+	if(v) pick()->init(cMove);
+	updateRects();
 	lCorner = 0;
 	rCorner = 0;
 	elasticX = 0;
@@ -69,11 +95,12 @@ void player::roundInit()
 	particleType = 0;
 	if(ID == 1){ 
 		facing = 1;
-		posX = 700;
+		posX = 1400;
 	} else {
 		facing = -1;
-		posX = 900;
+		posX = 1800;
 	}
+	updateRects();
 }
 
 bool player::readConfig()
@@ -123,75 +150,67 @@ bool player::readConfig()
 	}
 }
 
-void player::writeConfig()
+bool player::aerial()
 {
-	char fname[30];
-	printf("Player %i:\n", ID);
-	sprintf(fname, "Misc/.p%i.conf", ID);
-	std::ofstream write;
+	return pick()->aerial;
+}
+
+SDL_Event player::writeConfig(int i)
+{
 	SDL_Event temp; 
-	write.open(fname);
 	/*Set up ALL the inputs*/
-	for(int i = 0; i < 10; i++){
-		printf("Please enter a command for %s\n", inputName[i]);
-		/*Set up dummy event*/
 
-		/*Flag for breaking the loop*/
-		bool configFlag = 0;
+	/*Set up dummy event*/
 
-		while(SDL_PollEvent(&temp));
-		while (configFlag == 0){
-			if (SDL_PollEvent(&temp)) {
-				switch (temp.type) {
-				case SDL_JOYAXISMOTION:
-					if(temp.jaxis.value != 0){
-						input[i] = temp;
-						write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value << "\n";
-						printf("Set to Joystick %i axis %i value %i\n", input[i].jaxis.which, input[i].jaxis.axis, input[i].jaxis.value);
-						configFlag = 1;
-					}
-					break;
-				case SDL_JOYBUTTONDOWN:
+	/*Flag for breaking the loop*/
+	bool configFlag = 0;
+
+	while(SDL_PollEvent(&temp));
+	while (configFlag == 0){
+		if (SDL_PollEvent(&temp)) {
+			switch (temp.type) {
+			case SDL_JOYAXISMOTION:
+				if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
 					input[i] = temp;
-					write << (int)temp.type << " : " << (int)temp.jbutton.which << " " << (int)temp.jbutton.button << "\n";
-					printf("Set to Joystick %i button %i\n", input[i].jbutton.which, input[i].jbutton.button);
 					configFlag = 1;
-					break;
-				case SDL_KEYDOWN:
-					input[i] = temp;
-					write << (int)temp.type << " : " << (int)temp.key.keysym.sym << "\n";
-					printf("Set to keyboard %s\n", SDL_GetKeyName(input[i].key.keysym.sym));
-					configFlag = 1;
-					break;
-				default: 
-					break;
 				}
+				break;
+			case SDL_JOYBUTTONDOWN:
+				input[i] = temp;
+				configFlag = 1;
+				break;
+			case SDL_KEYDOWN:
+				input[i] = temp;
+				configFlag = 1;
+				break;
+			default: 
+				break;
 			}
 		}
 	}
-	write.close();
+	return temp;
 }
 
 void player::characterSelect(int i)
 {
-	pick = NULL;
+	v = NULL;
 	switch(i){
 	case 1:
-		pick = new red;
+		v = new red;
 		break;
 	case 2:
-		pick = new yellow;
+		v = new yellow;
 		break;
 	default:
-		pick = new character("White");
+		v = new character("White");
 		break;
 	}
 }
 
-void player::updateRects()
+void instance::updateRects()
 {
-	if(pick->cMove != NULL) {
-		pick->cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity);
+	if(cMove != NULL) {
+		cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity, currentFrame, connectFlag);
 		for(int i = 0; i < hitComplexity; i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
@@ -208,7 +227,7 @@ void player::updateRects()
 	}
 }
 
-void player::combineDelta()
+void instance::combineDelta()
 {
 	for(int i = 0; i < momentumComplexity; i++){
 		deltaX += momentum[i].x;
@@ -227,13 +246,13 @@ void player::combineDelta()
 
 void player::enforceGravity(int grav, int floor)
 {
-	SDL_Rect g; g.x = 0; g.y = 3; g.w = 0; g.h = 0;
+	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y + collision.h < floor && pick->aerial == 0){
-		pick->aerial = 1;
+	if(collision.y + collision.h < floor && pick()->aerial == 0){
+		pick()->aerial = 1;
 	}
 
-	else if(pick->aerial && !pick->freeze){ 
+	else if(pick()->aerial && !freeze){ 
 		if(hover > 0 && deltaY + 3 > 0) g.y = -deltaY;
 		addVector(g);
 	}
@@ -241,43 +260,8 @@ void player::enforceGravity(int grav, int floor)
 
 void player::checkBlocking()
 {
-	int st;
-	bool block = false;
-	if(pick->cMove == pick->airBlock || pick->cMove == pick->standBlock || pick->cMove == pick->crouchBlock)
-		st = pick->cMove->arbitraryPoll(1);
-	else st = 0;
-	
-
-	switch(inputBuffer[0]){
-	case 7:
-	case 4:
-		if(pick->aerial && (*pick->airBlock) > pick->cMove) {
-			pick->airBlock->init(st);
-			pick->cMove = pick->airBlock;
-		}
-		else if((*pick->standBlock) > pick->cMove) {
-			pick->standBlock->init(st);
-			pick->cMove = pick->standBlock;
-		}
-		updateRects();
-		block = true;
-		break;
-	case 1:
-		if(pick->aerial && (*pick->airBlock) > pick->cMove) {
-			pick->airBlock->init(st);
-			pick->cMove = pick->airBlock;
-		}
-		else if((*pick->crouchBlock) > pick->cMove) {
-			pick->crouchBlock->init(st);
-			pick->cMove = pick->crouchBlock;
-		}
-		updateRects();
-		block = true;
-		break;
-	default:
-		break;
-	}
-
+	bool block = pick()->checkBlocking(cMove, inputBuffer[0], connectFlag, hitFlag);
+	updateRects();
 	blockType = 0;
 	if(block){
 		for(int i = 1; i < 7; i++){
@@ -304,16 +288,16 @@ void player::checkCorners(int floor, int left, int right)
 			elasticY = false;
 		} else if (slide) {
 			deltaY = 0;
-			if(pick->cMove == pick->untech){ 
+			if(cMove == pick()->untech){ 
 				if(deltaX < 0) deltaX++;
 				else if(deltaX > 0) deltaX--;
-				pick->aerial = 1;
+				pick()->aerial = 1;
 			} else {
 				deltaX = 0;
 				slide = 0;
 			}
 		} else {
-			if(pick->aerial == 1){
+			if(pick()->aerial == 1){
 				land();
 //				printf("P%i landed!\n", ID);
 				updateRects();
@@ -336,10 +320,10 @@ void player::checkCorners(int floor, int left, int right)
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
 		} 
-		if(collision.x <= 25){ 
+		if(collision.x <= 50){ 
 			if(facing == 1) lCorner = 1;
 			if (stick) {
-				if(pick->cMove == pick->untech){
+				if(cMove == pick()->untech){
 					deltaX = 0;
 					deltaY = 0;
 					momentumComplexity = 0;
@@ -354,10 +338,10 @@ void player::checkCorners(int floor, int left, int right)
 			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
 		} 
-		if(collision.x + collision.w >= 1575){ 
+		if(collision.x + collision.w >= 3150){ 
 			if(facing == -1) rCorner = 1;
 			if (stick) {
-				if(pick->cMove == pick->untech){
+				if(cMove == pick()->untech){
 					deltaX = 0;
 					deltaY = 0;
 					momentumComplexity = 0;
@@ -376,7 +360,21 @@ void player::land()
 	for(int i = 0; i < momentumComplexity; i++){
 		if(momentum[i].y < 0) removeVector(i);
 	}
-	pick->land();
+	pick()->land(cMove, currentFrame, connectFlag, hitFlag);
+}
+
+void instance::step()
+{
+	if(pick()->death(cMove, currentFrame)) dead = true;
+	if(posX > 3300 || posX < -100) dead = true;
+	pick()->step(cMove, currentFrame, freeze);
+
+	if(cMove && currentFrame >= cMove->frames){
+		cMove = cMove->next;
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 }
 
 void player::checkFacing(player * other){
@@ -408,7 +406,7 @@ int player::dragBG(int left, int right)
 	else return 0;
 }
 
-void player::pushInput(bool axis[4])
+void instance::pushInput(bool axis[4])
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
 	inputBuffer[0] = temp;
@@ -418,45 +416,49 @@ void player::pushInput(bool axis[4])
 	}
 }
 
-void player::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
+void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
-	action * heldMove;
-	if(dryrun) heldMove = pick->cMove;
-	pick->prepHooks(inputBuffer, down, up, p, dryrun);
-	if(pick->cMove){
-		if(pick->cMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
-		if(pick->cMove->throwinvuln == 2) throwInvuln = 6;
+	action * dummyMove, *save;
+	dummyMove = cMove;
+	save = cMove;
+	pick()->prepHooks(freeze, dummyMove, bMove, sMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
+	if(dummyMove){
+		if(dummyMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
+		if(dummyMove->throwinvuln == 2) throwInvuln = 6;
 	}
-	if(dryrun) pick->cMove = heldMove;
+	if(!dryrun) cMove = dummyMove;
+	else cMove = save;
 }
 
-void player::pullVolition()
+void instance::pullVolition()
 {
 	int top = 0;
 	for(int i = 0; i < momentumComplexity; i++)
 		if(momentum[i].h > 0 && momentum[i].h > top){ 
 			top = (short)momentum[i].h;
 		}
-	if(pick->cMove->stop){
-		if(pick->cMove->currentFrame == 0){ 
+	if(cMove->stop){
+		if(currentFrame == 0){ 
 			deltaX = 0; deltaY = 0;
-			if(pick->cMove->stop == 2)
+			if(cMove->stop == 2)
 				momentumComplexity = 0;
 		}
 	}
-	if(pick->freeze < 1){
-		SDL_Rect * temp = pick->cMove->delta[pick->cMove->currentFrame];
-		for(int i = 0; i < pick->cMove->deltaComplexity[pick->cMove->currentFrame]; i++){
-			if(temp[i].x || temp[i].y || temp[i].h){
-				if(abs((short)temp[i].h) >= top || top == 0){
-					addVector(temp[i]);
+	if(freeze < 1){
+		if(currentFrame < cMove->frames){
+			SDL_Rect * temp = cMove->delta[currentFrame];
+			for(int i = 0; i < cMove->deltaComplexity[currentFrame]; i++){
+				if(temp[i].x || temp[i].y || temp[i].h){
+					if(abs((short)temp[i].h) >= top || top == 0){
+						addVector(temp[i]);
+					}
 				}
-			} 
-		} 
+			}
+		}
 	}
 }
 
-void player::addVector(SDL_Rect &v)
+void instance::addVector(SDL_Rect &v)
 {
 	int i;
 	SDL_Rect * temp;
@@ -476,7 +478,7 @@ void player::addVector(SDL_Rect &v)
 	momentumComplexity++;
 }
 
-void player::removeVector(int n)
+void instance::removeVector(int n)
 {
 	if(momentumComplexity < 0 || !momentum) return;
 	for(int i = n; i < momentumComplexity-1; i++){
@@ -503,12 +505,20 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
+		for(int i = 0; i < 4; i++) {
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+				sAxis[i] = 1;
+		}
 		for(int i = 4; i < 9; i++){
 			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				posEdge[i-4] = 1;
 		}
 		break;
 	case SDL_JOYBUTTONUP:
+		for(int i = 0; i < 4; i++) {
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+				sAxis[i] = 0;
+		}
 		for(int i = 4; i < 9; i++){
 			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
 				negEdge[i-4] = 1;
@@ -537,52 +547,71 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 	}
 }
 
-player::~player(){}
+void instance::connect(int combo, hStat & s)
+{
+//	printf("Hit with %s!\n", cMove->name);
+	if(!s.ghostHit) freeze = s.stun/4+10;
+	pick()->connect(cMove, bMove, sMove, s, connectFlag, currentFrame);
+	if(bMove == cMove) bMove = NULL;
+}
 
 void player::connect(int combo, hStat & s)
 {
-//	printf("Hit with %s!\n", pick->cMove->name);
+//	printf("Hit with %s!\n", cMove->name);
 	SDL_Rect v = {0, 0, 1, 0};
 	if(combo < 2) v.x = 0;
-	else if (!pick->aerial) v.x = -combo;
+	else if (!pick()->aerial) v.x = -combo;
 	addVector(v);
-	pick->connect(s);
+	instance::connect(combo, s);
 }
 
 int player::takeHit(int combo, hStat & s)
 {
 	SDL_Rect v = {0, 0, 1, 0};
+	action * temp = NULL;
 	if(s.damage > 0){
 		if(combo >= s.damage) s.damage = 1;
 		else s.damage -= combo; 
 	}
 	s.untech -= combo;
+	int f;
 	if(slide) s.lift += 7 - s.lift/5;
-	particleType = pick->takeHit(s, blockType);
-	particleLife = 8;
-	deltaX = 0; deltaY = 0; momentumComplexity = 0;
-	if(pick->aerial) v.y = -s.lift;
-	else v.y = 0;
-	if(pick->aerial) v.x = -(s.push/5 + s.blowback);
-	else v.x = -s.push;
-	addVector(v);
-	if(pick->aerial && s.hover) hover = s.hover;
-	else hover = 0;
-	if(pick->aerial && s.wallBounce) elasticX = true;
-	else elasticX = false;
-	if(pick->aerial && s.floorBounce) elasticY = true;
-	else elasticY = false;
-	if(pick->aerial && s.slide) slide = true;
-	else slide = false;
-	if(pick->aerial && s.stick) stick = true;
-	else stick = false;
+	f = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
+	if(s.ghostHit) freeze = 0;
+	else freeze = f;
+	if(particleType != 1){ 
+		temp = cMove->blockSuccess();
+	}
+	if(temp && temp != cMove){
+		combo = 0;
+		bMove = temp;
+		freeze = 0;
+	} else {
+		particleLife = 8;
+		deltaX = 0; deltaY = 0; momentumComplexity = 0;
+		if(pick()->aerial) v.y = -s.lift;
+		else v.y = 0;
+		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
+		else v.x = -s.push;
+		addVector(v);
+		if(pick()->aerial && s.hover) hover = s.hover;
+		else hover = 0;
+		if(pick()->aerial && s.wallBounce) elasticX = true;
+		else elasticX = false;
+		if(pick()->aerial && s.floorBounce) elasticY = true;
+		else elasticY = false;
+		if(pick()->aerial && s.slide) slide = true;
+		else slide = false;
+		if(pick()->aerial && s.stick) stick = true;
+		else stick = false;
+	}
 	updateRects();
 	if(s.ghostHit && combo < 1) return 0;
 	else if(particleType == 1) return particleType;
 	else return -1;
 }
 
-void player::invertVectors(int operation)
+void instance::invertVectors(int operation)
 {
 	switch (operation){
 	case 1:
@@ -605,20 +634,13 @@ void player::invertVectors(int operation)
 	}
 }
 
-void player::clipVectors(int maxLength)
-{
-	for(int i = 0; i < momentumComplexity; i++){
-		if(momentum[i].w > maxLength) momentum[i].w = maxLength;
-	}
-}
-
 bool player::CHState()
 {
 	if(hitbox[0].w > 0) return true;
-	else return pick->cMove->CHState();
+	else return cMove->CHState(currentFrame);
 }
 
-void player::setPosition(int x, int y)
+void instance::setPosition(int x, int y)
 {
 	posX = x;
 	posY = y;
@@ -628,9 +650,13 @@ void player::setPosition(int x, int y)
 void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
-	setPosition(toss->arbitraryPoll(27)*xSign + abs(x), toss->arbitraryPoll(26) + y);
-	pick->cMove->init();
-	pick->reel->init(1);
-	pick->cMove = pick->reel;
+	hStat dummy;
+	dummy.stun = 1;
+	dummy.ghostHit = 1;
+	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
+	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType);
 	updateRects();
 }
+
+instance::~instance(){}
+player::~player(){}

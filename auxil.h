@@ -4,11 +4,18 @@
  */
 
 #include <SDL/SDL.h>
+
+#ifdef _APPLE
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
+
 #include <string>
 #include <SDL/SDL_opengl.h>
 #include <stdio.h>
-
+#ifndef AUXIL
+#define AUXIL
 class aux{
 	private:
 		static void scale  (SDL_Surface* source, SDL_Surface* destination);
@@ -25,3 +32,4 @@ class aux{
 		static bool checkCollision(SDL_Rect, SDL_Rect);
 		static int defineRectArray(char*, SDL_Rect*&); 
 };
+#endif

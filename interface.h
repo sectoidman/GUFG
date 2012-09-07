@@ -8,9 +8,17 @@
  */
 
 #include <SDL/SDL.h>
+
+#ifdef _APPLE
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
+
 #include <stdio.h>
 #include "player.h"
+#ifndef INTERFACE
+#define INTERFACE
 class interface
 {
 public:
@@ -24,6 +32,8 @@ public:
 	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
 	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
 	bool screenInit();
+	int drawGlyph(const char *, int, int, int, int, int);
+	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();
@@ -31,8 +41,14 @@ public:
 	void dragBG(int);
 	void doSuperFreeze();
 	void unitCollision();
+	void loadMisc();
+	void writeConfig(int);
 	void resolveHits();
 	void resolveThrows();
+	void resolveSummons();
+	void addThing(instance*);
+	void cullThing(int);
+	void writeImage(const char*, int, action*);
 
 	player * p[2];
 	bool * sAxis[2];	//Initial input buffering.
@@ -41,14 +57,19 @@ public:
 	bool select[2];
 	int selection[2];
 	SDL_Surface *screen;
+	GLuint glyph[91];
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	int grav; 		//Gravitational constant. 
+	int grav;		//Gravitational constant. 
 	bool fullscreen;	//For use with later
+	bool initd:1;
 	int combo[2];
 	int numRounds;
 	bool gameover;
+	float scalingFactor, sf;
+	instance ** things;
+	int thingComplexity;
 
 //Variables for cSelectMenu 
 	int numChars;
@@ -59,7 +80,9 @@ public:
 
 	bool q;
 	int timer;
+	bool roundEnd:1;
 private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
 };
+#endif
