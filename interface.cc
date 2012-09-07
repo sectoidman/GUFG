@@ -143,10 +143,10 @@ bool interface::screenInit()
 void interface::writeConfig(int ID)
 {
 	char buffer[200];
-//	char pident[30];
+	char pident[30];
 	char fname[30];
 	SDL_Event temp;
-//	sprintf(pident, "Player %i\n", ID);
+	sprintf(pident, "Player %i", ID + 1);
 	sprintf(fname, "Misc/.p%i.conf", ID + 1);
 	std::ofstream write;
 	write.open(fname);
@@ -155,21 +155,22 @@ void interface::writeConfig(int ID)
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
-//		drawGlyph(pident, 0, 1600, 250, 80, 1);
+		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+		drawGlyph(pident, 0, 1600, 300, 80, 1);
 		sprintf(buffer, "Please enter a");
-		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		drawGlyph(buffer, 0, 1600, 400, 80, 1);
 		sprintf(buffer, "command for %s", p[ID]->inputName[i]);
-		drawGlyph(buffer, 0, 1600, 450, 80, 1);
+		drawGlyph(buffer, 0, 1600, 500, 80, 1);
 		SDL_GL_SwapBuffers();
 		glDisable( GL_TEXTURE_2D );
 		//glClear(GL_COLOR_BUFFER_BIT);
 		temp = p[ID]->writeConfig(i);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
-//		drawGlyph(pident, 0, 1600, 250, 80, 1);
-		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		drawGlyph(pident, 0, 1600, 300, 80, 1);
+		drawGlyph(buffer, 0, 1600, 500, 80, 1);
 		sprintf(buffer, "Please enter a");
-		drawGlyph(buffer, 0, 1600, 350, 80, 1);
+		drawGlyph(buffer, 0, 1600, 400, 80, 1);
 		switch(temp.type){
 		case SDL_JOYAXISMOTION:
 			if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
@@ -421,7 +422,7 @@ void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
 		roundEnd = true;
-		if(p[0]->pick()->health > 0 && p[0]->pick()->health > 0) printf("Time Out\n");
+		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0) printf("Time Out\n");
 		else printf("Down!\n");
 		if(p[0]->pick()->health > p[1]->pick()->health) {
 			printf("Player 1 wins!\n");
@@ -707,8 +708,6 @@ void interface::resolveHits()
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
-		for(int i = 0; i < 2; i++)
-			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 		}
 	}
 

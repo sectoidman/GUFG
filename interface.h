@@ -8,14 +8,8 @@
  */
 
 #include <SDL/SDL.h>
-
-#ifdef _APPLE
-#include <SDL_image/SDL_image.h>
-#else
-#include <SDL/SDL_image.h>
-#endif
-
 #include <stdio.h>
+#include "compat.h"
 #include "player.h"
 #ifndef INTERFACE
 #define INTERFACE
