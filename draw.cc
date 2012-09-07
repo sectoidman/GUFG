@@ -36,22 +36,22 @@ void interface::draw()
 		if(i == 0){ 
 			drawGlyph(p[i]->pick()->name, 100, 500, 30, 40, 0);
 			if(combo[i] > 1){
-				sprintf(buffer, "%i hit combo\n", combo[i]);
-				drawGlyph("n hit combo", 100, 500, 400, 50, 0);
+				sprintf(buffer, "%i hit combo", combo[i]);
+				drawGlyph(buffer, 100, 600, 400, 50, 0);
 			}
 		}
 		else{
 			drawGlyph(p[i]->pick()->name, 1000, 500, 30, 40, 2);
 			if(combo[i] > 1){
-				sprintf(buffer, "%i hit combo\n", combo[i]);
-				drawGlyph("n hit combo", 1000, 500, 400, 50, 2);
+				sprintf(buffer, "%i hit combo", combo[i]);
+				drawGlyph(buffer, 900, 600, 400, 50, 2);
 			}
 		}
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
 		sprintf(buffer, "Round %i", 1 + p[0]->rounds + p[1]->rounds);
-		drawGlyph("Round n", 0, 1600, 300, 200, 1);
+		drawGlyph(buffer, 0, 1600, 300, 200, 1);
 	}
 	else if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 300, 200, 1);
 

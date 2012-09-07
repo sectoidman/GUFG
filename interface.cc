@@ -421,7 +421,7 @@ void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
 		roundEnd = true;
-		if(p[0]->pick()->health > 0 && p[0]->pick()->health > 0) printf("Time Out\n");
+		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0) printf("Time Out\n");
 		else printf("Down!\n");
 		if(p[0]->pick()->health > p[1]->pick()->health) {
 			printf("Player 1 wins!\n");
@@ -707,8 +707,6 @@ void interface::resolveHits()
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
-		for(int i = 0; i < 2; i++)
-			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 		}
 	}
 
