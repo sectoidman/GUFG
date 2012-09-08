@@ -1,0 +1,18 @@
+Name: down
+Buffer: 0 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 0
+State: 0
+Gain: 0
+Cost: 0
+Blocks: 0
+Properties: T
+#0 
+$C	10 10 100 110
+$R	0 0 0 0
+$D	0 0 0 0
+#1 
+$C	10 10 100 110
+$R	0 0 0 0
+$D	0 0 0 0
