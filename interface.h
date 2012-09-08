@@ -59,6 +59,7 @@ public:
 	bool fullscreen;	//For use with later
 	bool initd:1;
 	int combo[2];
+	int damage[2];
 	int numRounds;
 	bool gameover;
 	float scalingFactor, sf;
