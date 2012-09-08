@@ -4,12 +4,12 @@ Hits: 1
 Frames: 33 : 10 : 3 : 20
 Check: 17 
 State: 256 : 496
-Damage: 34.5
+Damage: 30
 Stun: 15
 Untech: 8
 Push: 34
 Lift: 16
-Blowback: -2
+Blowback: -1
 Gain: 0 : 5
 Cost: 0
 Blockable: 3 
