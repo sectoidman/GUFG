@@ -13,7 +13,7 @@ Push: 4
 Lift: 20
 +Lift: -60
 Float: 14
-Blowback: 4
+Blowback: 3
 +Blowback: 15
 Gain: 0 : 2
 Cost: 0
