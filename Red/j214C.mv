@@ -5,7 +5,7 @@ SuperFreeze: 9 - 30
 Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
-Damage: 20
+Damage: 30
 Landing: -j214CLR
 Stun: 38
 Cost: 75
