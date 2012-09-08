@@ -12,8 +12,6 @@
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
-
-	char buffer[200];
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -33,36 +31,13 @@ void interface::draw()
 		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
 	glEnd();
 
-	if(timer / 60 > 99) sprintf(buffer, "99");
-	else if(timer / 60 < 10) sprintf(buffer, "0%i", timer / 60);
-	else sprintf(buffer, "%i", timer / 60);
-
-	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	for(int i = 0; i < 2; i++){
-		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
-		if(combo[i] > 1){
-			sprintf(buffer, "%i hits", combo[i]);
-			drawGlyph(buffer, 100+800*i, 600, 400, 50, 0+2*i);
-		}
+		if(i == 0) 
+			drawGlyph(p[i]->pick()->name, 100, 500, 30, 40, 0);
+		else
+			drawGlyph(p[i]->pick()->name, 1000, 500, 30, 40, 2);
 	}
 
-	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
-		sprintf(buffer, "Round %i", 1 + p[0]->rounds + p[1]->rounds);
-		drawGlyph(buffer, 0, 1600, 300, 200, 1);
-	}
-	if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 300, 200, 1);
-
-	if(roundEnd && endTimer > 5 * 60 - 31){ 
-		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0) drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
-		else drawGlyph("DOWN", 0, 1600, 300, 200, 1);
-	}
-	if(endTimer > 3 * 60 + 29 && endTimer < 4 * 60){ 
-		if(p[0]->pick()->health > p[1]->pick()->health) sprintf(buffer, "%s wins", p[0]->pick()->name);
-		else if(p[1]->pick()->health > p[0]->pick()->health) sprintf(buffer, "%s wins", p[1]->pick()->name);
-		else if(p[0]->pick()->health <= 0) sprintf(buffer, "Double KO");
-		else sprintf(buffer, "Draw");
-		drawGlyph(buffer, 0, 1600, 300, 200, 1);
-	}
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
 		p[i]->drawMeters(numRounds, scalingFactor);
@@ -206,7 +181,7 @@ void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalin
 	cMove->draw(facing, x, y, f, scalingFactor);
 }
 
-int interface::drawGlyph(const char * string, int x, int space, int y, int height, int just)
+int interface::drawGlyph(char * string, int x, int space, int y, int height, int just)
 {
 	int w, h, width = 0, padding = 0, totalWidth = 0;
 	if(just != 0){	
@@ -227,6 +202,7 @@ int interface::drawGlyph(const char * string, int x, int space, int y, int heigh
 	}
 
 	float sf;
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	for(unsigned int i = 0; i < strlen(string); i++){
 		if(string[i] == ' ') x += (float)width / 2.0;
 		else{
@@ -249,6 +225,7 @@ int interface::drawGlyph(const char * string, int x, int space, int y, int heigh
 			glTexCoord2i(0, 1);
 			glVertex3f((x + padding) * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
 			glEnd();
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			x += (float)width;
 		}
 	}

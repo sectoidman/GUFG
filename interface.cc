@@ -143,10 +143,10 @@ bool interface::screenInit()
 void interface::writeConfig(int ID)
 {
 	char buffer[200];
-	char pident[30];
+//	char pident[30];
 	char fname[30];
 	SDL_Event temp;
-	sprintf(pident, "Player %i", ID + 1);
+//	sprintf(pident, "Player %i\n", ID);
 	sprintf(fname, "Misc/.p%i.conf", ID + 1);
 	std::ofstream write;
 	write.open(fname);
@@ -155,22 +155,21 @@ void interface::writeConfig(int ID)
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
-		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-		drawGlyph(pident, 0, 1600, 300, 80, 1);
+//		drawGlyph(pident, 0, 1600, 250, 80, 1);
 		sprintf(buffer, "Please enter a");
-		drawGlyph(buffer, 0, 1600, 400, 80, 1);
+		drawGlyph(buffer, 0, 1600, 350, 80, 1);
 		sprintf(buffer, "command for %s", p[ID]->inputName[i]);
-		drawGlyph(buffer, 0, 1600, 500, 80, 1);
+		drawGlyph(buffer, 0, 1600, 450, 80, 1);
 		SDL_GL_SwapBuffers();
 		glDisable( GL_TEXTURE_2D );
 		//glClear(GL_COLOR_BUFFER_BIT);
 		temp = p[ID]->writeConfig(i);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 		glEnable( GL_TEXTURE_2D );
-		drawGlyph(pident, 0, 1600, 300, 80, 1);
-		drawGlyph(buffer, 0, 1600, 500, 80, 1);
+//		drawGlyph(pident, 0, 1600, 250, 80, 1);
+		drawGlyph(buffer, 0, 1600, 350, 80, 1);
 		sprintf(buffer, "Please enter a");
-		drawGlyph(buffer, 0, 1600, 400, 80, 1);
+		drawGlyph(buffer, 0, 1600, 350, 80, 1);
 		switch(temp.type){
 		case SDL_JOYAXISMOTION:
 			if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
@@ -206,6 +205,8 @@ void interface::matchInit()
 	p[1]->secondInstance = 0;
 	background = aux::load_texture("Misc/BG1.png");
 	q = 0;
+	matchIntro = 1;
+	matchIntro = 0; //To be removed later, when match intro stuff actually exists
 	printf("Please select a character:\n");
 	while (SDL_PollEvent(&event));
 }
@@ -213,7 +214,6 @@ void interface::matchInit()
 /*Sets stuff up for a new round. This initializes the characters, the timer, and the background.*/
 void interface::roundInit()
 {
-	roundEnd = false;
 	if(things){ 
 		delete [] things;
 	}
@@ -245,9 +245,9 @@ void interface::roundInit()
 	combo[0] = 0;
 	combo[1] = 0;
 	grav = 6;
-	timer = 60 * 101;
-	endTimer = 60 * 5;
-//	if(p[0]->rounds + p[1]->rounds < 1) timer += 60 * 6;
+	timer = 60 * 99;
+	roundIntro = 1;
+	roundIntro = 0;
 	prox.w = 200;
 	prox.h = 0;
 	freeze = 0;
@@ -257,38 +257,20 @@ void interface::roundInit()
 /*Pretty simple timer modifier*/
 void interface::runTimer()
 {
-	int plus;
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
 			if(p[i]->cMove != NULL)
 			{
-				plus = (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
-				if(plus != 0){ 
-					timer += plus;
-					if(timer > 60*99) timer = 60*99;
-				}
+				timer += (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
+				if(timer > 60*99) timer = 60*99;
 			}
 		}
 	}
-
-	if(roundEnd){ 
-		if(endTimer <= 60 * 3) endTimer = 0; 
-		/*This is a temporary measure since we don't have winposes yet.
-		 *This will eventually be replaced by the *ability* to skip them,
-		 *But currently does what would happen if you skipped them every time.
-		 */
-		if(endTimer > 0) endTimer--;
-		else{
-			p[0]->momentumComplexity = 0;
-			p[1]->momentumComplexity = 0;
-			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-				delete p[0]->pick();
-				delete p[1]->pick();
-				matchInit();
-			}
-			else roundInit();
-		}
-	} else timer--;
+	if(timer > 0) timer--;
+/*
+	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);
+	printf("%i frames remaining\n", timer);
+//*/
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
@@ -296,20 +278,7 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
-		if(timer > 99 * 60){
-			for(int i = 0; i < 2; i++){
-				if(timer == 106 * 60) p[i]->inputBuffer[0] = 0;
-				if(timer == 106 * 60 - 1) p[i]->inputBuffer[0] = i;
-				if(timer == 106 * 60 - 2) p[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
-				if(timer == 106 * 60 - 3) p[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
-				if(timer == 106 * 60 - 4) p[i]->inputBuffer[0] = 0;
-				else(p[i]->inputBuffer[0] = 5);
-				for(int j = 0; j < 5; j++){
-					posEdge[i][j] = 0;
-					negEdge[i][j] = 0;
-				}
-			}
-		} else for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+		for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < thingComplexity; i++){
 			if(i < 2){
@@ -386,8 +355,10 @@ void interface::resolve()
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
 		resolveSummons();
-		if(!roundEnd) checkWin();
-		runTimer();
+		if(!matchIntro && !roundIntro){
+			checkWin();
+			runTimer();
+		}
 	}
 	/*Reinitialize inputs*/
 	for(int i = 0; i < 5; i++){
@@ -436,17 +407,27 @@ void interface::resolveSummons()
 void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
-		roundEnd = true;
 		if(p[0]->pick()->health > p[1]->pick()->health) {
+			printf("Player 1 wins!\n");
 			p[0]->rounds++;
 		}
 		else if(p[1]->pick()->health > p[0]->pick()->health) {
+			printf("Player 2 wins!\n");
 			p[1]->rounds++;
 		}
 		else {
+			printf("Draw!\n");
 			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
 			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
 		}
+		p[0]->momentumComplexity = 0;
+		p[1]->momentumComplexity = 0;
+		if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
+			delete p[0]->pick();
+			delete p[1]->pick();
+			matchInit();
+		}
+		else roundInit();
 	}
 }
 
@@ -710,6 +691,8 @@ void interface::resolveHits()
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
+		for(int i = 0; i < 2; i++)
+			if(combo[i] > 1) printf("Player %i: %i hit combo\n", i+1, combo[i]);
 		}
 	}
 
@@ -739,13 +722,6 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++) {
 		p[i]->throwInvuln--;
 		p[i]->hover--;
-	}
-	for(int i = 0; i < 2; i++) {
-		if(p[i]->pick()->health <= 0 && endTimer >= 5 * 60){ 
-			i = 2;
-			p[0]->freeze = 30;
-			p[1]->freeze = 30;
-		}
 	}
 }
 

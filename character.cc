@@ -266,13 +266,6 @@ void character::build(const char *directory, const char *file)
 
 	avatar::build(directory, file);
 
-	sprintf(buffer, "%s/die", name);
-	die = new airLooping(buffer);
-
-	sprintf(buffer, "%s/dead", name);
-	dead = new looping(buffer);
-	die->feed(dead, 1, 0);
-
 	sprintf(buffer, "%s/NL", name);
 	crouch = new looping(buffer);
 
@@ -457,19 +450,12 @@ bool character::checkBlocking(action *& cMove, int input, int &connectFlag, int 
 
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
-	bool dead = false;
 	int freeze = s.stun/4 + 10;
 	p = cMove->takeHit(s, b, f, c, h);
-	if(p == 1) health -= s.damage;
-	else if(p > -2) health -= s.chip;
-	if(health < 0){ 
-		health = 0;
-		dead = true;
-	}
-	if(dead){
-		cMove = die;
-	} else if (p == 1){
+	if (p == 1){
 		if(s.launch) aerial = 1;
+		health -= s.damage;
+		if(health < 0) health = 0;
 		if(s.stun > 0){
 			f = 0;
 			if(aerial){
