@@ -4,7 +4,7 @@
  *Under MIT OSI license, see "COPYING" for details
  */
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include "compat.h"
 #include "trie.h"
 #ifndef CHARACTER
 #define CHARACTER
@@ -36,6 +36,7 @@ public:
 	actionTrie * head;	//Trie for ground actions
 	int * meter;
 
+	action * die;
 	action * neutral;
 };
 
@@ -59,6 +60,7 @@ public:
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&);
 	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
 
+	looping * dead;
 	action * airNeutral;
 	action * crouch;
 	hitstun * reel;
@@ -84,6 +86,5 @@ public:
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int);
 	virtual void init(action *&);
-	action * die;
 };
 #endif

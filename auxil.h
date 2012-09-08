@@ -4,10 +4,10 @@
  */
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <string>
 #include <SDL/SDL_opengl.h>
 #include <stdio.h>
+#include "compat.h"
 #ifndef AUXIL
 #define AUXIL
 class aux{

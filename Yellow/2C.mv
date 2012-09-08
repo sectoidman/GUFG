@@ -5,7 +5,7 @@ Frames: 25 : 8 : 5 : 12
 Check: 33
 State: 256 : 8672
 HitAllows: 65536
-Damage: 17
+Damage: 25.5
 Stun: 17
 Float: 15
 Push: 10

@@ -36,6 +36,7 @@ E = h
 _Cthrow = h6
 _baCkthrow = h4
 _jCthrow = a6
+_jbaCkthrow = a4
 2A = h2 h3 h1
 2B = h2 h3 h1
 2C = h2 h3 h1
@@ -56,7 +57,7 @@ wD = h
 %j236C = a236
 &22D = h252
 %236B = h236
-%236B214B = h214
-%236B236B = h236
+%236B214B = h4
+%236B236B = h6
 !214E = h214 h
 #Moves

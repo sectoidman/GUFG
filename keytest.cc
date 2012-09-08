@@ -12,10 +12,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <SDL/SDL_opengl.h>
-#include <SDL/SDL_main.h>
 using namespace internal;
-
-#undef main
 
 int main(int argc, char* argv[])
 {

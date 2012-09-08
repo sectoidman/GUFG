@@ -8,8 +8,8 @@
  */
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <stdio.h>
+#include "compat.h"
 #include "player.h"
 #ifndef INTERFACE
 #define INTERFACE
@@ -26,7 +26,7 @@ public:
 	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
 	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
 	bool screenInit();
-	int drawGlyph(char *, int, int, int, int, int);
+	int drawGlyph(const char *, int, int, int, int, int);
 	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
@@ -73,9 +73,9 @@ public:
 	int counter[2];
 
 	bool q;
-	bool matchIntro:1;
-	bool roundIntro:1;
 	int timer;
+	bool roundEnd:1;
+	int endTimer;
 private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;

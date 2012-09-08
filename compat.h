@@ -1,25 +1,36 @@
-//#ifdef _WIN32
+#ifndef COMPAT_H
+#define COMPAT_H
+
+/* 
+ * Switch between boost::chrono and c++11 chrono for platforms
+ * without a good C++11 implementation
+ */
+
+#ifdef _BOOST
+	#include <boost/chrono.hpp>
+#else
+	#include <chrono>
+#endif
 
 /*
-  Nobody's written a decent free C++11 thread library implementation yet,
-  so we'll have to just use boost in the mean time.  
-*/
-//#include <boost/chrono.hpp>
+ * Apple OSX-specific switches
+ */
 
-//#else
+#ifdef _APPLE
+	#include <SDL_image/SDL_image.h>
+#else
+	#include <SDL/SDL_image.h>
+#endif
 
-//other platforms can use the C++11 standard library
-#include <chrono>
-
-//#endif
 
 namespace internal {
-	//#ifdef _WIN32
-		//using namespace boost::chrono;
-		//using namespace boost;
-	//#else
+	#ifdef _BOOST
+		using namespace boost::chrono;
+		using namespace boost;
+	#else
 		using namespace std::chrono;
 		using namespace std;
-	//#endif
+	#endif
 }
 
+#endif /* ndef COMPAT_H */

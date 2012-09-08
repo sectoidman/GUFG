@@ -31,7 +31,7 @@ void actionTrie::insert(action * b)
 
 actionTrie * actionTrie::insert(int a, action * b)
 {
-	if(a < 10 && a > 0){
+	if(a < 10 && a >= 0){
 		if(!child[a]) child[a] = new actionTrie(b);
 		else child[a]->insert(b);
 		return child[a];
@@ -41,7 +41,7 @@ actionTrie * actionTrie::insert(int a, action * b)
 
 actionTrie * actionTrie::insert(int a)
 {
-	if(a < 10 && a > 0) {
+	if(a < 10 && a >= 0) {
 		if(!child[a]) child[a] = new actionTrie();
 		return child[a];
 	}

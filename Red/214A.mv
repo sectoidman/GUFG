@@ -5,13 +5,13 @@ Frames: 38 : 9 : 16 : 13
 Check: 129
 State: 256 : 256
 HitAllows: 2
-Damage: 20
+Damage: 30
 Stun: 17
 Untech: 20
 Push: 20
 Lift: 26
 Float: 21
-Blowback: 4
+Blowback: 6
 Gain: 0 : 7
 Cost: 0
 Blockable: 7
