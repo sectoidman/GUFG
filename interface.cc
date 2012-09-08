@@ -29,9 +29,9 @@ interface::interface()
 
 	read.open("Misc/.res.conf");
 	if(read.fail()){ 
-		scalingFactor = 1.0;
-		fullscreen = true;
-	} else { 
+		scalingFactor = 0.5;
+		fullscreen = false;
+	} else {
 		read >> scalingFactor;
 		read.ignore(100, '\n');
 		read >> fullscreen;
