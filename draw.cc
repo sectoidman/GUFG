@@ -42,26 +42,38 @@ void interface::draw()
 		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(combo[i] > 1){
 			sprintf(buffer, "%i hits", combo[i]);
-			drawGlyph(buffer, 100+800*i, 600, 400, 50, 0+2*i);
+			drawGlyph(buffer, 100+800*i, 600, 400, 75, 0+2*i);
+			sprintf(buffer, "%i damage", damage[i]);
+			drawGlyph(buffer, 100+800*i, 600, 475, 35, 0+2*i);
 		}
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
 		sprintf(buffer, "Round %i", 1 + p[0]->rounds + p[1]->rounds);
-		drawGlyph(buffer, 0, 1600, 300, 200, 1);
+		drawGlyph(buffer, 0, 1600, 375, 150, 1);
 	}
-	if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 300, 200, 1);
+	if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 375, 150, 1);
 
 	if(roundEnd && endTimer > 5 * 60 - 31){ 
 		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0) drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
-		else drawGlyph("DOWN", 0, 1600, 300, 200, 1);
+		else drawGlyph("DOWN", 0, 1600, 375, 150, 1);
 	}
 	if(endTimer > 3 * 60 + 29 && endTimer < 4 * 60){ 
-		if(p[0]->pick()->health > p[1]->pick()->health) sprintf(buffer, "%s wins", p[0]->pick()->name);
-		else if(p[1]->pick()->health > p[0]->pick()->health) sprintf(buffer, "%s wins", p[1]->pick()->name);
-		else if(p[0]->pick()->health <= 0) sprintf(buffer, "Double KO");
-		else sprintf(buffer, "Draw");
-		drawGlyph(buffer, 0, 1600, 300, 200, 1);
+		if(p[0]->pick()->health > p[1]->pick()->health){ 
+			sprintf(buffer, "%s", p[0]->pick()->name);
+			drawGlyph(buffer, 0, 1600, 300, 150, 1);
+			drawGlyph("Wins", 0, 1600, 450, 150, 1);
+		} else if(p[1]->pick()->health > p[0]->pick()->health){
+			sprintf(buffer, "%s", p[1]->pick()->name);
+			drawGlyph(buffer, 0, 1600, 300, 150, 1);
+			drawGlyph("Wins", 0, 1600, 450, 150, 1);
+		} else if(p[0]->pick()->health <= 0){ 
+			sprintf(buffer, "Double KO");
+			drawGlyph(buffer, 0, 1600, 375, 150, 1);
+		} else {
+			sprintf(buffer, "Draw");
+			drawGlyph(buffer, 0, 1600, 375, 150, 1);
+		}
 	}
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){

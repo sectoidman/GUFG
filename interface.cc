@@ -29,9 +29,9 @@ interface::interface()
 
 	read.open("Misc/.res.conf");
 	if(read.fail()){ 
-		scalingFactor = 1.0;
-		fullscreen = true;
-	} else { 
+		scalingFactor = 0.5;
+		fullscreen = false;
+	} else {
 		read >> scalingFactor;
 		read.ignore(100, '\n');
 		read >> fullscreen;
@@ -244,6 +244,8 @@ void interface::roundInit()
 
 	combo[0] = 0;
 	combo[1] = 0;
+	damage[0] = 0;
+	damage[1] = 0;
 	grav = 6;
 	timer = 60 * 101;
 	endTimer = 60 * 5;
@@ -363,8 +365,9 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++){
 			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(!p[i]->cMove->arbitraryPoll(1, 0)){
+			if(!p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
 				combo[(i+1)%2] = 0;
+				damage[(i+1)%2] = 0;
 				p[i]->elasticX = 0;
 				p[i]->elasticY = 0;
 			}
@@ -668,6 +671,7 @@ void interface::resolveHits()
 	bool connect[thingComplexity];
 	bool taken[thingComplexity];
 	int hitBy[thingComplexity];
+	int h;
 	for(int i = 0; i < thingComplexity; i++){
 		taken[i] = 0;
 		hit[i] = 0;
@@ -705,11 +709,13 @@ void interface::resolveHits()
 
 	for(int i = 0; i < 2; i++){ 
 		if(taken[i]){
+			h = p[i]->pick()->health;
 			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
 			combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
+			damage[(i+1)%2] += h - p[i]->pick()->health;
 		}
 	}
 
