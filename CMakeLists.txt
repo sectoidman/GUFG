@@ -42,14 +42,7 @@ link_libraries (
 )
 
 if (WIN32)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -D_BOOST")
-	find_package (Boost 1.45 COMPONENTS chrono system REQUIRED)
-	INCLUDE_DIRECTORIES (${BOOST_INCLUDE_DIR})
-	LINK_DIRECTORIES (${Boost_LIBRARY_DIRS})
-	link_libraries ( 
-		${Boost_CHRONO_LIBRARY}
-		${Boost_SYSTEM_LIBRARY}
-	)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
 endif (WIN32)
 
 if (APPLE)
