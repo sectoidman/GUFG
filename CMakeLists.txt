@@ -42,7 +42,7 @@ link_libraries (
 )
 
 if (WIN32)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -static-libstdc++")
 endif (WIN32)
 
 if (APPLE)
