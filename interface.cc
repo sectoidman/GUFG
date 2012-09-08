@@ -246,6 +246,7 @@ void interface::roundInit()
 	combo[1] = 0;
 	grav = 6;
 	timer = 60 * 101;
+	endTimer = 60 * 5;
 //	if(p[0]->rounds + p[1]->rounds < 1) timer += 60 * 6;
 	prox.w = 200;
 	prox.h = 0;
@@ -269,11 +270,25 @@ void interface::runTimer()
 			}
 		}
 	}
-	if(timer > 0) timer--;
-/*
-	if(timer % 60 == 0) printf("%i seconds remaining\n", timer / 60);
-	printf("%i frames remaining\n", timer);
-//*/
+
+	if(roundEnd){ 
+		if(endTimer <= 60 * 3) endTimer = 0; 
+		/*This is a temporary measure since we don't have winposes yet.
+		 *This will eventually be replaced by the *ability* to skip them,
+		 *But currently does what would happen if you skipped them every time.
+		 */
+		if(endTimer > 0) endTimer--;
+		else{
+			p[0]->momentumComplexity = 0;
+			p[1]->momentumComplexity = 0;
+			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
+				delete p[0]->pick();
+				delete p[1]->pick();
+				matchInit();
+			}
+			else roundInit();
+		}
+	} else timer--;
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
@@ -281,7 +296,7 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else {
-		if(timer > 99 * 60 && !roundEnd){
+		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
 				if(timer == 106 * 60) p[i]->inputBuffer[0] = 0;
 				if(timer == 106 * 60 - 1) p[i]->inputBuffer[0] = i;
@@ -371,7 +386,7 @@ void interface::resolve()
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
 		resolveSummons();
-		checkWin();
+		if(!roundEnd) checkWin();
 		runTimer();
 	}
 	/*Reinitialize inputs*/
@@ -422,29 +437,16 @@ void interface::checkWin()
 {
 	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
 		roundEnd = true;
-		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0) printf("Time Out\n");
-		else printf("Down!\n");
 		if(p[0]->pick()->health > p[1]->pick()->health) {
-			printf("Player 1 wins!\n");
 			p[0]->rounds++;
 		}
 		else if(p[1]->pick()->health > p[0]->pick()->health) {
-			printf("Player 2 wins!\n");
 			p[1]->rounds++;
 		}
 		else {
-			printf("Draw!\n");
 			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
 			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
 		}
-		p[0]->momentumComplexity = 0;
-		p[1]->momentumComplexity = 0;
-		if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-			delete p[0]->pick();
-			delete p[1]->pick();
-			matchInit();
-		}
-		else roundInit();
 	}
 }
 
@@ -737,6 +739,13 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++) {
 		p[i]->throwInvuln--;
 		p[i]->hover--;
+	}
+	for(int i = 0; i < 2; i++) {
+		if(p[i]->pick()->health <= 0 && endTimer >= 5 * 60){ 
+			i = 2;
+			p[0]->freeze = 30;
+			p[1]->freeze = 30;
+		}
 	}
 }
 

@@ -4,19 +4,19 @@ Hits: 2
 Frames: 22 : 0 : 1 : 10 : 1 : 10
 Check: 1
 State: 0 : 0 : 384
-Damage: 0 : 21
+Damage: 0 : 27
 Stun: 15 : 40
 Untech: 0 : 0
 Push: 0 : 0
-Lift: 0 : 28
+Lift: 0 : -40
 Float: 10 : 15
-Blowback: 0 : 24
+Blowback: 0 : -24
 Gain: 0 : 0 : 5
 Cost: 0
 Proximity: 330 : 130
-Position: 240 : 20
+Position: 220 : 20
 Blocks: 0
-Properties: Sg : =
+Properties: Sg
 #0 
 $C	10 0 110 270
 $R	0 0 0 0

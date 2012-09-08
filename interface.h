@@ -75,6 +75,7 @@ public:
 	bool q;
 	int timer;
 	bool roundEnd:1;
+	int endTimer;
 private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;

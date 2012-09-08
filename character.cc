@@ -266,9 +266,13 @@ void character::build(const char *directory, const char *file)
 
 	avatar::build(directory, file);
 
-/*	sprintf(buffer, "%s/die", name);
-	die = new action(buffer);
-*/
+	sprintf(buffer, "%s/die", name);
+	die = new airLooping(buffer);
+
+	sprintf(buffer, "%s/dead", name);
+	dead = new looping(buffer);
+	die->feed(dead, 1, 0);
+
 	sprintf(buffer, "%s/NL", name);
 	crouch = new looping(buffer);
 
@@ -463,7 +467,7 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 		dead = true;
 	}
 	if(dead){
-		//if(die != NULL) cMove = die;
+		cMove = die;
 	} else if (p == 1){
 		if(s.launch) aerial = 1;
 		if(s.stun > 0){
