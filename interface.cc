@@ -561,20 +561,22 @@ void interface::cSelectMenu()
 	glEnd();
 
 	for(int i = 0; i < 2; i++){
-		glBindTexture(GL_TEXTURE_2D, cursor[i]);
-		glBegin(GL_QUADS);
-			glTexCoord2i(0, 0);
-			glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+		if(!menu[i]){
+			glBindTexture(GL_TEXTURE_2D, cursor[i]);
+			glBegin(GL_QUADS);
+				glTexCoord2i(0, 0);
+				glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
-			glTexCoord2i(1, 0);
-			glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+				glTexCoord2i(1, 0);
+				glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
-			glTexCoord2i(1, 1);
-			glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+				glTexCoord2i(1, 1);
+				glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 
-			glTexCoord2i(0, 1);
-			glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-		glEnd();
+				glTexCoord2i(0, 1);
+				glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+			glEnd();
+		}
 	}
 
 	glDisable( GL_TEXTURE_2D );
@@ -593,10 +595,10 @@ void interface::mainMenu(int ID)
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glEnable( GL_TEXTURE_2D );
-	glColor4f(1.0, 0.0, 0.0, 0.5 + (float)(menu[ID] == 1)*0.3);
-	drawGlyph("Exit Menu", 50 + 1200*ID, 300, 400, 30, 2*ID);
-	glColor4f(1.0, 0.0, 0.0, 0.5 + (float)(menu[ID] == 2)*0.3);
-	drawGlyph("Quit Game", 50 + 1200*ID, 300, 450, 30, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 450, 40, 2*ID);
 	if(sAxis[ID][0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
