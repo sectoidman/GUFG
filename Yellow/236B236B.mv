@@ -5,7 +5,7 @@ Frames: 35 : 10 : 5 : 20
 Check: 32768
 State: 256 : 8704
 HitAllows: 6144
-Damage: 12
+Damage: 18
 Stun: 11
 Untech: 20
 Push: 8

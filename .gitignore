@@ -1,6 +1,13 @@
 gufg
 bmpout
 *.o
+*.a
+*.7z
+*.zip
+*.dll
+*.exe
+*.lib
+*.cmake
 Makefile
 cmake_install.cmake
 CMakeCache.txt
