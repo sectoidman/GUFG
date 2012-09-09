@@ -530,7 +530,7 @@ void interface::cSelectMenu()
 				}
 			}
 			if(posEdge[i][5] && !select[i]){ 
-				menu[i] = 1;
+				menu[i] = 2;
 				counter[i] = 10;
 			}
 		}
@@ -596,9 +596,11 @@ void interface::mainMenu(int ID)
 	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 390, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 450, 40, 2*ID);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 430, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 470, 40, 2*ID);
 	if(sAxis[ID][0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
@@ -606,15 +608,20 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 2) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 2;
+	if(menu[ID] > 3) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 3;
 	for(int i = 0; i < 5; i++){
 		if(posEdge[ID][i]){
 			switch(menu[ID]){
 			case 1:
-				menu[ID] = 0;
+				glDisable( GL_TEXTURE_2D );
+				writeConfig(ID);
+				glEnable( GL_TEXTURE_2D );
 				break;
 			case 2:
+				menu[ID] = 0;
+				break;
+			case 3:
 				gameover = 1;
 				break;
 			}

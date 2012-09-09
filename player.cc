@@ -143,7 +143,6 @@ bool player::readConfig()
 			default:
 				break;
 			}
-//			printf("Type?: %i\n", input[i].type);
 		}
 		read.close();
 		return 1;
