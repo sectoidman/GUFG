@@ -504,7 +504,7 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 			if(input[i].type == SDL_JOYAXISMOTION){
 				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
 					sAxis[i] = 1;
-				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && abs(event.jaxis.value) < abs(input[i].jaxis.value))
+				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && abs(event.jaxis.value) < abs(input[i].jaxis.value - 100))
 					sAxis[i] = 0;
 			}
 		}
