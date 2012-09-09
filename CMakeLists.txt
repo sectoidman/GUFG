@@ -34,7 +34,6 @@ set (QT_USE_QTOPENGL TRUE)
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
 find_package (OpenGL REQUIRED)
-find_package (PNG REQUIRED)
 link_libraries (
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
@@ -45,6 +44,9 @@ link_libraries (
 if (WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -static-libstdc++ -static-libgcc")
 	set (CMAKE_EXE_LINKER_FLAGS "-static")
+
+	find_package (PNG REQUIRED)
+	find_package (ZLIB REQUIRED)
 endif (WIN32)
 
 if (APPLE)
@@ -94,7 +96,10 @@ INSTALL(DIRECTORY scripts
 
 LIST(GET SDL_LIBRARY 1 ACTUAL_SDL_LIBRARY)
 
-INSTALL(FILES ${ACTUAL_SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${PNG_LIBRARY}
+INSTALL(FILES ${ACTUAL_SDL_LIBRARY} 
+		${SDLIMAGE_LIBRARY} 
+		${PNG_LIBRARY} 
+		${ZLIB_LIBRARY}
 	DESTINATION .
 	COMPONENT gufg
 	DESTINATION .
