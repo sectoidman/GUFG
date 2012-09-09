@@ -526,11 +526,11 @@ void interface::cSelectMenu()
 			for(int j = 0; j < 5; j++){
 				if(posEdge[i][j] && !select[i]){
 					select[i] = 1;
-					p[i]->characterSelect(selection[i]);
 				}
 			}
-			if(posEdge[i][5] && !select[i]){ 
-				menu[i] = 2;
+			if(posEdge[i][5]){
+				if(!select[i]) menu[i] = 2;
+				else select[i] = 0;
 				counter[i] = 10;
 			}
 		}
@@ -585,6 +585,8 @@ void interface::cSelectMenu()
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]){
+		p[0]->characterSelect(selection[0]);
+		p[1]->characterSelect(selection[1]);
 		if(selection[0] == selection[1]) p[1]->secondInstance = true;
 		roundInit();
 	}
