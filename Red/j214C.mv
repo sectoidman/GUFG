@@ -5,11 +5,12 @@ SuperFreeze: 9 - 30
 Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
-Damage: 30
+Damage: 33
 Landing: -j214CLR
-Stun: 38
+Stun: 35
++Stun: 30
 Cost: 75
-Untech: 22
+Untech: 55
 Float: 40
 Gain: 0 : 0
 Blockable: 7

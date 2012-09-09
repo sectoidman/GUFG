@@ -286,7 +286,7 @@ bool action::setParameter(char * buffer)
 	} else if (!strcmp("Damage", token)) {
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
-			if(savedBuffer[0] == '+') 
+			if(savedBuffer[0] == '+')
 				CHStats[i].damage = atoi(token);
 			else stats[i].damage = atoi(token);
 		}
@@ -519,7 +519,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 	s.push = stats[c].push + CHStats[c].push * CH;
 	s.lift = stats[c].lift + CHStats[c].lift * CH;
 	s.untech = stats[c].untech + CHStats[c].untech * CH;
-	s.blowback = stats[c].blowback + CHStats[c].blowback;
+	s.blowback = stats[c].blowback + CHStats[c].blowback * CH;
 	if(CH){
 		s.launch = CHStats[c].launch;
 		s.hover = CHStats[c].hover;

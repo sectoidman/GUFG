@@ -31,6 +31,7 @@ public:
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();
+	void mainMenu(int);
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
@@ -50,6 +51,7 @@ public:
 	bool * negEdge[2];
 	bool select[2];
 	int selection[2];
+	int menu[2];
 	SDL_Surface *screen;
 	GLuint glyph[91];
 	GLuint background;

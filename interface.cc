@@ -45,16 +45,17 @@ interface::interface()
 		p[i] = new player(i+1);
 		if(!p[i]->readConfig()) writeConfig(i);
 		sAxis[i] = new bool[4];
-		posEdge[i] = new bool[5]; 
-		negEdge[i] = new bool[5];
+		posEdge[i] = new bool[6]; 
+		negEdge[i] = new bool[6];
 		counter[i] = 0;
 		select[i] = 0;
-		selection[i] = 1;
+		selection[i] = 1+i;
+		menu[i] = 0;
 		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, selection[i]);
 		cursor[i] = aux::load_texture(buffer);
 	}
 
-	for(int i = 0; i < 5; i++){
+	for(int i = 0; i < 6; i++){
 		posEdge[0][i] = 0;
 		posEdge[1][i] = 0;
 		negEdge[0][i] = 0;
@@ -235,7 +236,7 @@ void interface::roundInit()
 		sAxis[0][i] = 0;
 		sAxis[1][i] = 0;
 	}
-	for(int i = 0; i < 5; i++){
+	for(int i = 0; i < 6; i++){
 		posEdge[0][i] = 0;
 		negEdge[0][i] = 0;
 		posEdge[1][i] = 0;
@@ -306,7 +307,7 @@ void interface::resolve()
 				if(timer == 106 * 60 - 3) p[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
 				if(timer == 106 * 60 - 4) p[i]->inputBuffer[0] = 0;
 				else(p[i]->inputBuffer[0] = 5);
-				for(int j = 0; j < 5; j++){
+				for(int j = 0; j < 6; j++){
 					posEdge[i][j] = 0;
 					negEdge[i][j] = 0;
 				}
@@ -393,7 +394,7 @@ void interface::resolve()
 		runTimer();
 	}
 	/*Reinitialize inputs*/
-	for(int i = 0; i < 5; i++){
+	for(int i = 0; i < 6; i++){
 		posEdge[0][i] = 0;
 		posEdge[1][i] = 0;
 		negEdge[0][i] = 0;
@@ -507,35 +508,43 @@ void interface::cSelectMenu()
 	char base[2][40];
 
 	for(int i = 0; i < 2; i++){
-		if(sAxis[i][2] && !select[i] && counter[i] == 0){
-			selection[i]--;
-			if(selection[i] < 1) selection[i] = numChars;
-			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
-			cursor[i] = aux::load_texture(base[i]);
-			counter[i] = 10;
-		}
-		if(sAxis[i][3] && !select[i] && counter[i] == 0){
-			selection[i]++;
-			if(selection[i] > numChars) selection[i] = 1;
-			sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
-			cursor[i] = aux::load_texture(base[i]);
-			counter[i] = 10;
-		}
-		for(int j = 0; j < 5; j++){
-			if(posEdge[i][j] && !select[i]){
-				select[i] = 1;
-				p[i]->characterSelect(selection[i]);
+		if(!menu[i]){
+			if(sAxis[i][2] && !select[i] && counter[i] == 0){
+				selection[i]--;
+				if(selection[i] < 1) selection[i] = numChars;
+				sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
+				cursor[i] = aux::load_texture(base[i]);
+				counter[i] = 10;
+			}
+			if(sAxis[i][3] && !select[i] && counter[i] == 0){
+				selection[i]++;
+				if(selection[i] > numChars) selection[i] = 1;
+				sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
+				cursor[i] = aux::load_texture(base[i]);
+				counter[i] = 10;
+			}
+			for(int j = 0; j < 5; j++){
+				if(posEdge[i][j] && !select[i]){
+					select[i] = 1;
+				}
+			}
+			if(posEdge[i][5]){
+				if(!select[i]) menu[i] = 2;
+				else select[i] = 0;
+				counter[i] = 10;
 			}
 		}
 	}
-	
+
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
+	for(int i = 0; i < 2; i++) if(menu[i] > 0) mainMenu(i);
 	glEnable( GL_TEXTURE_2D );
+
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
@@ -550,32 +559,79 @@ void interface::cSelectMenu()
 		glTexCoord2i(0, 1);
 		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 	glEnd();
-	
+
 	for(int i = 0; i < 2; i++){
-		glBindTexture(GL_TEXTURE_2D, cursor[i]);
-		glBegin(GL_QUADS);
-			glTexCoord2i(0, 0);
-			glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+		if(!menu[i]){
+			glBindTexture(GL_TEXTURE_2D, cursor[i]);
+			glBegin(GL_QUADS);
+				glTexCoord2i(0, 0);
+				glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
-			glTexCoord2i(1, 0);
-			glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+				glTexCoord2i(1, 0);
+				glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
 
-			glTexCoord2i(1, 1);
-			glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+				glTexCoord2i(1, 1);
+				glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
 
-			glTexCoord2i(0, 1);
-			glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-		glEnd();
+				glTexCoord2i(0, 1);
+				glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+			glEnd();
+		}
 	}
+
 	glDisable( GL_TEXTURE_2D );
 
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]){
+		p[0]->characterSelect(selection[0]);
+		p[1]->characterSelect(selection[1]);
 		if(selection[0] == selection[1]) p[1]->secondInstance = true;
 		roundInit();
 	}
+}
+
+void interface::mainMenu(int ID)
+{
+	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 390, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 430, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 470, 40, 2*ID);
+	if(sAxis[ID][0] && !counter[ID]){
+		menu[ID]--;
+		counter[ID] = 10;
+	} else if(sAxis[ID][1] && !counter[ID]){ 
+		menu[ID]++;
+		counter[ID] = 10;
+	}
+	if(menu[ID] > 3) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 3;
+	for(int i = 0; i < 5; i++){
+		if(posEdge[ID][i]){
+			switch(menu[ID]){
+			case 1:
+				glDisable( GL_TEXTURE_2D );
+				writeConfig(ID);
+				glEnable( GL_TEXTURE_2D );
+				break;
+			case 2:
+				menu[ID] = 0;
+				break;
+			case 3:
+				gameover = 1;
+				break;
+			}
+		}
+	}
+	if(posEdge[ID][5] && !counter[ID]) menu[ID] = 0;
+	glDisable( GL_TEXTURE_2D );
+	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
 void interface::dragBG(int deltaX)
