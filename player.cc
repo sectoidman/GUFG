@@ -171,7 +171,7 @@ SDL_Event player::writeConfig(int i)
 			case SDL_JOYAXISMOTION:
 				if(temp.jaxis.axis < 6){
 					for(int j = 0; j < 4; j++){
-						if(temp.jaxis.value == 0 || abs(temp.jaxis.value) < abs(input[j].jaxis.value))
+						if(temp.jaxis.value == 0 || abs(temp.jaxis.value) < abs(input[j].jaxis.value - 100))
 							break;
 						else {
 							input[i] = temp;
