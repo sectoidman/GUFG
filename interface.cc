@@ -268,7 +268,7 @@ void interface::runTimer()
 				plus = (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
 				if(plus != 0){ 
 					timer += plus;
-					if(timer > 60*99) timer = 60*99;
+					if(timer > 60*99) timer = 60*99 + 1;
 				}
 			}
 		}
