@@ -268,7 +268,7 @@ void interface::runTimer()
 				plus = (p[i]->cMove->arbitraryPoll(31, p[i]->currentFrame));
 				if(plus != 0){ 
 					timer += plus;
-					if(timer > 60*99) timer = 60*99;
+					if(timer > 60*99) timer = 60*99 + 1;
 				}
 			}
 		}
@@ -355,9 +355,9 @@ void interface::resolve()
 			p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall) );
 		p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 		p[1]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
-		
+
 		unitCollision();
-		
+
 		if(p[0]->cMove->state[p[0]->connectFlag].i & 1 && p[0]->cMove != p[0]->pick()->airNeutral) 
 			p[0]->checkFacing(p[1]);
 		if(p[1]->cMove->state[p[1]->connectFlag].i & 1 && p[1]->cMove != p[1]->pick()->airNeutral) 

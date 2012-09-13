@@ -35,6 +35,7 @@ public:
 	virtual void step();
 
 	virtual void getMove(bool*, bool*, SDL_Rect &, bool);
+	virtual void enforceGravity(int, int);
 	virtual void invertVectors(int);
 	virtual void addVector(SDL_Rect&);
 	virtual void removeVector(int);
@@ -69,6 +70,7 @@ public:
 	void drawHitParticle(int, int, float);
 
 	void land();
+	void enforceGravity(int, int);
 	void drawMeters(int, float);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void roundInit();
@@ -88,7 +90,6 @@ public:
 	int particleType;
 
 	/*Helper functions for "resolve" tick*/
-	void enforceGravity(int, int);
 	void checkBlocking();
 	void checkFacing(player*);
 	int dragBG(int, int);

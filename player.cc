@@ -243,7 +243,20 @@ void instance::combineDelta()
 	}
 	posX += deltaX;
 	posY += deltaY;
+
 	updateRects();
+}
+
+void instance::enforceGravity(int grav, int floor)
+{
+	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
+
+	if(collision.y + collision.h < floor && pick()->aerial == 0){
+		pick()->aerial = 1;
+	}
+	else if(pick()->aerial && !freeze){ 
+		addVector(g);
+	}
 }
 
 void player::enforceGravity(int grav, int floor)
@@ -253,7 +266,6 @@ void player::enforceGravity(int grav, int floor)
 	if(collision.y + collision.h < floor && pick()->aerial == 0){
 		pick()->aerial = 1;
 	}
-
 	else if(pick()->aerial && !freeze){ 
 		if(hover > 0 && deltaY + 3 > 0) g.y = -deltaY;
 		addVector(g);
