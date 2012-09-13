@@ -7,9 +7,11 @@ SuperFreeze: 7 - 33
 State: 0 : 0
 HitAllows: 8192
 Damage: 150
-Stun: 15
+Chip: 17
+Stun: 20
 Cost: 100
-Untech: 50
+Untech: 45
++Untech: 20
 Push: 40
 Blowback: 22
 Lift: 10
