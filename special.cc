@@ -108,21 +108,16 @@ int werf::arbitraryPoll(int n, int f)
 
 bool werf::check(SDL_Rect &p, int resource[])
 {
-	int x = action::check(p, resource);
-	if(p.w > xRequisite) return 0;
 	if(p.y != 0) return 0;
 	if(p.x > 0) return 0;
-	return x;
+	return action::check(p, resource);
 }
 
 bool luftigeWerf::check(SDL_Rect &p, int resource[])
 {
-	int x = action::check(p, resource);
-	if(p.w > xRequisite) return 0;
-	if(p.h > yRequisite) return 0;
 	if(p.y == 0) return 0;
 	if(p.x > 0) return 0;
-	return x;
+	return action::check(p, resource);
 }
 
 bool werf::setParameter(char * buffer)
@@ -132,14 +127,7 @@ bool werf::setParameter(char * buffer)
 
 	char * token = strtok(buffer, "\t: \n-");
 
-	if(!strcmp("Proximity", token)){
-		token = strtok(NULL, "\t: \n");
-		xRequisite = atoi(token); 
-
-		token = strtok(NULL, "\t: \n");
-		yRequisite = atoi(token); 
-		return 1;
-	} else if (!strcmp("Position", token)){
+	if (!strcmp("Position", token)){
 		token = strtok(NULL, "\t: \n");
 		startPosX = atoi(token); 
 
