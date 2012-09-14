@@ -17,7 +17,7 @@ class flashStep : public airMove {
 public:
 	flashStep();
 	flashStep(const char*);
-	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
+	bool check(SDL_Rect&, int[]);
 	void execute(action *, int *&);
 	bool setParameter(char*);
 	virtual void zero() { flashMeterCost = 0; airMove::zero(); }
@@ -29,7 +29,7 @@ class flashSummon : public special {
 public:
 	flashSummon();
 	flashSummon(const char*);
-	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
+	bool check(SDL_Rect&, int[]);
 	void execute(action *, int *&);
 	bool setParameter(char*);
 	void step(int *&, int&);

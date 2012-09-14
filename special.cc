@@ -15,7 +15,7 @@ negNormal::negNormal(const char * n)
 	build(n);
 }
 
-bool negNormal::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool negNormal::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -24,10 +24,10 @@ bool negNormal::check(bool pos[5], bool neg[5], int t, int f, int resource[], SD
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	return action::check(p, resource);
+	return check(p, resource);
 }
 
-bool special::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool special::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -36,7 +36,7 @@ bool special::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	return action::check(p, resource);
+	return check(p, resource);
 }
 
 super::super(const char * n)
@@ -44,7 +44,7 @@ super::super(const char * n)
 	build(n);
 }
 
-bool mash::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool mash::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	bool go = false;
 	if(t > tolerance) return 0;
@@ -52,7 +52,7 @@ bool mash::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rec
 	for(int i = 0; i < 5; i++){
 		if(pos[i]) go = true;
 	}
-	if(go) return action::check(p, resource);
+	if(go) return check(p, resource);
 	else return 0;
 }
 

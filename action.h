@@ -45,7 +45,7 @@ public:
 	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
@@ -54,7 +54,7 @@ public:
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollStats(hStat&, int, bool);
-	virtual bool cancel(action*, int&, int&); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
+	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
@@ -165,7 +165,7 @@ class special : virtual public action {
 public:
 	special() {}
 	special(const char*);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int chip;
 };
 
@@ -173,14 +173,14 @@ class negNormal : virtual public action {
 public:
 	negNormal() {}
 	negNormal(const char *);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -258,7 +258,7 @@ class mash : virtual public action {
 public:
 	mash() {}
 	mash(const char* n) {build(n); }
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class werf : virtual public action {

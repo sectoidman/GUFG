@@ -19,7 +19,7 @@ public:
 	redCancel();
 	~redCancel();
 	redCancel(const char* n);
-	bool check(bool[], bool[], int, int, int*, SDL_Rect&);
+	bool check(SDL_Rect&, int[]);
 	void execute(action *, int *&);
 };
 
