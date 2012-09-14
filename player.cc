@@ -579,6 +579,11 @@ void player::connect(int combo, hStat & s)
 	instance::connect(combo, s);
 }
 
+int instance::takeHit(int combo, hStat & s)
+{
+	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
+}
+
 int player::takeHit(int combo, hStat & s)
 {
 	SDL_Rect v = {0, 0, 1, 0};
@@ -590,7 +595,7 @@ int player::takeHit(int combo, hStat & s)
 	s.untech -= combo;
 	int f;
 	if(slide) s.lift += 7 - s.lift/5;
-	f = pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
+	f = instance::takeHit(combo, s);
 	if(s.ghostHit) freeze = 0;
 	else freeze = f;
 	if(particleType != 1){ 

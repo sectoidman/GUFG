@@ -42,6 +42,8 @@ void action::zero()
 {
 	attemptStart = 0;
 	attemptEnd = 0;
+	xRequisite = 0;
+	yRequisite = 0;
 	stop = 0;
 	hits = 0;
 	throwinvuln = 0;
@@ -183,6 +185,13 @@ bool action::setParameter(char * buffer)
 		tolerance = atoi(token);
 		token = strtok(NULL, "\t: \n");
 		activation = atoi(token);
+		return 1;
+	} else if(!strcmp("Proximity", token)){
+		token = strtok(NULL, "\t: \n");
+		xRequisite = atoi(token); 
+
+		token = strtok(NULL, "\t: \n");
+		yRequisite = atoi(token); 
 		return 1;
 	} else if (!strcmp("Counterhit", token)) {
 		parseProperties(savedBuffer, 1);
@@ -462,7 +471,7 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool action::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -471,12 +480,14 @@ bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_R
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(cost > resource[0]) return 0;
-	return check(p);
+	return check(p, resource);
 }
 
-bool action::check(SDL_Rect &p)
+bool action::check(SDL_Rect &p, int resource[])
 {
+	if(cost > resource[0]) return 0;
+	if(xRequisite > 0 && p.w > xRequisite) return 0;
+	if(yRequisite > 0 && p.h > yRequisite) return 0;
 	return 1;
 }
 

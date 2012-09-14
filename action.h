@@ -45,16 +45,16 @@ public:
 	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
-	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
 	virtual int arbitraryPoll(int q, int f) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollStats(hStat&, int, bool);
-	virtual bool cancel(action*, int&, int&); //Cancel allowed check. Essentially: is action Lvalue allowed given the current state of action Rvalue?
+	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
@@ -88,6 +88,7 @@ public:
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
 	cancelField *state, allowed;
+	int xRequisite, yRequisite;
 
 	//Hooks for touching other things in more upper layers, like interface or player
 
@@ -164,7 +165,7 @@ class special : virtual public action {
 public:
 	special() {}
 	special(const char*);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int chip;
 };
 
@@ -172,14 +173,14 @@ class negNormal : virtual public action {
 public:
 	negNormal() {}
 	negNormal(const char *);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -226,7 +227,7 @@ class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
 	airUtility(const char*);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual void execute(action *, int *&);	
 };
 
@@ -257,7 +258,7 @@ class mash : virtual public action {
 public:
 	mash() {}
 	mash(const char* n) {build(n); }
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class werf : virtual public action {
@@ -265,12 +266,10 @@ public:
 	werf() {}
 	werf(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
-	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual int arbitraryPoll(int, int);
 	int startPosX;
 	int startPosY;
-	int xRequisite;
-	int yRequisite;
 };
 
 class luftigeWerf : public airMove, public werf {
@@ -279,7 +278,7 @@ public:
 	luftigeWerf(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
-	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 };
 
 class summon : virtual public action {

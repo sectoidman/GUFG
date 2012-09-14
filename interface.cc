@@ -763,7 +763,7 @@ void interface::resolveHits()
 		}
 	}
 
-	for(int i = 0; i < 2; i++){ 
+	for(int i = 0; i < thingComplexity; i++){ 
 		if(taken[i]){
 			h = p[i]->pick()->health;
 			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);

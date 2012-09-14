@@ -24,6 +24,7 @@ public:
 	//BRB prepping my hooks
 	virtual bool death(action *&, int) { return 0; }
 
+	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&) { return 0; }
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, action *&, action *&, hStat&, int&, int);
 	virtual void step(action *&, int&, int&);

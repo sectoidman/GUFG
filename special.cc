@@ -15,7 +15,7 @@ negNormal::negNormal(const char * n)
 	build(n);
 }
 
-bool negNormal::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool negNormal::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -24,11 +24,10 @@ bool negNormal::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
-	return 1;
+	return check(p, resource);
 }
 
-bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool special::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -37,8 +36,7 @@ bool special::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_R
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(resource[0] < cost) return 0;
-	return 1;
+	return check(p, resource);
 }
 
 super::super(const char * n)
@@ -46,14 +44,16 @@ super::super(const char * n)
 	build(n);
 }
 
-bool mash::check(bool pos[5], bool neg[5], int t, int f, int* resource, SDL_Rect &p)
+bool mash::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
+	bool go = false;
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
 	for(int i = 0; i < 5; i++){
-		if(pos[i]) return 1;
+		if(pos[i]) go = true;
 	}
-	return 0;
+	if(go) return check(p, resource);
+	else return 0;
 }
 
 int super::arbitraryPoll(int q, int f)
@@ -106,21 +106,18 @@ int werf::arbitraryPoll(int n, int f)
 	return 0;
 }
 
-bool werf::check(SDL_Rect &p)
+bool werf::check(SDL_Rect &p, int resource[])
 {
-	if(p.w > xRequisite) return 0;
 	if(p.y != 0) return 0;
 	if(p.x > 0) return 0;
-	return 1;
+	return action::check(p, resource);
 }
 
-bool luftigeWerf::check(SDL_Rect &p)
+bool luftigeWerf::check(SDL_Rect &p, int resource[])
 {
-	if(p.w > xRequisite) return 0;
-	if(p.h > yRequisite) return 0;
 	if(p.y == 0) return 0;
 	if(p.x > 0) return 0;
-	return 1;
+	return action::check(p, resource);
 }
 
 bool werf::setParameter(char * buffer)
@@ -130,14 +127,7 @@ bool werf::setParameter(char * buffer)
 
 	char * token = strtok(buffer, "\t: \n-");
 
-	if(!strcmp("Proximity", token)){
-		token = strtok(NULL, "\t: \n");
-		xRequisite = atoi(token); 
-
-		token = strtok(NULL, "\t: \n");
-		yRequisite = atoi(token); 
-		return 1;
-	} else if (!strcmp("Position", token)){
+	if (!strcmp("Position", token)){
 		token = strtok(NULL, "\t: \n");
 		startPosX = atoi(token); 
 

@@ -5,7 +5,8 @@ SuperFreeze: 9 - 30
 Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
-Damage: 33
+Damage: 35
+Chip: 5
 Landing: -j214CLR
 Stun: 35
 +Stun: 30
