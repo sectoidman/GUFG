@@ -471,13 +471,13 @@ bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_R
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(cost > resource[0]) return 0;
-	return check(p);
+	return check(p, resource);
 }
 
-bool action::check(SDL_Rect &p)
+bool action::check(SDL_Rect &p, int resource[])
 {
-	return 1;
+	if(cost > resource[0]) return 0;
+	else return 1;
 }
 
 void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)

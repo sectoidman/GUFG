@@ -47,7 +47,7 @@ public:
 	virtual void execute(action *, int *&);
 	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
-	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
 	virtual int arbitraryPoll(int q, int f) {return 0;}
 
@@ -88,6 +88,7 @@ public:
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
 	cancelField *state, allowed;
+	int xRequisite, yRequisite;
 
 	//Hooks for touching other things in more upper layers, like interface or player
 
@@ -226,7 +227,7 @@ class airUtility : public airMove, public utility {
 public:
 	airUtility() {}
 	airUtility(const char*);
-	virtual bool check(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual void execute(action *, int *&);	
 };
 
@@ -265,12 +266,10 @@ public:
 	werf() {}
 	werf(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
-	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual int arbitraryPoll(int, int);
 	int startPosX;
 	int startPosY;
-	int xRequisite;
-	int yRequisite;
 };
 
 class luftigeWerf : public airMove, public werf {
@@ -279,7 +278,7 @@ public:
 	luftigeWerf(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
-	virtual bool check(SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 };
 
 class summon : virtual public action {
