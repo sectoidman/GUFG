@@ -31,6 +31,7 @@ action::~action()
 	if(delta) delete [] delta;
 	if(state) delete [] state;
 	if(gain) delete [] gain;
+	if(distortion) delete distortion;
 	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
 	if(stats) delete [] stats;
@@ -224,6 +225,24 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		tempRiposte = new char[strlen(token)+1];
 		strcpy(tempRiposte, token);
+		return 1;
+	} else if (!strcmp("Distort", token)) {
+		distortion = new attractor;
+		token = strtok(NULL, "\t:- \n");
+		distortSpawn = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->length = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->x = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->y = atoi(token);
+		return 1;
+	} else if (!strcmp("AttractorType", token)) {
+		if(!distortion) return 1;
+		token = strtok(NULL, "\t: \n");
+		distortion->type = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->radius = atoi(token);
 		return 1;
 	} else if (!strcmp("Next", token)) {
 		token = strtok(NULL, "\t: \n");
