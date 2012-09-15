@@ -58,6 +58,8 @@ void action::zero()
 	dies = 0;
 	fch = 0;
 	armorCounter = 0;
+	distortSpawn = -1;
+	distortion = NULL;
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
