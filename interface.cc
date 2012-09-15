@@ -775,7 +775,6 @@ void interface::resolveHits()
 		}
 	}
 
-
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
 			if(p[i]->pick()->aerial) residual.y = -8;
