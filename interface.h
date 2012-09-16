@@ -32,6 +32,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void mainMenu(int);
+	void reMenu();
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
@@ -54,6 +55,7 @@ public:
 	bool select[2];
 	int selection[2];
 	int menu[2];
+	int rMenu;
 	SDL_Surface *screen;
 	GLuint glyph[91];
 	GLuint background;

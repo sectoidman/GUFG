@@ -97,6 +97,7 @@ bool interface::screenInit()
 {
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
 	/*WM stuff*/
 	int h, w;
 	if(scalingFactor == 1.0){ 
@@ -204,15 +205,17 @@ void interface::writeConfig(int ID)
 void interface::matchInit()
 {
 	SDL_Event event;
-	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
+	rMenu = 0;
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	p[0]->secondInstance = 0;
 	p[1]->secondInstance = 0;
-	Mix_VolumeMusic(100);
-	Mix_PlayMusic(menuMusic,-1);
+	if(!select[0] || !select[1]){
+		Mix_VolumeMusic(100);
+		Mix_PlayMusic(menuMusic,-1);
+		printf("Please select a character:\n");
+	}
 	q = 0;
-	printf("Please select a character:\n");
 	while (SDL_PollEvent(&event));
 }
 
@@ -296,13 +299,16 @@ void interface::runTimer()
 			p[0]->momentumComplexity = 0;
 			p[1]->momentumComplexity = 0;
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-				delete p[0]->pick();
-				delete p[1]->pick();
-				select[0] = 0;
-				select[1] = 0;
-				Mix_HaltMusic();
-				Mix_FreeMusic(matchMusic);
-				matchInit();
+				if(shortcut) rMenu = 1;
+				else{
+					delete p[0]->pick();
+					delete p[1]->pick();
+					select[0] = 0;
+					select[1] = 0;
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					matchInit();
+				}
 			}
 			else roundInit();
 		}
@@ -313,6 +319,7 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
+	else if(rMenu) draw();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -422,6 +429,7 @@ void interface::resolve()
 		negEdge[0][i] = 0;
 		negEdge[1][i] = 0;
 	}
+	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 }
 
 void interface::resolveSummons()
@@ -631,7 +639,6 @@ void interface::cSelectMenu()
 
 	glDisable( GL_TEXTURE_2D );
 
-	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]){
@@ -709,6 +716,56 @@ void interface::dragBG(int deltaX)
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > 1600) bg.x = 1600;
+}
+
+void interface::reMenu()
+{
+	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 1)*0.4);
+	drawGlyph("Rematch", 0, 1600, 360, 60, 1);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 2)*0.4);
+	drawGlyph("Character Select", 0, 1600, 420, 60, 1);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 3)*0.4);
+	drawGlyph("Quit Game", 0, 1600, 480, 60, 1);
+	for(int j = 0; j < 2; j++){
+		if(sAxis[j][0] && !counter[j]){
+			rMenu--;
+			counter[j] = 10;
+		} else if(sAxis[j][1] && !counter[j]){ 
+			rMenu++;
+			counter[j] = 10;
+		}
+		if(rMenu > 3) rMenu = 1;
+		else if(rMenu < 1) rMenu = 3;
+		for(int i = 0; i < 6; i++){
+			if(posEdge[j][i]){
+				switch(rMenu){
+				case 1:
+					Mix_HaltMusic();
+					matchInit();
+					break;
+				case 2:
+					delete p[0]->pick();
+					delete p[1]->pick();
+					select[0] = 0;
+					select[1] = 0;
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					matchInit();
+					break;
+				case 3:
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					gameover = 1;
+					break;
+				}
+			}
+		}
+	}
+	glDisable( GL_TEXTURE_2D );
+	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
 interface::~interface()
