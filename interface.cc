@@ -220,6 +220,8 @@ void interface::roundInit()
 	}
 	things = NULL;
 	thingComplexity = 0;
+	globals = NULL;
+	attractorComplexity = 0;
 	for(int i = 0; i < 2; i++)
 		addThing(p[i]);
 	thingComplexity = 2;
@@ -347,7 +349,10 @@ void interface::resolve()
 			if(!things[i]->freeze){
 				things[i]->pullVolition();
 				things[i]->combineDelta();
-				if(i < 2) p[i]->enforceGravity(grav, floor);
+				things[i]->enforceGravity(grav, floor);
+				for(int j = 0; j < attractorComplexity; j++){
+					if(globals[j]->ID != things[i]->ID) things[i]->enforceAttractor(globals[j]);
+				}
 			}
 		}
 
@@ -389,6 +394,10 @@ void interface::resolve()
 			things[i]->step();
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
+		for(int i = 0; i < attractorComplexity; i++){
+			if(globals[i]->length <= 0) cullAttractor(i);
+			else globals[i]->length--;
+		}
 		resolveSummons();
 		if(!roundEnd) checkWin();
 		runTimer();
@@ -400,12 +409,12 @@ void interface::resolve()
 		negEdge[0][i] = 0;
 		negEdge[1][i] = 0;
 	}
-
 }
 
 void interface::resolveSummons()
 {
 	action * temp;
+	attractor * tvec = NULL, * avec = NULL;
 	instance * larva;
 	int x, y, f;
 	for(int i = 0; i < thingComplexity; i++){
@@ -432,6 +441,33 @@ void interface::resolveSummons()
 				addThing(larva);
 				larva->init();
 			}
+		}
+	}
+	for(int i = 0; i < thingComplexity; i++){
+		if(things[i]->cMove && things[i]->currentFrame == things[i]->cMove->distortSpawn) tvec = things[i]->cMove->distortion;
+		if(tvec != NULL){ 
+			avec = new attractor;
+			avec->x = tvec->x*things[i]->facing;
+			avec->y = tvec->y;
+			avec->type = tvec->type;
+			avec->length = tvec->length;
+			avec->radius = tvec->radius;
+			avec->posX = things[i]->posX + things[i]->collision.w/2;
+			avec->posY = things[i]->posY + things[i]->collision.h/2;
+			switch(tvec->ID){
+			case 1:
+				avec->ID = things[i]->ID;
+				break;
+			case 2:
+				avec->ID = (things[i]->ID % 2) + 1;
+				break;
+			default:
+				avec->ID = 0;
+				break;
+			}
+			addAttractor(avec);
+			avec = NULL;
+			tvec = NULL;
 		}
 	}
 }
@@ -842,4 +878,25 @@ void interface::cullThing(int q)
 	for(int i = q; i < thingComplexity - 1; i++)
 		things[i] = things[i+1];
 	thingComplexity--;
+}
+
+void interface::addAttractor(attractor *v)
+{
+	int i;
+	attractor ** temp;
+	temp = new attractor*[attractorComplexity+1];
+	for(i = 0; i < attractorComplexity; i++)
+		temp[i] = globals[i];
+	temp[i] = v;
+	if(attractorComplexity > 0) delete [] globals;
+	globals = temp;
+	attractorComplexity++;
+}
+
+void interface::cullAttractor(int q)
+{
+	delete globals[q];
+	for(int i = q; i < attractorComplexity - 1; i++)
+		globals[i] = globals[i+1];
+	attractorComplexity--;
 }

@@ -247,7 +247,8 @@ void instance::combineDelta()
 void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;
-	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
+	resultant.x = p->x*facing; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
+	if(!pick()->aerial) resultant.y = 0;
 	switch(p->type){
 	case 0:
 		addVector(resultant);

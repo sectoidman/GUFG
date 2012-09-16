@@ -230,8 +230,9 @@ bool action::setParameter(char * buffer)
 		distortion = new attractor;
 		token = strtok(NULL, "\t:- \n");
 		distortSpawn = atoi(token);
-		token = strtok(NULL, "\t: \n");
+		token = strtok(NULL, "\t:- \n");
 		distortion->length = atoi(token);
+		distortion->length -= distortSpawn;
 		token = strtok(NULL, "\t: \n");
 		distortion->x = atoi(token);
 		token = strtok(NULL, "\t: \n");
