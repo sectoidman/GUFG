@@ -244,6 +244,19 @@ void instance::combineDelta()
 	updateRects();
 }
 
+void instance::enforceAttractor(attractor* p)
+{
+	SDL_Rect resultant;
+	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
+	switch(p->type){
+	case 0:
+		addVector(resultant);
+		break;
+	default:
+		break;
+	}
+}
+
 void instance::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;

@@ -74,6 +74,7 @@ public:
 
 	void land();
 	void enforceGravity(int, int);
+	void enforceAttractor(attractor*);
 	void drawMeters(int, float);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void roundInit();
