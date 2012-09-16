@@ -323,14 +323,12 @@ void player::checkCorners(int floor, int left, int right)
 		} else {
 			if(pick()->aerial == 1){
 				land();
-//				printf("P%i landed!\n", ID);
 				updateRects();
-				hOffset = posY - (collision.y);
 				deltaX = 0;
 			}
 			deltaY = 0;
 		}
-		posY = floor - hOffset;
+		posY = floor - cMove->collision[currentFrame].y;
 	}
 	updateRects();
 
