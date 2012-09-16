@@ -69,6 +69,8 @@ public:
 	int grav;		//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
+	Mix_Music *menuMusic;
+	Mix_Music *matchMusic;
 	attractor ** globals;
 	int attractorComplexity;
 

@@ -199,6 +199,7 @@ void interface::writeConfig(int ID)
 void interface::matchInit()
 {
 	SDL_Event event;
+	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
 	select[0] = 0;
 	select[1] = 0;
 	p[0]->rounds = 0;
@@ -206,6 +207,9 @@ void interface::matchInit()
 	p[0]->secondInstance = 0;
 	p[1]->secondInstance = 0;
 	background = aux::load_texture("Misc/BG1.png");
+	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
+	Mix_VolumeMusic(100);
+	Mix_PlayMusic(menuMusic,-1);
 	q = 0;
 	printf("Please select a character:\n");
 	while (SDL_PollEvent(&event));
@@ -262,6 +266,10 @@ void interface::roundInit()
 /*Pretty simple timer modifier*/
 void interface::runTimer()
 {
+	if(p[0]->rounds == 0 && p[1]->rounds == 0 && timer == 99 * 60 + 2){
+		Mix_VolumeMusic(100);
+		Mix_PlayMusic(matchMusic,-1);
+	}
 	int plus;
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
@@ -289,6 +297,8 @@ void interface::runTimer()
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
 				delete p[0]->pick();
 				delete p[1]->pick();
+				Mix_HaltMusic();
+				Mix_FreeMusic(matchMusic);
 				matchInit();
 			}
 			else roundInit();
@@ -542,6 +552,7 @@ void interface::cSelectMenu()
 		assert(screenInit() != false);
 	}
 	char base[2][40];
+	char buffer[200];
 
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
@@ -623,6 +634,10 @@ void interface::cSelectMenu()
 	if(select[0] && select[1]){
 		p[0]->characterSelect(selection[0]);
 		p[1]->characterSelect(selection[1]);
+		sprintf(buffer, "Misc/%i.ogg", selection[1]);
+		matchMusic = Mix_LoadMUS(buffer);
+		Mix_HaltMusic();
+
 		if(selection[0] == selection[1]) p[1]->secondInstance = true;
 		roundInit();
 	}
