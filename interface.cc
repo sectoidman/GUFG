@@ -224,7 +224,7 @@ void interface::roundInit()
 		addThing(p[i]);
 	thingComplexity = 2;
 	bg.x = 800;
-	bg.y = 0;
+	bg.y = -900;
 
 	for(int i = 0; i < 2; i++){
 		p[i]->roundInit();

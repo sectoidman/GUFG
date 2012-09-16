@@ -277,7 +277,7 @@ void player::enforceGravity(int grav, int floor)
 		pick()->aerial = 1;
 	}
 	else if(pick()->aerial && !freeze){ 
-		if(hover > 0 && deltaY + 3 > 0) g.y = -deltaY;
+		if(hover > 0 && deltaY - 6 < 0) g.y = -deltaY;
 		addVector(g);
 	}
 }
