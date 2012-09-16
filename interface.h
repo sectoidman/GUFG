@@ -69,7 +69,7 @@ public:
 	int grav;		//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
-	attractor ** vectors;
+	attractor ** globals;
 	int attractorComplexity;
 
 //Variables for cSelectMenu 
