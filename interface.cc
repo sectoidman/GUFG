@@ -17,6 +17,7 @@ interface::interface()
 {
 	char buffer[50];
 	numChars = 2;
+	shortcut = false;
 	std::ifstream read;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
@@ -26,6 +27,9 @@ interface::interface()
 	bg.h = 1800;
 	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
+
+	select[0] = 0;
+	select[1] = 0;
 
 	read.open("Misc/.res.conf");
 	if(read.fail()){ 
@@ -86,6 +90,7 @@ void interface::loadMisc()
 		glyph[i] = aux::load_texture(buffer);
 	}
 	selectScreen = aux::load_texture("Misc/Select.png");
+	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
 }
 
 bool interface::screenInit()
@@ -200,14 +205,10 @@ void interface::matchInit()
 {
 	SDL_Event event;
 	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
-	select[0] = 0;
-	select[1] = 0;
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	p[0]->secondInstance = 0;
 	p[1]->secondInstance = 0;
-	background = aux::load_texture("Misc/BG1.png");
-	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
 	Mix_VolumeMusic(100);
 	Mix_PlayMusic(menuMusic,-1);
 	q = 0;
@@ -297,6 +298,8 @@ void interface::runTimer()
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
 				delete p[0]->pick();
 				delete p[1]->pick();
+				select[0] = 0;
+				select[1] = 0;
 				Mix_HaltMusic();
 				Mix_FreeMusic(matchMusic);
 				matchInit();
@@ -634,11 +637,16 @@ void interface::cSelectMenu()
 	if(select[0] && select[1]){
 		p[0]->characterSelect(selection[0]);
 		p[1]->characterSelect(selection[1]);
+
+		if(selection[0] == selection[1]) p[1]->secondInstance = true;
+
+		sprintf(buffer, "Misc/BG%i.png", selection[0]);
+		background = aux::load_texture(buffer);
+
 		sprintf(buffer, "Misc/%i.ogg", selection[1]);
 		matchMusic = Mix_LoadMUS(buffer);
 		Mix_HaltMusic();
 
-		if(selection[0] == selection[1]) p[1]->secondInstance = true;
 		roundInit();
 	}
 }
@@ -646,14 +654,19 @@ void interface::cSelectMenu()
 void interface::mainMenu(int ID)
 {
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	char buffer[200];
 	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
-	drawGlyph("Key Config", 20 + 1260*ID, 300, 390, 40, 2*ID);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 370, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 430, 40, 2*ID);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 470, 40, 2*ID);
+	if(shortcut) sprintf(buffer, "Rematch");
+	else sprintf(buffer, "Reselect");
+	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 490, 40, 2*ID);
 	if(sAxis[ID][0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
@@ -661,8 +674,8 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 3) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 3;
+	if(menu[ID] > 4) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 4;
 	for(int i = 0; i < 5; i++){
 		if(posEdge[ID][i]){
 			switch(menu[ID]){
@@ -675,6 +688,12 @@ void interface::mainMenu(int ID)
 				menu[ID] = 0;
 				break;
 			case 3:
+				if(shortcut) 
+					shortcut = false;
+				else 
+					shortcut = true;
+				break;
+			case 4:
 				gameover = 1;
 				break;
 			}
@@ -698,6 +717,7 @@ interface::~interface()
 	if(select[1]) delete p[1]->pick();
 	delete p[0];
 	delete p[1];
+	if(menuMusic) Mix_FreeMusic(menuMusic);
 	SDL_FreeSurface(screen);
 	SDL_Quit();
 }
