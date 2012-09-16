@@ -100,6 +100,8 @@ void interface::draw()
 		freeze--;
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	if(rMenu != 0) reMenu();
 	SDL_GL_SwapBuffers();
 }
 
