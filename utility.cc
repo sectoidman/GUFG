@@ -13,7 +13,7 @@ bool utility::activate(bool pos[5], bool neg[5], int t, int f, int * resource, S
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	return action::check(p, resource);
+	return check(p, resource);
 }
 
 looping::looping(const char * n)
