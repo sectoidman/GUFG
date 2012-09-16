@@ -261,7 +261,7 @@ void instance::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y + collision.h < floor && pick()->aerial == 0){
+	if(collision.y > floor && pick()->aerial == 0){
 		pick()->aerial = 1;
 	}
 	else if(pick()->aerial && !freeze){ 
@@ -273,7 +273,7 @@ void player::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y + collision.h < floor && pick()->aerial == 0){
+	if(collision.y > floor && pick()->aerial == 0){
 		pick()->aerial = 1;
 	}
 	else if(pick()->aerial && !freeze){ 
@@ -306,7 +306,7 @@ void player::checkCorners(int floor, int left, int right)
 
 	/*Floor, or "Bottom corner"*/
 
-	if (collision.y + collision.h > floor){
+	if (collision.y < floor){
 		if(elasticY){
 			deltaY = -deltaY;
 			elasticY = false;
@@ -330,7 +330,7 @@ void player::checkCorners(int floor, int left, int right)
 			}
 			deltaY = 0;
 		}
-		posY = floor - collision.h + hOffset;
+		posY = floor - hOffset;
 	}
 	updateRects();
 
@@ -343,7 +343,7 @@ void player::checkCorners(int floor, int left, int right)
 		if(elasticX){
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
-		} 
+		}
 		if(collision.x <= 50){ 
 			if(facing == 1) lCorner = 1;
 			if (stick) {

@@ -21,16 +21,16 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, background);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(-bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h + bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(-bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.h + bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.y)*scalingFactor, 0.f);
 	glEnd();
 
 	if(timer / 60 > 99) sprintf(buffer, "99");
@@ -274,28 +274,28 @@ void action::draw(int facing, int x, int y, int f, float scalingFactor)
 		glBegin(GL_QUADS);
 		if(facing == 1){
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
-
-			glTexCoord2i(1, 1);
 			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 
+			glTexCoord2i(1, 1);
+			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 		} else {
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
-
-			glTexCoord2i(1, 1);
 			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
 
+			glTexCoord2i(1, 1);
+			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 		}
 		glEnd();
 	}

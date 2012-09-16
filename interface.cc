@@ -24,7 +24,7 @@ interface::interface()
 	screen = NULL;
 	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 1800;
-	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
+	floor = 50; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
 
 	read.open("Misc/.res.conf");
@@ -224,11 +224,11 @@ void interface::roundInit()
 		addThing(p[i]);
 	thingComplexity = 2;
 	bg.x = 800;
-	bg.y = 900;
+	bg.y = 0;
 
 	for(int i = 0; i < 2; i++){
 		p[i]->roundInit();
-		p[i]->posY = floor - p[i]->cMove->collision[0].h;
+		p[i]->posY = floor;
 	}
 	/*Initialize input containers*/
 	for(int i = 0; i < 4; i++) 
@@ -247,7 +247,7 @@ void interface::roundInit()
 	combo[1] = 0;
 	damage[0] = 0;
 	damage[1] = 0;
-	grav = 6;
+	grav = -6;
 	timer = 60 * 101;
 	endTimer = 60 * 5;
 //	if(p[0]->rounds + p[1]->rounds < 1) timer += 60 * 6;
