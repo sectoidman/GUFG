@@ -302,7 +302,6 @@ void player::checkCorners(int floor, int left, int right)
 	even though we're *checking* collision, we're still *moving* spr*/
 	int lOffset = posX - collision.x;
 	int rOffset = posX - (collision.x + collision.w);
-	int hOffset = posY - (collision.y);
 
 	/*Floor, or "Bottom corner"*/
 
