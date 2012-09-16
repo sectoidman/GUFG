@@ -37,6 +37,7 @@ public:
 	virtual void getMove(bool*, bool*, SDL_Rect &, bool);
 	virtual int takeHit(int, hStat&);
 	virtual void enforceGravity(int, int);
+	void enforceAttractor(attractor*);
 	virtual void invertVectors(int);
 	virtual void addVector(SDL_Rect&);
 	virtual void removeVector(int);
@@ -74,7 +75,6 @@ public:
 
 	void land();
 	void enforceGravity(int, int);
-	void enforceAttractor(attractor*);
 	void drawMeters(int, float);
 	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
 	void roundInit();
