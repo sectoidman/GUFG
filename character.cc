@@ -85,7 +85,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
 
 	if(t == NULL && cMove->window(f)){
-		if(cMove->attempt->check(p)) t = cMove->attempt;
+		if(cMove->attempt->check(p, meter)) t = cMove->attempt;
 	}
 
 	if(t != NULL){
@@ -115,7 +115,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 		cMove = bMove;
 		if(!dryrun) bMove = NULL;
 	} else if (sMove != NULL && freeze <= 0) {
-		if(sMove->check(p) && sMove->cancel(cMove, cFlag, hFlag)){
+		if(sMove->check(p, meter) && sMove->cancel(cMove, cFlag, hFlag)){
 			cMove = sMove;
 			if(!dryrun){
 				sMove->execute(cMove, meter);

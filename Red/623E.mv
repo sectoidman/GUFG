@@ -6,6 +6,7 @@ SuperFreeze: 7 - 18
 Check: 257
 State: 0 : 0 
 Damage: 60
+Chip: 5
 Stun: 15
 Untech: 15
 Push: 50

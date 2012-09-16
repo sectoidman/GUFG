@@ -31,6 +31,7 @@ action::~action()
 	if(delta) delete [] delta;
 	if(state) delete [] state;
 	if(gain) delete [] gain;
+	if(distortion) delete distortion;
 	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
 	if(stats) delete [] stats;
@@ -42,6 +43,8 @@ void action::zero()
 {
 	attemptStart = 0;
 	attemptEnd = 0;
+	xRequisite = 0;
+	yRequisite = 0;
 	stop = 0;
 	hits = 0;
 	throwinvuln = 0;
@@ -56,6 +59,8 @@ void action::zero()
 	dies = 0;
 	fch = 0;
 	armorCounter = 0;
+	distortSpawn = -1;
+	distortion = NULL;
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
@@ -184,6 +189,13 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		activation = atoi(token);
 		return 1;
+	} else if(!strcmp("Proximity", token)){
+		token = strtok(NULL, "\t: \n");
+		xRequisite = atoi(token); 
+
+		token = strtok(NULL, "\t: \n");
+		yRequisite = atoi(token); 
+		return 1;
 	} else if (!strcmp("Counterhit", token)) {
 		parseProperties(savedBuffer, 1);
 		return 1;
@@ -213,6 +225,26 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		tempRiposte = new char[strlen(token)+1];
 		strcpy(tempRiposte, token);
+		return 1;
+	} else if (!strcmp("Distort", token)) {
+		distortion = new attractor;
+		token = strtok(NULL, "\t:- \n");
+		distortSpawn = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->length = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->x = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->y = atoi(token);
+		return 1;
+	} else if (!strcmp("AttractorType", token)) {
+		if(!distortion) return 1;
+		token = strtok(NULL, "\t: \n");
+		distortion->type = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->radius = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->ID = atoi(token);
 		return 1;
 	} else if (!strcmp("Next", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -462,7 +494,7 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool action::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
@@ -471,12 +503,14 @@ bool action::check(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_R
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	if(cost > resource[0]) return 0;
-	return check(p);
+	return check(p, resource);
 }
 
-bool action::check(SDL_Rect &p)
+bool action::check(SDL_Rect &p, int resource[])
 {
+	if(cost > resource[0]) return 0;
+	if(xRequisite > 0 && p.w > xRequisite) return 0;
+	if(yRequisite > 0 && p.h > yRequisite) return 0;
 	return 1;
 }
 

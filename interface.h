@@ -43,6 +43,8 @@ public:
 	void resolveSummons();
 	void addThing(instance*);
 	void cullThing(int);
+	void addAttractor(attractor*);
+	void cullAttractor(int);
 	void writeImage(const char*, int, action*);
 
 	player * p[2];
@@ -57,7 +59,6 @@ public:
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	int grav;		//Gravitational constant. 
 	bool fullscreen;	//For use with later
 	bool initd:1;
 	int combo[2];
@@ -65,8 +66,11 @@ public:
 	int numRounds;
 	bool gameover;
 	float scalingFactor, sf;
+	int grav;		//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
+	attractor ** vectors;
+	int attractorComplexity;
 
 //Variables for cSelectMenu 
 	int numChars;

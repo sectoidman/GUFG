@@ -6,6 +6,7 @@ Check: 2048
 State: 256 : 8576
 HitAllows: 4096
 Damage: 45
+Chip: 8
 Stun: 19
 Untech: 19
 Push: 10

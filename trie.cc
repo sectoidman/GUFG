@@ -76,7 +76,7 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool
 	if(occupants != 0){
 		for(int k = 0; k < occupants; k++){
 			if(fish[k] != NULL){
-				if(fish[k]->check(pos, neg, i, f, r, p) == 1){
+				if(fish[k]->activate(pos, neg, i, f, r, p) == 1){
 					if(fish[k]->cancel(c, cFlag, hFlag)){
 						return fish[k];
 					}
