@@ -381,7 +381,6 @@ void player::checkCorners(int floor, int left, int right)
 
 void player::land()
 {
-	printf("land\n");
 	for(int i = 0; i < momentumComplexity; i++){
 		if(momentum[i].y > 0) removeVector(i);
 	}
@@ -394,7 +393,6 @@ void instance::step()
 	if(posX > 3300 || posX < -100) dead = true;
 	pick()->step(cMove, currentFrame, freeze);
 
-	if(ID == 2 && deltaY != 0) printf("%i %i %i %i\n", posX, posY, deltaX, deltaY);
 	if(cMove && currentFrame >= cMove->frames){
 		cMove = cMove->next;
 		currentFrame = 0;

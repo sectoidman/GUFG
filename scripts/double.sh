@@ -1,16 +1,14 @@
 #!/bin/bash
 awk '{
-	gain = match($0, /Damage/)
+	gain = match($0, /\$C/)
 	if(gain){
-		print $1, $2+$2/2
-		if($3) print " " $3, $4+$4/2
-		if($5) print " " $5, $6+$6/2
-		if($7) print " " $7, $8+$8/2
-		if($9) print " " $9, $10+$10/2
-		if($11) print " " $11, $12+$12/2
-		if($13) print " " $13, $14+$14/2
+		print $1"\t"$2, $3*0, $4, $5
 	} else {
-		print $0
+		r = match($0, /\$R/)
+		if(r){
+			print $1"\t"$2, $3*0, $4*0, $5*0
+		}
+		else print $0
 	}
 }' $1 > $1.dbl
 
