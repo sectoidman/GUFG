@@ -233,7 +233,6 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t:- \n");
 		distortion->length = atoi(token);
 		distortion->length -= distortSpawn;
-		printf("%i - %i\n", distortSpawn, distortion->length);
 		token = strtok(NULL, "\t: \n");
 		distortion->x = atoi(token);
 		token = strtok(NULL, "\t: \n");
