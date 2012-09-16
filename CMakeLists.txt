@@ -2,8 +2,7 @@
 #
 # CMake build file, cobbled together from past experience and the SDL wiki
 
-
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
 
@@ -32,12 +31,16 @@ set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy 
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
+find_package (SDL_sound REQUIRED)
 find_package (SDL_image REQUIRED)
 find_package (OpenGL REQUIRED)
+find_package (SDL_mixer REQUIRED)
 link_libraries (
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}
+	${SDLSOUND_LIBRARY}
+	${SDLMIXER_LIBRARY}
 	SDLmain # not included in SDL_LIBRARY variable
 )
 

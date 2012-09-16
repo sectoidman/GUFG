@@ -32,6 +32,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void mainMenu(int);
+	void reMenu();
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
@@ -54,6 +55,7 @@ public:
 	bool select[2];
 	int selection[2];
 	int menu[2];
+	int rMenu;
 	SDL_Surface *screen;
 	GLuint glyph[91];
 	GLuint background;
@@ -61,6 +63,7 @@ public:
 	SDL_Rect prox;
 	bool fullscreen;	//For use with later
 	bool initd:1;
+	bool shortcut:1;
 	int combo[2];
 	int damage[2];
 	int numRounds;
@@ -69,6 +72,8 @@ public:
 	int grav;		//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
+	Mix_Music *menuMusic;
+	Mix_Music *matchMusic;
 	attractor ** globals;
 	int attractorComplexity;
 
