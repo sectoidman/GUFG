@@ -6,7 +6,6 @@
 #include <SDL/SDL.h>
 #include <string>
 #include <SDL/SDL_opengl.h>
-#include <SDL/SDL_sound.h>
 #include <SDL/SDL_mixer.h>
 #include <stdio.h>
 #include "compat.h"
