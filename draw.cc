@@ -207,7 +207,7 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
 			break;
 		}
-		glRectf((GLfloat)(posX - 10 * facing - x)*scalingFactor, (GLfloat)(posY - y)*scalingFactor, (GLfloat)(posX - 50*facing - x)*scalingFactor, (GLfloat)(posY + 40 - y)*scalingFactor);
+		glRectf((GLfloat)(posX - 10 * facing - x)*scalingFactor, (GLfloat)(collision.y + collision.h - y)*scalingFactor, (GLfloat)(posX - 50*facing - x)*scalingFactor, (GLfloat)(collision.y + collision.h + 40 - y)*scalingFactor);
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}

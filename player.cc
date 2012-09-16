@@ -381,8 +381,9 @@ void player::checkCorners(int floor, int left, int right)
 
 void player::land()
 {
+	printf("land\n");
 	for(int i = 0; i < momentumComplexity; i++){
-		if(momentum[i].y < 0) removeVector(i);
+		if(momentum[i].y > 0) removeVector(i);
 	}
 	pick()->land(cMove, currentFrame, connectFlag, hitFlag);
 }
@@ -393,6 +394,7 @@ void instance::step()
 	if(posX > 3300 || posX < -100) dead = true;
 	pick()->step(cMove, currentFrame, freeze);
 
+	if(ID == 2 && deltaY != 0) printf("%i %i %i %i\n", posX, posY, deltaX, deltaY);
 	if(cMove && currentFrame >= cMove->frames){
 		cMove = cMove->next;
 		currentFrame = 0;
@@ -618,7 +620,7 @@ int player::takeHit(int combo, hStat & s)
 	} else {
 		particleLife = 8;
 		deltaX = 0; deltaY = 0; momentumComplexity = 0;
-		if(pick()->aerial) v.y = -s.lift;
+		if(pick()->aerial) v.y = s.lift;
 		else v.y = 0;
 		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
