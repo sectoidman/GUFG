@@ -64,6 +64,7 @@ void action::zero()
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
+	soundClip = NULL;
 	next = NULL;
 	attempt = NULL;
 	riposte = NULL;
@@ -170,6 +171,8 @@ void action::build(const char * n)
 			sprite[i] = aux::surface_to_texture(temp);
 		}
 	}
+	sprintf(fname, "%s.ogg", n);
+	soundClip = Mix_LoadWAV(fname);
 }
 
 bool action::setParameter(char * buffer)
@@ -634,6 +637,7 @@ action * action::blockSuccess()
 
 void action::execute(action * last, int *& resource)
 {
+	Mix_PlayChannel(1, soundClip, 0);
 	armorCounter = 0;
 	resource[0] -= cost;
 }

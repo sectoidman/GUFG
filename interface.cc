@@ -97,7 +97,7 @@ bool interface::screenInit()
 {
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
-	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
+	Mix_OpenAudio(44100, AUDIO_S16, 2, 2048);
 	/*WM stuff*/
 	int h, w;
 	if(scalingFactor == 1.0){ 

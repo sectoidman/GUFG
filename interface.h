@@ -74,6 +74,7 @@ public:
 	int thingComplexity;
 	Mix_Music *menuMusic;
 	Mix_Music *matchMusic;
+
 	attractor ** globals;
 	int attractorComplexity;
 
