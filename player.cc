@@ -449,6 +449,7 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 	action * dummyMove, *save;
 	dummyMove = cMove;
 	save = cMove;
+	int n = currentFrame;
 	pick()->prepHooks(freeze, dummyMove, bMove, sMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(dummyMove){
 		if(dummyMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
@@ -456,7 +457,7 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 	}
 	if(!dryrun){ 
 		cMove = dummyMove;
-		if(cMove != save) cMove->playSound(ID);
+		if(currentFrame != n || cMove != save) cMove->playSound(ID);
 	}
 	else cMove = save;
 }
