@@ -57,6 +57,7 @@ public:
 	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
+	virtual void playSound(int);
 	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.

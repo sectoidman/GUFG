@@ -454,7 +454,10 @@ void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
 		if(dummyMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) throwInvuln = 6;
 	}
-	if(!dryrun) cMove = dummyMove;
+	if(!dryrun){ 
+		cMove = dummyMove;
+		if(cMove != save) cMove->playSound(ID);
+	}
 	else cMove = save;
 }
 

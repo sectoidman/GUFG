@@ -635,9 +635,13 @@ action * action::blockSuccess()
 	else return this;
 }
 
+void action::playSound(int channel)
+{
+	Mix_PlayChannel(channel, soundClip, 0);
+}
+
 void action::execute(action * last, int *& resource)
 {
-	Mix_PlayChannel(1, soundClip, 0);
 	armorCounter = 0;
 	resource[0] -= cost;
 }
