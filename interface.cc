@@ -533,6 +533,10 @@ void interface::readInput()
 				case SDLK_ESCAPE:
 					gameover = 1;
 					break;
+				case SDLK_F9:
+					writeConfig(0);
+					writeConfig(1);
+					break;
 				case SDLK_F10:
 					if(scalingFactor == 1.0) sf = 0.5;
 					else sf = 1.0;
