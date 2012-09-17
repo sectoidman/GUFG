@@ -169,9 +169,15 @@ SDL_Event player::writeConfig(int i)
 		if (SDL_PollEvent(&temp)) {
 			switch (temp.type) {
 			case SDL_JOYAXISMOTION:
-				if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
-					input[i] = temp;
-					configFlag = 1;
+				if(temp.jaxis.axis < 6){
+					for(int j = 0; j < 4; j++){
+						if(temp.jaxis.value == 0 || abs(temp.jaxis.value) < abs(input[j].jaxis.value - 100))
+							break;
+						else {
+							input[i] = temp;
+							configFlag = 1;
+						}
+					}
 				}
 				break;
 			case SDL_JOYBUTTONDOWN:
@@ -524,7 +530,7 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 			if(input[i].type == SDL_JOYAXISMOTION){
 				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
 					sAxis[i] = 1;
-				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == 0)
+				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && abs(event.jaxis.value) < abs(input[i].jaxis.value - 100))
 					sAxis[i] = 0;
 			}
 		}
