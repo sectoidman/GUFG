@@ -394,16 +394,16 @@ void interface::writeImage(const char * movename, int frame, action * move)
 
 void action::drawBoxen(int frame, int x, int y){
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(collision[frame].y + collision[frame].h - y));
+	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(-collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(-collision[frame].y - collision[frame].h - y));
 	for(int i = 0; i < regComplexity[frame]; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(hitreg[frame][i].y + hitreg[frame][i].h - y));
+		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(-hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(-hitreg[frame][i].y - hitreg[frame][i].h - y));
 	}
 	for(int i = 0; i < hitComplexity[frame]; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(hitbox[frame][i].y + hitbox[frame][i].h - y));
+		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(-hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(-hitbox[frame][i].y - hitbox[frame][i].h - y));
 	}
 	glFlush();
 }

@@ -47,6 +47,7 @@ if (WIN32)
 	set (CMAKE_EXE_LINKER_FLAGS "-static")
 
 	find_package (PNG REQUIRED)
+	find_package (OGG REQUIRED)
 	find_package (ZLIB REQUIRED)
 endif (WIN32)
 
