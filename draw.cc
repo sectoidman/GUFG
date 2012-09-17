@@ -209,7 +209,7 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
 			break;
 		}
-		glRectf((GLfloat)(posX - 10 * facing - x)*scalingFactor, (GLfloat)(collision.y + collision.h - y)*scalingFactor, (GLfloat)(posX - 50*facing - x)*scalingFactor, (GLfloat)(collision.y + collision.h + 40 - y)*scalingFactor);
+		glRectf((GLfloat)(posX - 10*facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - y)*scalingFactor, (GLfloat)(posX - 50 * facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - 40 - y)*scalingFactor);
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
@@ -276,25 +276,25 @@ void action::draw(int facing, int x, int y, int f, float scalingFactor)
 		glBegin(GL_QUADS);
 		if(facing == 1){
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f] * 2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y - height[f] * 2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x + width[f])*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x + width[f])*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
 			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 		} else {
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f] * 2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y - height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x - width[f])*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x - width[f])*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
 			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
