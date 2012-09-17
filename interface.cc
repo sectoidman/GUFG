@@ -319,7 +319,7 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
-	else if(rMenu) draw();
+	else if(rMenu != 0) draw();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -745,6 +745,7 @@ void interface::reMenu()
 				switch(rMenu){
 				case 1:
 					Mix_HaltMusic();
+					rMenu = 0;
 					matchInit();
 					break;
 				case 2:
@@ -762,6 +763,7 @@ void interface::reMenu()
 					gameover = 1;
 					break;
 				}
+				j = 2;
 			}
 		}
 	}
