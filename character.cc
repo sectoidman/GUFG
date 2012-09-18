@@ -533,8 +533,10 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 		if(meter[0] + 6 < 300) meter[0] += 6;
 		else meter[0] = 300;
 	}
-	if(meter[0] + 1 < 300) meter[0] += 1;
-	else meter[0] = 300;
+	if(p > -2){
+		if(meter[0] + 1 < 300) meter[0] += 1;
+		else meter[0] = 300;
+	}
 	return freeze;
 }
 

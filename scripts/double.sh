@@ -1,13 +1,9 @@
 #!/bin/bash
 awk '{
-	gain = match($0, /\$C/)
+	gain = match($0, /Gain/)
 	if(gain){
-		print $1"\t"$2, $3*0, $4, $5
+		print $1, $2, $3*0
 	} else {
-		r = match($0, /\$R/)
-		if(r){
-			print $1"\t"$2, $3*0, $4*0, $5*0
-		}
 		else print $0
 	}
 }' $1 > $1.dbl
