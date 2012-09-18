@@ -690,9 +690,11 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 		armorCounter++;
 		return 1;
 	} else {
-		f = 0;
-		c = 0;
-		h = 0;
+		if(s.stun != 0){
+			f = 0;
+			c = 0;
+			h = 0;
+		}
 		return 1;
 	}
 }

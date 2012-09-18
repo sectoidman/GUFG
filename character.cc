@@ -501,19 +501,21 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 	int freeze = s.stun/4 + 10;
 	p = cMove->takeHit(s, b, f, c, h);
 	if(p == 1) health -= s.damage;
-	else if(p > -2){ 
+	else if(p > -2) { 
 		health -= s.chip;
-		if(p == -1 && health <= 0) health = 1;
+		if(p == -1 && health <= 0){ 
+			health = 1;
+		}
 	}
 	if(health <= 0){ 
 		health = 0;
 		dead = true;
 	}
-	if(dead){
+	if(dead == true){
 		cMove = die;
 	} else if (p == 1){
 		if(s.launch) aerial = 1;
-		if(s.stun > 0){
+		if(s.stun != 0){
 			f = 0;
 			if(aerial){
 				untech->init(s.stun+s.untech);
@@ -526,7 +528,7 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 				reel->init(s.stun);
 				cMove = reel;
 			}
-		}
+		} 
 	} else if (p == -1) {
 		if(meter[0] + 6 < 300) meter[0] += 6;
 		else meter[0] = 300;

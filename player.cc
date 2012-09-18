@@ -635,6 +635,12 @@ int player::takeHit(int combo, hStat & s)
 		if(pick()->aerial && s.stick) stick = true;
 		else stick = false;
 	}
+	if(cMove == pick()->die){ 
+		bMove = NULL;
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 	updateRects();
 	if(s.ghostHit && combo < 1) return 0;
 	else if(particleType == 1) return particleType;
