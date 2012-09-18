@@ -4,7 +4,7 @@ awk '{
 	if(gain){
 		print $1, $2, $3*0
 	} else {
-		else print $0
+		print $0
 	}
 }' $1 > $1.dbl
 
