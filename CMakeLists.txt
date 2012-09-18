@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeModules/)
 
 project (gufg)
 
@@ -47,7 +47,7 @@ if (WIN32)
 	set (CMAKE_EXE_LINKER_FLAGS "-static")
 
 	find_package (PNG REQUIRED)
-	find_package (OGG REQUIRED)
+	find_package (OggVorbis REQUIRED)
 	find_package (ZLIB REQUIRED)
 endif (WIN32)
 
@@ -100,9 +100,10 @@ LIST(GET SDL_LIBRARY 1 ACTUAL_SDL_LIBRARY)
 
 INSTALL(FILES ${ACTUAL_SDL_LIBRARY} 
 		${SDLIMAGE_LIBRARY} 
-		${PNG_LIBRARY} 
+		${PNG_LIBRARY}
 		${ZLIB_LIBRARY}
 		${SDLMIXER_LIBRARY}
+		${VORBIS_LIBRARY}
 	DESTINATION .
 	COMPONENT gufg
 	DESTINATION .
