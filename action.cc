@@ -427,11 +427,8 @@ void action::parseProperties(char * buffer, bool counter)
 	char * token = strtok(buffer, " \t\n:");
 	token = strtok(NULL, "\n");
 	/*Debug*/
-//	printf("%s properties: %s\n", name, buffer);
 	int ch = 0;
-//	printf("%s: ", name);
 	for(unsigned int i = 0; i < strlen(token); i++){
-//		printf("%c ", token[i]);
 		switch(token[i]){
 		case '^':
 			if(counter) CHStats[ch].launch = 1;
@@ -487,7 +484,6 @@ void action::parseProperties(char * buffer, bool counter)
 			break;
 		}
 	}
-//	printf("\n");
 }
 
 bool action::window(int f)
@@ -588,7 +584,6 @@ bool action::cancel(action * x, int& c, int &h)
 	if(x == NULL) return 1;
 	else{
 		if(allowed.i & r.i){
-//			if(r.i > 1) printf("%i allows %i\n", r.i, allowed.i);
 			if(x == this){
 				if(c == 0) return 0;
 				else if(allowed.b.chain1) return 1;
@@ -656,7 +651,6 @@ void action::feed(action * c, int code, int i)
 	case 2:
 		onConnect[i] = c;
 		if(tempOnConnect[i]) delete [] tempOnConnect[i];
-//		printf("%s-%i: %s\n", name, i, onConnect[i]->name);
 		break;
 	case 3:
 		attempt = c;

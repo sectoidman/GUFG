@@ -421,38 +421,78 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 	}
 }
 
-bool character::checkBlocking(action *& cMove, int input, int &connectFlag, int &hitFlag)
+int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int &hitFlag)
 {
 	int st;
+	bool success = false;
+	int ret = -1;
 	st = cMove->arbitraryPoll(1, 0);
-	switch(input){
+	switch(input[0]){
+	case 3:
+	case 6:
+	case 9:
+		for(int i = 1; i < 7; i++){
+			if(input[i] % 3 == 1){
+				for(int j = i+1; j < 8; j++){
+					if(input[j] % 3 == 2){
+						if(aerial){
+							if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
+								airBlock->init(st);
+								cMove = airBlock;
+							}
+						} else {
+							if(input[0] > 3){ 
+								if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
+									standBlock->init(st);
+									cMove = standBlock;
+								}
+							} else {
+								if(crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
+									crouchBlock->init(st);
+									cMove = crouchBlock;
+								}
+							}
+							ret = 2;
+							j = 10;
+						}
+					}
+				}
+				i = 9;
+			}
+		}
+		break;
 	case 7:
 	case 4:
-		if(aerial && airBlock->cancel(cMove, connectFlag, hitFlag)) {
-			airBlock->init(st);
-			cMove = airBlock;
-		}
-		else if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
-			standBlock->init(st);
-			cMove = standBlock;
-		}
-		return true;
-		break;
 	case 1:
-		if(aerial && airBlock->cancel(cMove, connectFlag, hitFlag)) {
-			airBlock->init(st);
-			cMove = airBlock;
+		if(aerial){
+			if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
+				airBlock->init(st);
+				cMove = airBlock;
+			}
+		} else { 
+			if(input[0] > 3){ 
+				if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
+					standBlock->init(st);
+					cMove = standBlock;
+				}
+			} else {
+				if(crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
+					crouchBlock->init(st);
+					cMove = crouchBlock;
+				}
+			}
 		}
-		else if(crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
-			crouchBlock->init(st);
-			cMove = crouchBlock;
-		}
-		return true;
-		break;
-	default:
-		return false;
+		success = true;
 		break;
 	}
+	if(success){
+		ret = 0;
+		for(int i = 1; i < 7; i++){
+			if(input[i] % 3 != 1)
+			ret = 1;
+		}
+	}
+	return ret;
 }
 
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
@@ -461,8 +501,11 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 	int freeze = s.stun/4 + 10;
 	p = cMove->takeHit(s, b, f, c, h);
 	if(p == 1) health -= s.damage;
-	else if(p > -2) health -= s.chip;
-	if(health < 0){ 
+	else if(p > -2){ 
+		health -= s.chip;
+		if(p == -1 && health <= 0) health = 1;
+	}
+	if(health <= 0){ 
 		health = 0;
 		dead = true;
 	}

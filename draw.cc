@@ -208,11 +208,14 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 		case -1:
 			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
 			break;
+		case -2:
+			glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
+			break;
 		}
 		glRectf((GLfloat)(posX - 10*facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - y)*scalingFactor, (GLfloat)(posX - 50 * facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - 40 - y)*scalingFactor);
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	}
+	} else blockType == 0;
 }
 
 void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalingFactor)

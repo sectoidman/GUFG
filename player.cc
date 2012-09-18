@@ -291,15 +291,8 @@ void player::enforceGravity(int grav, int floor)
 
 void player::checkBlocking()
 {
-	bool block = pick()->checkBlocking(cMove, inputBuffer[0], connectFlag, hitFlag);
+	blockType = -pick()->checkBlocking(cMove, inputBuffer, connectFlag, hitFlag);
 	updateRects();
-	blockType = 0;
-	if(block){
-		for(int i = 1; i < 7; i++){
-			if(inputBuffer[i] % 3 != 1)
-			blockType = 1;
-		}
-	}
 }
 
 void player::checkCorners(int floor, int left, int right)

@@ -24,12 +24,18 @@ action * hitstun::blockSuccess(int st){
 int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
 {
 	if(s.blockMask.i & blockState.i){
-		if(b == 1){ 
+		switch (b){
+		case -2:
+			f = 0;
+			init(s.stun - 2 - s.stun/5);
+			s.push = 0;
+			return -2;
+		case -1:
 			f = 0;
 			init(s.stun - 1  - s.stun/5);
 			s.push = (s.push*4)/5;
 			return -1;
-		} else {
+		case 0:
 			f = 0;
 			init(s.stun - std::max(0, 1 - s.stun/15));
 			return 0;

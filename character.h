@@ -54,7 +54,7 @@ public:
 	virtual void neutralize(action *&);
 	virtual void drawMeters(int, float);
 	virtual void init(action *&);
-	virtual bool checkBlocking(action *&, int, int&, int&);
+	virtual int checkBlocking(action *&, int[], int&, int&);
 	virtual void resetAirOptions();
 	virtual void land(action *&, int &, int &, int &);
 	virtual void sortMove(action *, char*);

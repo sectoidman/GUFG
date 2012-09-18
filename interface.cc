@@ -863,6 +863,7 @@ void interface::resolveHits()
 	bool taken[thingComplexity];
 	int hitBy[thingComplexity];
 	int h;
+	int push[2];
 	for(int i = 0; i < thingComplexity; i++){
 		taken[i] = 0;
 		hit[i] = 0;
@@ -879,6 +880,7 @@ void interface::resolveHits()
 							if(things[i]->acceptTarget(things[h])){
 								connect[i] = 1;
 								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
+								if(i < 2) push[i] = s[i].push;
 								k = things[h]->regComplexity;
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
@@ -902,6 +904,9 @@ void interface::resolveHits()
 		if(taken[i]){
 			h = p[i]->pick()->health;
 			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
+			if(i < 2 && hitBy[i] < 2){
+				if(p[i]->particleType == -2) p[hitBy[i]]->pick()->health -= s[hitBy[i]].chip;
+			}
 			combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
@@ -917,7 +922,8 @@ void interface::resolveHits()
 				if(p[(i+1)%2]->pick()->aerial) residual.x = -2;
 				else {
 					if(combo[i] > 1) residual.x = -2*(abs(combo[i]-1));
-					if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+					if(p[(i+1)%2]->particleType == -2) residual.x -= push[i];
+					else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 						residual.x -= 2;
 						residual.x -= s[i].push/2;
 						residual.x -= abs(combo[i]);
