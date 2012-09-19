@@ -91,6 +91,21 @@ void interface::loadMisc()
 	}
 	selectScreen = aux::load_texture("Misc/Select.png");
 	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
+	announceWinner = new Mix_Chunk*[numChars + 1];
+	for(int i = 0; i < numChars + 1; i++){
+		sprintf(buffer, "Misc/Announcer/Win%i.ogg", i);
+		announceWinner[i] = Mix_LoadWAV(buffer);
+	}
+	announceRound = new Mix_Chunk*[numRounds];
+	for(int i = 0; i < numRounds; i++){
+		sprintf(buffer, "Misc/Announcer/Round%i.ogg", i+1);
+		announceRound[i] = Mix_LoadWAV(buffer);
+	}
+	announceDraw[0] = Mix_LoadWAV("Misc/Announcer/Double.ogg");
+	announceDraw[1] = Mix_LoadWAV("Misc/Announcer/Draw.ogg");
+	announceFight = Mix_LoadWAV("Misc/Announcer/Fight.ogg");
+	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");
+	announceEnd[1] = Mix_LoadWAV("Misc/Announcer/Down.ogg");
 }
 
 bool interface::screenInit()
@@ -391,7 +406,7 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++){
 			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(!p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
+			if(p[i]->cMove != p[i]->pick()->fall && !p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
 				combo[(i+1)%2] = 0;
 				damage[(i+1)%2] = 0;
 				p[i]->elasticX = 0;
