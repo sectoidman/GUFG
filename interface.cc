@@ -96,12 +96,9 @@ void interface::loadMisc()
 		sprintf(buffer, "Misc/Announcer/Win%i.ogg", i);
 		announceWinner[i] = Mix_LoadWAV(buffer);
 	}
-	announceRound = new Mix_Chunk*[numRounds];
-	for(int i = 0; i < numRounds; i++){
-		sprintf(buffer, "Misc/Announcer/Round%i.ogg", i+1);
-		announceRound[i] = Mix_LoadWAV(buffer);
-	}
-	announceDraw[0] = Mix_LoadWAV("Misc/Announcer/Double.ogg");
+	announceRound[0] = Mix_LoadWAV("Misc/Announcer/Round1.ogg");
+	announceRound[1] = Mix_LoadWAV("Misc/Announcer/Round2.ogg");
+	announceRound[2] = Mix_LoadWAV("Misc/Announcer/RoundF.ogg");
 	announceDraw[1] = Mix_LoadWAV("Misc/Announcer/Draw.ogg");
 	announceFight = Mix_LoadWAV("Misc/Announcer/Fight.ogg");
 	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");

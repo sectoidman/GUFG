@@ -75,7 +75,7 @@ public:
 	Mix_Music *menuMusic;
 	Mix_Music *matchMusic;
 	Mix_Chunk **announceWinner;
-	Mix_Chunk **announceRound;
+	Mix_Chunk *announceRound[3];
 	Mix_Chunk *announceDraw[2];
 	Mix_Chunk *announceFight;
 	Mix_Chunk *announceEnd[2];
