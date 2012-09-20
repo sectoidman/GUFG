@@ -52,6 +52,7 @@ public:
 	bool * sAxis[2];	//Initial input buffering.
 	bool * posEdge[2];
 	bool * negEdge[2];
+	int * held[2];
 	bool select[2];
 	int selection[2];
 	int menu[2];

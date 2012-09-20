@@ -7,7 +7,7 @@ public:
 	red(red*);
 	void touch(void*);
 	action * createMove(char*);
-	void drawMeters(int, float);
+	void drawMeters(int, float, int);
 	void tick();
 	void step(action *&, int&, int&);
 	void init(action *&);

@@ -51,6 +51,7 @@ interface::interface()
 		sAxis[i] = new bool[4];
 		posEdge[i] = new bool[6]; 
 		negEdge[i] = new bool[6];
+		held[i] = new int[6];
 		counter[i] = 0;
 		select[i] = 0;
 		selection[i] = 1+i;
@@ -253,22 +254,17 @@ void interface::roundInit()
 		p[i]->posY = floor;
 	}
 	/*Initialize input containers*/
-	for(int i = 0; i < 4; i++) 
-	{
-		sAxis[0][i] = 0;
-		sAxis[1][i] = 0;
-	}
-	for(int i = 0; i < 6; i++){
-		posEdge[0][i] = 0;
-		negEdge[0][i] = 0;
-		posEdge[1][i] = 0;
-		negEdge[1][i] = 0;
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < 6; j++){
+			if(j < 4) sAxis[i][j] = 0;
+			posEdge[i][j] = 0;
+			negEdge[i][j] = 0;
+			held[i][j] = 0;
+		}
+		combo[i] = 0;
+		damage[i] = 0;
 	}
 
-	combo[0] = 0;
-	combo[1] = 0;
-	damage[0] = 0;
-	damage[1] = 0;
 	grav = -6;
 	timer = 60 * 101;
 	endTimer = 60 * 5;

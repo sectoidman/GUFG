@@ -480,6 +480,9 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'C':
 			if(!counter) fch = 1;
 			break;
+		case 'h':
+			if(!counter) hidesMeter = 1;
+			break;
 		default:
 			break;
 		}

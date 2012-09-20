@@ -141,11 +141,14 @@ void player::drawMeters(int n, float scalingFactor)
 		glRectf((GLfloat)(r[i].x)*scalingFactor, (GLfloat)(r[i].y)*scalingFactor, (GLfloat)(r[i].x + r[i].w)*scalingFactor, (GLfloat)(r[i].y + r[i].h)*scalingFactor);
 	}
 	glFlush();
-	pick()->drawMeters(ID, scalingFactor);
+	int h = 0;
+	if(cMove->hidesMeter) 
+		h = cMove->cost;
+	pick()->drawMeters(ID, scalingFactor, h);
 	glFlush();
 }
 
-void character::drawMeters(int ID, float scalingFactor)
+void character::drawMeters(int ID, float scalingFactor, int hidden)
 {
 	SDL_Rect m;
 	SDL_Rect h;
@@ -157,7 +160,7 @@ void character::drawMeters(int ID, float scalingFactor)
 	h.y = 10;
 
 	int R = 0, G = 255, B = 0;
-	if(meter[0] >= 0) m.w = meter[0]*2; else m.w = 1; 
+	if(meter[0] >= 0) m.w = (meter[0]+hidden)*2; else m.w = 0; 
 	if(ID == 1) m.x = 100;
 	else m.x = 900 + (600 - m.w);
 	m.h = 10; m.y = 860;

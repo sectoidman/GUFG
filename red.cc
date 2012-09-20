@@ -36,10 +36,10 @@ void red::step(action *& cMove, int &f, int &freeze)
 	character::step(cMove, f, freeze);
 }
 
-void red::drawMeters(int ID, float scalingFactor)
+void red::drawMeters(int ID, float scalingFactor, int hidden)
 {
 //	int color1, color2;
-	character::drawMeters(ID, scalingFactor);
+	character::drawMeters(ID, scalingFactor, hidden);
 /*	SDL_Rect c1, c2;
 	if(meter[3] >= 0){
 		c1.w = meter[3]; 

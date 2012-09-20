@@ -52,7 +52,7 @@ public:
 	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
 
 	virtual void neutralize(action *&);
-	virtual void drawMeters(int, float);
+	virtual void drawMeters(int, float, int);
 	virtual void init(action *&);
 	virtual int checkBlocking(action *&, int[], int&, int&);
 	virtual void resetAirOptions();
