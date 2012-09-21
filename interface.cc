@@ -261,6 +261,7 @@ void interface::roundInit()
 		}
 		combo[i] = 0;
 		damage[i] = 0;
+		illegit[i] = 0;
 	}
 
 	grav = -6;
@@ -398,10 +399,14 @@ void interface::resolve()
 			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
 			if(p[i]->cMove != p[i]->pick()->fall && !p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
-				combo[(i+1)%2] = 0;
-				damage[(i+1)%2] = 0;
-				p[i]->elasticX = 0;
-				p[i]->elasticY = 0;
+				if(p[i]->cMove == p[i]->pick()->untech) illegit[(i+1)%2] = 1;
+				else{
+					combo[(i+1)%2] = 0;
+					damage[(i+1)%2] = 0;
+					p[i]->elasticX = 0;
+					p[i]->elasticY = 0;
+					illegit[(i+1)%2] = 0;
+				}
 			}
 		}
 

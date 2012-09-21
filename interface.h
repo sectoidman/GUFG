@@ -66,6 +66,7 @@ public:
 	bool shortcut:1;
 	int combo[2];
 	int damage[2];
+	bool illegit[2];
 	int numRounds;
 	bool gameover;
 	float scalingFactor, sf;
