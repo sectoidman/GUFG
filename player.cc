@@ -545,8 +545,10 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *&
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN){
 				negEdge[i-4] = 1;
+				posEdge[i-4] = 0;
+			}
 		}
 		break;
 	case SDL_KEYDOWN:
@@ -565,8 +567,10 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *&
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
+			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN){
 				negEdge[i-4] = 1;
+				posEdge[i-4] = 0;
+			}
 		}
 		break;
 	}

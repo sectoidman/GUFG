@@ -130,6 +130,8 @@ public:
 	//Accepted. Default is 30 (the entire input buffer)
 	int activation;
 
+	int minHold, maxHold;
+
 	action * next;
 	action ** onConnect;
 	action * attempt;
@@ -273,7 +275,10 @@ class mash : virtual public action {
 public:
 	mash() {}
 	mash(const char* n) {build(n); }
+	virtual bool setParameter(char *n);
+	virtual void zero();
 	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	int buttons;
 };
 
 class werf : virtual public action {

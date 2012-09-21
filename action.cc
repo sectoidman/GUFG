@@ -48,6 +48,8 @@ void action::zero()
 	stop = 0;
 	hits = 0;
 	throwinvuln = 0;
+	minHold = 1;
+	maxHold = 1;
 	crouch = 0;
 	armorStart = 0; armorLength = 0;
 	armorHits = 0;
@@ -173,6 +175,12 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		yRequisite = atoi(token); 
 		return 1;
+	} else if (!strcmp("Hold", token)) {
+		token = strtok(NULL, "\t: \n-");
+		minHold = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		maxHold = atoi(token);
 	} else if (!strcmp("Counterhit", token)) {
 		parseProperties(savedBuffer, 1);
 		return 1;
@@ -475,7 +483,7 @@ bool action::activate(int pos[5], bool neg[5], int pattern, int t, int f, int re
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
-			if(!pos[i]) return 0;
+			if(pos[i] != 1) return 0;
 		}
 	}
 	if(t > tolerance) return 0;

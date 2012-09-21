@@ -31,7 +31,7 @@ bool special::activate(int pos[5], bool neg[5], int pattern, int t, int f, int r
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
-			if(!pos[i] && !neg[i]) return 0;
+			if(pos[i] != 1 && !neg[i]) return 0;
 		}
 	}
 	if(t > tolerance) return 0;
@@ -46,20 +46,40 @@ super::super(const char * n)
 
 bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
 {
-	bool go = false;
-	if(t > tolerance) return 0;
-	if(f > activation) return 0;
-	for(int i = 0; i < 5; i++){
-		if(pos[i]) go = true;
+	int go = 0;
+	if(action::activate(pos, neg, pattern, t, f, resource, p)){
+		for(int i = 0; i < 5; i++){
+			if(pos[i] == 1) go++;
+		}
+		if(go >= buttons) return 1;
 	}
-	if(go) return check(p, resource);
-	else return 0;
+	return 0;
 }
 
 int super::arbitraryPoll(int q, int f)
 {
 	if(q == 2 && f == freezeFrame) return freezeLength;
 	else return 0;
+}
+
+void mash::zero()
+{
+	action::zero();
+	buttons = 1;
+}
+
+bool mash::setParameter(char * buffer)
+{
+	char savedBuffer[100];
+	strcpy(savedBuffer, buffer);
+
+	char * token = strtok(buffer, "\t: \n-");
+
+	if(!strcmp("Buttons", token)){
+		token = strtok(NULL, "\t: \n-");
+		buttons = atoi(token); 
+		return 1;
+	} else return action::setParameter(savedBuffer);
 }
 
 bool super::setParameter(char * buffer)
