@@ -41,11 +41,12 @@ void interface::draw()
 	for(int i = 0; i < 2; i++){
 		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(combo[i] > 1){
-			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0f);
+			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0);
 			sprintf(buffer, "%i hits", combo[i]);
 			drawGlyph(buffer, 100+800*i, 600, 400, 75, 0+2*i);
 			sprintf(buffer, "%i damage", damage[i]);
 			drawGlyph(buffer, 100+800*i, 600, 475, 35, 0+2*i);
+			glColor4f(1.0, 1.0, 1.0, 1.0);
 		}
 	}
 
