@@ -15,10 +15,10 @@ negNormal::negNormal(const char * n)
 	build(n);
 }
 
-bool negNormal::activate(int pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool negNormal::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
+		if(pattern & (1 << i)){
 			if(!neg[i]) return 0;
 		}
 	}
@@ -27,10 +27,10 @@ bool negNormal::activate(int pos[5], bool neg[5], int t, int f, int resource[], 
 	return check(p, resource);
 }
 
-bool special::activate(int pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool special::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
+		if(pattern & (1 << i)){
 			if(!pos[i] && !neg[i]) return 0;
 		}
 	}
@@ -44,7 +44,7 @@ super::super(const char * n)
 	build(n);
 }
 
-bool mash::activate(int pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
 {
 	bool go = false;
 	if(t > tolerance) return 0;

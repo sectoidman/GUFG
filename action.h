@@ -58,7 +58,7 @@ public:
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
 	virtual void playSound(int);
-	virtual bool activate(int[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
@@ -117,7 +117,6 @@ public:
 	bool dies:1;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
-	int button[5];
 	char * name;
 	int cost;
 	int * gain;
@@ -181,7 +180,7 @@ class special : virtual public action {
 public:
 	special() {}
 	special(const char*);
-	virtual bool activate(int[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int chip;
 };
 
@@ -189,14 +188,14 @@ class negNormal : virtual public action {
 public:
 	negNormal() {}
 	negNormal(const char *);
-	virtual bool activate(int[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool activate(int[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -274,7 +273,7 @@ class mash : virtual public action {
 public:
 	mash() {}
 	mash(const char* n) {build(n); }
-	virtual bool activate(int[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class werf : virtual public action {

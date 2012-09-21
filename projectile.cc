@@ -15,7 +15,7 @@ void projectile::build(const char* directory, const char* file)
 
 	sprintf(buffer, "%s/die", name);
 	die = new action(buffer);
-	head->insert(die);
+	head->insert(die, 0);
 	avatar::build(directory, file);
 }
 

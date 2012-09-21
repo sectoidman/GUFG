@@ -128,32 +128,6 @@ void action::build(const char * n)
 	}
 	read.close();
 
-	for(int i = 0; i < 5; i++){
-		button[i] = 0;
-	}
-	int r = strlen(n);
-	for(int i = 0; i < r; i++){
-		switch(n[i]){
-		case 'A':
-			button[0] = 1;
-			break;
-		case 'B':
-			button[1] = 1;
-			break;
-		case 'C':
-			button[2] = 1;
-			break;
-		case 'D':
-			button[3] = 1;
-			break;
-		case 'E':
-			button[4] = 1;
-			break;
-		default:
-			break;
-		}
-	}
-
 	SDL_Surface *temp;
 	width = new int[frames];
 	height = new int[frames];
@@ -497,10 +471,10 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(int pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool action::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
+		if(pattern & (1 << i)){
 			if(!pos[i]) return 0;
 		}
 	}

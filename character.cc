@@ -15,19 +15,17 @@ character::character()
 character::character(const char*)
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
-	action * temp;
+/*	action * temp;
 
 	name = NULL;
-
-	/*Currently I'm using this as a test case for my action hooks*/
 
 	head = new actionTrie(new action("White/A"));
 
 	temp = new action("White/D");
-	head->insert(temp);
-	airHead = new actionTrie(temp);
+	head->insert(temp, 0);
+	airHead = new actionTrie(temp, 0);
 	
-	head->insert(new action("White/B"));
+	head->insert(new action("White/B"), 0);
 	neutral = new looping("White/NS");
 	crouch = new looping("White/NL");
 	head->insert(5, neutral);
@@ -56,6 +54,7 @@ character::character(const char*)
 	throwBreak = new utility("White/break");
 
 	meter = new int[3];
+*/
 }
 
 character::~character()
@@ -197,6 +196,7 @@ void avatar::sortMove(action * m, char* buffer)
 {
 	char component[2];
 	char * token;
+	int pattern;
 	int q;
 	actionTrie * t = NULL;
 	token = strtok(buffer, " \t=>-&?@%$_!\n");
@@ -211,13 +211,25 @@ void avatar::sortMove(action * m, char* buffer)
 			default:
 				break;
 			}
+			pattern = 0;
 			for(int i = strlen(token)-1; i > 0; i--){
-				sprintf(component, "%c\0", token[i]);
-				q = atoi(component);
-				if(q > 10) q = q % 10;
-				t = t->insert(q);
+				switch(token[i]){
+				case 'A':
+				case 'B':
+				case 'C':
+				case 'D':
+				case 'E':
+					pattern += 1 << (token[i] - 'A');
+					break;
+				default:
+					sprintf(component, "%c\0", token[i]);
+					q = atoi(component);
+					if(q > 10) q = q % 10;
+					t = t->insert(q);
+					break;
+				}
 			}
-			t->insert(m);
+			t->insert(m, pattern);
 		}
 	}
 }
@@ -227,6 +239,7 @@ void character::sortMove(action * m, char* buffer)
 	char component[2];
 	char * token;
 	int q;
+	int pattern;
 	actionTrie * t = NULL;
 	token = strtok(buffer, " \t=>-&?@%$_!\n");
 	while (token){
@@ -243,13 +256,25 @@ void character::sortMove(action * m, char* buffer)
 			default:
 				break;
 			}
+			pattern = 0;
 			for(int i = strlen(token)-1; i > 0; i--){
-				sprintf(component, "%c\0", token[i]);
-				q = atoi(component);
-				if(q > 10) q = q % 10;
-				t = t->insert(q);
+				switch(token[i]){
+				case 'A':
+				case 'B':
+				case 'C':
+				case 'D':
+				case 'E':
+					pattern += 1 << (token[i] - 'A');
+					break;
+				default:
+					sprintf(component, "%c\0", token[i]);
+					q = atoi(component);
+					if(q > 10) q = q % 10;
+					t = t->insert(q);
+					break;
+				}
 			}
-			t->insert(m);
+			t->insert(m, pattern);
 		}
 	}
 }
