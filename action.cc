@@ -483,9 +483,8 @@ bool action::activate(int pos[5], bool neg[5], int pattern, int t, int f, int re
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
-			if(pos[i] < minHold || pos[i] > maxHold){ 
-				return 0;
-			}
+			if(pos[i] < minHold) return 0;
+			if(maxHold && pos[i] > maxHold) return 0;
 		}
 	}
 	if(t > tolerance) return 0;

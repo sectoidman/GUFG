@@ -49,7 +49,9 @@ bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int reso
 	int go = 0;
 	if(action::activate(pos, neg, pattern, t, f, resource, p)){
 		for(int i = 0; i < 5; i++){
-			if(pos[i] >= minHold && pos[i] <= maxHold) go++;
+			if(pos[i] >= minHold){
+				if(pos[i] <= maxHold || !maxHold) go++;
+			}
 		}
 		if(go >= buttons) return 1;
 	}
