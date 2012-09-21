@@ -497,7 +497,7 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool action::activate(int pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){

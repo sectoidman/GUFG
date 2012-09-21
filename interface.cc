@@ -49,9 +49,8 @@ interface::interface()
 		p[i] = new player(i+1);
 		if(!p[i]->readConfig()) writeConfig(i);
 		sAxis[i] = new bool[4];
-		posEdge[i] = new bool[6]; 
+		posEdge[i] = new int[6]; 
 		negEdge[i] = new bool[6];
-		held[i] = new int[6];
 		counter[i] = 0;
 		select[i] = 0;
 		selection[i] = 1+i;
@@ -259,7 +258,6 @@ void interface::roundInit()
 			if(j < 4) sAxis[i][j] = 0;
 			posEdge[i][j] = 0;
 			negEdge[i][j] = 0;
-			held[i][j] = 0;
 		}
 		combo[i] = 0;
 		damage[i] = 0;

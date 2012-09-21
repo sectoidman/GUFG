@@ -16,11 +16,11 @@ public:
 	bool spriteCheck(action *&, int);
 	virtual void draw(action *&, int, int, int, int, float);//Pass sprite information up.
 	virtual action * createMove(char*);
-	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
+	virtual action * hook(int[40], int, int, int*, int[5], bool[5], action *, SDL_Rect&, int&, int&);
 	virtual void build(const char*, const char*);
 	virtual void processMove(action * m);
 	virtual void sortMove(action *, char*);
-	virtual void prepHooks(int, action *&, action *&, action *&, int[], bool[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(int, action *&, action *&, action *&, int[], int[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 	virtual bool death(action *&, int) { return 0; }
 
@@ -59,7 +59,7 @@ public:
 	virtual void land(action *&, int &, int &, int &);
 	virtual void sortMove(action *, char*);
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&);
-	virtual action * hook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
+	virtual action * hook(int[40], int, int, int*, int[5], bool[5], action *, SDL_Rect&, int&, int&);
 
 	looping * dead;
 	action * airNeutral;

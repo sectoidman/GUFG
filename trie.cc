@@ -60,7 +60,7 @@ actionTrie::~actionTrie()
 	fish = NULL;
 }
 
-action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool pos[5], bool neg[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
+action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, int pos[5], bool neg[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
 {
 	actionTrie * test = NULL;
 	action * result = NULL;

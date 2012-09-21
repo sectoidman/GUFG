@@ -437,7 +437,7 @@ void instance::pushInput(bool axis[4])
 	}
 }
 
-void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
+void instance::getMove(int down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = cMove;
@@ -515,7 +515,7 @@ void instance::removeVector(int n)
 	momentumComplexity--;
 }
 
-void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *& negEdge)
+void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
 {
 //	printf("Player %i read event of type %i:\n", ID, event.type);
 	switch(event.type){

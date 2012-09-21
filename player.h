@@ -34,7 +34,7 @@ public:
 	virtual void init();
 	virtual void step();
 
-	virtual void getMove(bool*, bool*, SDL_Rect &, bool);
+	virtual void getMove(int*, bool*, SDL_Rect &, bool);
 	virtual int takeHit(int, hStat&);
 	virtual void enforceGravity(int, int);
 	void enforceAttractor(attractor*);
@@ -76,7 +76,7 @@ public:
 	void land();
 	void enforceGravity(int, int);
 	void drawMeters(int, float);
-	void readEvent(SDL_Event &, bool *&, bool *&, bool *&);
+	void readEvent(SDL_Event &, bool *&, int *&, bool *&);
 	void roundInit();
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);

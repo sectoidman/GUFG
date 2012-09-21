@@ -4,7 +4,7 @@ utility::utility(const char * n)
 	build(n);
 }
 
-bool utility::activate(bool pos[5], bool neg[5], int t, int f, int * resource, SDL_Rect &p)
+bool utility::activate(int pos[5], bool neg[5], int t, int f, int * resource, SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(button[i] == 1){
