@@ -177,7 +177,7 @@ bool action::setParameter(char * buffer)
 		return 1;
 	} else if (!strcmp("Hold", token)) {
 		token = strtok(NULL, "\t: \n-");
-		minHold = atoi(token); 
+		minHold = atoi(token);
 
 		token = strtok(NULL, "\t: \n-");
 		maxHold = atoi(token);
@@ -483,7 +483,9 @@ bool action::activate(int pos[5], bool neg[5], int pattern, int t, int f, int re
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
-			if(pos[i] != 1) return 0;
+			if(pos[i] < minHold || pos[i] > maxHold){ 
+				return 0;
+			}
 		}
 	}
 	if(t > tolerance) return 0;

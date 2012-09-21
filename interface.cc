@@ -256,7 +256,7 @@ void interface::roundInit()
 	for(int i = 0; i < 2; i++){
 		for(int j = 0; j < 6; j++){
 			if(j < 4) sAxis[i][j] = 0;
-			if(posEdge[i][j] > 0) posEdge[i][j]++;
+			posEdge[i][j] = 0;
 			negEdge[i][j] = 0;
 		}
 		combo[i] = 0;
@@ -429,11 +429,11 @@ void interface::resolve()
 		runTimer();
 	}
 	/*Reinitialize inputs*/
-	for(int i = 0; i < 6; i++){
-		posEdge[0][i] = 0;
-		posEdge[1][i] = 0;
-		negEdge[0][i] = 0;
-		negEdge[1][i] = 0;
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < 6; j++){
+			if(posEdge[i][j] > 0) posEdge[i][j]++;
+			negEdge[i][j] = 0;
+		}
 	}
 	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 }

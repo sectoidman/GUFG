@@ -3,6 +3,7 @@ Buffer: 2 : 0
 Hits: 0
 Frames: 3 : 3
 Check: 1024
+Hold: 1 - 30
 State: 0
 Gain: 0
 Cost: 0
