@@ -722,7 +722,7 @@ void interface::mainMenu(int ID)
 			}
 		}
 	}
-	if(posEdge[ID][5] && !counter[ID]) menu[ID] = 0;
+	if(posEdge[ID][5] == 1 && !counter[ID]) menu[ID] = 0;
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
