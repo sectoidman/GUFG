@@ -700,7 +700,7 @@ void interface::mainMenu(int ID)
 	if(menu[ID] > 4) menu[ID] = 1;
 	else if(menu[ID] < 1) menu[ID] = 4;
 	for(int i = 0; i < 5; i++){
-		if(posEdge[ID][i]){
+		if(posEdge[ID][i] == 1){
 			switch(menu[ID]){
 			case 1:
 				glDisable( GL_TEXTURE_2D );
@@ -756,7 +756,7 @@ void interface::reMenu()
 		if(rMenu > 3) rMenu = 1;
 		else if(rMenu < 1) rMenu = 3;
 		for(int i = 0; i < 6; i++){
-			if(posEdge[j][i]){
+			if(posEdge[j][i] == 1){
 				switch(rMenu){
 				case 1:
 					Mix_HaltMusic();
