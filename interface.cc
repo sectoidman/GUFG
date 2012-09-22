@@ -597,11 +597,11 @@ void interface::cSelectMenu()
 				counter[i] = 10;
 			}
 			for(int j = 0; j < 5; j++){
-				if(posEdge[i][j] && !select[i]){
+				if(posEdge[i][j] == 1 && !select[i]){
 					select[i] = 1;
 				}
 			}
-			if(posEdge[i][5]){
+			if(posEdge[i][5] == 1){
 				if(!select[i]) menu[i] = 2;
 				else select[i] = 0;
 				counter[i] = 10;
