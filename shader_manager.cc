@@ -83,7 +83,7 @@ void shaderman::link()
  *
  */
 
-void program::enable() 
+void shaderman::enable() 
 {
 	glUseProgram(programID);
 }
@@ -95,7 +95,7 @@ void program::enable()
  *
  */
 
-void program::disable()
+void shaderman::disable()
 {
 	glUseProgram(0);
 }
