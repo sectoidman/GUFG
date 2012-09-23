@@ -8,7 +8,7 @@ red::red()
 	airHead = new actionTrie;
 	head = new actionTrie;
 	build("Red", "Red");
-	backup = new red(this);
+	backup = new instance;
 }
 
 red::red(red* b)
