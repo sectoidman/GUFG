@@ -29,26 +29,39 @@ shaderman::~shaderman()
 
 void shaderman::load(const char* path, GLenum type) 
 {	
-	GLUint shaderID = 0;
+	GLUint shaderID;
 	int status;
-	int len;
-	char* errormsg;
+	int size;
+	char* buf;
+	std::ifstream source;
+
+	source.open(path, std::ios::ate);
+	if (source.fail()) {
+		return NULL;
+	}
+
+	fsize = (int) source.tellg();
+	source = new char[size];
+	file.seekg(0, std::ios::beg);
+	file.read(source, size);
 
 	shaderID = glCreateShader(type);
-	glShaderSource(shaderID, 1, read(path), 0);
+	glShaderSource(shaderID, 1, (const GLchar**)buf, 0);
 	glCompileShader(shaderID);
 	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
 
 	if (!status) {
-		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &len);
-		errormsg = new char[len]; 
-		glGetShaderInfoLog(shaderID, len, &len, errormsg);
+		delete [] buf;
+		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &size);
+		errormsg = new char[size]; 
+		glGetShaderInfoLog(shaderID, size, &size, errormsg);
 		throw std::runtime_error(errormsg);
 	}
 
 	glAttachShader(shaderID, programID);
 	shaderObjects.push_back(shaderID);
 	glDeleteShader(shaderID);
+	delete [] buf;
 }
 
 /*
@@ -73,6 +86,8 @@ void shaderman::link()
 	for (int i = 0; i < shaderObjects.size(); i++) {
 		glDetachShader(shaderObjects[i]);
 	}
+
+	shaderObjects.erase();
 }
 
 /*
@@ -98,9 +113,4 @@ void shaderman::enable()
 void shaderman::disable()
 {
 	glUseProgram(0);
-}
-
-const GLchar** shaderman::read(const char* path) 
-{
-
 }

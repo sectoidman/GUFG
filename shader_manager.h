@@ -8,6 +8,7 @@
  */
 
 #include <vector>
+#include <iostream>
 #include <GL/glew.h>
 
 class shaderman {
@@ -21,8 +22,6 @@ class shaderman {
 		void disable();
 
 	private:
-		const GLchar** read(const char* path);
-
 		GLUint programID;
 		vector<GLUint> shaderObjects;
 };
