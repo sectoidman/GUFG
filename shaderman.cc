@@ -1,4 +1,5 @@
-#include "shader_manager.h"
+#include "shaderman.h"
+#include <gl/glew.h>
 
 /* shader manager class */
 
@@ -8,7 +9,7 @@ shaderman::shaderman()
 	programID = glCreateProgram();
 
 	if (programID == 0)
-		throw std::runtime_error();
+		throw std::runtime_error("Failed to create shader program.");
 }
 
 shaderman::~shaderman() 
@@ -29,7 +30,7 @@ shaderman::~shaderman()
 
 void shaderman::load(const char* path, GLenum type) 
 {	
-	GLUint shaderID;
+	GLuint shaderID;
 	int status;
 	int size;
 	char* buf;
@@ -37,25 +38,25 @@ void shaderman::load(const char* path, GLenum type)
 
 	source.open(path, std::ios::ate);
 	if (source.fail()) {
-		return NULL;
+		throw std::runtime_error("Couldn't open shader files.");
 	}
 
-	fsize = (int) source.tellg();
-	source = new char[size];
-	file.seekg(0, std::ios::beg);
-	file.read(source, size);
+	size = (int) source.tellg();
+	buf = new char [size];
+	source.seekg(0, std::ios::beg);
+	source.read(buf, size);
 
 	shaderID = glCreateShader(type);
-	glShaderSource(shaderID, 1, (const GLchar**)buf, 0);
+	glShaderSource(shaderID, 1, (const GLchar**)&buf, 0);
 	glCompileShader(shaderID);
 	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
 
 	if (!status) {
 		delete [] buf;
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &size);
-		errormsg = new char[size]; 
-		glGetShaderInfoLog(shaderID, size, &size, errormsg);
-		throw std::runtime_error(errormsg);
+		buf = new char[size]; 
+		glGetShaderInfoLog(shaderID, size, &size, buf);
+		throw new std::runtime_error(buf);
 	}
 
 	glAttachShader(shaderID, programID);
@@ -77,7 +78,7 @@ void shaderman::link()
 	int status;
 
 	glLinkProgram(programID);
-	glGetProgram(programID, GL_LINK_STATUS, &status)
+	glGetProgram(programID, GL_LINK_STATUS, &status);
 
 	if (!status) {
 		throw std::runtime_error("OpenGL shader linking error.");
@@ -87,7 +88,7 @@ void shaderman::link()
 		glDetachShader(shaderObjects[i]);
 	}
 
-	shaderObjects.erase();
+	shaderObjects.clear();
 }
 
 /*

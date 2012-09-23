@@ -28,7 +28,8 @@ set (SOURCES	auxil.cc
 		aerial.cc
 		utility.cc
 		projectile.cc
-		trie.cc) 
+		trie.cc
+		shaderman.cc) 
 
 set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)

@@ -7,9 +7,11 @@
  * Handles the loading, compiling, and linking of shaders. 
  */
 
+#include <stdexcept>
 #include <vector>
 #include <iostream>
-#include <GL/glew.h>
+#include <fstream>
+#include <GL/gl.h>
 
 class shaderman {
 	
@@ -22,8 +24,8 @@ class shaderman {
 		void disable();
 
 	private:
-		GLUint programID;
-		vector<GLUint> shaderObjects;
+		GLuint programID;
+		std::vector<GLuint> shaderObjects;
 };
 
 #endif /* ndef SHADERMAN_H */
