@@ -7,18 +7,24 @@
  * Handles the loading, compiling, and linking of shaders. 
  */
 
+#include <vector>
 #include <GL/glew.h>
 
 class shaderman {
 	
 	public:
 		shaderman();
-		GLUint loadShader(const char* path, GLenum type);
+		~shaderman();
+		void load(const char* path, GLenum type);
+		void link();
+		void enable();
+		void disable();
 
 	private:
 		const GLchar** read(const char* path);
-		GLUint programID;
 
+		GLUint programID;
+		vector<GLUint> shaderObjects;
 };
 
 #endif /* ndef SHADERMAN_H */

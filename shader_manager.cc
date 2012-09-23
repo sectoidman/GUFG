@@ -3,15 +3,32 @@
 /* shader manager class */
 
 
-shaderman::shaderman() {
+shaderman::shaderman() 
+{
 	programID = glCreateProgram();
 
 	if (programID == 0)
 		throw std::runtime_error();
 }
 
-GLUint shaderman::loadShader(const char* path, GLenum type) {
-	
+shaderman::~shaderman() 
+{
+	glDeleteProgram(programID);
+}
+
+/* 
+ * load()
+ *
+ * Reads the shader source from file, compiles it into an 
+ * object, and attaches it to the program, then 'deletes' 
+ * it (that is, it sets the openGL delete flag on the object, 
+ * which won't actually be deleted until the program is linked 
+ * and the object is detatched).
+ *  
+ */
+
+void shaderman::load(const char* path, GLenum type) 
+{	
 	GLUint shaderID = 0;
 	int status;
 	int len;
@@ -26,14 +43,64 @@ GLUint shaderman::loadShader(const char* path, GLenum type) {
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &len);
 		errormsg = new char[len]; 
 		glGetShaderInfoLog(shaderID, len, &len, errormsg);
-		throw std::runtime_error();
+		throw std::runtime_error(errormsg);
 	}
 
-	return shaderID;
+	glAttachShader(shaderID, programID);
+	shaderObjects.push_back(shaderID);
+	glDeleteShader(shaderID);
 }
 
+/*
+ * link()
+ *
+ * Links the attached shader objects into the program, and then
+ * detaches the shader objects to be garbage collected.
+ *
+ */
 
-const GLchar** shaderman::read(const char* path) {
+void shaderman::link() 
+{
+	int status;
 
+	glLinkProgram(programID);
+	glGetProgram(programID, GL_LINK_STATUS, &status)
+
+	if (!status) {
+		throw std::runtime_error("OpenGL shader linking error.");
+	}
+
+	for (int i = 0; i < shaderObjects.size(); i++) {
+		glDetachShader(shaderObjects[i]);
+	}
 }
 
+/*
+ * enable()
+ *
+ * Applies the shader program to the screen. Will stay applied
+ * until glUseProgram is called again (see 'disable()')
+ *
+ */
+
+void program::enable() 
+{
+	glUseProgram(programID);
+}
+
+/*
+ * disable()
+ *
+ * Clears the applied shader program.
+ *
+ */
+
+void program::disable()
+{
+	glUseProgram(0);
+}
+
+const GLchar** shaderman::read(const char* path) 
+{
+
+}
