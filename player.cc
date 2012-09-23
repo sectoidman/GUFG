@@ -169,9 +169,15 @@ SDL_Event player::writeConfig(int i)
 		if (SDL_PollEvent(&temp)) {
 			switch (temp.type) {
 			case SDL_JOYAXISMOTION:
-				if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
-					input[i] = temp;
-					configFlag = 1;
+				if(temp.jaxis.axis < 6){
+					for(int j = 0; j < 4; j++){
+						if(temp.jaxis.value == 0 || abs(temp.jaxis.value) < abs(input[j].jaxis.value - 100))
+							break;
+						else {
+							input[i] = temp;
+							configFlag = 1;
+						}
+					}
 				}
 				break;
 			case SDL_JOYBUTTONDOWN:
@@ -247,11 +253,25 @@ void instance::combineDelta()
 	updateRects();
 }
 
+void instance::enforceAttractor(attractor* p)
+{
+	SDL_Rect resultant;
+	resultant.x = p->x*facing; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
+	if(!pick()->aerial) resultant.y = 0;
+	switch(p->type){
+	case 0:
+		addVector(resultant);
+		break;
+	default:
+		break;
+	}
+}
+
 void instance::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y + collision.h < floor && pick()->aerial == 0){
+	if(collision.y > floor && pick()->aerial == 0){
 		pick()->aerial = 1;
 	}
 	else if(pick()->aerial && !freeze){ 
@@ -263,26 +283,19 @@ void player::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y + collision.h < floor && pick()->aerial == 0){
+	if(collision.y > floor && pick()->aerial == 0){
 		pick()->aerial = 1;
 	}
 	else if(pick()->aerial && !freeze){ 
-		if(hover > 0 && deltaY + 3 > 0) g.y = -deltaY;
+		if(hover > 0 && deltaY - 6 < 0) g.y = -deltaY;
 		addVector(g);
 	}
 }
 
 void player::checkBlocking()
 {
-	bool block = pick()->checkBlocking(cMove, inputBuffer[0], connectFlag, hitFlag);
+	blockType = -pick()->checkBlocking(cMove, inputBuffer, connectFlag, hitFlag);
 	updateRects();
-	blockType = 0;
-	if(block){
-		for(int i = 1; i < 7; i++){
-			if(inputBuffer[i] % 3 != 1)
-			blockType = 1;
-		}
-	}
 }
 
 void player::checkCorners(int floor, int left, int right)
@@ -292,11 +305,10 @@ void player::checkCorners(int floor, int left, int right)
 	even though we're *checking* collision, we're still *moving* spr*/
 	int lOffset = posX - collision.x;
 	int rOffset = posX - (collision.x + collision.w);
-	int hOffset = posY - (collision.y);
 
 	/*Floor, or "Bottom corner"*/
 
-	if (collision.y + collision.h > floor){
+	if (collision.y < floor){
 		if(elasticY){
 			deltaY = -deltaY;
 			elasticY = false;
@@ -313,14 +325,12 @@ void player::checkCorners(int floor, int left, int right)
 		} else {
 			if(pick()->aerial == 1){
 				land();
-//				printf("P%i landed!\n", ID);
 				updateRects();
-				hOffset = posY - (collision.y);
 				deltaX = 0;
 			}
 			deltaY = 0;
 		}
-		posY = floor - collision.h + hOffset;
+		posY = floor - cMove->collision[currentFrame].y;
 	}
 	updateRects();
 
@@ -333,7 +343,7 @@ void player::checkCorners(int floor, int left, int right)
 		if(elasticX){
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
-		} 
+		}
 		if(collision.x <= 50){ 
 			if(facing == 1) lCorner = 1;
 			if (stick) {
@@ -372,7 +382,7 @@ void player::checkCorners(int floor, int left, int right)
 void player::land()
 {
 	for(int i = 0; i < momentumComplexity; i++){
-		if(momentum[i].y < 0) removeVector(i);
+		if(momentum[i].y > 0) removeVector(i);
 	}
 	pick()->land(cMove, currentFrame, connectFlag, hitFlag);
 }
@@ -430,17 +440,21 @@ void instance::pushInput(bool axis[4])
 	}
 }
 
-void instance::getMove(bool down[5], bool up[5], SDL_Rect &p, bool dryrun)
+void instance::getMove(int down[5], bool up[5], SDL_Rect &p, bool dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = cMove;
 	save = cMove;
+	int n = currentFrame;
 	pick()->prepHooks(freeze, dummyMove, bMove, sMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
 	if(dummyMove){
 		if(dummyMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) throwInvuln = 6;
 	}
-	if(!dryrun) cMove = dummyMove;
+	if(!dryrun){ 
+		cMove = dummyMove;
+		if(currentFrame != n || cMove != save) cMove->playSound(ID);
+	}
 	else cMove = save;
 }
 
@@ -504,7 +518,7 @@ void instance::removeVector(int n)
 	momentumComplexity--;
 }
 
-void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *& negEdge)
+void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
 {
 //	printf("Player %i read event of type %i:\n", ID, event.type);
 	switch(event.type){
@@ -513,7 +527,7 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 			if(input[i].type == SDL_JOYAXISMOTION){
 				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
 					sAxis[i] = 1;
-				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == 0)
+				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && abs(event.jaxis.value) < abs(input[i].jaxis.value - 100))
 					sAxis[i] = 0;
 			}
 		}
@@ -534,8 +548,10 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN){
 				negEdge[i-4] = 1;
+				posEdge[i-4] = 0;
+			}
 		}
 		break;
 	case SDL_KEYDOWN:
@@ -554,8 +570,10 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, bool *& posEdge, bool *
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
+			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN){
 				negEdge[i-4] = 1;
+				posEdge[i-4] = 0;
+			}
 		}
 		break;
 	}
@@ -608,7 +626,7 @@ int player::takeHit(int combo, hStat & s)
 	} else {
 		particleLife = 8;
 		deltaX = 0; deltaY = 0; momentumComplexity = 0;
-		if(pick()->aerial) v.y = -s.lift;
+		if(pick()->aerial) v.y = s.lift;
 		else v.y = 0;
 		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
@@ -623,6 +641,12 @@ int player::takeHit(int combo, hStat & s)
 		else slide = false;
 		if(pick()->aerial && s.stick) stick = true;
 		else stick = false;
+	}
+	if(cMove == pick()->die){ 
+		bMove = NULL;
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
 	}
 	updateRects();
 	if(s.ghostHit && combo < 1) return 0;

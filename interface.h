@@ -32,6 +32,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void mainMenu(int);
+	void reMenu();
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
@@ -43,30 +44,45 @@ public:
 	void resolveSummons();
 	void addThing(instance*);
 	void cullThing(int);
+	void addAttractor(attractor*);
+	void cullAttractor(int);
 	void writeImage(const char*, int, action*);
 
 	player * p[2];
 	bool * sAxis[2];	//Initial input buffering.
-	bool * posEdge[2];
+	int * posEdge[2];
 	bool * negEdge[2];
 	bool select[2];
 	int selection[2];
 	int menu[2];
+	int rMenu;
 	SDL_Surface *screen;
 	GLuint glyph[91];
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	int grav;		//Gravitational constant. 
 	bool fullscreen;	//For use with later
 	bool initd:1;
+	bool shortcut:1;
 	int combo[2];
 	int damage[2];
+	bool illegit[2];
 	int numRounds;
 	bool gameover;
 	float scalingFactor, sf;
+	int grav;		//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
+	Mix_Music *menuMusic;
+	Mix_Music *matchMusic;
+	Mix_Chunk **announceWinner;
+	Mix_Chunk *announceRound[3];
+	Mix_Chunk *announceDraw[2];
+	Mix_Chunk *announceFight;
+	Mix_Chunk *announceEnd[2];
+
+	attractor ** globals;
+	int attractorComplexity;
 
 //Variables for cSelectMenu 
 	int numChars;

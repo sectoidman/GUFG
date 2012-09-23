@@ -21,16 +21,16 @@ void interface::draw()
 	glBindTexture(GL_TEXTURE_2D, background);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(-bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(-bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.h + bg.y)*scalingFactor, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h - bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h + bg.y)*scalingFactor, 0.f);
 	glEnd();
 
 	if(timer / 60 > 99) sprintf(buffer, "99");
@@ -41,38 +41,62 @@ void interface::draw()
 	for(int i = 0; i < 2; i++){
 		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(combo[i] > 1){
+			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0);
 			sprintf(buffer, "%i hits", combo[i]);
 			drawGlyph(buffer, 100+800*i, 600, 400, 75, 0+2*i);
 			sprintf(buffer, "%i damage", damage[i]);
 			drawGlyph(buffer, 100+800*i, 600, 475, 35, 0+2*i);
+			glColor4f(1.0, 1.0, 1.0, 1.0);
 		}
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
-		sprintf(buffer, "Round %i", 1 + p[0]->rounds + p[1]->rounds);
+		int l = p[0]->rounds + p[1]->rounds + 1;
+		sprintf(buffer, "Round %i", l);
+		if(timer == 100 * 60 + 30)
+			Mix_PlayChannel(3, announceRound[l - 1], 0);
 		drawGlyph(buffer, 0, 1600, 375, 150, 1);
 	}
-	if(timer > 99 * 60 && timer <= 99 * 60 + 31) drawGlyph("FIGHT", 0, 1600, 375, 150, 1);
+	if(timer > 99 * 60 && timer < 99 * 60 + 31){ 
+		drawGlyph("FIGHT", 0, 1600, 375, 150, 1);
+		if(timer == 99 * 60 + 30)
+			Mix_PlayChannel(3, announceFight, 0);
+	}
 
 	if(roundEnd && endTimer > 5 * 60 - 31){ 
-		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0) drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
-		else drawGlyph("DOWN", 0, 1600, 375, 150, 1);
+		if(p[0]->pick()->health > 0 && p[1]->pick()->health > 0){
+			drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
+			if(endTimer == 5 * 60 - 1)
+				Mix_PlayChannel(3, announceEnd[0], 0);
+		} else {
+			drawGlyph("DOWN", 0, 1600, 375, 150, 1);
+			if(endTimer == 5 * 60 - 1)
+				Mix_PlayChannel(3, announceEnd[1], 0);
+		}
 	}
 	if(endTimer > 3 * 60 + 29 && endTimer < 4 * 60){ 
 		if(p[0]->pick()->health > p[1]->pick()->health){ 
 			sprintf(buffer, "%s", p[0]->pick()->name);
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
+			if(endTimer == 4 * 60 - 1)
+				Mix_PlayChannel(3, announceWinner[selection[0]], 0);
 		} else if(p[1]->pick()->health > p[0]->pick()->health){
 			sprintf(buffer, "%s", p[1]->pick()->name);
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
+			if(endTimer == 4 * 60 - 1)
+				Mix_PlayChannel(3, announceWinner[selection[1]], 0);
 		} else if(p[0]->pick()->health <= 0){ 
 			sprintf(buffer, "Double KO");
 			drawGlyph(buffer, 0, 1600, 375, 150, 1);
+			if(endTimer == 4 * 60 - 1)
+				Mix_PlayChannel(3, announceDraw[0], 0);
 		} else {
 			sprintf(buffer, "Draw");
 			drawGlyph(buffer, 0, 1600, 375, 150, 1);
+			if(endTimer == 4 * 60 - 1)
+				Mix_PlayChannel(3, announceDraw[1], 0);
 		}
 	}
 	glDisable( GL_TEXTURE_2D );
@@ -100,6 +124,8 @@ void interface::draw()
 		freeze--;
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	if(rMenu != 0) reMenu();
 	SDL_GL_SwapBuffers();
 }
 
@@ -117,11 +143,14 @@ void player::drawMeters(int n, float scalingFactor)
 		glRectf((GLfloat)(r[i].x)*scalingFactor, (GLfloat)(r[i].y)*scalingFactor, (GLfloat)(r[i].x + r[i].w)*scalingFactor, (GLfloat)(r[i].y + r[i].h)*scalingFactor);
 	}
 	glFlush();
-	pick()->drawMeters(ID, scalingFactor);
+	int h = 0;
+	if(cMove->hidesMeter) 
+		h = cMove->cost;
+	pick()->drawMeters(ID, scalingFactor, h);
 	glFlush();
 }
 
-void character::drawMeters(int ID, float scalingFactor)
+void character::drawMeters(int ID, float scalingFactor, int hidden)
 {
 	SDL_Rect m;
 	SDL_Rect h;
@@ -133,7 +162,7 @@ void character::drawMeters(int ID, float scalingFactor)
 	h.y = 10;
 
 	int R = 0, G = 255, B = 0;
-	if(meter[0] >= 0) m.w = meter[0]*2; else m.w = 1; 
+	if(meter[0] >= 0) m.w = (meter[0]+hidden)*2; else m.w = 0; 
 	if(ID == 1) m.x = 100;
 	else m.x = 900 + (600 - m.w);
 	m.h = 10; m.y = 860;
@@ -151,16 +180,16 @@ void character::drawMeters(int ID, float scalingFactor)
 void instance::drawBoxen(int x, int y, float scalingFactor)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(collision.y - y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(collision.y + collision.h - y)*scalingFactor);
+	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(-collision.y - y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - y)*scalingFactor);
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(hitreg[i].y - y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(hitreg[i].y + hitreg[i].h - y)*scalingFactor);
+		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y - y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h - y)*scalingFactor);
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(hitbox[i].y - y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(hitbox[i].y + hitbox[i].h - y)*scalingFactor);
+		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(-hitbox[i].y - y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].y - hitbox[i].h - y)*scalingFactor);
 	}
 	glFlush();
 	glDisable( GL_TEXTURE_2D );
@@ -189,7 +218,7 @@ void instance::draw(int x, int y, float scalingFactor)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(cMove, facing, realPosX - x, realPosY - y, currentFrame, scalingFactor);
+	pick()->draw(cMove, facing, realPosX - x, -realPosY - y, currentFrame, scalingFactor);
 }
 
 void player::drawHitParticle(int x, int y, float scalingFactor)
@@ -206,11 +235,14 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 		case -1:
 			glColor4f(1.0f, 1.0f, 1.0f, 0.7f);
 			break;
+		case -2:
+			glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
+			break;
 		}
-		glRectf((GLfloat)(posX - 10 * facing - x)*scalingFactor, (GLfloat)(posY - y)*scalingFactor, (GLfloat)(posX - 50*facing - x)*scalingFactor, (GLfloat)(posY + 40 - y)*scalingFactor);
+		glRectf((GLfloat)(posX - 10*facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - y)*scalingFactor, (GLfloat)(posX - 50 * facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - 40 - y)*scalingFactor);
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	}
+	} else blockType = 0;
 }
 
 void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalingFactor)
@@ -274,28 +306,28 @@ void action::draw(int facing, int x, int y, int f, float scalingFactor)
 		glBegin(GL_QUADS);
 		if(facing == 1){
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x + width[f])*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x + width[f]*2)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x + width[f])*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 		} else {
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x - width[f])*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x - width[f]*2)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x - width[f])*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y + height[f]*2)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
 		}
 		glEnd();
 	}
@@ -392,16 +424,16 @@ void interface::writeImage(const char * movename, int frame, action * move)
 
 void action::drawBoxen(int frame, int x, int y){
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(collision[frame].y + collision[frame].h - y));
+	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(-collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(-collision[frame].y - collision[frame].h - y));
 	for(int i = 0; i < regComplexity[frame]; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(hitreg[frame][i].y + hitreg[frame][i].h - y));
+		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(-hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(-hitreg[frame][i].y - hitreg[frame][i].h - y));
 	}
 	for(int i = 0; i < hitComplexity[frame]; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(hitbox[frame][i].y + hitbox[frame][i].h - y));
+		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(-hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(-hitbox[frame][i].y - hitbox[frame][i].h - y));
 	}
 	glFlush();
 }

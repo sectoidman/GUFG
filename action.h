@@ -13,6 +13,18 @@
 class avatar;
 class instance;
 
+struct attractor{
+	attractor() : x(0), y(0), type(0) {}
+	int x, y; //X-Yvalue. For globals this is only influenced by facingness, for local it is attractive force (negative for repulsive) based on mean Y
+	unsigned int length; //How long the attractor holds
+	int ID; //Who the attractor affects
+	unsigned int type:2; //Type check variable. Type 0 is global, type 1 is linear decay, type 2 is half-life, and type 3 is a flat cut-off.
+	int posX, posY; //Used to keep track of where local attractors actually are. Not set by the move itself, but used by the game later.
+	int radius;	/*The radius at which the vector decay. Irrelevant (unchecked) for type 0, is the distance at which the vector loses one
+			 *from its absolute value in type 1, the half-life point for type 2, and the cut-off point for type 3.
+			 */
+};
+
 struct hStat{
 	hStat() : damage(0), chip(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
 	int damage;         //How much damage the action does
@@ -45,7 +57,8 @@ public:
 	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&);
-	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual void playSound(int);
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
@@ -53,6 +66,7 @@ public:
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
+	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&);
@@ -73,6 +87,7 @@ public:
 	int stop;
 	int throwinvuln;
 	bool crouch:1;
+	bool hidesMeter:1;
 	int armorStart; int armorLength;
 	int armorHits;
 	int armorCounter;
@@ -102,7 +117,6 @@ public:
 	bool dies:1;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
-	int button[5];
 	char * name;
 	int cost;
 	int * gain;
@@ -116,12 +130,15 @@ public:
 	//Accepted. Default is 30 (the entire input buffer)
 	int activation;
 
+	int minHold, maxHold;
+
 	action * next;
 	action ** onConnect;
 	action * attempt;
 	action * riposte;
-	int attemptStart;
-	int attemptEnd;
+	attractor * distortion;
+	int distortSpawn;
+	int attemptStart, attemptEnd;
 	bool window(int);
 	int calcCurrentHit(int);
 
@@ -165,7 +182,7 @@ class special : virtual public action {
 public:
 	special() {}
 	special(const char*);
-	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int chip;
 };
 
@@ -173,14 +190,14 @@ class negNormal : virtual public action {
 public:
 	negNormal() {}
 	negNormal(const char *);
-	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -258,7 +275,10 @@ class mash : virtual public action {
 public:
 	mash() {}
 	mash(const char* n) {build(n); }
-	virtual bool activate(bool[], bool[], int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool setParameter(char *n);
+	virtual void zero();
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	int buttons;
 };
 
 class werf : virtual public action {

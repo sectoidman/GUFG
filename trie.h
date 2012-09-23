@@ -21,16 +21,18 @@ class actionTrie{
 public:
 	actionTrie();
 	actionTrie(action*);
-	actionTrie(action*, char*);
+	actionTrie(action*, int);
 	~actionTrie();
-	action * actionHook(int[40], int, int, int*, bool[5], bool[5], action *, SDL_Rect&, int&, int&);
+	action * actionHook(int[40], int, int, int*, int[5], bool[5], action *, SDL_Rect&, int&, int&);
 	actionTrie * child[10];
-	action ** fish;       //Because it's what a hook catches! Okay, this name probably needs to change.
+	action ** fish; //Because it's what a hook catches! Okay, this name probably needs to change.
 	actionTrie * insert(int);
 	actionTrie * insert(int, action*);
-	void insert(action *);
+	void insert(action *, int);
+	unsigned int patternMatch(int[], bool[]);
+	void patternSet(char*);
 	int occupants;
 private:
-	int * button;
+	int * pattern;
 };
 #endif
