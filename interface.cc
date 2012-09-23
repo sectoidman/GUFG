@@ -13,10 +13,12 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+
 interface::interface()
 {
 	char buffer[50];
 	numChars = 3;
+	shortcut = false;
 	std::ifstream read;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
@@ -24,8 +26,11 @@ interface::interface()
 	screen = NULL;
 	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 1800;
-	floor = bg.h - 50; //Value of the floor. This is the maximum distance downward that characters can travel.
+	floor = 50; //Value of the floor. This is the maximum distance downward that characters can travel.
 	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
+
+	select[0] = 0;
+	select[1] = 0;
 
 	read.open("Misc/.res.conf");
 	if(read.fail()){ 
@@ -45,7 +50,7 @@ interface::interface()
 		p[i] = new player(i+1);
 		if(!p[i]->readConfig()) writeConfig(i);
 		sAxis[i] = new bool[4];
-		posEdge[i] = new bool[6]; 
+		posEdge[i] = new int[6]; 
 		negEdge[i] = new bool[6];
 		counter[i] = 0;
 		select[i] = 0;
@@ -86,12 +91,26 @@ void interface::loadMisc()
 		glyph[i] = aux::load_texture(buffer);
 	}
 	selectScreen = aux::load_texture("Misc/Select.png");
+	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
+	announceWinner = new Mix_Chunk*[numChars + 1];
+	for(int i = 0; i < numChars + 1; i++){
+		sprintf(buffer, "Misc/Announcer/Win%i.ogg", i);
+		announceWinner[i] = Mix_LoadWAV(buffer);
+	}
+	announceRound[0] = Mix_LoadWAV("Misc/Announcer/Round1.ogg");
+	announceRound[1] = Mix_LoadWAV("Misc/Announcer/Round2.ogg");
+	announceRound[2] = Mix_LoadWAV("Misc/Announcer/RoundF.ogg");
+	announceDraw[1] = Mix_LoadWAV("Misc/Announcer/Draw.ogg");
+	announceFight = Mix_LoadWAV("Misc/Announcer/Fight.ogg");
+	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");
+	announceEnd[1] = Mix_LoadWAV("Misc/Announcer/Down.ogg");
 }
 
 bool interface::screenInit()
 {
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	Mix_OpenAudio(44100, AUDIO_S16, 2, 2048);
 	/*WM stuff*/
 	int h, w;
 	if(scalingFactor == 1.0){ 
@@ -199,15 +218,17 @@ void interface::writeConfig(int ID)
 void interface::matchInit()
 {
 	SDL_Event event;
-	select[0] = 0;
-	select[1] = 0;
+	rMenu = 0;
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	p[0]->secondInstance = 0;
 	p[1]->secondInstance = 0;
-	background = aux::load_texture("Misc/BG1.png");
+	if(!select[0] || !select[1]){
+		Mix_VolumeMusic(100);
+		Mix_PlayMusic(menuMusic,-1);
+		printf("Please select a character:\n");
+	}
 	q = 0;
-	printf("Please select a character:\n");
 	while (SDL_PollEvent(&event));
 }
 
@@ -220,34 +241,31 @@ void interface::roundInit()
 	}
 	things = NULL;
 	thingComplexity = 0;
+	globals = NULL;
+	attractorComplexity = 0;
 	for(int i = 0; i < 2; i++)
 		addThing(p[i]);
 	thingComplexity = 2;
 	bg.x = 800;
-	bg.y = 900;
+	bg.y = -900;
 
 	for(int i = 0; i < 2; i++){
 		p[i]->roundInit();
-		p[i]->posY = floor - p[i]->cMove->collision[0].h;
+		p[i]->posY = floor;
 	}
 	/*Initialize input containers*/
-	for(int i = 0; i < 4; i++) 
-	{
-		sAxis[0][i] = 0;
-		sAxis[1][i] = 0;
-	}
-	for(int i = 0; i < 6; i++){
-		posEdge[0][i] = 0;
-		negEdge[0][i] = 0;
-		posEdge[1][i] = 0;
-		negEdge[1][i] = 0;
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < 6; j++){
+			if(j < 4) sAxis[i][j] = 0;
+			posEdge[i][j] = 0;
+			negEdge[i][j] = 0;
+		}
+		combo[i] = 0;
+		damage[i] = 0;
+		illegit[i] = 0;
 	}
 
-	combo[0] = 0;
-	combo[1] = 0;
-	damage[0] = 0;
-	damage[1] = 0;
-	grav = 6;
+	grav = -6;
 	timer = 60 * 101;
 	endTimer = 60 * 5;
 //	if(p[0]->rounds + p[1]->rounds < 1) timer += 60 * 6;
@@ -260,6 +278,10 @@ void interface::roundInit()
 /*Pretty simple timer modifier*/
 void interface::runTimer()
 {
+	if(p[0]->rounds == 0 && p[1]->rounds == 0 && timer == 99 * 60 + 2){
+		Mix_VolumeMusic(100);
+		Mix_PlayMusic(matchMusic,-1);
+	}
 	int plus;
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
@@ -285,9 +307,16 @@ void interface::runTimer()
 			p[0]->momentumComplexity = 0;
 			p[1]->momentumComplexity = 0;
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-				delete p[0]->pick();
-				delete p[1]->pick();
-				matchInit();
+				if(shortcut) rMenu = 1;
+				else{
+					delete p[0]->pick();
+					delete p[1]->pick();
+					select[0] = 0;
+					select[1] = 0;
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					matchInit();
+				}
 			}
 			else roundInit();
 		}
@@ -298,6 +327,7 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
+	else if(rMenu != 0) draw();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -347,7 +377,10 @@ void interface::resolve()
 			if(!things[i]->freeze){
 				things[i]->pullVolition();
 				things[i]->combineDelta();
-				if(i < 2) p[i]->enforceGravity(grav, floor);
+				things[i]->enforceGravity(grav, floor);
+				for(int j = 0; j < attractorComplexity; j++){
+					if(globals[j]->ID != things[i]->ID) things[i]->enforceAttractor(globals[j]);
+				}
 			}
 		}
 
@@ -366,11 +399,15 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++){
 			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(!p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
-				combo[(i+1)%2] = 0;
-				damage[(i+1)%2] = 0;
-				p[i]->elasticX = 0;
-				p[i]->elasticY = 0;
+			if(p[i]->cMove != p[i]->pick()->fall && !p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
+				if(p[i]->cMove == p[i]->pick()->untech) illegit[(i+1)%2] = 1;
+				else{
+					combo[(i+1)%2] = 0;
+					damage[(i+1)%2] = 0;
+					p[i]->elasticX = 0;
+					p[i]->elasticY = 0;
+					illegit[(i+1)%2] = 0;
+				}
 			}
 		}
 
@@ -389,23 +426,28 @@ void interface::resolve()
 			things[i]->step();
 			if(i > 1 && things[i]->dead) cullThing(i);
 		}
+		for(int i = 0; i < attractorComplexity; i++){
+			if(globals[i]->length <= 0) cullAttractor(i);
+			else globals[i]->length--;
+		}
 		resolveSummons();
 		if(!roundEnd) checkWin();
 		runTimer();
 	}
 	/*Reinitialize inputs*/
-	for(int i = 0; i < 6; i++){
-		posEdge[0][i] = 0;
-		posEdge[1][i] = 0;
-		negEdge[0][i] = 0;
-		negEdge[1][i] = 0;
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < 6; j++){
+			if(posEdge[i][j] > 0) posEdge[i][j]++;
+			negEdge[i][j] = 0;
+		}
 	}
-
+	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 }
 
 void interface::resolveSummons()
 {
 	action * temp;
+	attractor * tvec = NULL, * avec = NULL;
 	instance * larva;
 	int x, y, f;
 	for(int i = 0; i < thingComplexity; i++){
@@ -432,6 +474,33 @@ void interface::resolveSummons()
 				addThing(larva);
 				larva->init();
 			}
+		}
+	}
+	for(int i = 0; i < thingComplexity; i++){
+		if(things[i]->cMove && things[i]->currentFrame == things[i]->cMove->distortSpawn) tvec = things[i]->cMove->distortion;
+		if(tvec != NULL){ 
+			avec = new attractor;
+			avec->x = tvec->x*things[i]->facing;
+			avec->y = tvec->y;
+			avec->type = tvec->type;
+			avec->length = tvec->length;
+			avec->radius = tvec->radius;
+			avec->posX = things[i]->posX + things[i]->collision.w/2;
+			avec->posY = things[i]->posY + things[i]->collision.h/2;
+			switch(tvec->ID){
+			case 1:
+				avec->ID = things[i]->ID;
+				break;
+			case 2:
+				avec->ID = (things[i]->ID % 2) + 1;
+				break;
+			default:
+				avec->ID = 0;
+				break;
+			}
+			addAttractor(avec);
+			avec = NULL;
+			tvec = NULL;
 		}
 	}
 }
@@ -476,6 +545,10 @@ void interface::readInput()
 				case SDLK_ESCAPE:
 					gameover = 1;
 					break;
+				case SDLK_F9:
+					writeConfig(0);
+					writeConfig(1);
+					break;
 				case SDLK_F10:
 					if(scalingFactor == 1.0) sf = 0.5;
 					else sf = 1.0;
@@ -506,6 +579,7 @@ void interface::cSelectMenu()
 		assert(screenInit() != false);
 	}
 	char base[2][40];
+	char buffer[200];
 
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
@@ -524,11 +598,11 @@ void interface::cSelectMenu()
 				counter[i] = 10;
 			}
 			for(int j = 0; j < 5; j++){
-				if(posEdge[i][j] && !select[i]){
+				if(posEdge[i][j] == 1 && !select[i]){
 					select[i] = 1;
 				}
 			}
-			if(posEdge[i][5]){
+			if(posEdge[i][5] == 1){
 				if(!select[i]) menu[i] = 2;
 				else select[i] = 0;
 				counter[i] = 10;
@@ -581,13 +655,22 @@ void interface::cSelectMenu()
 
 	glDisable( GL_TEXTURE_2D );
 
-	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]){
 		p[0]->characterSelect(selection[0]);
 		p[1]->characterSelect(selection[1]);
+
 		if(selection[0] == selection[1]) p[1]->secondInstance = true;
+
+		sprintf(buffer, "Misc/BG%i.png", selection[0]);
+		background = aux::load_texture(buffer);
+
+		if(selection[0] == selection[1]) sprintf(buffer, "Misc/Mirror.ogg");
+		else sprintf(buffer, "Misc/%i.ogg", selection[1]);
+		matchMusic = Mix_LoadMUS(buffer);
+		Mix_HaltMusic();
+
 		roundInit();
 	}
 }
@@ -595,14 +678,19 @@ void interface::cSelectMenu()
 void interface::mainMenu(int ID)
 {
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	char buffer[200];
 	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
-	drawGlyph("Key Config", 20 + 1260*ID, 300, 390, 40, 2*ID);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 370, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 430, 40, 2*ID);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 470, 40, 2*ID);
+	if(shortcut) sprintf(buffer, "Rematch");
+	else sprintf(buffer, "Reselect");
+	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 490, 40, 2*ID);
 	if(sAxis[ID][0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
@@ -610,10 +698,10 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 3) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 3;
+	if(menu[ID] > 4) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 4;
 	for(int i = 0; i < 5; i++){
-		if(posEdge[ID][i]){
+		if(posEdge[ID][i] == 1){
 			switch(menu[ID]){
 			case 1:
 				glDisable( GL_TEXTURE_2D );
@@ -624,12 +712,18 @@ void interface::mainMenu(int ID)
 				menu[ID] = 0;
 				break;
 			case 3:
+				if(shortcut) 
+					shortcut = false;
+				else 
+					shortcut = true;
+				break;
+			case 4:
 				gameover = 1;
 				break;
 			}
 		}
 	}
-	if(posEdge[ID][5] && !counter[ID]) menu[ID] = 0;
+	if(posEdge[ID][5] == 1 && !counter[ID]) menu[ID] = 0;
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
@@ -641,12 +735,65 @@ void interface::dragBG(int deltaX)
 	else if(bg.x > 1600) bg.x = 1600;
 }
 
+void interface::reMenu()
+{
+	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 1)*0.4);
+	drawGlyph("Rematch", 0, 1600, 360, 60, 1);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 2)*0.4);
+	drawGlyph("Character Select", 0, 1600, 420, 60, 1);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 3)*0.4);
+	drawGlyph("Quit Game", 0, 1600, 480, 60, 1);
+	for(int j = 0; j < 2; j++){
+		if(sAxis[j][0] && !counter[j]){
+			rMenu--;
+			counter[j] = 10;
+		} else if(sAxis[j][1] && !counter[j]){ 
+			rMenu++;
+			counter[j] = 10;
+		}
+		if(rMenu > 3) rMenu = 1;
+		else if(rMenu < 1) rMenu = 3;
+		for(int i = 0; i < 6; i++){
+			if(posEdge[j][i] == 1){
+				switch(rMenu){
+				case 1:
+					Mix_HaltMusic();
+					rMenu = 0;
+					matchInit();
+					break;
+				case 2:
+					delete p[0]->pick();
+					delete p[1]->pick();
+					select[0] = 0;
+					select[1] = 0;
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					matchInit();
+					break;
+				case 3:
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					gameover = 1;
+					break;
+				}
+				j = 2;
+			}
+		}
+	}
+	glDisable( GL_TEXTURE_2D );
+	glColor4f(1.0, 1.0, 1.0, 1.0f);
+}
+
 interface::~interface()
 {
 	if(select[0]) delete p[0]->pick();
 	if(select[1]) delete p[1]->pick();
 	delete p[0];
 	delete p[1];
+	if(menuMusic) Mix_FreeMusic(menuMusic);
 	SDL_FreeSurface(screen);
 	SDL_Quit();
 }
@@ -728,6 +875,7 @@ void interface::resolveHits()
 	bool taken[thingComplexity];
 	int hitBy[thingComplexity];
 	int h;
+	int push[2];
 	for(int i = 0; i < thingComplexity; i++){
 		taken[i] = 0;
 		hit[i] = 0;
@@ -744,6 +892,7 @@ void interface::resolveHits()
 							if(things[i]->acceptTarget(things[h])){
 								connect[i] = 1;
 								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
+								if(i < 2) push[i] = s[i].push;
 								k = things[h]->regComplexity;
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
@@ -767,6 +916,15 @@ void interface::resolveHits()
 		if(taken[i]){
 			h = p[i]->pick()->health;
 			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
+			if(i < 2 && hitBy[i] < 2){
+				if(p[i]->particleType == -2){ 
+					hStat ths;
+					ths.damage = s[hitBy[i]].chip;
+					ths.ghostHit = true;
+					ths.stun = 0;
+					p[hitBy[i]]->takeHit(combo[i], ths);
+				}
+			}
 			combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
@@ -775,7 +933,6 @@ void interface::resolveHits()
 		}
 	}
 
-
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
 			if(p[i]->pick()->aerial) residual.y = -8;
@@ -783,7 +940,8 @@ void interface::resolveHits()
 				if(p[(i+1)%2]->pick()->aerial) residual.x = -2;
 				else {
 					if(combo[i] > 1) residual.x = -2*(abs(combo[i]-1));
-					if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
+					if(p[(i+1)%2]->particleType == -2) residual.x -= push[i];
+					else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 						residual.x -= 2;
 						residual.x -= s[i].push/2;
 						residual.x -= abs(combo[i]);
@@ -843,4 +1001,25 @@ void interface::cullThing(int q)
 	for(int i = q; i < thingComplexity - 1; i++)
 		things[i] = things[i+1];
 	thingComplexity--;
+}
+
+void interface::addAttractor(attractor *v)
+{
+	int i;
+	attractor ** temp;
+	temp = new attractor*[attractorComplexity+1];
+	for(i = 0; i < attractorComplexity; i++)
+		temp[i] = globals[i];
+	temp[i] = v;
+	if(attractorComplexity > 0) delete [] globals;
+	globals = temp;
+	attractorComplexity++;
+}
+
+void interface::cullAttractor(int q)
+{
+	delete globals[q];
+	for(int i = q; i < attractorComplexity - 1; i++)
+		globals[i] = globals[i+1];
+	attractorComplexity--;
 }

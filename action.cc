@@ -31,6 +31,7 @@ action::~action()
 	if(delta) delete [] delta;
 	if(state) delete [] state;
 	if(gain) delete [] gain;
+	if(distortion) delete distortion;
 	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
 	if(stats) delete [] stats;
@@ -47,6 +48,8 @@ void action::zero()
 	stop = 0;
 	hits = 0;
 	throwinvuln = 0;
+	minHold = 1;
+	maxHold = 1;
 	crouch = 0;
 	armorStart = 0; armorLength = 0;
 	armorHits = 0;
@@ -58,9 +61,12 @@ void action::zero()
 	dies = 0;
 	fch = 0;
 	armorCounter = 0;
+	distortSpawn = -1;
+	distortion = NULL;
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
+	soundClip = NULL;
 	next = NULL;
 	attempt = NULL;
 	riposte = NULL;
@@ -124,32 +130,6 @@ void action::build(const char * n)
 	}
 	read.close();
 
-	for(int i = 0; i < 5; i++){
-		button[i] = 0;
-	}
-	int r = strlen(n);
-	for(int i = 0; i < r; i++){
-		switch(n[i]){
-		case 'A':
-			button[0] = 1;
-			break;
-		case 'B':
-			button[1] = 1;
-			break;
-		case 'C':
-			button[2] = 1;
-			break;
-		case 'D':
-			button[3] = 1;
-			break;
-		case 'E':
-			button[4] = 1;
-			break;
-		default:
-			break;
-		}
-	}
-
 	SDL_Surface *temp;
 	width = new int[frames];
 	height = new int[frames];
@@ -167,6 +147,8 @@ void action::build(const char * n)
 			sprite[i] = aux::surface_to_texture(temp);
 		}
 	}
+	sprintf(fname, "%s.ogg", n);
+	soundClip = Mix_LoadWAV(fname);
 }
 
 bool action::setParameter(char * buffer)
@@ -193,6 +175,12 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		yRequisite = atoi(token); 
 		return 1;
+	} else if (!strcmp("Hold", token)) {
+		token = strtok(NULL, "\t: \n-");
+		minHold = atoi(token);
+
+		token = strtok(NULL, "\t: \n-");
+		maxHold = atoi(token);
 	} else if (!strcmp("Counterhit", token)) {
 		parseProperties(savedBuffer, 1);
 		return 1;
@@ -222,6 +210,27 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		tempRiposte = new char[strlen(token)+1];
 		strcpy(tempRiposte, token);
+		return 1;
+	} else if (!strcmp("Distort", token)) {
+		distortion = new attractor;
+		token = strtok(NULL, "\t:- \n");
+		distortSpawn = atoi(token);
+		token = strtok(NULL, "\t:- \n");
+		distortion->length = atoi(token);
+		distortion->length -= distortSpawn;
+		token = strtok(NULL, "\t: \n");
+		distortion->x = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->y = atoi(token);
+		return 1;
+	} else if (!strcmp("AttractorType", token)) {
+		if(!distortion) return 1;
+		token = strtok(NULL, "\t: \n");
+		distortion->type = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->radius = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->ID = atoi(token);
 		return 1;
 	} else if (!strcmp("Next", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -400,11 +409,8 @@ void action::parseProperties(char * buffer, bool counter)
 	char * token = strtok(buffer, " \t\n:");
 	token = strtok(NULL, "\n");
 	/*Debug*/
-//	printf("%s properties: %s\n", name, buffer);
 	int ch = 0;
-//	printf("%s: ", name);
 	for(unsigned int i = 0; i < strlen(token); i++){
-//		printf("%c ", token[i]);
 		switch(token[i]){
 		case '^':
 			if(counter) CHStats[ch].launch = 1;
@@ -456,11 +462,13 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'C':
 			if(!counter) fch = 1;
 			break;
+		case 'h':
+			if(!counter) hidesMeter = 1;
+			break;
 		default:
 			break;
 		}
 	}
-//	printf("\n");
 }
 
 bool action::window(int f)
@@ -471,11 +479,12 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(bool pos[5], bool neg[5], int t, int f, int resource[], SDL_Rect &p)
+bool action::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
-		if(button[i] == 1){
-			if(!pos[i]) return 0;
+		if(pattern & (1 << i)){
+			if(pos[i] < minHold) return 0;
+			if(maxHold && pos[i] > maxHold) return 0;
 		}
 	}
 	if(t > tolerance) return 0;
@@ -561,7 +570,6 @@ bool action::cancel(action * x, int& c, int &h)
 	if(x == NULL) return 1;
 	else{
 		if(allowed.i & r.i){
-//			if(r.i > 1) printf("%i allows %i\n", r.i, allowed.i);
 			if(x == this){
 				if(c == 0) return 0;
 				else if(allowed.b.chain1) return 1;
@@ -608,6 +616,11 @@ action * action::blockSuccess()
 	else return this;
 }
 
+void action::playSound(int channel)
+{
+	Mix_PlayChannel(channel, soundClip, 0);
+}
+
 void action::execute(action * last, int *& resource)
 {
 	armorCounter = 0;
@@ -624,7 +637,6 @@ void action::feed(action * c, int code, int i)
 	case 2:
 		onConnect[i] = c;
 		if(tempOnConnect[i]) delete [] tempOnConnect[i];
-//		printf("%s-%i: %s\n", name, i, onConnect[i]->name);
 		break;
 	case 3:
 		attempt = c;
@@ -664,9 +676,11 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 		armorCounter++;
 		return 1;
 	} else {
-		f = 0;
-		c = 0;
-		h = 0;
+		if(s.stun != 0){
+			f = 0;
+			c = 0;
+			h = 0;
+		}
 		return 1;
 	}
 }

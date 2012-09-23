@@ -4,11 +4,11 @@ Hits: 0
 Frames: 1 : 1
 Check: 0
 State: 0
-Gain: 1
+Gain: 0
 Cost: 0
 Blocks: 0
 Properties: cT
 #0 
-$C	10 120 120 180
-$R	10 120 120 180
+$C	10 0 120 180
+$R	10 0 120 180
 $D	0 0 0 0

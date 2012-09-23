@@ -61,10 +61,10 @@ action * yellow::createMove(char * fullName)
 	return m;
 }
 
-void yellow::drawMeters(int ID, float scalingFactor)
+void yellow::drawMeters(int ID, float scalingFactor, int hidden)
 {
 	int color;
-	character::drawMeters(ID, scalingFactor);
+	character::drawMeters(ID, scalingFactor, hidden);
 	SDL_Rect c1;
 	if(meter[3] >= 0){
 		c1.w = meter[3]/3*2; 

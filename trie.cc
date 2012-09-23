@@ -4,7 +4,19 @@ actionTrie::actionTrie()
 	for(int i = 0; i < 10; i++)
 		child[i] = NULL;
 	fish = NULL;
+	pattern = NULL;
 	occupants = 0;
+}
+
+actionTrie::actionTrie(action * a, int p)
+{
+	for(int i = 0; i < 10; i++)
+		child[i] = NULL;
+	fish = new action*[1];
+	fish[0] = a;
+	pattern = new int[1];
+	pattern[0] = p;
+	occupants = 1;
 }
 
 actionTrie::actionTrie(action * a)
@@ -13,27 +25,36 @@ actionTrie::actionTrie(action * a)
 		child[i] = NULL;
 	fish = new action*[1];
 	fish[0] = a;
+	pattern = new int[1];
+	pattern[0] = 0;
 	occupants = 1;
 }
 
-void actionTrie::insert(action * b)
+void actionTrie::insert(action * b, int p)
 {
 	int i;
 	action ** temp;
+	int * tPat;
 	occupants++;
 	temp = new action*[occupants];
+	tPat = new int[occupants];
 	for(i = 0; i < occupants-1; i++){
 		temp[i] = fish[i];
+		tPat[i] = pattern[i];
 	}
 	temp[i] = b;
+	tPat[i] = p;
+	if(fish) delete [] fish;
+	if(pattern) delete [] pattern;
 	fish = temp;
+	pattern = tPat;
 }
 
 actionTrie * actionTrie::insert(int a, action * b)
 {
 	if(a < 10 && a >= 0){
 		if(!child[a]) child[a] = new actionTrie(b);
-		else child[a]->insert(b);
+		else child[a]->insert(b, 0);
 		return child[a];
 	}
 	else return NULL;
@@ -60,7 +81,7 @@ actionTrie::~actionTrie()
 	fish = NULL;
 }
 
-action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool pos[5], bool neg[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
+action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, int pos[5], bool neg[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
 {
 	actionTrie * test = NULL;
 	action * result = NULL;
@@ -70,13 +91,13 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int f, int * r, bool
 		if(test != NULL){
 			if (f < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, p, cFlag, hFlag);
 			else result = test->actionHook(inputBuffer, j, f, r, pos, neg, c, p, cFlag, hFlag);
-			if(result != NULL) return result; 
+			if(result != NULL) return result;
 		}
 	}
 	if(occupants != 0){
 		for(int k = 0; k < occupants; k++){
 			if(fish[k] != NULL){
-				if(fish[k]->activate(pos, neg, i, f, r, p) == 1){
+				if(fish[k]->activate(pos, neg, pattern[k], i, f, r, p) == 1){
 					if(fish[k]->cancel(c, cFlag, hFlag)){
 						return fish[k];
 					}
