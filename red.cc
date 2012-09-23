@@ -11,18 +11,6 @@ red::red()
 	backup = new instance;
 }
 
-red::red(red* b)
-{
-	delete [] meter;
-	
-	meter = new int[5];
-	
-	airHead = new actionTrie;
-	head = new actionTrie;
-	build("Red", "Red");
-	backup = b;
-}
-
 void red::tick()
 {
 	character::tick();
