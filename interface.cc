@@ -79,6 +79,7 @@ interface::interface()
 
 	/*Start a match*/
 	things = NULL;
+	Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 }
 
@@ -103,6 +104,7 @@ void interface::loadMisc()
 	announceFight = Mix_LoadWAV("Misc/Announcer/Fight.ogg");
 	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");
 	announceEnd[1] = Mix_LoadWAV("Misc/Announcer/Down.ogg");
+	announceSelect = Mix_LoadWAV("Misc/Announcer/Select.ogg");
 }
 
 bool interface::screenInit()
@@ -770,6 +772,7 @@ void interface::reMenu()
 					select[1] = 0;
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
+					Mix_PlayChannel(3, announceSelect, 0);
 					matchInit();
 					break;
 				case 3:

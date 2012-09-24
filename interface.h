@@ -80,6 +80,7 @@ public:
 	Mix_Chunk *announceDraw[2];
 	Mix_Chunk *announceFight;
 	Mix_Chunk *announceEnd[2];
+	Mix_Chunk *announceSelect;
 
 	attractor ** globals;
 	int attractorComplexity;
