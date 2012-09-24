@@ -41,7 +41,7 @@ int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
 			return 0;
 		}
 	}
-	else return 1;
+	return 1;
 }
 
 hitstun::hitstun(const char * n)
