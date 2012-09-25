@@ -1,8 +1,9 @@
-/*Interface class for GUFG
- *This will run all the main game functions within GUFG
- *
- *Written by Alex Kelly in 2012
- *License to come
+/*Interface class for GUFG.
+ *This will run all the main game functions within GUFG.
+ *No kidding.
+ *Written by Alex Kelly in 2012.
+ *Mangled by H Forrest Alexander in the autumn of that same year.
+ *I think there's a license somewhere.
  */
 
 #include "interface.h"
@@ -33,7 +34,7 @@ interface::interface()
 	select[0] = 0;
 	select[1] = 0;
 
-	read.open("Misc/.res.conf");
+	read.open("Misc/res.conf");
 	if(read.fail()){ 
 		scalingFactor = 0.5;
 		fullscreen = false;
