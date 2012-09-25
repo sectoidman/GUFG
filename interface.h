@@ -9,6 +9,7 @@
 
 #include <SDL/SDL.h>
 #include <stdio.h>
+#include "shaderman.h"
 #include "compat.h"
 #include "player.h"
 #ifndef INTERFACE
@@ -59,6 +60,7 @@ public:
 	SDL_Surface *screen;
 	GLuint glyph[91];
 	GLuint background;
+	shaderman effect_greyscale;
 	SDL_Rect bg;
 	SDL_Rect prox;
 	bool fullscreen;	//For use with later

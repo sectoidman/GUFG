@@ -28,7 +28,8 @@ set (SOURCES	auxil.cc
 		aerial.cc
 		utility.cc
 		projectile.cc
-		trie.cc) 
+		trie.cc
+		shaderman.cc) 
 
 set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)
@@ -36,12 +37,14 @@ set (QT_USE_QTOPENGL TRUE)
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
 find_package (OpenGL REQUIRED)
+find_package (GLEW REQUIRED)
 find_package (SDL_mixer REQUIRED)
 link_libraries (
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${OPENGL_LIBRARIES}
 	${SDLMIXER_LIBRARY}
+	${GLEW_LIBRARY}
 	SDLmain # not included in SDL_LIBRARY variable
 )
 

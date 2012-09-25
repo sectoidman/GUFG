@@ -13,20 +13,33 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+
 interface::interface()
 {
 	char buffer[50];
 	numChars = 3;
 	shortcut = false;
 	std::ifstream read;
+
 	/*Initialize some pseudo-constants*/
-	screenWidth = 1600; //By screen, I mean the window the game occurs in.
+
+	//By screen, I mean the window the game occurs in.
+	screenWidth = 1600;
 	screenHeight = 900;
 	screen = NULL;
-	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
+
+	//By background, I mean the thing the characters actually move on. 
+	//Bigger than the screen.
+	bg.w = 3200;
 	bg.h = 1800;
-	floor = 50; //Value of the floor. This is the maximum distance downward that characters can travel.
-	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
+	
+	//Value of the floor. This is the maximum distance downward that
+	//characters can travel.
+	floor = 50;
+
+	//The size of the offset at which characters start to scroll the 
+	//background, and get stuck.
+	wall = 50;
 
 	select[0] = 0;
 	select[1] = 0;
@@ -69,6 +82,15 @@ interface::interface()
 			sAxis[1][i] = 0;
 		}
 	}
+
+	/* init shaders */
+	effect_greyscale.init();
+	effect_greyscale.load("shaders/test.vert", GL_VERTEX_SHADER);
+	effect_greyscale.load("shaders/test.frag", GL_FRAGMENT_SHADER);
+	effect_greyscale.link();
+
+	/* test shaders */
+	effect_greyscale.enable();
 
 	/*Game and round end conditions*/
 	gameover = 0;
@@ -134,6 +156,7 @@ bool interface::screenInit()
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
+	
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
