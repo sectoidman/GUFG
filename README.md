@@ -21,6 +21,7 @@ GUFG should work with up-to-date packages from your Linux distribution or depend
 Try out the [installer](https://github.com/Advael/GUFG/blob/installer/GUFG-0.0.1-win32.exe?raw=true)!
 
 Or, you can attempt to build the latest version from source.
+
 1. Download and install [CMake](http://www.cmake.org/files/v2.8/cmake-2.8.8-win32-x86.exe), and add it to your PATH when prompted to do so.
 2. Download and install [MinGW](http://sourceforge.net/projects/mingw/files/latest/download), using [this distribution](http://nuwen.net/mingw.html). SDL and SDL\_image depend on zlib and libpng, so make sure your MinGW environment includes these libraries.
 3. Add MinGW's `bin` and `include` directories to your PATH manually.
