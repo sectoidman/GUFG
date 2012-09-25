@@ -1,11 +1,11 @@
 #Ground Up Fighting Game 
-GUFG is an open-source, gameplay-focused 2D fighting game developed from the bottom up, one feature at a time.
+GUFG is an open-source, gameplay-focused 2D fighting game developed from the bottom up.
 
-The game is built using C++, SDL, and OpenGL without any random number generators..
+The game is built using C++, SDL, and OpenGL without any random number generators.
 
 This repository contain the complete game, including source code and data files such as art assets in current use.
 
-##Building and Testing GUFG
+##Building GUFG
 GUFG currently works on Linux and Windows.
 ###Building on Linux
 1. Install GUFG's dependencies. 
@@ -36,10 +36,28 @@ Or, you can attempt to build the latest version from source.
 
 ##Contributing to GUFG
 
-###Testing and Contributing on Mac OS X
-
 ###Discussion on Google Documents
 Collaboration via Git and GitHub are the primary means of development for GUFG.
 However, design and discussion of game elements such as new characters is largely located in a Google Docs collection.
-For access to that collection, please email eshink@gmail.com.
+While some of the information there is being migrated to the Git repository and GitHub wiki, Google Docs collaborative editing has been, and may remain, important to GUFG design.
+
+For access to the collection, please email eshink@gmail.com.
+
+
+###Playtesting
+Try out a build described above! 
+If it doesn't work in some context, we'd like to know.
+
+While the Alpha branch currently includes only 2 characters, they are relatively "finished" and can be play tested.
+
+###Character Development
+
+###Engine Development
+
+###Testing and Contributing on Mac OS X and Clang/LLVM
+We have only taken a preliminary look at GUFG on Mac OS X.
+While GUFG should, in theory, be completely Mac OS X compatible,[Clang/LLVM reject some of the code due to their stricter C++ standards compliance](https://github.com/h-forrest-alexander/GUFG/issues/1).
+GUFG has been partially built on Mac OS X 10.8.1, XCode 4.4 and the Command Line Tools (found in the XCode Preferences dialog), CMake 2.8.9, SDL 1.2.15 and SDL\_image 1.2.12. 
+Right now, the first block to a working Mac OS X build (and possibly even a bundle) is some variable length arrays necessary to the game logic. 
+In addition, [GUFG cannot be currently built with Linux and Clang/LLVM](https://github.com/h-forrest-alexander/GUFG/issues/2) due to upstream incompatibilities with GCC stdlibc++.
 
