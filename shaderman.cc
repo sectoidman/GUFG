@@ -1,20 +1,40 @@
 #include "shaderman.h"
-#include <gl/glew.h>
 
 /* shader manager class */
 
 
 shaderman::shaderman() 
 {
+	programID = 0; 
+}
+
+shaderman::~shaderman() 
+{
+
+}
+
+/* 
+ * glCreateProgram and glDestroyProgram have to be called
+ * after an openGL instance is created, or bad things happen.
+ */
+
+void shaderman::init()
+{
+	if (programID != 0) {
+		glDeleteProgram(programID);
+	}
+
+	glewInit();
 	programID = glCreateProgram();
 
 	if (programID == 0)
 		throw std::runtime_error("Failed to create shader program.");
 }
 
-shaderman::~shaderman() 
+void shaderman::destroy()
 {
 	glDeleteProgram(programID);
+	programID = 0;	
 }
 
 /* 
@@ -25,6 +45,8 @@ shaderman::~shaderman()
  * it (that is, it sets the openGL delete flag on the object, 
  * which won't actually be deleted until the program is linked 
  * and the object is detatched).
+ *
+ * Type is either GL_VERTEX_SHADER or GL_FRAGMENT_SHADER.
  *  
  */
 
@@ -41,9 +63,15 @@ void shaderman::load(const char* path, GLenum type)
 		throw std::runtime_error("Couldn't open shader files.");
 	}
 
-	size = (int) source.tellg();
+	size = source.tellg();
+
 	buf = new char [size];
+	for (int i = 0; i < size; i++) {
+		buf[i] = '\0';
+	}
+
 	source.seekg(0, std::ios::beg);
+	source.clear();
 	source.read(buf, size);
 
 	shaderID = glCreateShader(type);
@@ -59,7 +87,7 @@ void shaderman::load(const char* path, GLenum type)
 		throw new std::runtime_error(buf);
 	}
 
-	glAttachShader(shaderID, programID);
+	glAttachShader(programID, shaderID);
 	shaderObjects.push_back(shaderID);
 	glDeleteShader(shaderID);
 	delete [] buf;
@@ -76,16 +104,21 @@ void shaderman::load(const char* path, GLenum type)
 void shaderman::link() 
 {
 	int status;
+	int size;
+	char* buf;
 
 	glLinkProgram(programID);
-	glGetProgram(programID, GL_LINK_STATUS, &status);
+	glGetProgramiv(programID, GL_LINK_STATUS, &status);
 
 	if (!status) {
-		throw std::runtime_error("OpenGL shader linking error.");
+		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &size);
+		buf = new char[size];
+		glGetProgramInfoLog(programID, size, &size, buf);
+		throw std::runtime_error(buf);
 	}
 
-	for (int i = 0; i < shaderObjects.size(); i++) {
-		glDetachShader(shaderObjects[i]);
+	for (unsigned int i = 0; i < shaderObjects.size(); i++) {
+		glDetachShader(programID, shaderObjects[i]);
 	}
 
 	shaderObjects.clear();

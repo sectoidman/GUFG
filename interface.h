@@ -60,9 +60,9 @@ public:
 	SDL_Surface *screen;
 	GLuint glyph[91];
 	GLuint background;
+	shaderman effect_greyscale;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	shaderman effect_greyscale;
 	bool fullscreen;	//For use with later
 	bool initd:1;
 	bool shortcut:1;
