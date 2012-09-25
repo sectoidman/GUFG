@@ -1,3 +1,6 @@
 [submodule "creative"]
 	path = creative
 	url = git@github.com:h-forrest-alexander/GUFG-creative
+[submodule "GUFG.wiki"]
+	path = GUFG.wiki
+	url = git@github.com:h-forrest-alexander/GUFG.wiki.git
