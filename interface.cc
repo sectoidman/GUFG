@@ -85,12 +85,11 @@ interface::interface()
 
 	/* init shaders */
 	effect_greyscale.init();
-	effect_greyscale.load("shaders/test.vert", GL_VERTEX_SHADER);
-	effect_greyscale.load("shaders/test.frag", GL_FRAGMENT_SHADER);
+	effect_greyscale.load("shaders/grey.frag", GL_FRAGMENT_SHADER);
 	effect_greyscale.link();
 
 	/* test shaders */
-	effect_greyscale.enable();
+	//effect_greyscale.enable();
 
 	/*Game and round end conditions*/
 	gameover = 0;
