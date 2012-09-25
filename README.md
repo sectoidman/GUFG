@@ -1,0 +1,43 @@
+#Ground Up Fighting Game 
+GUFG is an open-source, gameplay-focused 2D fighting game developed from the bottom up, one feature at a time.
+
+The game is built using C++, SDL, and OpenGL without any random number generators..
+
+This repository contain the complete game, including source code and data files such as art assets in current use.
+
+##Building and Testing GUFG
+GUFG currently works on Linux and Windows.
+###Building on Linux
+1. Install GUFG's dependencies. 
+GUFG should work with up-to-date packages from your Linux distribution or dependencies built from source.
+    * [SDL](http://www.libsdl.org/download-1.2.php)
+    * [SDL\_image](http://www.libsdl.org/projects/SDL_image/)
+    * [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux)
+    * [Glut](http://freeglut.sourceforge.net/)
+2. Clone this repository (`git clone git@github.com:Advael/GUFG.git`) and `cd` to it.
+3. `cmake .; make; ./gufg`
+
+###Building on Windows
+Try out the [installer](https://github.com/Advael/GUFG/blob/installer/GUFG-0.0.1-win32.exe?raw=true)!
+
+Or, you can attempt to build the latest version from source.
+1. Download and install [CMake](http://www.cmake.org/files/v2.8/cmake-2.8.8-win32-x86.exe), and add it to your PATH when prompted to do so.
+2. Download and install [MinGW](http://sourceforge.net/projects/mingw/files/latest/download), using [this distribution](http://nuwen.net/mingw.html). SDL and SDL\_image depend on zlib and libpng, so make sure your MinGW environment includes these libraries.
+3. Add MinGW's `bin` and `include` directories to your PATH manually.
+4. Download the development packages for [SDL](http://www.libsdl.org/release/SDL-devel-1.2.15-mingw32.tar.gz) and [SDL\_image](http://www.libsdl.org/projects/SDL_image/release/SDL_image-devel-1.2.12-VC.zip) and install the `.dll` and `.a` library files in your MinGW's `bin` directory, and the `.h` files in MinGW's `include` directory.
+5. Download the OpenGL libraries and [install them (see section 2.060)](http://www.opengl.org/archives/resources/faq/technical/gettingstarted.htm).
+6. Clone this Git repository (git@github.com:Advael/GUFG.git).
+7. Use the CMake GUI to Configure and Generate with the directory to which you cloned the repository selected for both "source directory" and "build directory." 
+8. Use `cmd.exe` to `cd` to the repository directory.
+9. Run `make`.
+10. Run `gufg.exe`.
+
+
+##Contributing to GUFG
+
+###Testing and Contributing on Mac OS X
+
+###Discussion on Google Documents
+Collaboration via Git and GitHub are the primary means of development for GUFG.
+However, design and discussion of game elements such as new characters is largely located in a Google Docs collection.
+For access to that collection, please email eshink@gmail.com.
