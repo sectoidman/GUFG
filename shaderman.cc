@@ -64,9 +64,8 @@ void shaderman::load(const char* path, GLenum type)
 	}
 
 	size = source.tellg();
-
-	buf = new char [size];
-	for (int i = 0; i < size; i++) {
+	buf = new char [size+1];
+	for (int i = 0; i < size+1; i++) {
 		buf[i] = '\0';
 	}
 
@@ -84,7 +83,9 @@ void shaderman::load(const char* path, GLenum type)
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &size);
 		buf = new char[size]; 
 		glGetShaderInfoLog(shaderID, size, &size, buf);
-		throw new std::runtime_error(buf);
+		std::cerr << buf << std::endl;
+		delete [] buf;
+		throw new std::runtime_error("OpenGL shader compile error.");
 	}
 
 	glAttachShader(programID, shaderID);
@@ -114,7 +115,9 @@ void shaderman::link()
 		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &size);
 		buf = new char[size];
 		glGetProgramInfoLog(programID, size, &size, buf);
-		throw std::runtime_error(buf);
+		std::cerr << buf << std::endl;
+		delete [] buf;
+		throw std::runtime_error("OpenGL shader link error.");
 	}
 
 	for (unsigned int i = 0; i < shaderObjects.size(); i++) {
