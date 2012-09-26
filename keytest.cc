@@ -16,8 +16,7 @@ using namespace internal;
 
 int main(int argc, char* argv[])
 {
-	/**GUFG uses the `chrono` component of stdlibc++
-	 * to frame lock the game**/
+	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
 	const int FPS = 60;
 	typedef chrono::duration<float,std::ratio<1,FPS>> frame_t ;
 	chrono::high_resolution_clock::time_point frameStart;
@@ -26,7 +25,7 @@ int main(int argc, char* argv[])
 	if(argc > 1) rounds = atoi(argv[1]);
 	if(rounds > 0 && rounds < 10) game.numRounds = rounds;
 
-	/** As long as the game doesn't detect events that should cause a "game over", it loops over a few basic resolutions of game events **/
+	/*As long as the game doesn't detect a request to quit, it loops over a few basic resolutions of game events*/
 	while (!game.gameover){
 		frameStart = chrono::high_resolution_clock::now();
 		game.readInput(); 
@@ -35,10 +34,11 @@ int main(int argc, char* argv[])
 		/*Now eat up the rest of the frame: 
 		 *Check the time elapsed thus far in a loop
 		 *until it is one frame_t unit.
-		 *Then go on to the next frame*/
-		do { frameElapsed = chrono::duration_cast<frame_t>(chrono::high_resolution_clock::now() - frameStart);
-		} while(frameElapsed.count() < 1);
+		 *Then go on to the next frame
+		 */
+		do frameElapsed = chrono::duration_cast<frame_t>(chrono::high_resolution_clock::now() - frameStart);
+		while(frameElapsed.count() < 1);
 	}
-    return 0;
+	return 0;
 }
 
