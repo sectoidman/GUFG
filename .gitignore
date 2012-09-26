@@ -8,6 +8,7 @@ bmpout
 *.exe
 *.lib
 *.cmake
+*.swp
 Makefile
 cmake_install.cmake
 CMakeCache.txt
