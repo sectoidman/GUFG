@@ -51,8 +51,10 @@ If it doesn't work in some context, we'd like to know.
 While the Alpha branch currently includes only 2 characters, they are relatively "finished" and can be play tested.
 
 ###Character Development
+[Starting a new character should be easy](https://github.com/h-forrest-alexander/GUFG/wiki/How-To-Develop-A-Character). Let us know if you run into any problems.
 
 ###Engine Development
+
 
 ###Testing and Contributing on Mac OS X and Clang/LLVM
 We have only taken a preliminary look at GUFG on Mac OS X.
