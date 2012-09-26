@@ -18,6 +18,7 @@ interface::interface()
 	char buffer[50];
 	numChars = 2;
 	shortcut = false;
+	boxen = false;
 	std::ifstream read;
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; //By screen, I mean the window the game occurs in.
@@ -26,7 +27,7 @@ interface::interface()
 	bg.w = 3200;       //By background, I mean the thing the characters actually move on. Bigger than the screen.
 	bg.h = 1800;
 	floor = 50; //Value of the floor. This is the maximum distance downward that characters can travel.
-	wall = 50;         //The size of the offset at which characters start to scroll the background, and get stuck.
+	wall = 50; //The size of the offset at which characters start to scroll the background, and get stuck.
 
 	select[0] = 0;
 	select[1] = 0;
@@ -83,6 +84,7 @@ interface::interface()
 	matchInit();
 }
 
+/*This function loads a few miscellaneous things the game will need in all cases*/
 void interface::loadMisc()
 {
 	char buffer[200];
@@ -107,6 +109,7 @@ void interface::loadMisc()
 	announceSelect = Mix_LoadWAV("Misc/Announcer/Select.ogg");
 }
 
+/*Initialize SDL and openGL, creating a window, among other things*/
 bool interface::screenInit()
 {
 	/*Initialize SDL*/
