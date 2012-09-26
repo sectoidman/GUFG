@@ -110,7 +110,7 @@ void interface::draw()
 		if(things[i]->spriteCheck()) 
 			things[i]->draw(bg.x, bg.y, scalingFactor);
 		glDisable(GL_TEXTURE_2D);
-		if(!things[i]->spriteCheck())
+		if(!things[i]->spriteCheck() || boxen)
 			things[i]->drawBoxen(bg.x, bg.y, scalingFactor);
 		if(i < 2)
 			p[i]->drawHitParticle(bg.x, bg.y, scalingFactor);

@@ -63,6 +63,7 @@ public:
 	SDL_Rect prox;
 	bool fullscreen;	//For use with later
 	bool initd:1;
+	bool boxen:1;
 	bool shortcut:1;
 	int combo[2];
 	int damage[2];
