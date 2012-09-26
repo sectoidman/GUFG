@@ -16,15 +16,17 @@
 class interface
 {
 public:
-	interface();		//Constructor!
+	interface();
 	~interface();
-	/*Important interface functions that will remain interface functions*/
 
-	void readInput();	//Reads input from players.
-	void resolve();		//Main resolution function per frame. Happens exactly once per frame.
-	void draw();		//The primary function in charge of drawing things on the screen.
-	void runTimer();	//Runs the timer. Currently just a decrementer. May always just be a decrementer.
-	void spriteInit();	//Part of the rendering toolchain. Sets up sprites for drawing.
+/*Important interface functions that will remain interface functions*/
+
+/**The main game loop runs readInput() and resolve() each exactly once per frame loop. **/
+	void readInput();.
+	void resolve();
+	void draw();		/**The primary function in charge of drawing things on the screen.**/
+	void runTimer();	/** Currently just a decrementer. May always just be a decrementer.**/
+	void spriteInit();	/**Part of the rendering toolchain. Sets up sprites for drawing.**/.
 	bool screenInit();
 	int drawGlyph(const char *, int, int, int, int, int);
 	bool screenInit(int, int);
@@ -61,7 +63,7 @@ public:
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	bool fullscreen;	//For use with later
+	bool fullscreen;
 	bool initd:1;
 	bool boxen:1;
 	bool shortcut:1;
