@@ -8,7 +8,7 @@ bool utility::activate(int pos[5], bool neg[5], int pattern, int t, int f, int *
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
-			if(pos[i] == 1 && !neg[i]) return 0;
+			if(pos[i] != 1 && !neg[i]) return 0;
 		} else if(pos[i] == 1) return 0;
 	}
 	if(t > tolerance) return 0;
