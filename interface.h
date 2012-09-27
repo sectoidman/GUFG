@@ -18,15 +18,14 @@ class interface
 public:
 	interface();
 	~interface();
-
 /*Important interface functions that will remain interface functions*/
 
-/**The main game loop runs readInput() and resolve() each exactly once per frame loop. **/
-	void readInput();.
-	void resolve();
-	void draw();		/**The primary function in charge of drawing things on the screen.**/
-	void runTimer();	/** Currently just a decrementer. May always just be a decrementer.**/
-	void spriteInit();	/**Part of the rendering toolchain. Sets up sprites for drawing.**/.
+/*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
+	void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
+	void resolve();		/*The main loop of the game*/
+	void draw();		/*The primary function in charge of drawing things on the screen.*/
+	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
+	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/.
 	bool screenInit();
 	int drawGlyph(const char *, int, int, int, int, int);
 	bool screenInit(int, int);
@@ -51,7 +50,7 @@ public:
 	void writeImage(const char*, int, action*);
 
 	player * p[2];
-	bool * sAxis[2];	//Initial input buffering.
+	bool * sAxis[2];
 	int * posEdge[2];
 	bool * negEdge[2];
 	bool select[2];
@@ -73,7 +72,7 @@ public:
 	int numRounds;
 	bool gameover;
 	float scalingFactor, sf;
-	int grav;		//Gravitational constant. 
+	int grav;	//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
 	Mix_Music *menuMusic;
