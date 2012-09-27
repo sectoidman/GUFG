@@ -183,7 +183,6 @@ public:
 	special() {}
 	special(const char*);
 	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
-	int chip;
 };
 
 class negNormal : virtual public action {

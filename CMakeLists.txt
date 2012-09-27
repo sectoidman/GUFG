@@ -76,7 +76,7 @@ find_package(Doxygen)
 if (DOXYGEN_FOUND)
 	configure_file(Doxyfile.in
 	${PROJECT_BINARY_DIR}/Doxyfile @ONLY IMMEDIATE)
-	add_custom_target(doc ALL
+	add_custom_target(doc
 	${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 endif(DOXYGEN_FOUND)
 
