@@ -1,5 +1,6 @@
 /**GUFG
  *Written by Alex Kelly in 2012
+ *Modified by H Forrest Alexander just now.
  *Under the MIT OSI license
  *For detailed licensing information, see the COPYING file in this directory.
  *This file runs a loop of everything that takes place in the GUFG engine. 
