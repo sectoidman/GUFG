@@ -9,7 +9,6 @@
 
 #include <SDL/SDL.h>
 #include <stdio.h>
-#include "compat.h"
 #include "player.h"
 #ifndef INTERFACE
 #define INTERFACE
