@@ -5,7 +5,6 @@
  */
 
 #include <SDL/SDL.h>
-#include "compat.h"
 #include "auxil.h"
 #include "masks.h"
 #ifndef ACTION
