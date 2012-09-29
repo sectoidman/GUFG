@@ -1,4 +1,4 @@
 //1 - Red
-#include "red.h"
+#include "characters/red.h"
 //2 - Yellow
-#include "yellow.h"
+#include "characters/yellow.h"

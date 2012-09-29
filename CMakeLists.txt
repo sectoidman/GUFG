@@ -18,8 +18,8 @@ set (gufg_VERSION_PATCH 1)
 aux_source_directory (	src/engine ENGINE)
 aux_source_directory (	src/characters CHARACTERS)
 
-set (SOURCES	ENGINE
-		CHARACTERS) 
+set (SOURCES	${ENGINE}
+		${CHARACTERS}) 
 
 set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)
