@@ -22,7 +22,6 @@ public:
 	virtual void prepHooks(int, action *&, action *&, action *&, int[], int[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 	virtual bool death(action *&, int) { return 0; }
-
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&) { return 0; }
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, action *&, action *&, hStat&, int&, int);
@@ -50,6 +49,7 @@ public:
 
 	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
 
+	virtual int comboState(action *);
 	virtual void neutralize(action *&);
 	virtual void drawMeters(int, float, int);
 	virtual void init(action *&);

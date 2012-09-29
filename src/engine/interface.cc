@@ -405,14 +405,18 @@ void interface::resolve()
 		for(int i = 0; i < 2; i++){
 			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
-			if(p[i]->cMove != p[i]->pick()->fall && !p[i]->cMove->arbitraryPoll(1, 0) && !roundEnd){
-				if(p[i]->cMove == p[i]->pick()->untech) illegit[(i+1)%2] = 1;
-				else{
+			if(!roundEnd){
+				switch (p[i]->pick()->comboState(p[i]->cMove)){ 
+				case -2: 
+					illegit[(i+1)%2] = 1;
+					break;
+				case 0:
 					combo[(i+1)%2] = 0;
 					damage[(i+1)%2] = 0;
 					p[i]->elasticX = 0;
 					p[i]->elasticY = 0;
 					illegit[(i+1)%2] = 0;
+					break;
 				}
 			}
 		}
