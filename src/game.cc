@@ -8,7 +8,7 @@
  **/
 
 #include "compat.h"
-#include "interface.h"
+#include "engine/interface.h"
 #include <SDL/SDL_opengl.h>
 #include <stdlib.h>
 #include <unistd.h>
