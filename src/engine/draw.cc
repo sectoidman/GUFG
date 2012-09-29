@@ -110,7 +110,7 @@ void interface::draw()
 		if(things[i]->spriteCheck()) 
 			things[i]->draw(bg.x, bg.y, scalingFactor);
 		glDisable(GL_TEXTURE_2D);
-		if(!things[i]->spriteCheck())
+		if(!things[i]->spriteCheck() || boxen)
 			things[i]->drawBoxen(bg.x, bg.y, scalingFactor);
 		if(i < 2)
 			p[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
@@ -380,8 +380,8 @@ void interface::writeImage(const char * movename, int frame, action * move)
 			maxY = move->hitbox[frame][i].y + move->hitbox[frame][i].h;
 	}
 	char fname[200];
-	int w = maxX + 5;
-	int h = maxY + 5;
+	int w = maxX + realPosX;
+	int h = maxY;
 	int x = 0;
 	int y = 0;
 	if(realPosY < 0){ 
@@ -389,10 +389,8 @@ void interface::writeImage(const char * movename, int frame, action * move)
 		y = realPosY;
 	}
 	if(realPosX < 0){
-		w -= realPosX;
 		x = realPosX;
 	}
-	x -= 10; y -= 10; w += 20; h += 20;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	Uint32 rmask = 0xff000000;
 	Uint32 gmask = 0x00ff0000;
@@ -413,7 +411,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
 
-	move->drawBoxen(frame, x, y);
+	move->drawBoxen(frame, x, y - h);
 
 	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 

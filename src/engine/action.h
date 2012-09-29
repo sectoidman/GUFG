@@ -5,7 +5,6 @@
  */
 
 #include <SDL/SDL.h>
-#include "compat.h"
 #include "auxil.h"
 #include "masks.h"
 #ifndef ACTION
@@ -27,15 +26,15 @@ struct attractor{
 
 struct hStat{
 	hStat() : damage(0), chip(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
-	int damage;         //How much damage the action does
-	int chip;
-	int stun;           //How much stun the action does
-	int push;           //How much pushback the action does
-	int lift;           //How much the action lifts an aerial opponent.
-	int untech;
-	int blowback;
+	int damage;	/*How much damage the hit does*/
+	int chip;	/*How much damage the hit does if blocked*/
+	int stun;	/*How many frames of stun the hit causes*/
+	int push;	/*How many pixels the hit pushes the opponent back*/
+	int lift;	/*How many pixels the hit lifts an aerial opponent.*/
+	int untech;	/*How many more frames of stun are added for an aerial hit*/
+	int blowback;	/*How many pixels per frame are added to push in the air*/
 	int hover;
-	bool launch:1;
+	bool launch:1;	/*Does this hit put the opponent in the air*/
 	bool ghostHit:1;
 	bool wallBounce:1;
 	bool floorBounce:1;
@@ -183,7 +182,6 @@ public:
 	special() {}
 	special(const char*);
 	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
-	int chip;
 };
 
 class negNormal : virtual public action {

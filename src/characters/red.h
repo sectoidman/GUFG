@@ -1,17 +1,16 @@
 #ifndef RED_INCLUDED
 #define RED_INCLUDED
-#include "character.h"
+#include "../engine/character.h"
 class red : public character{
 public:
 	red();
-	red(red*);
 	void touch(void*);
 	action * createMove(char*);
 	void drawMeters(int, float, int);
 	void tick();
 	void step(action *&, int&, int&);
 	void init(action *&);
-	red * backup;
+	instance * backup;
 };
 
 class redCancel : virtual public special{

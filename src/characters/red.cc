@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../engine/interface.h"
 red::red()
 {
 	delete [] meter;
@@ -8,19 +8,7 @@ red::red()
 	airHead = new actionTrie;
 	head = new actionTrie;
 	build("Red", "Red");
-	backup = new red(this);
-}
-
-red::red(red* b)
-{
-	delete [] meter;
-	
-	meter = new int[5];
-	
-	airHead = new actionTrie;
-	head = new actionTrie;
-	build("Red", "Red");
-	backup = b;
+	backup = new instance;
 }
 
 void red::tick()

@@ -1,50 +1,41 @@
-/*Interface class for GUFG
- *This will run all the main game functions within GUFG
- *
- *Written by Alex Kelly in 2012
- *License to come
+/*Interface class for GUFG.
+ *This will run all the main game functions within GUFG.
+ *No kidding.
+ *Written by Alex Kelly in 2012.
+ *Mangled by H Forrest Alexander in the autumn of that same year.
+ *I think there's a license somewhere.
  */
 
 #include "interface.h"
-#include <cstring>
-#include <math.h>
-#include <assert.h>
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
+#include <assert.h>
+#include <cstring>
 #include <fstream>
 #include <iostream>
-
+#include <math.h>
 interface::interface()
 {
 	char buffer[50];
 	numChars = 3;
 	shortcut = false;
+	boxen = false;
 	std::ifstream read;
 
 	/*Initialize some pseudo-constants*/
 
-	//By screen, I mean the window the game occurs in.
-	screenWidth = 1600;
+	screenWidth = 1600; /*screen{Width,Height} describe the size of the window holding the game.*/
 	screenHeight = 900;
 	screen = NULL;
-
-	//By background, I mean the thing the characters actually move on. 
-	//Bigger than the screen.
-	bg.w = 3200;
+	bg.w = 3200; /*The screen gives a partial view of the background, which is the area available for character movement.*/
 	bg.h = 1800;
-	
-	//Value of the floor. This is the maximum distance downward that
-	//characters can travel.
-	floor = 50;
-
-	//The size of the offset at which characters start to scroll the 
-	//background, and get stuck.
-	wall = 50;
+	floor = 50; /*Value of the floor. This is the maximum distance downward that characters can travel.*/
+	wall = 50; /*The size of the offset at which characters start to scroll the background, and get stuck.*/
 
 	select[0] = 0;
 	select[1] = 0;
 
-	read.open("Misc/.res.conf");
+	read.open("Misc/res.conf");
 	if(read.fail()){ 
 		scalingFactor = 0.5;
 		fullscreen = false;
@@ -100,9 +91,11 @@ interface::interface()
 
 	/*Start a match*/
 	things = NULL;
+	Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 }
 
+/*This function loads a few miscellaneous things the game will need in all cases*/
 void interface::loadMisc()
 {
 	char buffer[200];
@@ -124,8 +117,10 @@ void interface::loadMisc()
 	announceFight = Mix_LoadWAV("Misc/Announcer/Fight.ogg");
 	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");
 	announceEnd[1] = Mix_LoadWAV("Misc/Announcer/Down.ogg");
+	announceSelect = Mix_LoadWAV("Misc/Announcer/Select.ogg");
 }
 
+/*Initialize SDL and openGL, creating a window, among other things*/
 bool interface::screenInit()
 {
 	/*Initialize SDL*/
@@ -155,7 +150,7 @@ bool interface::screenInit()
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
-	
+
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -792,6 +787,7 @@ void interface::reMenu()
 					select[1] = 0;
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
+					Mix_PlayChannel(3, announceSelect, 0);
 					matchInit();
 					break;
 				case 3:

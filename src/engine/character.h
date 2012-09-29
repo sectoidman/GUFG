@@ -4,7 +4,6 @@
  *Under MIT OSI license, see "COPYING" for details
  */
 #include <SDL/SDL.h>
-#include "compat.h"
 #include "trie.h"
 #ifndef CHARACTER
 #define CHARACTER

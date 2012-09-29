@@ -11,7 +11,6 @@
 #include <iostream>
 #include <fstream>
 #include "action.h"
-#include "compat.h"
 
 #ifndef MOVETRIE
 #define MOVETRIE
