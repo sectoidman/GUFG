@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include "auxil.h"
-#include "compat.h"
+#include "../compat.h"
 
 using namespace std;
 

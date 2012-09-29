@@ -1,6 +1,6 @@
 #ifndef RED_INCLUDED
 #define RED_INCLUDED
-#include "character.h"
+#include "../engine/character.h"
 class red : public character{
 public:
 	red();

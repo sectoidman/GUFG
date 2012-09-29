@@ -3,7 +3,7 @@
  *Written by Alex Kelly in 2012
  *Under MIT OSI license, see the file "COPYING" for details
  */
-#include "charlist.h"
+#include "../charlist.h"
 #ifndef PLAYER
 #define PLAYER
 class instance{
