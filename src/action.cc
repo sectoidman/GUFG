@@ -181,6 +181,7 @@ bool action::setParameter(char * buffer)
 
 		token = strtok(NULL, "\t: \n-");
 		maxHold = atoi(token);
+		return 1;
 	} else if (!strcmp("Counterhit", token)) {
 		parseProperties(savedBuffer, 1);
 		return 1;
