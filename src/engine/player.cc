@@ -471,14 +471,17 @@ void instance::pullVolition()
 	}
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
-			SDL_Rect * temp = cMove->delta[currentFrame];
-			for(int i = 0; i < cMove->deltaComplexity[currentFrame]; i++){
+			int complexity;
+			SDL_Rect * temp; 
+			cMove->pollDelta(temp, complexity, currentFrame);
+			for(int i = 0; i < complexity; i++){
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
 						addVector(temp[i]);
 					}
 				}
 			}
+			delete [] temp;
 		}
 	}
 }
