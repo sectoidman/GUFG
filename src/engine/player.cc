@@ -697,6 +697,7 @@ void player::getThrown(action *toss, int x, int y)
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
+	pick()->neutralize(cMove);
 	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType);
 	updateRects();
 }
