@@ -522,8 +522,8 @@ bool action::check(SDL_Rect &p, int resource[])
 
 void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)
 {
-	if(modifier && basis) pollRects(c, r, rc, b, hc, currentFrame, connectFlag);
-	else{
+	if(modifier && basis) basis->pollRects(c, r, rc, b, hc, currentFrame, connectFlag);
+	else {
 		if(f >= frames) f = frames-1;
 		if(rc > 0 && r) delete [] r;
 		if(hc > 0 && b) delete [] b;
@@ -555,20 +555,23 @@ void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc
 
 void action::pollDelta(SDL_Rect *& d, int & dc, int f)
 {
-	if(modifier && basis) pollDelta(d, dc, currentFrame);
-	dc = deltaComplexity[f];
-	d = new SDL_Rect[dc];
-	SDL_Rect * tempdelta = delta[f];
-	for(int i = 0; i < dc; i++){
-		d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
-		d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
+	if(modifier && basis) basis->pollDelta(d, dc, currentFrame);
+	else{
+		if(f >= frames) f = frames-1;
+		dc = deltaComplexity[f];
+		d = new SDL_Rect[dc];
+		SDL_Rect * tempdelta = delta[f];
+		for(int i = 0; i < dc; i++){
+			d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
+			d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
+		}
 	}
 }
 
 int action::displace(int x, int &y, int f)
 {
-	int dx = 0, dy = y;
-	if(modifier && basis) dx += displace(x, y, currentFrame);
+	int dx = 0;
+	if(modifier && basis) dx += basis->displace(x, y, currentFrame);
 	if(f == displaceFrame){
 		y += displaceY;
 		dx += displaceX;
@@ -578,7 +581,7 @@ int action::displace(int x, int &y, int f)
 
 void action::pollStats(hStat & s, int f, bool CH)
 {
-	if(modifier && basis) pollStats(s, currentFrame, CH);
+	if(modifier && basis) basis->pollStats(s, currentFrame, CH);
 	else{
 		int c = calcCurrentHit(f);
 		s.damage = stats[c].damage + CHStats[c].damage * CH;
@@ -612,20 +615,26 @@ void action::pollStats(hStat & s, int f, bool CH)
 bool action::cancel(action * x, int& c, int &h)
 {
 	cancelField r;
-	r.i = x->state[c].i;
-	if(h > 0 && h == c){ 
-		r.i = r.i + x->stats[h - 1].hitState.i;
-	}
 	if(x == NULL) return 1;
-	else{
-		if(allowed.i & r.i){
-			if(x == this){
-				if(c == 0) return 0;
-				else if(allowed.b.chain1) return 1;
-				else return 0;
-			}
-			else return 1;
+	if(x->modifier && x->basis){
+		r.i = x->basis->state[x->connectFlag].i;
+		if(x->hitFlag > 0 && x->hitFlag == x->connectFlag){ 
+			r.i = r.i + x->basis->stats[x->hitFlag - 1].hitState.i;
 		}
+		x = basis;
+	} else {
+		r.i = x->state[c].i;
+		if(h > 0 && h == c){ 
+			r.i = r.i + x->stats[h - 1].hitState.i;
+		}
+	}
+	if(allowed.i & r.i){
+		if(x == this){
+			if(c == 0) return 0;
+			else if(allowed.b.chain1) return 1;
+			else return 0;
+		}
+		else return 1;
 	}
 	return 0;
 }
@@ -637,7 +646,16 @@ void action::step(int *& resource, int &f)
 		else resource[0] = 300;
 	}
 	f++;
-	if(modifier && basis) currentFrame++;
+	if(modifier && basis){
+		currentFrame++;
+		if(basis && currentFrame >= basis->frames){
+		if(basis->next) basis = basis->next;
+		else basis = NULL;
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
+}
 }
 
 int action::calcCurrentHit(int frame)
