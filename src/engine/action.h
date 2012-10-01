@@ -137,6 +137,10 @@ public:
 	action ** onConnect;
 	action * attempt;
 	action * riposte;
+
+	action * basis;
+	int cFlag, currentFrame, hFlag;
+
 	attractor * distortion;
 	int distortSpawn;
 	int attemptStart, attemptEnd;
@@ -162,6 +166,7 @@ public:
 	GLuint *sprite;
 
 	bool isProjectile:1;
+	bool modifier:1;
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*, bool);
 	virtual void zero();
