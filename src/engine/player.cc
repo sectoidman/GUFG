@@ -389,12 +389,18 @@ void instance::step()
 	if(pick()->death(cMove, currentFrame)) dead = true;
 	if(posX > 3300 || posX < -100) dead = true;
 	pick()->step(cMove, currentFrame, freeze);
-
 	if(cMove && currentFrame >= cMove->frames){
-		cMove = cMove->next;
-		currentFrame = 0;
-		connectFlag = 0;
-		hitFlag = 0;
+		if(cMove->modifier && cMove->basis){ 
+			cMove = cMove->basis;
+			currentFrame = cMove->currentFrame;
+			connectFlag = cMove->connectFlag;
+			hitFlag = cMove->hitFlag;
+		} else {
+			cMove = cMove->next;
+			currentFrame = 0;
+			connectFlag = 0;
+			hitFlag = 0;
+		}
 	}
 }
 
@@ -475,7 +481,6 @@ void instance::pullVolition()
 			int complexity;
 			SDL_Rect * temp; 
 			cMove->pollDelta(temp, complexity, currentFrame);
-			setPosition(posX + facing*cMove->displace(posX, posY, currentFrame), posY);
 			for(int i = 0; i < complexity; i++){
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
