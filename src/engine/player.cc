@@ -469,15 +469,13 @@ void instance::pullVolition()
 				momentumComplexity = 0;
 		}
 	}
-	if(cMove->displaceFrame == currentFrame) setPosition(posX + facing*cMove->displaceX, posY + cMove->displaceY);
+	setPosition(posX + facing*cMove->displace(posX, posY, currentFrame), posY);
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
 			int complexity;
 			SDL_Rect * temp; 
 			cMove->pollDelta(temp, complexity, currentFrame);
-			if(cMove->displaceFrame == currentFrame){ 
-				setPosition(posX + facing*cMove->displace(posX, posY), posY);
-			}
+			setPosition(posX + facing*cMove->displace(posX, posY, currentFrame), posY);
 			for(int i = 0; i < complexity; i++){
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
