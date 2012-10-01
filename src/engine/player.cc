@@ -469,6 +469,7 @@ void instance::pullVolition()
 				momentumComplexity = 0;
 		}
 	}
+	if(cMove->displaceFrame == currentFrame) setPosition(posX + facing*cMove->displaceX, posY + cMove->displaceY);
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
 			int complexity;

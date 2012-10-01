@@ -165,6 +165,14 @@ bool action::setParameter(char * buffer)
 		name = new char[strlen(token)+1];
 		sprintf(name, "%s", token);
 		return 1;
+	} else if (!strcmp("Displace", token)) {
+		token = strtok(NULL, "\t:\n");
+		displaceFrame = atoi(token);
+		token = strtok(NULL, "\t:\n");
+		displaceX = atoi(token);
+		token = strtok(NULL, "\t:\n");
+		displaceY = atoi(token);
+		return 1;
 	} else if (!strcmp("Buffer", token)) {
 		token = strtok(NULL, "\t: \n");
 		tolerance = atoi(token);
