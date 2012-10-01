@@ -474,6 +474,9 @@ void instance::pullVolition()
 			int complexity;
 			SDL_Rect * temp; 
 			cMove->pollDelta(temp, complexity, currentFrame);
+			if(cMove->displaceFrame == currentFrame){ 
+				setPosition(posX + facing*cMove->displace(posX, posY), posY);
+			}
 			for(int i = 0; i < complexity; i++){
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){

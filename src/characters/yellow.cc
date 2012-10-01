@@ -146,19 +146,19 @@ bool flashSummon::check(SDL_Rect& p, int resource[])
 	else return action::check(p, resource);
 }
 
-void flashSummon::execute(action * last, int *& resource)
+void flashSummon::execute(action * last, int *& resource, int &f, int &c, int &h)
 {
 	if(resource[3] > 0) uFlag = 1;
 	else uFlag = 0;
-	action::execute(last, resource);
+	action::execute(last, resource, f, c, h);
 }
 
-void flashStep::execute(action * last, int *& resource)
+void flashStep::execute(action * last, int *& resource, int &f, int &c, int &h)
 {
 	resource[3] -= flashMeterCost;
 	if(resource[3] > 540) resource[3] = 540;
 	else if(resource[3] < 0) resource[3] = -360;
-	action::execute(last, resource);
+	action::execute(last, resource, f, c, h);
 }
 
 void flashSummon::step(int *& resource, int &f)

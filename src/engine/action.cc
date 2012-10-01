@@ -66,6 +66,9 @@ void action::zero()
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
+	displaceFrame = -1;
+	displaceX = 0;
+	displaceY = 0;
 	soundClip = NULL;
 	next = NULL;
 	attempt = NULL;
@@ -542,6 +545,12 @@ void action::pollDelta(SDL_Rect *& d, int & dc, int f)
 	}
 }
 
+int action::displace(int x, int &y)
+{
+	y += displaceY;
+	return displaceX;
+}
+
 void action::pollStats(hStat & s, int f, bool CH)
 {
 	int c = calcCurrentHit(f);
@@ -633,10 +642,13 @@ void action::playSound(int channel)
 	Mix_PlayChannel(channel, soundClip, 0);
 }
 
-void action::execute(action * last, int *& resource)
+void action::execute(action * last, int *& resource, int &f, int &c, int &h)
 {
 	armorCounter = 0;
 	resource[0] -= cost;
+	f = 0;
+	c = 0;
+	h = 0;
 }
 
 void action::feed(action * c, int code, int i)
