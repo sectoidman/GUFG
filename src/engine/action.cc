@@ -531,6 +531,17 @@ void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc
 	}
 }
 
+void action::pollDelta(SDL_Rect *& d, int & dc, int f)
+{
+	dc = deltaComplexity[f];
+	d = new SDL_Rect[dc];
+	SDL_Rect * tempdelta = delta[f];
+	for(int i = 0; i < dc; i++){
+		d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
+		d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
+	}
+}
+
 void action::pollStats(hStat & s, int f, bool CH)
 {
 	int c = calcCurrentHit(f);

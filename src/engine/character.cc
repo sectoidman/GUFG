@@ -161,6 +161,18 @@ void avatar::getName(const char* directory, const char* file)
 	strcpy(name, buffer);
 }
 
+int character::comboState(action * c)
+{
+	if(c == reel) return 1;
+	if(c == crouchReel) return 1;
+	if(c == untech) return 1;
+	if(c == standBlock) return -1;
+	if(c == crouchBlock) return -1;
+	if(c == airBlock) return -1;
+	if(c == fall) return -2;
+	return 0;
+}
+
 void avatar::build(const char* directory, const char* file)
 {
 	char buffer[101];
