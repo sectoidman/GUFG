@@ -257,14 +257,17 @@ void instance::combineDelta()
 void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;
+	int midpoint;
+	if(facing == 1) midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2;
+	else midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2 + collision.w%2;
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
 	int directionX = 0, directionY = 0;
-	if(posX + facing*collision.w/2 > p->posX) directionX = 1;
-	else if(posX + facing*collision.w/2 < p->posX) directionX = -1;
-	if(posY + collision.h/2 > p->posY) directionY = 1;
-	else if(posY + collision.h/2 < p->posY) directionY = -1;
-	float totalDist = sqrt(pow(posX + facing*collision.w/2 - p->posX, 2) + pow(posY + collision.h/2 - p->posY, 2));
+	if(midpoint > p->posX) directionX = 1;
+	else if(midpoint < p->posX) directionX = -1;
+	if(collision.y + collision.h/2 > p->posY) directionY = 1;
+	else if(collision.y + collision.h/2 < p->posY) directionY = -1;
+	float totalDist = sqrt(pow(midpoint - p->posX, 2) + pow(collision.y + collision.h/2 - p->posY, 2));
 	switch(p->type){
 	case 0:
 		break;
