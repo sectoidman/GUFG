@@ -254,22 +254,31 @@ void instance::combineDelta()
 void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;
-	resultant.x = p->x*facing; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
+	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
-	printf("%f\n", sqrt(pow(posX - p->posX, 2) + pow(posY - p->posY, 2)));
+	int directionX = (posX - p->posX)/(abs(posX - p->posY)), directionY = (posY - p->posY)/(abs(posY - p->posY));
+	float totalDist = sqrt(pow(posX - p->posX, 2) + pow(posY - p->posY, 2));
+	printf("%i, %i, %f\n", directionX, directionY, totalDist);
 	switch(p->type){
 	case 0:
-		addVector(resultant);
+		p->x *= facing;
 		break;
 	case 1:
+		resultant.x -= totalDist/p->radius;
+		resultant.y -= totalDist/p->radius;
 		break;
 	case 2:
+		for(int i = 0; i < totalDist/p->radius; i++){
+			resultant.x /= 2;
+			resultant.y /= 2;
+		}
 		break;
 	case 3:
 		break;
 	default:
-		break;
+		return;
 	}
+	addVector(resultant);
 }
 
 void instance::enforceGravity(int grav, int floor)
