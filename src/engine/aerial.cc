@@ -69,10 +69,10 @@ bool airUtility::check(SDL_Rect &p, int resource[]) //Check to see if the action
 	return action::check(p, resource);
 }
 
-void airUtility::execute(action * last, int *& resource){
+void airUtility::execute(action * last, int *& resource, int &f, int &c, int &h){
 	if(abs(delta[0][0].y) > abs(delta[0][0].x)) resource[1]--;
 	else if(abs(delta[0][0].y) < abs(delta[0][0].x)) resource[2]--;
-	action::execute(last, resource);
+	action::execute(last, resource, f, c, h);
 }
 
 airLooping::airLooping(const char * n)

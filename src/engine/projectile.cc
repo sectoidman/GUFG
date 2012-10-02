@@ -39,6 +39,7 @@ void projectile::processMove(action * m)
 	avatar::processMove(m);
 	if(m->dies){ 
 		m->feed(die, 2, m->hits-1);
+		m->feed(die, 0, 0);
 	}
 }
 

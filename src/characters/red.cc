@@ -2,9 +2,9 @@
 red::red()
 {
 	delete [] meter;
-	
+
 	meter = new int[5];
-	
+
 	airHead = new actionTrie;
 	head = new actionTrie;
 	build("Red", "Red");
@@ -101,13 +101,13 @@ bool redCancel::check(SDL_Rect& p, int resource[])
 	return action::check(p, resource);
 }
 
-void redCancel::execute(action * last, int *& resource)
+void redCancel::execute(action * last, int *& resource, int &f, int &c, int &h)
 {
 	resource[1] = 1;
 	resource[2] = 1;
 	resource[3] -= 270;
 	resource[4] = 16;
-	action::execute(last, resource);
+	action::execute(last, resource, f, c, h);
 }
 
 int redSuper::arbitraryPoll(int q, int f)

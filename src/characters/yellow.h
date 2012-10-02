@@ -18,7 +18,7 @@ public:
 	flashStep();
 	flashStep(const char*);
 	bool check(SDL_Rect&, int[]);
-	void execute(action *, int *&);
+	void execute(action *, int *&, int&, int&, int&);
 	bool setParameter(char*);
 	virtual void zero() { flashMeterCost = 0; airMove::zero(); }
 private:
@@ -30,7 +30,7 @@ public:
 	flashSummon();
 	flashSummon(const char*);
 	bool check(SDL_Rect&, int[]);
-	void execute(action *, int *&);
+	void execute(action *, int *&, int&, int&, int&);
 	bool setParameter(char*);
 	void step(int *&, int&);
 	virtual void zero() { flashMeterGain = 0; special::zero(); }

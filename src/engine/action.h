@@ -55,7 +55,7 @@ public:
 	//Okay so, hopefully the idea here is that we can init()
 	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
-	virtual void execute(action *, int *&);
+	virtual void execute(action *, int *&, int&, int&, int&);
 	virtual void playSound(int);
 	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
@@ -64,8 +64,9 @@ public:
 	virtual int arbitraryPoll(int q, int f) {return 0;}
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
-	void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
+	virtual void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollDelta(SDL_Rect *&, int&, int);
+	virtual int displace(int, int&);
 	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
@@ -139,6 +140,7 @@ public:
 	attractor * distortion;
 	int distortSpawn;
 	int attemptStart, attemptEnd;
+	int displaceX, displaceY, displaceFrame;
 	bool window(int);
 	int calcCurrentHit(int);
 
@@ -244,7 +246,7 @@ public:
 	airUtility() {}
 	airUtility(const char*);
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
-	virtual void execute(action *, int *&);	
+	virtual void execute(action *, int *&, int&, int&, int&);
 };
 
 class airLooping : public airMove, public looping {

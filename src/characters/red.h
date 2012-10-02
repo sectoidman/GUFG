@@ -19,7 +19,7 @@ public:
 	~redCancel();
 	redCancel(const char* n);
 	bool check(SDL_Rect&, int[]);
-	void execute(action *, int *&);
+	void execute(action *, int *&, int&, int&, int&);
 };
 
 class redSuper : virtual public super{
