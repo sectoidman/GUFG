@@ -419,7 +419,13 @@ void player::land()
 
 void instance::step()
 {
+	action * m = cMove;
 	if(pick()->death(cMove, currentFrame, counter)) dead = true;
+	if(m != cMove){
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 	if(posX > 3300 || posX < -100) dead = true;
 	if(!freeze) counter++;
 	pick()->step(cMove, currentFrame, freeze);
