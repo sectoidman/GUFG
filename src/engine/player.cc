@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <unistd.h>
+#include <math.h>
 #include <stdlib.h>
 #include <fstream>
 #include "player.h"
@@ -255,9 +256,16 @@ void instance::enforceAttractor(attractor* p)
 	SDL_Rect resultant;
 	resultant.x = p->x*facing; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
+	printf("%f\n", sqrt(pow(posX - p->posX, 2) + pow(posY - p->posY, 2)));
 	switch(p->type){
 	case 0:
 		addVector(resultant);
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
 		break;
 	default:
 		break;
