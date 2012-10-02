@@ -490,13 +490,15 @@ void interface::resolveSummons()
 		if(things[i]->cMove && things[i]->currentFrame == things[i]->cMove->distortSpawn) tvec = things[i]->cMove->distortion;
 		if(tvec != NULL){ 
 			avec = new attractor;
-			avec->x = tvec->x*things[i]->facing;
+			avec->x = tvec->x;
 			avec->y = tvec->y;
 			avec->type = tvec->type;
 			avec->length = tvec->length;
 			avec->radius = tvec->radius;
-			avec->posX = things[i]->posX + things[i]->collision.w/2;
-			avec->posY = things[i]->posY + things[i]->collision.h/2;
+			if(things[i]->facing == 1) avec->posX = things[i]->collision.x + things[i]->collision.w / 2;
+			else avec->posX = things[i]->collision.x + things[i]->collision.w / 2 + things[i]->collision.w % 2;
+			avec->posY = things[i]->collision.y + things[i]->collision.h/2;
+			if(avec->type == 0) avec->x *= things[i]->facing;
 			switch(tvec->ID){
 			case 1:
 				avec->ID = things[i]->ID;
@@ -508,6 +510,7 @@ void interface::resolveSummons()
 				avec->ID = 0;
 				break;
 			}
+			printf("%s\n", things[i]->cMove->name);
 			addAttractor(avec);
 			avec = NULL;
 			tvec = NULL;
@@ -958,6 +961,7 @@ void interface::resolveHits()
 						residual.x -= abs(combo[i]);
 					}
 				}
+				residual.x *= p[i]->facing;
 				p[i]->addVector(residual);
 			}
 		}
