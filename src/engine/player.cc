@@ -257,14 +257,13 @@ void instance::enforceAttractor(attractor* p)
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
 	int directionX = 0, directionY = 0;
-	if(posX + collision.w/2 > p->posX) directionX = -1; 
-	else if(posX + collision.w/2 < p->posX) directionX = 1;
-	if(posY + collision.h/2 > p->posY) directionY = 1; 
-	else if(posX + collision.h/2 < p->posY) directionY = -1;
+	if(posX + collision.w/2 > p->posX) directionX = 1;
+	else if(posX + collision.w/2 < p->posX) directionX = -1;
+	if(posY + collision.h/2 > p->posY) directionY = 1;
+	else if(posY + collision.h/2 < p->posY) directionY = -1;
 	float totalDist = sqrt(pow(posX + collision.w/2 - p->posX, 2) + pow(posY + collision.h/2 - p->posY, 2));
 	switch(p->type){
 	case 0:
-		resultant.x *= facing;
 		break;
 	case 1:
 		resultant.x -= totalDist/p->radius;
@@ -273,7 +272,7 @@ void instance::enforceAttractor(attractor* p)
 		resultant.y *= directionY;
 		break;
 	case 2:
-		for(int i = 0; i < totalDist/p->radius; i++){
+		for(int i = 1; i < totalDist/p->radius; i++){
 			resultant.x /= 2;
 			resultant.y /= 2;
 		}
@@ -509,6 +508,7 @@ void instance::pullVolition()
 				setPosition(posX + facing*cMove->displace(posX, posY), posY);
 			}
 			for(int i = 0; i < complexity; i++){
+				temp[i].x *= facing;
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
 						addVector(temp[i]);
@@ -531,7 +531,7 @@ void instance::addVector(SDL_Rect &v)
 		temp[i].w = momentum[i].w;
 		temp[i].h = momentum[i].h;
 	}
-	temp[i].x = v.x*facing;
+	temp[i].x = v.x;
 	temp[i].y = v.y;
 	temp[i].w = v.w;
 	temp[i].h = v.h;
@@ -664,6 +664,7 @@ int player::takeHit(int combo, hStat & s)
 		else v.y = 0;
 		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
+		v.x *= facing;
 		addVector(v);
 		if(pick()->aerial && s.hover) hover = s.hover;
 		else hover = 0;
