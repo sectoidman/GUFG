@@ -52,6 +52,7 @@ public:
 	virtual void pushInput(bool*);
 	int particleType;
 	int blockType;
+	int counter;
 protected:
 	avatar * v;
 };
