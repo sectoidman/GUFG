@@ -510,7 +510,6 @@ void interface::resolveSummons()
 				avec->ID = 0;
 				break;
 			}
-			printf("%s\n", things[i]->cMove->name);
 			addAttractor(avec);
 			avec = NULL;
 			tvec = NULL;
