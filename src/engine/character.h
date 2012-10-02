@@ -21,7 +21,7 @@ public:
 	virtual void sortMove(action *, char*);
 	virtual void prepHooks(int, action *&, action *&, action *&, int[], int[], bool[], SDL_Rect &, int&, int&, int&, bool);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
-	virtual bool death(action *&, int) { return 0; }
+	virtual bool death(action *&, int, int) { return 0; }
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&) { return 0; }
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, action *&, action *&, hStat&, int&, int);
@@ -34,6 +34,7 @@ public:
 	bool aerial; //Flags whether the character is considered "in the air"
 	actionTrie * head;	//Trie for ground actions
 	int * meter;
+	int lifespan;
 
 	action * die;
 	action * neutral;
@@ -84,7 +85,7 @@ public:
 	virtual bool acceptTarget(action*, int);
 
 	virtual void processMove(action * m);
-	virtual bool death(action *&, int);
+	virtual bool death(action *&, int, int);
 	virtual void init(action *&);
 };
 #endif

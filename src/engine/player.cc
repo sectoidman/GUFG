@@ -39,6 +39,7 @@ void instance::init()
 	currentFrame = 0;
 	connectFlag = 0;
 	hitFlag = 0;
+	counter = 0;
 	cMove = NULL;
 	bMove = NULL;
 	sMove = NULL;
@@ -421,8 +422,15 @@ void player::land()
 
 void instance::step()
 {
-	if(pick()->death(cMove, currentFrame)) dead = true;
+	action * m = cMove;
+	if(pick()->death(cMove, currentFrame, counter)) dead = true;
+	if(m != cMove){
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 	if(posX > 3300 || posX < -100) dead = true;
+	if(!freeze) counter++;
 	pick()->step(cMove, currentFrame, freeze);
 
 	if(cMove && currentFrame >= cMove->frames){
