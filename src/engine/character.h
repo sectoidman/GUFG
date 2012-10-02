@@ -86,5 +86,6 @@ public:
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int);
 	virtual void init(action *&);
+	int lifespan;
 };
 #endif
