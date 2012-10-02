@@ -257,11 +257,11 @@ void instance::enforceAttractor(attractor* p)
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
 	int directionX = 0, directionY = 0;
-	if(posX + collision.w/2 > p->posX) directionX = 1;
-	else if(posX + collision.w/2 < p->posX) directionX = -1;
+	if(posX + facing*collision.w/2 > p->posX) directionX = 1;
+	else if(posX + facing*collision.w/2 < p->posX) directionX = -1;
 	if(posY + collision.h/2 > p->posY) directionY = 1;
 	else if(posY + collision.h/2 < p->posY) directionY = -1;
-	float totalDist = sqrt(pow(posX + collision.w/2 - p->posX, 2) + pow(posY + collision.h/2 - p->posY, 2));
+	float totalDist = sqrt(pow(posX + facing*collision.w/2 - p->posX, 2) + pow(posY + collision.h/2 - p->posY, 2));
 	switch(p->type){
 	case 0:
 		break;
