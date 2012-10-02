@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
-#include "interface.h"
+#include "engine/interface.h"
 #include <cstring>
 int main(int argc, char* argv[])
 {
