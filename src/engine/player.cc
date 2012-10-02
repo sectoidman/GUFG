@@ -256,24 +256,37 @@ void instance::enforceAttractor(attractor* p)
 	SDL_Rect resultant;
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
-	int directionX = (posX - p->posX)/(abs(posX - p->posY)), directionY = (posY - p->posY)/(abs(posY - p->posY));
-	float totalDist = sqrt(pow(posX - p->posX, 2) + pow(posY - p->posY, 2));
-	printf("%i, %i, %f\n", directionX, directionY, totalDist);
+	int directionX = 0, directionY = 0;
+	if(posX + collision.w/2 > p->posX) directionX = -1; 
+	else if(posX + collision.w/2 < p->posX) directionX = 1;
+	if(posY + collision.h/2 > p->posY) directionY = 1; 
+	else if(posX + collision.h/2 < p->posY) directionY = -1;
+	float totalDist = sqrt(pow(posX + collision.w/2 - p->posX, 2) + pow(posY + collision.h/2 - p->posY, 2));
 	switch(p->type){
 	case 0:
-		p->x *= facing;
+		resultant.x *= facing;
 		break;
 	case 1:
 		resultant.x -= totalDist/p->radius;
 		resultant.y -= totalDist/p->radius;
+		resultant.x *= directionX;
+		resultant.y *= directionY;
 		break;
 	case 2:
 		for(int i = 0; i < totalDist/p->radius; i++){
 			resultant.x /= 2;
 			resultant.y /= 2;
 		}
+		resultant.x *= directionX;
+		resultant.y *= directionY;
 		break;
 	case 3:
+		if(totalDist > p->radius){
+			resultant.x = 0;
+			resultant.y = 0;
+		}
+		resultant.x *= directionX;
+		resultant.y *= directionY;
 		break;
 	default:
 		return;
