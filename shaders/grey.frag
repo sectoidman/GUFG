@@ -1,3 +1,5 @@
+uniform sampler2D texture;
+
 void main()
 {
 	float intensity = dot(vec3(0.2989, 0.5870, 0.1140), gl_Color.rgb);
