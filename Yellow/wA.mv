@@ -4,7 +4,7 @@ Hits: 1
 Frames: 33 : 18 : 5 : 10
 Check: 16384
 State: 256 : 8448
-HitAllows: 65538
+HitAllows: 65536
 Gain: 0 : 4
 Cost: 0
 Damage: 35
