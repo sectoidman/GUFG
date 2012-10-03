@@ -93,21 +93,21 @@ redCancel::redCancel(const char* n)
 	build(n); 
 }
 
-bool redCancel::check(SDL_Rect& p, int resource[])
+bool redCancel::check(SDL_Rect& p, int meter[])
 {
-//	if(resource[0] < cost) return 0;
-//	if(resource[3] < 270) return 0;
-	if(resource[4] > 0) return 0;
-	return action::check(p, resource);
+//	if(meter[0] < cost) return 0;
+//	if(meter[3] < 270) return 0;
+	if(meter[4] > 0) return 0;
+	return action::check(p, meter);
 }
 
-void redCancel::execute(action * last, int *& resource, int &f, int &c, int &h)
+void redCancel::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
-	resource[1] = 1;
-	resource[2] = 1;
-	resource[3] -= 270;
-	resource[4] = 16;
-	action::execute(last, resource, f, c, h);
+	meter[1] = 1;
+	meter[2] = 1;
+	meter[3] -= 270;
+	meter[4] = 16;
+	action::execute(last, meter, f, c, h);
 }
 
 int redSuper::arbitraryPoll(int q, int f)
