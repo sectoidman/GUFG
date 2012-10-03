@@ -76,7 +76,6 @@ bool projectile::death(action *& cMove, int f, int counter)
 {
 	if(cMove == die){
 		if(f == cMove->frames - 1){
-			printf("%i\n", counter);
 			return true;
 		}
 	}
