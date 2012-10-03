@@ -78,7 +78,7 @@ bool projectile::death(action *& cMove, int f, int counter)
 			return true;
 		}
 	}
-	if(counter >= lifespan){
+	if(lifespan > 0 && counter > lifespan){
 		cMove = die;
 	}
 	return false;
