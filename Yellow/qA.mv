@@ -11,8 +11,9 @@ Untech: 0
 +Untech: 30
 Push: 15
 Lift: 20
++Lift: 8
 Float: 10
-+Float: 40
++Float: 20
 Blowback: 0
 Gain: 0 : 6
 Cost: 0
