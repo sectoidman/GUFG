@@ -44,6 +44,7 @@ void instance::init()
 	bMove = NULL;
 	sMove = NULL;
 	freeze = 0;
+	dead = false;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
