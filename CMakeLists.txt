@@ -28,12 +28,13 @@ find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
 find_package (SDL_mixer REQUIRED)
 find_package (OpenGL REQUIRED)
-link_libraries (
-	SDLmain # not included in SDL_LIBRARY variable
+link_libraries (	
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
 	${SDLMIXER_LIBRARY}
-	${OPENGL_LIBRARIES})
+	${OPENGL_LIBRARIES}
+	SDLmain # not included in SDL_LIBRARY variable
+)
 
 if (WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -static-libstdc++ -static-libgcc")
