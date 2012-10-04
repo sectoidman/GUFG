@@ -49,6 +49,7 @@ interface::interface()
 	read.close();
 	sf = scalingFactor;
 	assert(screenInit() != false);
+	loadMisc();
 
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
@@ -222,7 +223,6 @@ bool interface::screenInit()
 	glLoadIdentity();
 
 	initd = true;
-	loadMisc();
 	return true;
 }
 
