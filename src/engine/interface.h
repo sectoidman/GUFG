@@ -38,6 +38,8 @@ public:
 	void doSuperFreeze();
 	void unitCollision();
 	void loadMisc();
+	void readMatchupChart();
+	void writeMatchupChart();
 	void writeConfig(int);
 	void resolveHits();
 	void resolveThrows();
@@ -68,6 +70,7 @@ public:
 	int combo[2];
 	int damage[2];
 	bool illegit[2];
+	int ** matchup;
 	int numRounds;
 	bool gameover;
 	float scalingFactor, sf;

@@ -18,6 +18,8 @@ interface::interface()
 {
 	char buffer[50];
 	numChars = 2;
+	matchup = new int*[numChars+1];
+	for(int i = 0; i < numChars+1; i++) matchup[i] = new int[numChars+1];
 	shortcut = false;
 	boxen = false;
 	std::ifstream read;
@@ -101,6 +103,7 @@ void interface::loadMisc()
 		sprintf(buffer, "Misc/Announcer/Win%i.ogg", i);
 		announceWinner[i] = Mix_LoadWAV(buffer);
 	}
+	readMatchupChart();
 	announceRound[0] = Mix_LoadWAV("Misc/Announcer/Round1.ogg");
 	announceRound[1] = Mix_LoadWAV("Misc/Announcer/Round2.ogg");
 	announceRound[2] = Mix_LoadWAV("Misc/Announcer/RoundF.ogg");
@@ -109,6 +112,53 @@ void interface::loadMisc()
 	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");
 	announceEnd[1] = Mix_LoadWAV("Misc/Announcer/Down.ogg");
 	announceSelect = Mix_LoadWAV("Misc/Announcer/Select.ogg");
+}
+
+void interface::readMatchupChart()
+{
+	std::ifstream read;
+	char buffer[500];
+	char* token;
+	bool fresh = false;
+	read.open("Misc/.data/.matchups.csv");
+	if(read.fail()) fresh = true;
+	for(int i = 0; i < numChars + 1; i++){
+		if(!fresh){ 
+			read.get(buffer, 400, '\n'); read.ignore();
+			token = strtok(buffer, "\n,");
+		}
+		for(int j = 1; j < numChars + 1; j++){
+			if(fresh) matchup[i][j] = 0;
+			else{
+				token = strtok(NULL, "\n, ");
+				if(i == j) matchup[i][j] = 0;
+				else matchup[i][j] = atoi(token);
+			}
+		}
+	}
+	read.close();
+}
+
+void interface::writeMatchupChart()
+{
+	std::ofstream write;
+	write.open("Misc/.data/.matchups.csv");
+	write << " ";
+	for(int j = 1; j < numChars + 1; j++){
+		write << ",";
+		write << j;
+	}
+	write << "\n";
+	for(int i = 1; i < numChars + 1; i++){
+		write << i;
+		for(int j = 1; j < numChars + 1; j++){
+			write << ",";
+			if(i == j) write << "-";
+			else write << matchup[i][j];
+		}
+		write << "\n";
+	}
+	write.close();
 }
 
 /*Initialize SDL and openGL, creating a window, among other things*/
@@ -313,6 +363,12 @@ void interface::runTimer()
 			p[0]->momentumComplexity = 0;
 			p[1]->momentumComplexity = 0;
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
+				if(selection[0] != selection[1]){
+					if(p[0]->rounds == numRounds) matchup[selection[0]][selection[1]]++;
+					else matchup[selection[1]][selection[0]]++;
+					printf("Matchup: %f\n", (float)matchup[selection[0]][selection[1]] / 
+					       ((float)matchup[selection[0]][selection[1]] + (float)matchup[selection[1]][selection[0]]));
+				}
 				if(shortcut) rMenu = 1;
 				else{
 					delete p[0]->pick();
