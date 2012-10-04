@@ -620,6 +620,7 @@ bool action::cancel(action * x, int& c, int &h)
 	cancelField r;
 	if(x == NULL) return 1;
 	if(x->modifier && x->basis){
+		if(x->basis == NULL) return 1;
 		r.i = x->basis->state[x->connectFlag].i;
 		if(x->hitFlag > 0 && x->hitFlag == x->connectFlag){ 
 			r.i = r.i + x->basis->stats[x->hitFlag - 1].hitState.i;
@@ -700,6 +701,7 @@ void action::execute(action * last, int *& meter, int &f, int &c, int &h)
 	armorCounter = 0;
 	meter[1] -= cost;
 	if(modifier){
+		if(last == NULL) basis = NULL;
 		basis = last;
 		currentFrame = f;
 		connectFlag = c;

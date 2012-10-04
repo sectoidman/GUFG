@@ -432,10 +432,10 @@ void instance::step()
 	pick()->step(cMove, currentFrame, freeze);
 	if(cMove && currentFrame >= cMove->frames){
 		if(cMove->modifier && cMove->basis){ 
-			cMove = cMove->basis;
 			currentFrame = cMove->currentFrame;
 			connectFlag = cMove->connectFlag;
 			hitFlag = cMove->hitFlag;
+			cMove = cMove->basis;
 		} else {
 			cMove = cMove->next;
 			currentFrame = 0;
@@ -516,7 +516,8 @@ void instance::pullVolition()
 				momentumComplexity = 0;
 		}
 	}
-	setPosition(posX + facing*cMove->displace(posX, posY, currentFrame), posY);
+	int dx = cMove->displace(posX, posY, currentFrame);
+	setPosition(posX + facing*dx, posY);
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
 			int complexity;
