@@ -372,6 +372,16 @@ bool action::setParameter(char * buffer)
 			}
 		}
 		return 1;
+	} else if (!strcmp("Pause", token)) {
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			if(savedBuffer[0] == '+')
+				CHStats[i].pause = atoi(token);
+			else {
+				stats[i].pause = atoi(token);
+			}
+		}
+		return 1;
 	} else if (!strcmp("Untech", token)) {
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");

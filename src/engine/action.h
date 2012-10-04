@@ -25,10 +25,11 @@ struct attractor{
 };
 
 struct hStat{
-	hStat() : damage(0), chip(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
+	hStat() : damage(0), chip(0), stun(0), pause(-1), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
 	int damage;	/*How much damage the hit does*/
 	int chip;	/*How much damage the hit does if blocked*/
 	int stun;	/*How many frames of stun the hit causes*/
+	int pause;
 	int push;	/*How many pixels the hit pushes the opponent back*/
 	int lift;	/*How many pixels the hit lifts an aerial opponent.*/
 	int untech;	/*How many more frames of stun are added for an aerial hit*/
