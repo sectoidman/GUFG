@@ -79,7 +79,7 @@ interface::interface()
 
 	/* init shaders */
 	effect_greyscale.init();
-	effect_greyscale.load("shaders/grey.frag", GL_FRAGMENT_SHADER);
+	effect_greyscale.load("Misc/shaders/grey.frag", GL_FRAGMENT_SHADER);
 	effect_greyscale.link();
 
 	/* test shaders */
