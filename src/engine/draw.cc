@@ -195,7 +195,22 @@ void interface::drawGame()
 		freeze--;
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	if(rMenu != 0) reMenu();
+	if(rMenu != 0) drawRematchMenu();
+}
+
+void interface::drawRematchMenu()
+{
+	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 1)*0.4);
+	drawGlyph("Rematch", 0, 1600, 360, 60, 1);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 2)*0.4);
+	drawGlyph("Character Select", 0, 1600, 420, 60, 1);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 3)*0.4);
+	drawGlyph("Quit Game", 0, 1600, 480, 60, 1);
+	glDisable( GL_TEXTURE_2D );
+	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
 void player::drawMeters(int n, float scalingFactor)

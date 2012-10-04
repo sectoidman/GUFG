@@ -389,7 +389,7 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
-	if(!select[0] || !select[1] || rMenu) draw();
+	else if(rMenu) rematchMenu();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -487,7 +487,9 @@ void interface::resolve()
 		resolveHits();
 
 		/*Draw the sprites*/
-		draw();
+	}	
+	draw();
+	if(!rMenu && select[0] && select[1]){
 		for(int i = 0; i < thingComplexity; i++){
 			things[i]->step();
 			if(i > 1 && things[i]->dead) cullThing(i);
@@ -752,17 +754,8 @@ void interface::dragBG(int deltaX)
 	else if(bg.x > 1600) bg.x = 1600;
 }
 
-void interface::reMenu()
+void interface::rematchMenu()
 {
-	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-	glEnable( GL_TEXTURE_2D );
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 1)*0.4);
-	drawGlyph("Rematch", 0, 1600, 360, 60, 1);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 2)*0.4);
-	drawGlyph("Character Select", 0, 1600, 420, 60, 1);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 3)*0.4);
-	drawGlyph("Quit Game", 0, 1600, 480, 60, 1);
 	for(int j = 0; j < 2; j++){
 		if(sAxis[j][0] && !counter[j]){
 			rMenu--;
@@ -801,8 +794,6 @@ void interface::reMenu()
 			}
 		}
 	}
-	glDisable( GL_TEXTURE_2D );
-	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
 interface::~interface()

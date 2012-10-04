@@ -26,6 +26,7 @@ public:
 	void drawGame();
 	void drawCSelect();
 	void drawMainMenu(int);
+	void drawRematchMenu();
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
 	bool screenInit();
@@ -35,7 +36,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void mainMenu(int);
-	void reMenu();
+	void rematchMenu();
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
