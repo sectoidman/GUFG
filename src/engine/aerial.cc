@@ -64,14 +64,14 @@ airUtility::airUtility(const char * n)
 
 bool airUtility::check(SDL_Rect &p, int meter[]) //Check to see if the action is possible right now.
 {
-	if(abs(delta[0][0].y) > abs(delta[0][0].x) && meter[1] < 1) return 0;
-	else if(abs(delta[0][0].y) < abs(delta[0][0].x) && meter[2] < 1) return 0;
+	if(abs(delta[0][0].y) > abs(delta[0][0].x) && meter[2] < 1) return 0;
+	else if(abs(delta[0][0].y) < abs(delta[0][0].x) && meter[3] < 1) return 0;
 	return action::check(p, meter);
 }
 
 void airUtility::execute(action * last, int *& meter, int &f, int &c, int &h){
-	if(abs(delta[0][0].y) > abs(delta[0][0].x)) meter[1]--;
-	else if(abs(delta[0][0].y) < abs(delta[0][0].x)) meter[2]--;
+	if(abs(delta[0][0].y) > abs(delta[0][0].x)) meter[2]--;
+	else if(abs(delta[0][0].y) < abs(delta[0][0].x)) meter[3]--;
 	action::execute(last, meter, f, c, h);
 }
 

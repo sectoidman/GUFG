@@ -506,7 +506,7 @@ bool action::activate(int pos[5], bool neg[5], int pattern, int t, int f, int me
 
 bool action::check(SDL_Rect &p, int meter[])
 {
-	if(cost > meter[0]) return 0;
+	if(cost > meter[1]) return 0;
 	if(xRequisite > 0 && p.w > xRequisite) return 0;
 	if(yRequisite > 0 && p.h > yRequisite) return 0;
 	return 1;
@@ -613,8 +613,8 @@ bool action::cancel(action * x, int& c, int &h)
 void action::step(int *& meter, int &f)
 {
 	if(f == 0){
-		if(meter[0] + gain[0] < 300) meter[0] += gain[0];
-		else meter[0] = 300;
+		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
+		else meter[1] = 300;
 	}
 	f++;
 }
@@ -631,8 +631,8 @@ int action::calcCurrentHit(int frame)
 action * action::connect(int *& meter, int &c, int f)
 {
 	c = calcCurrentHit(f)+1;
-	if(meter[0] + gain[c] < 300) meter[0] += gain[c];
-	else meter[0] = 300;
+	if(meter[1] + gain[c] < 300) meter[1] += gain[c];
+	else meter[1] = 300;
 	if(onConnect[c-1] != NULL){
 		return onConnect[c-1];
 	}
@@ -653,7 +653,7 @@ void action::playSound(int channel)
 void action::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
 	armorCounter = 0;
-	meter[0] -= cost;
+	meter[1] -= cost;
 	f = 0;
 	c = 0;
 	h = 0;
