@@ -450,6 +450,9 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'S': 
 			if(!counter) stop = 2;
 			break;
+		case '*':
+			if(!counter) stop = 3;
+			break;
 		case 'c':
 			if(!counter) crouch = 1;
 			break;

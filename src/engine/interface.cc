@@ -436,9 +436,11 @@ void interface::resolve()
 
 		for(int i = 0; i < thingComplexity; i++){
 			if(!things[i]->freeze){
-				things[i]->pullVolition();
-				things[i]->combineDelta();
-				things[i]->enforceGravity(grav, floor);
+				if(things[i]->cMove->stop != 3){ 
+					things[i]->pullVolition();
+					things[i]->combineDelta();
+					things[i]->enforceGravity(grav, floor);
+				}
 				for(int j = 0; j < attractorComplexity; j++){
 					if(globals[j]->ID != things[i]->ID) things[i]->enforceAttractor(globals[j]);
 				}
