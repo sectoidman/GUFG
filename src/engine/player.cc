@@ -39,10 +39,12 @@ void instance::init()
 	currentFrame = 0;
 	connectFlag = 0;
 	hitFlag = 0;
+	counter = 0;
 	cMove = NULL;
 	bMove = NULL;
 	sMove = NULL;
 	freeze = 0;
+	dead = false;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
@@ -254,14 +256,17 @@ void instance::combineDelta()
 void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;
+	int midpoint;
+	if(facing == 1) midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2;
+	else midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2 + collision.w%2;
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
 	int directionX = 0, directionY = 0;
-	if(posX + facing*collision.w/2 > p->posX) directionX = 1;
-	else if(posX + facing*collision.w/2 < p->posX) directionX = -1;
-	if(posY + collision.h/2 > p->posY) directionY = 1;
-	else if(posY + collision.h/2 < p->posY) directionY = -1;
-	float totalDist = sqrt(pow(posX + facing*collision.w/2 - p->posX, 2) + pow(posY + collision.h/2 - p->posY, 2));
+	if(midpoint > p->posX) directionX = 1;
+	else if(midpoint < p->posX) directionX = -1;
+	if(collision.y + collision.h/2 > p->posY) directionY = 1;
+	else if(collision.y + collision.h/2 < p->posY) directionY = -1;
+	float totalDist = sqrt(pow(midpoint - p->posX, 2) + pow(collision.y + collision.h/2 - p->posY, 2));
 	switch(p->type){
 	case 0:
 		break;
@@ -415,8 +420,15 @@ void player::land()
 
 void instance::step()
 {
-	if(pick()->death(cMove, currentFrame)) dead = true;
+	action * m = cMove;
+	if(pick()->death(cMove, currentFrame, counter)) dead = true;
+	if(m != cMove){
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 	if(posX > 3300 || posX < -100) dead = true;
+	if(!freeze) counter++;
 	pick()->step(cMove, currentFrame, freeze);
 	if(cMove && currentFrame >= cMove->frames){
 		if(cMove->modifier && cMove->basis){ 

@@ -323,6 +323,7 @@ public:
 	int spawnFrame;
 	int spawnPosX;
 	int spawnPosY;
+	int lifespan;
 	bool spawnTrackX:1;
 	bool spawnTrackY:1;
 };

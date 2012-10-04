@@ -2,36 +2,36 @@
 yellow::yellow(){
 	head = new actionTrie;
 	airHead = new actionTrie;
-	meter = new int[4];
+	meter = new int[5];
 	build("Yellow", "Yellow");
 }
 
 void yellow::resetAirOptions()
 {
-	meter[1] = 1;
-	meter[2] = 2;
+	meter[2] = 1;
+	meter[3] = 2;
 }
 
 void yellow::init(action *& cMove)
 {
 	character::init(cMove);
-	meter[3] = 0;
+	meter[4] = 0;
 }
 
 void yellow::tick()
 {
 	character::tick();
-	if(meter[3] > 0){ 
-		meter[3]--;
-		if(meter[3] == 0){ 
-			meter[3] = -360;
+	if(meter[4] > 0){ 
+		meter[4]--;
+		if(meter[4] == 0){ 
+			meter[4] = -360;
 		}
 	}
 }
 
 void yellow::step(action *& cMove, int &f, int &freeze)
 {
-	if(meter[3] < 0) meter[3]++;
+	if(meter[4] < 0) meter[4]++;
 	character::step(cMove, f, freeze);
 }
 
@@ -66,11 +66,11 @@ void yellow::drawMeters(int ID, float scalingFactor, int hidden)
 	int color;
 	character::drawMeters(ID, scalingFactor, hidden);
 	SDL_Rect c1;
-	if(meter[3] >= 0){
-		c1.w = meter[3]/3*2; 
+	if(meter[4] >= 0){
+		c1.w = meter[4]/3*2; 
 		color = 255;
 	} else {
-		c1.w = 360 + (meter[3]);
+		c1.w = 360 + (meter[4]);
 		color = 0;
 	}
 	if(ID == 1){
@@ -89,7 +89,7 @@ void yellow::drawMeters(int ID, float scalingFactor, int hidden)
 int yellow::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
 	int x = character::takeHit(cMove, s, b, f, c, h, p);
-	if(x == 1 && meter[3] > 0) meter[3] = 0;
+	if(p == 1 && meter[4] > 0) meter[4] = 0;
 	return x;
 }
 
@@ -134,38 +134,38 @@ bool flashSummon::setParameter(char * buffer)
 	} else return action::setParameter(savedBuffer);
 }
 
-bool flashStep::check(SDL_Rect& p, int resource[])
+bool flashStep::check(SDL_Rect& p, int meter[])
 {
-	if(resource[3] < 1) return 0;
-	else return action::check(p, resource);
+	if(meter[4] < 1) return 0;
+	else return action::check(p, meter);
 }
 
-bool flashSummon::check(SDL_Rect& p, int resource[])
+bool flashSummon::check(SDL_Rect& p, int meter[])
 {
-	if(resource[3] < 0) return 0;
-	else return action::check(p, resource);
+	if(meter[4] < 0) return 0;
+	else return action::check(p, meter);
 }
 
-void flashSummon::execute(action * last, int *& resource, int &f, int &c, int &h)
+void flashSummon::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
-	if(resource[3] > 0) uFlag = 1;
+	if(meter[4] > 0) uFlag = 1;
 	else uFlag = 0;
-	action::execute(last, resource, f, c, h);
+	action::execute(last, meter, f, c, h);
 }
 
-void flashStep::execute(action * last, int *& resource, int &f, int &c, int &h)
+void flashStep::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
-	resource[3] -= flashMeterCost;
-	if(resource[3] > 540) resource[3] = 540;
-	else if(resource[3] < 0) resource[3] = -360;
-	action::execute(last, resource, f, c, h);
+	meter[4] -= flashMeterCost;
+	if(meter[4] > 540) meter[4] = 540;
+	else if(meter[4] < 0) meter[4] = -360;
+	action::execute(last, meter, f, c, h);
 }
 
-void flashSummon::step(int *& resource, int &f)
+void flashSummon::step(int *& meter, int &f)
 {
 	if(uFlag){
-		if(f == frames - 1) resource[3] = 0;
-	} else resource[3] += flashMeterGain / frames + 1;
-	if(resource[3] > 540) resource[3] = 540;
-	action::step(resource, f);
+		if(f == frames - 1) meter[4] = 0;
+	} else meter[4] += flashMeterGain / frames + 1;
+	if(meter[4] > 540) meter[4] = 540;
+	action::step(meter, f);
 }
