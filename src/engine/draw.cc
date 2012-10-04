@@ -380,7 +380,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 			maxY = move->hitbox[frame][i].y + move->hitbox[frame][i].h;
 	}
 	char fname[200];
-	int w = maxX + realPosX;
+	int w = maxX - realPosX;
 	int h = maxY;
 	int x = 0;
 	int y = 0;
