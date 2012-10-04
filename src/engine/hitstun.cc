@@ -6,12 +6,12 @@ void hitstun::init(int n)
 	counter = n;
 }
 
-void hitstun::step(int *& resource, int &f)
+void hitstun::step(int *& meter, int &f)
 {
 	if(counter <= 0){ 
-		action::step(resource, f);
+		action::step(meter, f);
 	} else {
-		if(f < frames - 1) action::step(resource, f);
+		if(f < frames - 1) action::step(meter, f);
 		counter--;
 	}
 }
@@ -41,7 +41,7 @@ int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
 			return 0;
 		}
 	}
-	else return 1;
+	return 1;
 }
 
 hitstun::hitstun(const char * n)

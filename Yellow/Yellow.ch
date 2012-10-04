@@ -57,7 +57,7 @@ wD = hD
 %j236C = a236C
 &22D = h252D
 %236B = h236B
-%236B214B = h4B
-%236B236B = h6B
+236B214B = h4B
+236B236B = h6B
 !214E = h214E hE
 #Moves

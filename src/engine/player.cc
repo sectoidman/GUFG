@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <unistd.h>
+#include <math.h>
 #include <stdlib.h>
 #include <fstream>
 #include "player.h"
@@ -38,10 +39,12 @@ void instance::init()
 	currentFrame = 0;
 	connectFlag = 0;
 	hitFlag = 0;
+	counter = 0;
 	cMove = NULL;
 	bMove = NULL;
 	sMove = NULL;
 	freeze = 0;
+	dead = false;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
@@ -256,15 +259,46 @@ void instance::combineDelta()
 void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;
-	resultant.x = p->x*facing; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
+	int midpoint;
+	if(facing == 1) midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2;
+	else midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2 + collision.w%2;
+	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
 	if(!pick()->aerial) resultant.y = 0;
+	int directionX = 0, directionY = 0;
+	if(midpoint > p->posX) directionX = 1;
+	else if(midpoint < p->posX) directionX = -1;
+	if(collision.y + collision.h/2 > p->posY) directionY = 1;
+	else if(collision.y + collision.h/2 < p->posY) directionY = -1;
+	float totalDist = sqrt(pow(midpoint - p->posX, 2) + pow(collision.y + collision.h/2 - p->posY, 2));
 	switch(p->type){
 	case 0:
-		addVector(resultant);
+		break;
+	case 1:
+		resultant.x -= totalDist/p->radius;
+		resultant.y -= totalDist/p->radius;
+		resultant.x *= directionX;
+		resultant.y *= directionY;
+		break;
+	case 2:
+		for(int i = 1; i < totalDist/p->radius; i++){
+			resultant.x /= 2;
+			resultant.y /= 2;
+		}
+		resultant.x *= directionX;
+		resultant.y *= directionY;
+		break;
+	case 3:
+		if(totalDist > p->radius){
+			resultant.x = 0;
+			resultant.y = 0;
+		}
+		resultant.x *= directionX;
+		resultant.y *= directionY;
 		break;
 	default:
-		break;
+		return;
 	}
+	addVector(resultant);
 }
 
 void instance::enforceGravity(int grav, int floor)
@@ -389,8 +423,15 @@ void player::land()
 
 void instance::step()
 {
-	if(pick()->death(cMove, currentFrame)) dead = true;
+	action * m = cMove;
+	if(pick()->death(cMove, currentFrame, counter)) dead = true;
+	if(m != cMove){
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
 	if(posX > 3300 || posX < -100) dead = true;
+	if(!freeze) counter++;
 	pick()->step(cMove, currentFrame, freeze);
 
 	if(cMove && currentFrame >= cMove->frames){
@@ -472,16 +513,24 @@ void instance::pullVolition()
 				momentumComplexity = 0;
 		}
 	}
+	if(cMove->displaceFrame == currentFrame) setPosition(posX + facing*cMove->displaceX, posY + cMove->displaceY);
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
-			SDL_Rect * temp = cMove->delta[currentFrame];
-			for(int i = 0; i < cMove->deltaComplexity[currentFrame]; i++){
+			int complexity;
+			SDL_Rect * temp; 
+			cMove->pollDelta(temp, complexity, currentFrame);
+			if(cMove->displaceFrame == currentFrame){ 
+				setPosition(posX + facing*cMove->displace(posX, posY), posY);
+			}
+			for(int i = 0; i < complexity; i++){
+				temp[i].x *= facing;
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
 						addVector(temp[i]);
 					}
 				}
 			}
+			delete [] temp;
 		}
 	}
 }
@@ -497,7 +546,7 @@ void instance::addVector(SDL_Rect &v)
 		temp[i].w = momentum[i].w;
 		temp[i].h = momentum[i].h;
 	}
-	temp[i].x = v.x*facing;
+	temp[i].x = v.x;
 	temp[i].y = v.y;
 	temp[i].w = v.w;
 	temp[i].h = v.h;
@@ -630,6 +679,7 @@ int player::takeHit(int combo, hStat & s)
 		else v.y = 0;
 		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
+		v.x *= facing;
 		addVector(v);
 		if(pick()->aerial && s.hover) hover = s.hover;
 		else hover = 0;
@@ -697,6 +747,7 @@ void player::getThrown(action *toss, int x, int y)
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
+	pick()->neutralize(cMove);
 	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType);
 	updateRects();
 }

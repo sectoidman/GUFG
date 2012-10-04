@@ -17,6 +17,7 @@ void projectile::build(const char* directory, const char* file)
 	die = new action(buffer);
 	head->insert(die, 0);
 	avatar::build(directory, file);
+	lifespan = -1;
 }
 
 bool projectile::acceptTarget(action * c, int f)
@@ -39,6 +40,7 @@ void projectile::processMove(action * m)
 	avatar::processMove(m);
 	if(m->dies){ 
 		m->feed(die, 2, m->hits-1);
+		m->feed(die, 0, 0);
 	}
 }
 
@@ -66,15 +68,19 @@ void summon::zero()
 	spawnTrackX = 0;
 	spawnPosY = 0;
 	spawnPosX = 0;
+	lifespan = -1;
 	action::zero();
 }
 
-bool projectile::death(action *& cMove, int f)
+bool projectile::death(action *& cMove, int f, int counter)
 {
 	if(cMove == die){
 		if(f == cMove->frames - 1){
 			return true;
 		}
+	}
+	if(cMove != die && lifespan > 0 && counter > lifespan){
+		cMove = die;
 	}
 	return false;
 }
@@ -96,6 +102,10 @@ bool summon::setParameter(char * buffer)
 	} else if(!strcmp("SpawnsOn", token)){
 		token = strtok(NULL, "\t: \n");
 		spawnFrame = atoi(token);
+		return 1;
+	} else if(!strcmp("Lifespan", token)){
+		token = strtok(NULL, "\t: \n");
+		lifespan = atoi(token);
 		return 1;
 	} else if(!strcmp("Payload", token)){
 		token = strtok(NULL, "\t: \n");
@@ -154,6 +164,7 @@ char * summon::request(int code, int i){
 void summon::generate(const char* directory, const char* name)
 {
 	payload = new projectile(directory, name);
+	if(lifespan) payload->lifespan = lifespan;
 	if(tempPayload) delete [] tempPayload;
 	tempPayload = NULL;
 }

@@ -8,7 +8,6 @@
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_mixer.h>
 #include <stdio.h>
-#include "compat.h"
 #ifndef AUXIL
 #define AUXIL
 class aux{
