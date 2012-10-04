@@ -27,6 +27,7 @@ public:
 	void drawCSelect();
 	void drawMainMenu(int);
 	void drawRematchMenu();
+	void cleanup();
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
 	bool screenInit();

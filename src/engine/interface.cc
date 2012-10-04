@@ -328,7 +328,6 @@ void interface::roundInit()
 	prox.w = 200;
 	prox.h = 0;
 	freeze = 0;
-	draw();
 }
 
 /*Pretty simple timer modifier*/
@@ -488,7 +487,10 @@ void interface::resolve()
 
 		/*Draw the sprites*/
 	}	
-	draw();
+}
+
+void interface::cleanup()
+{
 	if(!rMenu && select[0] && select[1]){
 		for(int i = 0; i < thingComplexity; i++){
 			things[i]->step();
