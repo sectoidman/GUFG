@@ -66,7 +66,7 @@ public:
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	virtual void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollDelta(SDL_Rect *&, int&, int);
-	virtual int displace(int, int&);
+	virtual int displace(int, int&, int);
 	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
@@ -137,6 +137,10 @@ public:
 	action ** onConnect;
 	action * attempt;
 	action * riposte;
+
+	action * basis;
+	int connectFlag, currentFrame, hitFlag;
+
 	attractor * distortion;
 	int distortSpawn;
 	int attemptStart, attemptEnd;
@@ -162,6 +166,7 @@ public:
 	GLuint *sprite;
 
 	bool isProjectile:1;
+	bool modifier:1;
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*, bool);
 	virtual void zero();

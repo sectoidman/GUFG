@@ -178,7 +178,7 @@ void interface::drawGame()
 	}
 	glEnable( GL_TEXTURE_2D );
 	for(int i = 0; i < thingComplexity; i++){
-		if(things[i]->spriteCheck()) 
+		if(things[i]->spriteCheck())
 			things[i]->draw(bg.x, bg.y, scalingFactor);
 		glDisable(GL_TEXTURE_2D);
 		if(!things[i]->spriteCheck() || boxen)
@@ -385,6 +385,7 @@ int interface::drawGlyph(const char * string, int x, int space, int y, int heigh
 
 void action::draw(int facing, int x, int y, int f, float scalingFactor)
 {
+	if(modifier && basis) basis->draw(facing, x, y, currentFrame, scalingFactor);
 	if(sprite[f]){
 		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
@@ -430,7 +431,8 @@ bool avatar::spriteCheck(action *& cMove, int f)
 
 bool action::spriteCheck(int f)
 {
-	if(sprite[f] != 0) { 
+	if(modifier && basis) basis->spriteCheck(currentFrame);
+	if(sprite[f] != 0) {
 		return 1;
 	}
 	else return 0;
