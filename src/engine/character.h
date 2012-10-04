@@ -73,7 +73,6 @@ public:
 	hitstun * standBlock;
 	hitstun * airBlock;
 	utility * throwBreak;
-
 	int health;
 };
 

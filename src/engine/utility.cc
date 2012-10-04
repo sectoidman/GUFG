@@ -4,7 +4,7 @@ utility::utility(const char * n)
 	build(n);
 }
 
-bool utility::activate(int pos[5], bool neg[5], int pattern, int t, int f, int * resource, SDL_Rect &p)
+bool utility::activate(int pos[5], bool neg[5], int pattern, int t, int f, int * meter, SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
@@ -13,7 +13,7 @@ bool utility::activate(int pos[5], bool neg[5], int pattern, int t, int f, int *
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	return check(p, resource);
+	return check(p, meter);
 }
 
 looping::looping(const char * n)
@@ -21,9 +21,9 @@ looping::looping(const char * n)
 	build(n);
 }
 
-void looping::step(int *& resource, int &f)
+void looping::step(int *& meter, int &f)
 {
-	action::step(resource, f);
+	action::step(meter, f);
 	if(f >= frames) f = 0;
 }
 

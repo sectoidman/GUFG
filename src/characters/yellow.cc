@@ -134,38 +134,38 @@ bool flashSummon::setParameter(char * buffer)
 	} else return action::setParameter(savedBuffer);
 }
 
-bool flashStep::check(SDL_Rect& p, int resource[])
+bool flashStep::check(SDL_Rect& p, int meter[])
 {
-	if(resource[3] < 1) return 0;
-	else return action::check(p, resource);
+	if(meter[3] < 1) return 0;
+	else return action::check(p, meter);
 }
 
-bool flashSummon::check(SDL_Rect& p, int resource[])
+bool flashSummon::check(SDL_Rect& p, int meter[])
 {
-	if(resource[3] < 0) return 0;
-	else return action::check(p, resource);
+	if(meter[3] < 0) return 0;
+	else return action::check(p, meter);
 }
 
-void flashSummon::execute(action * last, int *& resource, int &f, int &c, int &h)
+void flashSummon::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
-	if(resource[3] > 0) uFlag = 1;
+	if(meter[3] > 0) uFlag = 1;
 	else uFlag = 0;
-	action::execute(last, resource, f, c, h);
+	action::execute(last, meter, f, c, h);
 }
 
-void flashStep::execute(action * last, int *& resource, int &f, int &c, int &h)
+void flashStep::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
-	resource[3] -= flashMeterCost;
-	if(resource[3] > 540) resource[3] = 540;
-	else if(resource[3] < 0) resource[3] = -360;
-	action::execute(last, resource, f, c, h);
+	meter[3] -= flashMeterCost;
+	if(meter[3] > 540) meter[3] = 540;
+	else if(meter[3] < 0) meter[3] = -360;
+	action::execute(last, meter, f, c, h);
 }
 
-void flashSummon::step(int *& resource, int &f)
+void flashSummon::step(int *& meter, int &f)
 {
 	if(uFlag){
-		if(f == frames - 1) resource[3] = 0;
-	} else resource[3] += flashMeterGain / frames + 1;
-	if(resource[3] > 540) resource[3] = 540;
-	action::step(resource, f);
+		if(f == frames - 1) meter[3] = 0;
+	} else meter[3] += flashMeterGain / frames + 1;
+	if(meter[3] > 540) meter[3] = 540;
+	action::step(meter, f);
 }
