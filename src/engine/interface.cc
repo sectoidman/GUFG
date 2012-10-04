@@ -520,12 +520,12 @@ void interface::resolveSummons()
 /*Check if someone won*/
 void interface::checkWin()
 {
-	if(p[0]->pick()->health == 0 || p[1]->pick()->health == 0 || timer == 0){
+	if(p[0]->pick()->meter[0] == 0 || p[1]->pick()->meter[0] == 0 || timer == 0){
 		roundEnd = true;
-		if(p[0]->pick()->health > p[1]->pick()->health) {
+		if(p[0]->pick()->meter[0] > p[1]->pick()->meter[0]) {
 			p[0]->rounds++;
 		}
-		else if(p[1]->pick()->health > p[0]->pick()->health) {
+		else if(p[1]->pick()->meter[0] > p[0]->pick()->meter[0]) {
 			p[1]->rounds++;
 		}
 		else {
@@ -927,7 +927,7 @@ void interface::resolveHits()
 
 	for(int i = 0; i < thingComplexity; i++){ 
 		if(taken[i]){
-			h = p[i]->pick()->health;
+			h = p[i]->pick()->meter[0];
 			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
 			if(i < 2 && hitBy[i] < 2){
 				if(p[i]->particleType == -2){ 
@@ -942,7 +942,7 @@ void interface::resolveHits()
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
-			damage[(i+1)%2] += h - p[i]->pick()->health;
+			damage[(i+1)%2] += h - p[i]->pick()->meter[0];
 		}
 	}
 
@@ -975,7 +975,7 @@ void interface::resolveHits()
 		p[i]->hover--;
 	}
 	for(int i = 0; i < 2; i++) {
-		if(p[i]->pick()->health <= 0 && endTimer >= 5 * 60){ 
+		if(p[i]->pick()->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
 			p[0]->freeze = 30;
 			p[1]->freeze = 30;

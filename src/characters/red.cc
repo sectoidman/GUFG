@@ -3,7 +3,7 @@ red::red()
 {
 	delete [] meter;
 
-	meter = new int[5];
+	meter = new int[6];
 
 	airHead = new actionTrie;
 	head = new actionTrie;
@@ -14,13 +14,13 @@ red::red()
 void red::tick()
 {
 	character::tick();
-	if(meter[3] < 540) meter[3]++;
-	if(meter[3] < 0) meter[3] = 0;
+	if(meter[4] < 540) meter[4]++;
+	if(meter[4] < 0) meter[4] = 0;
 }
 
 void red::step(action *& cMove, int &f, int &freeze)
 {
-	if(meter[4] > 0) meter[4]--;
+	if(meter[5] > 0) meter[5]--;
 	character::step(cMove, f, freeze);
 }
 
@@ -29,11 +29,11 @@ void red::drawMeters(int ID, float scalingFactor, int hidden)
 //	int color1, color2;
 	character::drawMeters(ID, scalingFactor, hidden);
 /*	SDL_Rect c1, c2;
-	if(meter[3] >= 0){
-		c1.w = meter[3]; 
+	if(meter[4] >= 0){
+		c1.w = meter[4]; 
 	} else c1.w = 1; 
-	if(meter[3] > 270){
-		c1.w = 270; c2.w = (meter[3] - 270);
+	if(meter[4] > 270){
+		c1.w = 270; c2.w = (meter[4] - 270);
 	} else c2.w = 0;
 	if(ID == 1){
 		c1.x = 265; 
@@ -45,9 +45,9 @@ void red::drawMeters(int ID, float scalingFactor, int hidden)
 	}
 	c1.h = 10; c2.h = 10;
 	c1.y = 876; c2.y = 876;
-	if(meter[3] >= 270 && meter[4] < 1) color1 = 255;
+	if(meter[4] >= 270 && meter[5] < 1) color1 = 255;
 	else color1 = 127;
-	if(meter[3] >= 540 && meter[4] < 1) color2 = 255;
+	if(meter[4] >= 540 && meter[5] < 1) color2 = 255;
 	else color2 = 127;
 	glColor4f(0.0f, 0.0f, (float)color1, 1.0f);
 	glRectf((GLfloat)(c1.x)*scalingFactor, (GLfloat)(c1.y)*scalingFactor, (GLfloat)(c1.x + c1.w)*scalingFactor, (GLfloat)(c1.y + c1.h)*scalingFactor);
@@ -60,8 +60,8 @@ void red::drawMeters(int ID, float scalingFactor, int hidden)
 void red::init(action *& cMove)
 {
 	character::init(cMove);
-	meter[3] = 540;
-	meter[4] = 0;
+	meter[4] = 540;
+	meter[5] = 0;
 }
 
 action * red::createMove(char * fullName)
@@ -95,18 +95,18 @@ redCancel::redCancel(const char* n)
 
 bool redCancel::check(SDL_Rect& p, int meter[])
 {
-//	if(meter[0] < cost) return 0;
-//	if(meter[3] < 270) return 0;
-	if(meter[4] > 0) return 0;
+//	if(meter[1] < cost) return 0;
+//	if(meter[4] < 270) return 0;
+	if(meter[5] > 0) return 0;
 	return action::check(p, meter);
 }
 
 void redCancel::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
-	meter[1] = 1;
 	meter[2] = 1;
-	meter[3] -= 270;
-	meter[4] = 16;
+	meter[3] = 1;
+//	meter[4] -= 270;
+	meter[5] = 16;
 	action::execute(last, meter, f, c, h);
 }
 
