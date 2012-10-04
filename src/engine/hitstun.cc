@@ -27,7 +27,7 @@ int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
 		switch (b){
 		case -2:
 			f = 0;
-			init(s.stun - 2 - s.stun/5);
+			init(s.stun - 2 - s.stun/4);
 			s.push = 0;
 			return -2;
 		case -1:
