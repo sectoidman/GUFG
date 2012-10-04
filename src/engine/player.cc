@@ -209,9 +209,6 @@ void player::characterSelect(int i)
 	case 2:
 		v = new yellow;
 		break;
-	case 3:
-		v = new grey;
-		break;
 	default:
 		v = new character("White");
 		break;
