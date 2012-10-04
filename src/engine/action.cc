@@ -755,7 +755,7 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 	if(modifier && basis) return basis->takeHit(s, b, f, c, h);
 	else{
 		if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
-			if(riposte != NULL) return -2;
+			if(riposte != NULL) return -5;
 			else return 0;
 		}
 		else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
