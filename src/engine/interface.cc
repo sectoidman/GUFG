@@ -328,7 +328,6 @@ void interface::roundInit()
 	prox.w = 200;
 	prox.h = 0;
 	freeze = 0;
-	draw();
 }
 
 /*Pretty simple timer modifier*/
@@ -389,7 +388,7 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
-	else if(rMenu != 0) draw();
+	else if(rMenu) rematchMenu();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -437,9 +436,11 @@ void interface::resolve()
 
 		for(int i = 0; i < thingComplexity; i++){
 			if(!things[i]->freeze){
-				things[i]->pullVolition();
-				things[i]->combineDelta();
-				things[i]->enforceGravity(grav, floor);
+				if(things[i]->cMove->stop != 3){ 
+					things[i]->pullVolition();
+					things[i]->combineDelta();
+					things[i]->enforceGravity(grav, floor);
+				}
 				for(int j = 0; j < attractorComplexity; j++){
 					if(globals[j]->ID != things[i]->ID) things[i]->enforceAttractor(globals[j]);
 				}
@@ -487,7 +488,12 @@ void interface::resolve()
 		resolveHits();
 
 		/*Draw the sprites*/
-		draw();
+	}	
+}
+
+void interface::cleanup()
+{
+	if(!rMenu && select[0] && select[1]){
 		for(int i = 0; i < thingComplexity; i++){
 			things[i]->step();
 			if(i > 1 && things[i]->dead) cullThing(i);
@@ -685,46 +691,7 @@ void interface::cSelectMenu()
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	for(int i = 0; i < 2; i++) if(menu[i] > 0) mainMenu(i);
-	glEnable( GL_TEXTURE_2D );
 
-	glBindTexture(GL_TEXTURE_2D, selectScreen);
-	glBegin(GL_QUADS);
-		glTexCoord2i(0, 0);
-		glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-		glTexCoord2i(1, 0);
-		glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-		glTexCoord2i(1, 1);
-		glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-
-		glTexCoord2i(0, 1);
-		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-	glEnd();
-
-	for(int i = 0; i < 2; i++){
-		if(!menu[i]){
-			glBindTexture(GL_TEXTURE_2D, cursor[i]);
-			glBegin(GL_QUADS);
-				glTexCoord2i(0, 0);
-				glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(1, 0);
-				glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(1, 1);
-				glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(0, 1);
-				glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-			glEnd();
-		}
-	}
-
-	glDisable( GL_TEXTURE_2D );
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]){
 		p[0]->characterSelect(selection[0]);
 		p[1]->characterSelect(selection[1]);
@@ -745,20 +712,6 @@ void interface::cSelectMenu()
 
 void interface::mainMenu(int ID)
 {
-	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-	char buffer[200];
-	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-	glEnable( GL_TEXTURE_2D );
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
-	drawGlyph("Key Config", 20 + 1260*ID, 300, 370, 40, 2*ID);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
-	if(shortcut) sprintf(buffer, "Rematch");
-	else sprintf(buffer, "Reselect");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 490, 40, 2*ID);
 	if(sAxis[ID][0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
@@ -769,7 +722,7 @@ void interface::mainMenu(int ID)
 	if(menu[ID] > 4) menu[ID] = 1;
 	else if(menu[ID] < 1) menu[ID] = 4;
 	for(int i = 0; i < 5; i++){
-		if(posEdge[ID][i] == 1){
+		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(menu[ID]){
 			case 1:
 				glDisable( GL_TEXTURE_2D );
@@ -789,11 +742,13 @@ void interface::mainMenu(int ID)
 				gameover = 1;
 				break;
 			}
+			counter[ID] = 10;
 		}
 	}
-	if(posEdge[ID][5] == 1 && !counter[ID]) menu[ID] = 0;
-	glDisable( GL_TEXTURE_2D );
-	glColor4f(1.0, 1.0, 1.0, 1.0f);
+	if(posEdge[ID][5] == 1 && !counter[ID]){ 
+		counter[ID] = 10;
+		menu[ID] = 0;
+	}
 }
 
 void interface::dragBG(int deltaX)
@@ -803,17 +758,8 @@ void interface::dragBG(int deltaX)
 	else if(bg.x > 1600) bg.x = 1600;
 }
 
-void interface::reMenu()
+void interface::rematchMenu()
 {
-	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-	glEnable( GL_TEXTURE_2D );
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 1)*0.4);
-	drawGlyph("Rematch", 0, 1600, 360, 60, 1);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 2)*0.4);
-	drawGlyph("Character Select", 0, 1600, 420, 60, 1);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 3)*0.4);
-	drawGlyph("Quit Game", 0, 1600, 480, 60, 1);
 	for(int j = 0; j < 2; j++){
 		if(sAxis[j][0] && !counter[j]){
 			rMenu--;
@@ -852,8 +798,6 @@ void interface::reMenu()
 			}
 		}
 	}
-	glDisable( GL_TEXTURE_2D );
-	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
 interface::~interface()
