@@ -23,6 +23,8 @@ public:
 	void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
 	void resolve();		/*The main loop of the game*/
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
+	void drawGame();
+	void drawCSelect();
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
 	bool screenInit();
@@ -66,6 +68,7 @@ public:
 	bool fullscreen;
 	bool initd:1;
 	bool boxen:1;
+	bool firstFrame:1;
 	bool shortcut:1;
 	int combo[2];
 	int damage[2];

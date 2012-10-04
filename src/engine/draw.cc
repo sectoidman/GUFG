@@ -12,10 +12,63 @@
 #include <SDL/SDL_opengl.h>
 void interface::draw()
 {
-
-	char buffer[200];
 	glClear(GL_COLOR_BUFFER_BIT);
+	if(!select[0] || !select[1]) drawCSelect();
+	else drawGame();
+	SDL_GL_SwapBuffers();
+}
 
+void interface::drawCSelect()
+{
+	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+	for(int i = 0; i < 2; i++) if(menu[i] > 0) mainMenu(i);
+	glEnable( GL_TEXTURE_2D );
+
+	glBindTexture(GL_TEXTURE_2D, selectScreen);
+	glBegin(GL_QUADS);
+		glTexCoord2i(0, 0);
+		glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+
+		glTexCoord2i(1, 0);
+		glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+
+		glTexCoord2i(1, 1);
+		glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+
+		glTexCoord2i(0, 1);
+		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+	glEnd();
+
+	for(int i = 0; i < 2; i++){
+		if(!menu[i]){
+			glBindTexture(GL_TEXTURE_2D, cursor[i]);
+			glBegin(GL_QUADS);
+				glTexCoord2i(0, 0);
+				glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+
+				glTexCoord2i(1, 0);
+				glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+
+				glTexCoord2i(1, 1);
+				glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+
+				glTexCoord2i(0, 1);
+				glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+			glEnd();
+		}
+	}
+
+	glDisable( GL_TEXTURE_2D );
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void interface::drawGame()
+{
+	char buffer[200];
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture(GL_TEXTURE_2D, background);
@@ -62,7 +115,6 @@ void interface::draw()
 		if(timer == 99 * 60 + 30)
 			Mix_PlayChannel(3, announceFight, 0);
 	}
-
 	if(roundEnd && endTimer > 5 * 60 - 31){ 
 		if(p[0]->pick()->meter[0] > 0 && p[1]->pick()->meter[0] > 0){
 			drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
@@ -104,7 +156,6 @@ void interface::draw()
 		p[i]->drawMeters(numRounds, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-
 	glEnable( GL_TEXTURE_2D );
 	for(int i = 0; i < thingComplexity; i++){
 		if(things[i]->spriteCheck()) 
@@ -124,9 +175,7 @@ void interface::draw()
 		freeze--;
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 	if(rMenu != 0) reMenu();
-	SDL_GL_SwapBuffers();
 }
 
 void player::drawMeters(int n, float scalingFactor)

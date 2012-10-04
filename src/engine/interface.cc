@@ -389,7 +389,7 @@ void interface::runTimer()
 void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
-	else if(rMenu != 0) draw();
+	if(!select[0] || !select[1] || rMenu) draw();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -685,46 +685,7 @@ void interface::cSelectMenu()
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	for(int i = 0; i < 2; i++) if(menu[i] > 0) mainMenu(i);
-	glEnable( GL_TEXTURE_2D );
 
-	glBindTexture(GL_TEXTURE_2D, selectScreen);
-	glBegin(GL_QUADS);
-		glTexCoord2i(0, 0);
-		glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-		glTexCoord2i(1, 0);
-		glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-		glTexCoord2i(1, 1);
-		glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-
-		glTexCoord2i(0, 1);
-		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-	glEnd();
-
-	for(int i = 0; i < 2; i++){
-		if(!menu[i]){
-			glBindTexture(GL_TEXTURE_2D, cursor[i]);
-			glBegin(GL_QUADS);
-				glTexCoord2i(0, 0);
-				glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(1, 0);
-				glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(1, 1);
-				glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(0, 1);
-				glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-			glEnd();
-		}
-	}
-
-	glDisable( GL_TEXTURE_2D );
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	SDL_GL_SwapBuffers();
 	if(select[0] && select[1]){
 		p[0]->characterSelect(selection[0]);
 		p[1]->characterSelect(selection[1]);
@@ -769,7 +730,7 @@ void interface::mainMenu(int ID)
 	if(menu[ID] > 4) menu[ID] = 1;
 	else if(menu[ID] < 1) menu[ID] = 4;
 	for(int i = 0; i < 5; i++){
-		if(posEdge[ID][i] == 1){
+		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(menu[ID]){
 			case 1:
 				glDisable( GL_TEXTURE_2D );
@@ -789,9 +750,13 @@ void interface::mainMenu(int ID)
 				gameover = 1;
 				break;
 			}
+			counter[ID] = 10;
 		}
 	}
-	if(posEdge[ID][5] == 1 && !counter[ID]) menu[ID] = 0;
+	if(posEdge[ID][5] == 1 && !counter[ID]){ 
+		counter[ID] = 10;
+		menu[ID] = 0;
+	}
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
