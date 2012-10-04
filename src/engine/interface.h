@@ -25,6 +25,7 @@ public:
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
 	void drawGame();
 	void drawCSelect();
+	void drawMainMenu(int);
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
 	bool screenInit();

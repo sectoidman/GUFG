@@ -24,7 +24,7 @@ void interface::drawCSelect()
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	for(int i = 0; i < 2; i++) if(menu[i] > 0) mainMenu(i);
+	for(int i = 0; i < 2; i++) if(menu[i] > 0) drawMainMenu(i);
 	glEnable( GL_TEXTURE_2D );
 
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
@@ -64,6 +64,26 @@ void interface::drawCSelect()
 	glDisable( GL_TEXTURE_2D );
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void interface::drawMainMenu(int ID)
+{
+	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	char buffer[200];
+	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glEnable( GL_TEXTURE_2D );
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 370, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
+	if(shortcut) sprintf(buffer, "Rematch");
+	else sprintf(buffer, "Reselect");
+	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 490, 40, 2*ID);
+	glDisable( GL_TEXTURE_2D );
+	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
 void interface::drawGame()
