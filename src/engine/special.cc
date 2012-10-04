@@ -15,7 +15,7 @@ negNormal::negNormal(const char * n)
 	build(n);
 }
 
-bool negNormal::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
+bool negNormal::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
@@ -24,10 +24,10 @@ bool negNormal::activate(int pos[5], bool neg[5], int pattern, int t, int f, int
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	return check(p, resource);
+	return check(p, meter);
 }
 
-bool special::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
+bool special::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
 	for(int i = 0; i < 5; i++){
 		if(pattern & (1 << i)){
@@ -36,7 +36,7 @@ bool special::activate(int pos[5], bool neg[5], int pattern, int t, int f, int r
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;
-	return check(p, resource);
+	return check(p, meter);
 }
 
 super::super(const char * n)
@@ -44,10 +44,10 @@ super::super(const char * n)
 	build(n);
 }
 
-bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int resource[], SDL_Rect &p)
+bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
 	int go = 0;
-	if(action::activate(pos, neg, pattern, t, f, resource, p)){
+	if(action::activate(pos, neg, pattern, t, f, meter, p)){
 		for(int i = 0; i < 5; i++){
 			if(pos[i] >= minHold){
 				if(pos[i] <= maxHold || !maxHold) go++;
@@ -128,18 +128,18 @@ int werf::arbitraryPoll(int n, int f)
 	return 0;
 }
 
-bool werf::check(SDL_Rect &p, int resource[])
+bool werf::check(SDL_Rect &p, int meter[])
 {
 	if(p.y != 0) return 0;
 	if(p.x > 0) return 0;
-	return action::check(p, resource);
+	return action::check(p, meter);
 }
 
-bool luftigeWerf::check(SDL_Rect &p, int resource[])
+bool luftigeWerf::check(SDL_Rect &p, int meter[])
 {
 	if(p.y == 0) return 0;
 	if(p.x > 0) return 0;
-	return action::check(p, resource);
+	return action::check(p, meter);
 }
 
 bool werf::setParameter(char * buffer)

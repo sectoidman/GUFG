@@ -9,7 +9,7 @@
 
 character::character()
 {
-	meter = new int[3];
+	meter = new int[4];
 }
 
 character::character(const char*)
@@ -348,8 +348,8 @@ void character::build(const char *directory, const char *file)
 }
 
 void character::init(action *& cMove){
-	health = 600;
-	meter[0] = 0;
+	meter[0] = 600;
+	meter[1] = 0;
 	resetAirOptions();
 	aerial = 0;
 	neutralize(cMove);
@@ -528,15 +528,15 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 	bool dead = false;
 	int freeze = s.stun/4 + 10;
 	p = cMove->takeHit(s, b, f, c, h);
-	if(p == 1) health -= s.damage;
+	if(p == 1) meter[0] -= s.damage;
 	else if(p > -2) { 
-		health -= s.chip;
-		if(p == -1 && health <= 0){ 
-			health = 1;
+		meter[0] -= s.chip;
+		if(p == -1 && meter[0] <= 0){ 
+			meter[0] = 1;
 		}
 	}
-	if(health <= 0){ 
-		health = 0;
+	if(meter[0] <= 0){ 
+		meter[0] = 0;
 		dead = true;
 	}
 	if(dead == true){
@@ -559,20 +559,20 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 			}
 		} 
 	} else if (p == -1) {
-		if(meter[0] + 6 < 300) meter[0] += 6;
-		else meter[0] = 300;
+		if(meter[1] + 6 < 300) meter[1] += 6;
+		else meter[1] = 300;
 	}
 	if(p > -2){
-		if(meter[0] + 1 < 300) meter[0] += 1;
-		else meter[0] = 300;
+		if(meter[1] + 1 < 300) meter[1] += 1;
+		else meter[1] = 300;
 	}
 	return freeze;
 }
 
 void character::resetAirOptions()
 {
-	meter[1] = 1;
 	meter[2] = 1;
+	meter[3] = 1;
 }
 
 bool avatar::acceptTarget(action * c, int f)

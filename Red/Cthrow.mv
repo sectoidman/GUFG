@@ -3,7 +3,7 @@ Buffer: 30 : 0
 Hits: 3
 Frames: 33 : 0 : 1 : 12 : 1 : 8 : 1 : 12
 Check: 1
-State: 0 : 0 : 384 : 384
+State: 0 : 256 : 256 : 256
 Damage: 0 : 7.5 : 22.5
 Stun: 16 : 20 : 10
 Untech: 0 : 0 : 30

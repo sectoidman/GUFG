@@ -62,17 +62,17 @@ airUtility::airUtility(const char * n)
 	airMove::build(n);
 }
 
-bool airUtility::check(SDL_Rect &p, int resource[]) //Check to see if the action is possible right now.
+bool airUtility::check(SDL_Rect &p, int meter[]) //Check to see if the action is possible right now.
 {
-	if(abs(delta[0][0].y) > abs(delta[0][0].x) && resource[1] < 1) return 0;
-	else if(abs(delta[0][0].y) < abs(delta[0][0].x) && resource[2] < 1) return 0;
-	return action::check(p, resource);
+	if(abs(delta[0][0].y) > abs(delta[0][0].x) && meter[2] < 1) return 0;
+	else if(abs(delta[0][0].y) < abs(delta[0][0].x) && meter[3] < 1) return 0;
+	return action::check(p, meter);
 }
 
-void airUtility::execute(action * last, int *& resource, int &f, int &c, int &h){
-	if(abs(delta[0][0].y) > abs(delta[0][0].x)) resource[1]--;
-	else if(abs(delta[0][0].y) < abs(delta[0][0].x)) resource[2]--;
-	action::execute(last, resource, f, c, h);
+void airUtility::execute(action * last, int *& meter, int &f, int &c, int &h){
+	if(abs(delta[0][0].y) > abs(delta[0][0].x)) meter[2]--;
+	else if(abs(delta[0][0].y) < abs(delta[0][0].x)) meter[3]--;
+	action::execute(last, meter, f, c, h);
 }
 
 airLooping::airLooping(const char * n)

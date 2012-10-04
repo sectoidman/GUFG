@@ -4,17 +4,22 @@ Hits: 1
 Frames: 25 : 10 : 5 : 10
 Check: 2048
 State: 256 : 8576
+HitAllows: 16384
 Damage: 18
 Stun: 21
 Untech: 0
-Push: 10
++Untech: 30
+Push: 15
 Lift: 20
++Lift: 8
+Float: 10
++Float: 20
 Blowback: 0
 Gain: 0 : 6
 Cost: 0
 Blockable: 1
 Blocks: 0
-Properties: Sc
+Properties: Sc^
 #0 
 $C	10 0 110 300
 $R	10 0 110 300

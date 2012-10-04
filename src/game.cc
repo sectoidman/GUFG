@@ -30,6 +30,8 @@ int main(int argc, char* argv[])
 		frameStart = chrono::high_resolution_clock::now();
 		game.readInput();
 		game.resolve();
+		game.draw();
+		game.cleanup();
 		frame_t frameElapsed;
 		/*Now eat up the rest of the frame: 
 		 *Check the time elapsed thus far in a loop
@@ -39,6 +41,7 @@ int main(int argc, char* argv[])
 		do frameElapsed = chrono::duration_cast<frame_t>(chrono::high_resolution_clock::now() - frameStart);
 		while(frameElapsed.count() < 1);
 	}
+	game.writeMatchupChart();
 	return 0;
 }
 
