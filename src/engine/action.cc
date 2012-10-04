@@ -673,14 +673,14 @@ int action::calcCurrentHit(int frame)
 
 action * action::connect(int *& meter, int &c, int f)
 {
-	if(modifier && basis) return basis->connect(resource, connectFlag, currentFrame);
+	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
 	else{
 		c = calcCurrentHit(f)+1;
 		if(meter[1] + gain[c] < 300) meter[1] += gain[c];
 		else meter[1] = 300;
 		if(onConnect[c-1] != NULL){
-		return onConnect[c-1];
-		}
+			return onConnect[c-1];
+		} else return NULL;
 	}
 }
 
