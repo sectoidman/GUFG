@@ -49,6 +49,7 @@ if (APPLE)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -stdlib=libc++")
 endif (APPLE)
 
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data)
 
 add_executable (gufg 
 		WIN32
@@ -87,7 +88,6 @@ INSTALL(DIRECTORY .data
 INSTALL(DIRECTORY resources
 	DESTINATION package
 	COMPONENT gufg)
-
 
 INSTALL(DIRECTORY Red
 	DESTINATION package
