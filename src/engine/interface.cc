@@ -698,7 +698,7 @@ void interface::cSelectMenu()
 
 		if(selection[0] == selection[1]) p[1]->secondInstance = true;
 
-		sprintf(buffer, "resources/stages/BG%i.png", selection[0]);
+		sprintf(buffer, "resources/stages/%i/bg.png", selection[0]);
 		background = aux::load_texture(buffer);
 
 		if(selection[0] == selection[1]) sprintf(buffer, "Misc/Mirror.ogg");
