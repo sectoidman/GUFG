@@ -36,7 +36,7 @@ interface::interface()
 	select[0] = 0;
 	select[1] = 0;
 
-	read.open("Misc/.res.conf");
+	read.open(".config/resolution.conf");
 	if(read.fail()){ 
 		scalingFactor = 0.5;
 		fullscreen = false;
@@ -61,7 +61,7 @@ interface::interface()
 		select[i] = 0;
 		selection[i] = 1+i;
 		menu[i] = 0;
-		sprintf(buffer, "Misc/P%iSelect%i.png", i+1, selection[i]);
+		sprintf(buffer, "resources/menu/P%iSelect%i.png", i+1, selection[i]);
 		cursor[i] = aux::load_texture(buffer);
 	}
 
@@ -94,10 +94,10 @@ void interface::loadMisc()
 {
 	char buffer[200];
 	for(int i = 0; i < 91; i++){
-		sprintf(buffer, "Misc/Glyphs/%i.png", i);
+		sprintf(buffer, "resources/glyphs/%i.png", i);
 		glyph[i] = aux::load_texture(buffer);
 	}
-	selectScreen = aux::load_texture("Misc/Select.png");
+	selectScreen = aux::load_texture("resources/menu/Select.png");
 	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
 	announceWinner = new Mix_Chunk*[numChars + 1];
 	for(int i = 0; i < numChars + 1; i++){
@@ -121,7 +121,7 @@ void interface::readMatchupChart()
 	char buffer[500];
 	char* token;
 	bool fresh = false;
-	read.open("Misc/.data/.matchups.csv");
+	read.open(".data/.matchups.csv");
 	if(read.fail()) fresh = true;
 	for(int i = 0; i < numChars + 1; i++){
 		if(!fresh){ 
@@ -143,7 +143,7 @@ void interface::readMatchupChart()
 void interface::writeMatchupChart()
 {
 	std::ofstream write;
-	write.open("Misc/.data/.matchups.csv");
+	write.open(".data/.matchups.csv");
 	write << " ";
 	for(int j = 1; j < numChars + 1; j++){
 		write << ",";
@@ -223,7 +223,7 @@ void interface::writeConfig(int ID)
 	char fname[30];
 	SDL_Event temp;
 	sprintf(pident, "Player %i", ID + 1);
-	sprintf(fname, "Misc/.p%i.conf", ID + 1);
+	sprintf(fname, ".config/p%i.conf", ID + 1);
 	std::ofstream write;
 	write.open(fname);
 	for(int i = 0; i < 10; i++){
@@ -646,7 +646,7 @@ void interface::cSelectMenu()
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
 	if(!initd){ 
 		std::ofstream write;
-		write.open("Misc/.res.conf");
+		write.open(".config/resolution.conf");
 		write << sf << '\n' << fullscreen;
 		write.close();
 		scalingFactor = sf;
@@ -660,14 +660,14 @@ void interface::cSelectMenu()
 			if(sAxis[i][2] && !select[i] && counter[i] == 0){
 				selection[i]--;
 				if(selection[i] < 1) selection[i] = numChars;
-				sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
+				sprintf(base[i], "resources/menu/P%iSelect%i.png", i+1, selection[i]);
 				cursor[i] = aux::load_texture(base[i]);
 				counter[i] = 10;
 			}
 			if(sAxis[i][3] && !select[i] && counter[i] == 0){
 				selection[i]++;
 				if(selection[i] > numChars) selection[i] = 1;
-				sprintf(base[i], "Misc/P%iSelect%i.png", i+1, selection[i]);
+				sprintf(base[i], "resources/menu/P%iSelect%i.png", i+1, selection[i]);
 				cursor[i] = aux::load_texture(base[i]);
 				counter[i] = 10;
 			}
@@ -698,7 +698,7 @@ void interface::cSelectMenu()
 
 		if(selection[0] == selection[1]) p[1]->secondInstance = true;
 
-		sprintf(buffer, "Misc/BG%i.png", selection[0]);
+		sprintf(buffer, "resources/stages/BG%i.png", selection[0]);
 		background = aux::load_texture(buffer);
 
 		if(selection[0] == selection[1]) sprintf(buffer, "Misc/Mirror.ogg");

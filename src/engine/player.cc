@@ -109,7 +109,7 @@ void player::roundInit()
 bool player::readConfig()
 {
 	char fname[30];
-	sprintf(fname, "Misc/.p%i.conf", ID);
+	sprintf(fname, ".config/p%i.conf", ID);
 	std::ifstream read;
 	read.open(fname);
 	if(read.fail()) {
