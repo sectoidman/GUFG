@@ -64,7 +64,6 @@ public:
 	~player();
 	character * pick() { return v; }
 
-	bool aerial();
 	const char * inputName[10];   //Input names. This is really just for housekeeping.
 	SDL_Event input[10];    //Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
 	int rounds;		//How many rounds has this player won this match?

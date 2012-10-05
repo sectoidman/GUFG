@@ -152,11 +152,6 @@ bool player::readConfig()
 	}
 }
 
-bool player::aerial()
-{
-	return pick()->aerial;
-}
-
 SDL_Event player::writeConfig(int i)
 {
 	SDL_Event temp; 
