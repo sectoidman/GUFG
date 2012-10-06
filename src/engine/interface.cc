@@ -98,21 +98,21 @@ void interface::loadMisc()
 		glyph[i] = aux::load_texture(buffer);
 	}
 	selectScreen = aux::load_texture("resources/menu/Select.png");
-	menuMusic = Mix_LoadMUS("Misc/Menu.ogg");
+	menuMusic = Mix_LoadMUS("resources/sound/Menu.ogg");
 	announceWinner = new Mix_Chunk*[numChars + 1];
 	for(int i = 0; i < numChars + 1; i++){
-		sprintf(buffer, "Misc/Announcer/Win%i.ogg", i);
+		sprintf(buffer, "resources/sound/announcer/Win%i.ogg", i);
 		announceWinner[i] = Mix_LoadWAV(buffer);
 	}
 	readMatchupChart();
-	announceRound[0] = Mix_LoadWAV("Misc/Announcer/Round1.ogg");
-	announceRound[1] = Mix_LoadWAV("Misc/Announcer/Round2.ogg");
-	announceRound[2] = Mix_LoadWAV("Misc/Announcer/RoundF.ogg");
-	announceDraw[1] = Mix_LoadWAV("Misc/Announcer/Draw.ogg");
-	announceFight = Mix_LoadWAV("Misc/Announcer/Fight.ogg");
-	announceEnd[0] = Mix_LoadWAV("Misc/Announcer/Timeout.ogg");
-	announceEnd[1] = Mix_LoadWAV("Misc/Announcer/Down.ogg");
-	announceSelect = Mix_LoadWAV("Misc/Announcer/Select.ogg");
+	announceRound[0] = Mix_LoadWAV("resources/sound/announcer/Round1.ogg");
+	announceRound[1] = Mix_LoadWAV("resources/sound/announcer/Round2.ogg");
+	announceRound[2] = Mix_LoadWAV("resources/sound/announcer/RoundF.ogg");
+	announceDraw[1] = Mix_LoadWAV("resources/sound/announcer/Draw.ogg");
+	announceFight = Mix_LoadWAV("resources/sound/announcer/Fight.ogg");
+	announceEnd[0] = Mix_LoadWAV("resources/sound/announcer/Timeout.ogg");
+	announceEnd[1] = Mix_LoadWAV("resources/sound/announcer/Down.ogg");
+	announceSelect = Mix_LoadWAV("resources/sound/announcer/Select.ogg");
 }
 
 void interface::readMatchupChart()
@@ -701,8 +701,8 @@ void interface::cSelectMenu()
 		sprintf(buffer, "resources/stages/%i/bg.png", selection[0]);
 		background = aux::load_texture(buffer);
 
-		if(selection[0] == selection[1]) sprintf(buffer, "Misc/Mirror.ogg");
-		else sprintf(buffer, "Misc/%i.ogg", selection[1]);
+		if(selection[0] == selection[1]) sprintf(buffer, "resources/sound/Mirror.ogg");
+		else sprintf(buffer, "resources/sound/%i.ogg", selection[1]);
 		matchMusic = Mix_LoadMUS(buffer);
 		Mix_HaltMusic();
 

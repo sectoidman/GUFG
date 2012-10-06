@@ -86,7 +86,7 @@ void action::build(const char * n)
 	char savedBuffer[100];
 	buffer[0] = '\0';
 
-	sprintf(fname, "%s.mv", n);
+	sprintf(fname, "resources/characters/%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
 
@@ -140,7 +140,7 @@ void action::build(const char * n)
 	height = new int[frames];
 	sprite = new GLuint[frames];
 	for(int i = 0; i < frames; i++){
-		sprintf(fname, "%s#%i.png", n, i);
+		sprintf(fname, "resources/characters/%s#%i.png", n, i);
 		temp = aux::load_image(fname);
 		if(!temp){
 			width[i] = 0;
@@ -152,7 +152,7 @@ void action::build(const char * n)
 			sprite[i] = aux::surface_to_texture(temp);
 		}
 	}
-	sprintf(fname, "%s.ogg", n);
+	sprintf(fname, "resources/characters/%s.ogg", n);
 	soundClip = Mix_LoadWAV(fname);
 }
 
