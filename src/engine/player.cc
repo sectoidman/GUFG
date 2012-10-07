@@ -15,6 +15,7 @@ player::player(int id)
 {
 	ID = id;
 	init();
+	wins = 0;
 }
 
 instance::instance()

@@ -430,7 +430,7 @@ action * avatar::createMove(char * fullName)
 		break;
 	default:
 		m = new action(actionName);
-		break;	
+		break;
 	}
 	return m;
 }

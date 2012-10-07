@@ -16,11 +16,11 @@
 #include <math.h>
 interface::interface()
 {
-	char buffer[50];
 	numChars = 2;
 	matchup = new int*[numChars+1];
 	for(int i = 0; i < numChars+1; i++) matchup[i] = new int[numChars+1];
 	shortcut = false;
+	continuous = false;
 	boxen = false;
 	std::ifstream read;
 
@@ -51,20 +51,12 @@ interface::interface()
 	/*Game and round end conditions*/
 	gameover = 0;
 	numRounds = 2;
-}
 
-void interface::createPlayers()
-{
-	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
-		p[i] = new player(i+1);
 		sAxis[i] = new bool[4];
 		posEdge[i] = new int[6]; 
 		negEdge[i] = new bool[6];
 		counter[i] = 0;
-		select[i] = 0;
-		selection[i] = 1+i;
-		menu[i] = 0;
 	}
 
 	for(int i = 0; i < 6; i++){
@@ -79,6 +71,31 @@ void interface::createPlayers()
 	}
 }
 
+void interface::createPlayers()
+{
+	/*Initialize players.*/
+	for(int i = 0; i < 2; i++){
+		p[i] = new player(i+1);
+		select[i] = 0;
+		selection[i] = 1+i;
+		menu[i] = 0;
+	}
+}
+
+void interface::createDaemons()
+{
+	srand(time(NULL));
+	for(int i = 0; i < 2; i++){
+		p[i] = new daemon(i+1);
+		selection[i] = rand()%numChars + 1;
+		p[i]->characterSelect(selection[i]);
+		printf("p%i selected %s\n", i+1, p[i]->pick()->name);
+		select[i] = 1;
+		menu[i] = 0;
+	}
+	continuous = true;
+}
+
 void interface::startGame()
 {
 	SDL_Event temp;
@@ -88,6 +105,7 @@ void interface::startGame()
 	things = NULL;
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
+	if(select[0] && select[1]) roundInit();
 }
 
 /*This function loads a few miscellaneous things the game will need in all cases*/
@@ -312,8 +330,8 @@ void interface::roundInit()
 	bg.y = -900;
 
 	for(int i = 0; i < 2; i++){
-		p[i]->roundInit();
 		p[i]->posY = floor;
+		p[i]->roundInit();
 	}
 	/*Initialize input containers*/
 	for(int i = 0; i < 2; i++){
@@ -368,21 +386,28 @@ void interface::runTimer()
 			p[0]->momentumComplexity = 0;
 			p[1]->momentumComplexity = 0;
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
+				if(p[0]->rounds == numRounds) p[0]->wins++;
+				else p[1]->wins++;
 				if(selection[0] != selection[1]){
 					if(p[0]->rounds == numRounds) matchup[selection[0]][selection[1]]++;
 					else matchup[selection[1]][selection[0]]++;
 					printf("Matchup: %f\n", (float)matchup[selection[0]][selection[1]] / 
 					       ((float)matchup[selection[0]][selection[1]] + (float)matchup[selection[1]][selection[0]]));
-				}
+				} else printf("Mirror\n");
 				if(shortcut) rMenu = 1;
 				else{
-					delete p[0]->pick();
-					delete p[1]->pick();
-					select[0] = 0;
-					select[1] = 0;
-					Mix_HaltMusic();
-					Mix_FreeMusic(matchMusic);
+					if(!continuous){
+						delete p[0]->pick();
+						delete p[1]->pick();
+						select[0] = 0;
+						select[1] = 0;
+					}
+					if(SDL_WasInit(SDL_INIT_VIDEO) != 0){
+						Mix_HaltMusic();
+						Mix_FreeMusic(matchMusic);
+					}
 					matchInit();
+					if(select[0] && select[1]) roundInit();
 				}
 			}
 			else roundInit();
@@ -592,14 +617,24 @@ void interface::checkWin()
 		roundEnd = true;
 		if(p[0]->pick()->meter[0] > p[1]->pick()->meter[0]) {
 			p[0]->rounds++;
+			printf("P1: %i wins\n", p[0]->wins);
 		}
 		else if(p[1]->pick()->meter[0] > p[0]->pick()->meter[0]) {
 			p[1]->rounds++;
+			printf("P2: %i wins\n", p[1]->wins);
 		}
 		else {
+			printf("DRAW: %i\n", p[1]->pick()->meter[0]);
 			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
 			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
 		}
+	}
+}
+
+void interface::genInput()
+{
+	for(int i = 0; i < 2; i++){
+		p[i]->genEvent(sAxis[i], posEdge[i], negEdge[i]);
 	}
 }
 

@@ -62,22 +62,22 @@ public:
 	player();
 	player(int);
 	~player();
-	character * pick() { return v; }
+	virtual character * pick() { return v; }
 
 	const char * inputName[10];//Input names. This is really just for housekeeping.
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
 	SDL_Event writeConfig(int);
 	bool readConfig();
-	void characterSelect(int);
+	virtual void characterSelect(int);
 	void drawHitParticle(int, int, float);
 
 	void land();
 	void enforceGravity(int, int);
 	void drawMeters(int, float);
 	void readEvent(SDL_Event &, bool *&, int *&, bool *&);
-	void genEvent(bool *&, int *&, bool *&) {}
-	void roundInit();
+	virtual void genEvent(bool *&, int *&, bool *&) {}
+	virtual void roundInit();
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
 	bool CHState();
@@ -99,6 +99,7 @@ public:
 	void getThrown(action*, int, int);
 
 	void init();
+	int wins;
 protected:
 	character * v;
 private:
@@ -108,7 +109,11 @@ private:
 class daemon : public player{
 public:
 	daemon();
+	daemon(int);
+	void roundInit();
 	void genEvent(bool *&, int *&, bool *&);
+	character * pick() { return v; }
+	void characterSelect(int);
 protected:
 	character * v;
 };
