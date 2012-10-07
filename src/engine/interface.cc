@@ -48,6 +48,13 @@ interface::interface()
 	read.close();
 	sf = scalingFactor;
 
+	/*Game and round end conditions*/
+	gameover = 0;
+	numRounds = 2;
+}
+
+void interface::createPlayers()
+{
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
@@ -70,11 +77,10 @@ interface::interface()
 			sAxis[1][i] = 0;
 		}
 	}
+}
 
-	/*Game and round end conditions*/
-	gameover = 0;
-	numRounds = 2;
-
+void interface::startGame()
+{
 	SDL_Event temp;
 	while(SDL_PollEvent(&temp));
 

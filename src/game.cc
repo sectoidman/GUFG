@@ -19,11 +19,13 @@ int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
 	const int FPS = 60;
-	typedef chrono::duration<float,std::ratio<1,FPS>> frame_t ;
+	typedef chrono::duration<float,std::ratio<1,FPS>> frame_t;
 	chrono::high_resolution_clock::time_point frameStart;
 	interface game;
 	assert(game.screenInit() != false);
+	game.createPlayers();
 	game.loadMisc();
+	game.startGame();
 	int rounds = 2;
 	if(argc > 1) rounds = atoi(argv[1]);
 	if(rounds > 0 && rounds < 10) game.numRounds = rounds;

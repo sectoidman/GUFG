@@ -17,6 +17,8 @@ class interface
 public:
 	interface();
 	~interface();
+	void createPlayers();
+	void startGame();
 /*Important interface functions that will remain interface functions*/
 
 /*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
