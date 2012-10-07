@@ -386,8 +386,13 @@ void interface::runTimer()
 			p[0]->momentumComplexity = 0;
 			p[1]->momentumComplexity = 0;
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-				if(p[0]->rounds == numRounds) p[0]->wins++;
-				else p[1]->wins++;
+				if(p[0]->rounds == numRounds){ 
+					p[0]->wins++;
+					printf("P1: %i wins\n", p[0]->wins);
+				} else {
+					p[1]->wins++;
+					printf("P2: %i wins\n", p[1]->wins);
+				}
 				if(selection[0] != selection[1]){
 					if(p[0]->rounds == numRounds) matchup[selection[0]][selection[1]]++;
 					else matchup[selection[1]][selection[0]]++;
@@ -617,14 +622,11 @@ void interface::checkWin()
 		roundEnd = true;
 		if(p[0]->pick()->meter[0] > p[1]->pick()->meter[0]) {
 			p[0]->rounds++;
-			printf("P1: %i wins\n", p[0]->wins);
 		}
 		else if(p[1]->pick()->meter[0] > p[0]->pick()->meter[0]) {
 			p[1]->rounds++;
-			printf("P2: %i wins\n", p[1]->wins);
 		}
 		else {
-			printf("DRAW: %i\n", p[1]->pick()->meter[0]);
 			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
 			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
 		}
