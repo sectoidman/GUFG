@@ -47,8 +47,6 @@ interface::interface()
 	}
 	read.close();
 	sf = scalingFactor;
-	assert(screenInit() != false);
-	loadMisc();
 
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
@@ -61,8 +59,6 @@ interface::interface()
 		select[i] = 0;
 		selection[i] = 1+i;
 		menu[i] = 0;
-		sprintf(buffer, "resources/menu/P%iSelect%i.png", i+1, selection[i]);
-		cursor[i] = aux::load_texture(buffer);
 	}
 
 	for(int i = 0; i < 6; i++){
@@ -85,7 +81,7 @@ interface::interface()
 
 	/*Start a match*/
 	things = NULL;
-	Mix_PlayChannel(3, announceSelect, 0);
+	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 }
 
@@ -103,6 +99,10 @@ void interface::loadMisc()
 	for(int i = 0; i < numChars + 1; i++){
 		sprintf(buffer, "resources/sound/announcer/Win%i.ogg", i);
 		announceWinner[i] = Mix_LoadWAV(buffer);
+	}
+	for(int i = 0; i < 2; i++){
+		sprintf(buffer, "resources/menu/P%iSelect%i.png", i+1, selection[i]);
+		cursor[i] = aux::load_texture(buffer);
 	}
 	readMatchupChart();
 	announceRound[0] = Mix_LoadWAV("resources/sound/announcer/Round1.ogg");
@@ -785,7 +785,7 @@ void interface::rematchMenu()
 					select[1] = 0;
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
-					Mix_PlayChannel(3, announceSelect, 0);
+					//Mix_PlayChannel(3, announceSelect, 0);
 					matchInit();
 					break;
 				case 3:

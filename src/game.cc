@@ -12,6 +12,7 @@
 #include <SDL/SDL_opengl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
 using namespace internal;
 
 int main(int argc, char* argv[])
@@ -21,6 +22,8 @@ int main(int argc, char* argv[])
 	typedef chrono::duration<float,std::ratio<1,FPS>> frame_t ;
 	chrono::high_resolution_clock::time_point frameStart;
 	interface game;
+	assert(game.screenInit() != false);
+	game.loadMisc();
 	int rounds = 2;
 	if(argc > 1) rounds = atoi(argv[1]);
 	if(rounds > 0 && rounds < 10) game.numRounds = rounds;
