@@ -1,24 +1,35 @@
 #include "player.h"
-struct frame {
+class frame {
+public:
+	frame();
 	int dir:4;
 	bool neg[5];
 	int pos[5];
 	frame * next;
+	virtual void cull();
+};
+
+class sequence {
+public:
+	sequence();
+	frame * start;
+	frame * curr;
+	virtual void append(frame*);
+	~sequence();
 };
 
 class replay {
 public:
-	replay();
+	replay()
 	int selection[2];
-	frame * head[2];
-	frame * curr[2];
-	virtual void append(frame*);
+	sequence * start[2];
+	virtual void append(frame*, frame*);
 	virtual void load(const char*);
 	virtual void write();
 	~replay();
-};
+}
 
-class combo : public replay {
+class  : public sequence {
 public:
 	combo();
 	combo(action*);
