@@ -76,6 +76,7 @@ public:
 	void enforceGravity(int, int);
 	void drawMeters(int, float);
 	void readEvent(SDL_Event &, bool *&, int *&, bool *&);
+	void genEvent(bool *&, int *&, bool *&) {}
 	void roundInit();
 	int takeHit(int, hStat&);
 	void connect(int, hStat&);
@@ -102,5 +103,13 @@ protected:
 	character * v;
 private:
 	SDL_Event input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
+};
+
+class daemon : public player{
+public:
+	daemon();
+	void genEvent(bool *&, int *&, bool *&);
+protected:
+	character * v;
 };
 #endif
