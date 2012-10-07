@@ -51,7 +51,6 @@ interface::interface()
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
 		p[i] = new player(i+1);
-		if(!p[i]->readConfig()) writeConfig(i);
 		sAxis[i] = new bool[4];
 		posEdge[i] = new int[6]; 
 		negEdge[i] = new bool[6];
@@ -103,6 +102,7 @@ void interface::loadMisc()
 	for(int i = 0; i < 2; i++){
 		sprintf(buffer, "resources/menu/P%iSelect%i.png", i+1, selection[i]);
 		cursor[i] = aux::load_texture(buffer);
+		if(!p[i]->readConfig()) writeConfig(i);
 	}
 	readMatchupChart();
 	announceRound[0] = Mix_LoadWAV("resources/sound/announcer/Round1.ogg");
