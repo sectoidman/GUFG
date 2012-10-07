@@ -9,7 +9,7 @@
 
 #include <SDL/SDL.h>
 #include <stdio.h>
-#include "player.h"
+#include "analytics.h"
 #ifndef INTERFACE
 #define INTERFACE
 class interface
