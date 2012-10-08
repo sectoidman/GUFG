@@ -20,7 +20,7 @@ Cost: 0
 Blockable: 6
 Blocks: 0
 Counterhit: ^v>
-Properties: 
+Properties: C
 #0 
 $C	10 50 110 240
 $R	10 50 110 240
