@@ -7,9 +7,9 @@ public:
 	bool neg[5];
 	int pos[5];
 	frame * next;
-	frame * operator+=(const frame *&);
 	virtual void cull();
 	virtual void append(frame*);
+	virtual ~frame() {}
 };
 
 class replay {
@@ -22,7 +22,7 @@ public:
 	virtual void append(frame*, frame*);
 	virtual void load(const char*);
 	virtual void write();
-	~replay();
+	virtual ~replay();
 };
 
 class combo {
@@ -37,5 +37,5 @@ public:
 	int cost;
 	char * starter;
 	virtual void write();
-	~combo();
+	virtual ~combo();
 };

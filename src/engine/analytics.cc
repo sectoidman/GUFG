@@ -25,17 +25,9 @@ void frame::cull()
 	next = NULL;
 }
 
-frame::append(frame * n)
+void frame::append(frame * n)
 {
-	if(!start) start = n;
-	else current->next = n;
-	current = n;
-}
-
-frame * frame::operator+=(const frame *& n)
-{
-	append(n);
-	return current;
+	next = n;
 }
 
 replay::replay()
@@ -58,8 +50,8 @@ void replay::append(frame * p1, frame * p2)
 		start[0] = p1;
 		start[1] = p2;
 	} else { 
-		*current[0] += p1;
-		*current[1] += p2;
+		current[0]->append(p1);
+		current[1]->append(p2);
 	}
 	current[0] = p1;
 	current[1] = p2;
@@ -67,17 +59,23 @@ void replay::append(frame * p1, frame * p2)
 
 void replay::load(const char* filename)
 {
-	printf("Stub function: This will load a replay file\n")
+	printf("Stub function: This will load a replay file\n");
 }
 
 void replay::write()
 {
-	printf("Stub function: This will save a replay file\n")
+	std::ofstream scribe;
+	char buffer[100];
+	time_t time;
+	sprintf(buffer, "(%i)v(%i), %s.frp", selection[0], selection[1], asctime(localtime(&time)));
+	scribe.open(buffer);
+	scribe.close();
+	printf("Stub function: This will save a replay file\n");
 }
 
 replay::~replay()
 {
-	if(head[0]){
+	if(start[0]){
 		start[0]->cull();
 		start[1]->cull();
 	}
