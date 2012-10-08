@@ -49,6 +49,13 @@ replay::replay(int p1, int p2)
 	fcounter = 0;
 }
 
+replay::replay(const char* filename)
+{
+	start[0] = NULL;
+	current[0] = NULL;
+	load(filename);
+}
+
 void replay::append(frame * p1, frame * p2)
 {
 	if(!start[0]){ 
