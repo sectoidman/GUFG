@@ -24,6 +24,7 @@ interface::interface()
 	shortcut = false;
 	continuous = false;
 	analytics = false;
+	single = false;
 	boxen = false;
 	std::ifstream read;
 
@@ -99,6 +100,34 @@ void interface::createDaemons()
 	}
 	continuous = true;
 	analytics = true;
+}
+
+void interface::createDaemons(replay * script)
+{
+	srand(time(NULL));
+	for(int i = 0; i < 2; i++){
+		p[i] = new daemon(i+1, script->start[i]);
+		selection[i] = script->selection[i];
+		p[i]->characterSelect(selection[i]);
+		select[i] = 1;
+		menu[i] = 0;
+	}
+	loadMatchBackground();
+
+	single = true;
+}
+
+void interface::loadMatchBackground()
+{
+	char buffer[100];
+	if(selection[0] == selection[1]) p[1]->secondInstance = true;
+
+	sprintf(buffer, "resources/stages/%i/bg.png", selection[0]);
+	background = aux::load_texture(buffer);
+
+	if(selection[0] == selection[1]) sprintf(buffer, "resources/sound/Mirror.ogg");
+	else sprintf(buffer, "resources/sound/%i.ogg", selection[1]);
+	matchMusic = Mix_LoadMUS(buffer);
 }
 
 void interface::startGame()
@@ -423,10 +452,13 @@ void interface::runTimer()
 						currentMatch->write();
 						delete currentMatch;
 					}
-					matchInit();
-					if(select[0] && select[1]){
-						if(analytics) currentMatch = new replay(selection[0], selection[1]);
-						roundInit();
+					if(single) gameover = true;
+					else{
+						matchInit();
+						if(select[0] && select[1]){
+							if(analytics) currentMatch = new replay(selection[0], selection[1]);
+							roundInit();
+						}
 					}
 				}
 			}
@@ -757,14 +789,7 @@ void interface::cSelectMenu()
 		p[0]->characterSelect(selection[0]);
 		p[1]->characterSelect(selection[1]);
 
-		if(selection[0] == selection[1]) p[1]->secondInstance = true;
-
-		sprintf(buffer, "resources/stages/%i/bg.png", selection[0]);
-		background = aux::load_texture(buffer);
-
-		if(selection[0] == selection[1]) sprintf(buffer, "resources/sound/Mirror.ogg");
-		else sprintf(buffer, "resources/sound/%i.ogg", selection[1]);
-		matchMusic = Mix_LoadMUS(buffer);
+		loadMatchBackground();
 		Mix_HaltMusic();
 
 		roundInit();

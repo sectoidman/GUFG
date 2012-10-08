@@ -6,6 +6,7 @@
 #include "../charlist.h"
 #ifndef PLAYER
 #define PLAYER
+class frame;
 class instance{
 public:
 	instance();
@@ -110,6 +111,8 @@ class daemon : public player{
 public:
 	daemon();
 	daemon(int);
+	daemon(int, frame*);
+	frame * script;
 	void roundInit();
 	void genEvent(bool *&, int *&, bool *&);
 	character * pick() { return v; }

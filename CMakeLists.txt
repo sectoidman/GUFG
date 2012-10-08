@@ -58,6 +58,12 @@ add_executable (gufg
 		src/game.cc
 		${SOURCES})
 
+add_executable (replay
+		MACOSX_BUNDLE
+		EXCLUDE_FROM_ALL
+		src/replay.cc
+		${SOURCES})
+
 add_executable (rand
 		MACOSX_BUNDLE
 		EXCLUDE_FROM_ALL
