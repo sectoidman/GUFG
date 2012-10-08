@@ -526,7 +526,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
 	bool dead = false;
-	int freeze;
+	int freeze = 0;
 	if(s.pause < 0){ 
 		freeze = s.stun/4 + 10;
 		if(s.ghostHit) freeze = 0;

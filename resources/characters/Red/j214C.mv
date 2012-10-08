@@ -1,7 +1,7 @@
 Name: j214C
 Buffer: 30 : 15
 Hits: 1
-SuperFreeze: 9 - 30
+SuperFreeze: 9 - 25
 Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
@@ -9,8 +9,8 @@ Damage: 39
 Chip: 5
 Landing: -j214CLR
 Stun: 35
-Pause: 0
 +Stun: 30
+Pause: 0
 Cost: 75
 Untech: 55
 Float: 40

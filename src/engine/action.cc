@@ -611,6 +611,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 		s.lift = stats[c].lift + CHStats[c].lift * CH;
 		s.untech = stats[c].untech + CHStats[c].untech * CH;
 		s.blowback = stats[c].blowback + CHStats[c].blowback * CH;
+		s.pause = stats[c].pause + CHStats[c].pause * CH;
 		if(CH){
 			s.launch = CHStats[c].launch || stats[c].launch;
 			s.hover = CHStats[c].hover;
