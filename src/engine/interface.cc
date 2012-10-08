@@ -23,6 +23,7 @@ interface::interface()
 	for(int i = 0; i < numChars+1; i++) matchup[i] = new int[numChars+1];
 	shortcut = false;
 	continuous = false;
+	analytics = false;
 	boxen = false;
 	std::ifstream read;
 
@@ -71,6 +72,7 @@ interface::interface()
 			sAxis[1][i] = 0;
 		}
 	}
+	currentMatch = NULL;
 }
 
 void interface::createPlayers()
@@ -96,6 +98,7 @@ void interface::createDaemons()
 		menu[i] = 0;
 	}
 	continuous = true;
+	analytics = true;
 }
 
 void interface::startGame()
@@ -107,7 +110,10 @@ void interface::startGame()
 	things = NULL;
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
-	if(select[0] && select[1]) roundInit();
+	if(select[0] && select[1]){ 
+		if(analytics) currentMatch = new replay(selection[0], selection[1]);
+		roundInit();
+	}
 }
 
 /*This function loads a few miscellaneous things the game will need in all cases*/
@@ -413,8 +419,15 @@ void interface::runTimer()
 						Mix_HaltMusic();
 						Mix_FreeMusic(matchMusic);
 					}
+					if(analytics && currentMatch){
+						currentMatch->write();
+						delete currentMatch;
+					}
 					matchInit();
-					if(select[0] && select[1]) roundInit();
+					if(select[0] && select[1]){
+						if(analytics) currentMatch = new replay(selection[0], selection[1]);
+						roundInit();
+					}
 				}
 			}
 			else roundInit();
@@ -441,7 +454,10 @@ void interface::resolve()
 					negEdge[i][j] = 0;
 				}
 			}
-		} else for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+		} else { 
+			for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+			if(analytics) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
+		}
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < thingComplexity; i++){
 			if(i < 2){

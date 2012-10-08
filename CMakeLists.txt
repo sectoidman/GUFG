@@ -50,6 +50,7 @@ if (APPLE)
 endif (APPLE)
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data)
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data/replays)
 
 add_executable (gufg 
 		WIN32

@@ -78,6 +78,7 @@ public:
 	bool firstFrame:1;
 	bool shortcut:1;
 	bool continuous:1;
+	bool analytics:1;
 	int combo[2];
 	int damage[2];
 	bool illegit[2];
@@ -111,6 +112,7 @@ public:
 	int timer;
 	bool roundEnd:1;
 	int endTimer;
+	replay * currentMatch;
 private:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;

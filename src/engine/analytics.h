@@ -19,6 +19,7 @@ public:
 	int selection[2];
 	frame * start[2];
 	frame * current[2];
+	int fcounter;
 	virtual void append(frame*, frame*);
 	virtual void load(const char*);
 	virtual void write();
