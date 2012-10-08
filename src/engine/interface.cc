@@ -451,6 +451,7 @@ void interface::runTimer()
 					if(analytics && currentMatch){
 						currentMatch->write();
 						delete currentMatch;
+						currentMatch = NULL;
 					}
 					if(single) gameover = true;
 					else{
@@ -488,7 +489,6 @@ void interface::resolve()
 			}
 		} else { 
 			for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
-			if(analytics) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
 		}
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < thingComplexity; i++){
@@ -593,6 +593,7 @@ void interface::cleanup()
 		runTimer();
 	}
 	/*Reinitialize inputs*/
+	if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
 	for(int i = 0; i < 2; i++){
 		for(int j = 0; j < 6; j++){
 			if(posEdge[i][j] > 0) posEdge[i][j]++;
@@ -770,7 +771,7 @@ void interface::cSelectMenu()
 				}
 			}
 			if(posEdge[i][5] == 1){
-				if(!select[i]) menu[i] = 2;
+				if(!select[i]) menu[i] = 3;
 				else select[i] = 0;
 				counter[i] = 10;
 			}
@@ -791,6 +792,7 @@ void interface::cSelectMenu()
 
 		loadMatchBackground();
 		Mix_HaltMusic();
+		if(analytics) if(analytics) currentMatch = new replay(selection[0], selection[1]);
 
 		roundInit();
 	}
@@ -805,26 +807,32 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 4) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 4;
+	if(menu[ID] > 5) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 5;
 	for(int i = 0; i < 5; i++){
 		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(menu[ID]){
 			case 1:
+				if(analytics)
+					analytics = false;
+				else
+					analytics = true;
+				break;
+			case 2:
 				glDisable( GL_TEXTURE_2D );
 				writeConfig(ID);
 				glEnable( GL_TEXTURE_2D );
 				break;
-			case 2:
+			case 3:
 				menu[ID] = 0;
 				break;
-			case 3:
+			case 4:
 				if(shortcut) 
 					shortcut = false;
 				else 
 					shortcut = true;
 				break;
-			case 4:
+			case 5:
 				gameover = 1;
 				break;
 			}

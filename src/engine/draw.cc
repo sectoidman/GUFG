@@ -73,15 +73,19 @@ void interface::drawMainMenu(int ID)
 	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
-	drawGlyph("Key Config", 20 + 1260*ID, 300, 370, 40, 2*ID);
+	if(analytics) sprintf(buffer, "Replay");
+	else sprintf(buffer, "No Replay");
+	drawGlyph(buffer, 20 + 1260*ID, 300, 350, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 390, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 430, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
 	if(shortcut) sprintf(buffer, "Rematch");
 	else sprintf(buffer, "Reselect");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 490, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 470, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 5)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 510, 40, 2*ID);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
