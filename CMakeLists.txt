@@ -58,7 +58,6 @@ add_executable (gufg
 		${SOURCES})
 
 add_executable (rand
-		WIN32
 		MACOSX_BUNDLE
 		EXCLUDE_FROM_ALL
 		src/rand.cc
