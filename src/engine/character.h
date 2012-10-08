@@ -38,6 +38,7 @@ public:
 
 	action * die;
 	action * neutral;
+	bool headless;
 };
 
 class character : virtual public avatar{

@@ -62,24 +62,25 @@ public:
 	player();
 	player(int);
 	~player();
-	character * pick() { return v; }
+	virtual character * pick() { return v; }
 
 	const char * inputName[10];//Input names. This is really just for housekeeping.
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
 	SDL_Event writeConfig(int);
-	bool readConfig();
-	void characterSelect(int);
-	void drawHitParticle(int, int, float);
+	virtual bool readConfig();
+	virtual void characterSelect(int);
+	virtual void drawHitParticle(int, int, float);
 
-	void land();
-	void enforceGravity(int, int);
-	void drawMeters(int, float);
-	void readEvent(SDL_Event &, bool *&, int *&, bool *&);
-	void roundInit();
-	int takeHit(int, hStat&);
-	void connect(int, hStat&);
-	bool CHState();
+	virtual void land();
+	virtual void enforceGravity(int, int);
+	virtual void drawMeters(int, float);
+	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
+	virtual void genEvent(bool *&, int *&, bool *&) {}
+	virtual void roundInit();
+	virtual int takeHit(int, hStat&);
+	virtual void connect(int, hStat&);
+	virtual bool CHState();
 	bool elasticX:1;
 	bool elasticY:1;
 	bool slide:1;
@@ -91,16 +92,29 @@ public:
 	int particleLife;
 
 	/*Helper functions for "resolve" tick*/
-	void checkBlocking();
-	void checkFacing(player*);
-	int dragBG(int, int);
-	void checkCorners(int, int, int);
-	void getThrown(action*, int, int);
+	virtual void checkBlocking();
+	virtual void checkFacing(player*);
+	virtual int dragBG(int, int);
+	virtual void checkCorners(int, int, int);
+	virtual void getThrown(action*, int, int);
 
-	void init();
+	virtual void init();
+	int wins;
 protected:
 	character * v;
 private:
 	SDL_Event input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
+};
+
+class daemon : public player{
+public:
+	daemon();
+	daemon(int);
+	void roundInit();
+	void genEvent(bool *&, int *&, bool *&);
+	character * pick() { return v; }
+	void characterSelect(int);
+protected:
+	character * v;
 };
 #endif

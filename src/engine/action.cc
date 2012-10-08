@@ -134,7 +134,14 @@ void action::build(const char * n)
 		}
 	}
 	read.close();
+	unsigned int b = SDL_WasInit(SDL_INIT_VIDEO);
+	if(b != 0)
+		loadMisc(n); 
+}
 
+void action::loadMisc(const char *n)
+{
+	char fname[40];
 	SDL_Surface *temp;
 	width = new int[frames];
 	height = new int[frames];

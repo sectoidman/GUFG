@@ -52,6 +52,7 @@ public:
 	action(const char*);
 	virtual ~action();
 	virtual void build(const char *);
+	virtual void loadMisc(const char *);
 
 	//Okay so, hopefully the idea here is that we can init()
 	//the action we're cancelling out of in the usual case, and, well

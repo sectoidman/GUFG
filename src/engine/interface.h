@@ -9,7 +9,7 @@
 
 #include <SDL/SDL.h>
 #include <stdio.h>
-#include "player.h"
+#include "analytics.h"
 #ifndef INTERFACE
 #define INTERFACE
 class interface
@@ -17,10 +17,14 @@ class interface
 public:
 	interface();
 	~interface();
+	void createPlayers();
+	void createDaemons();
+	void startGame();
 /*Important interface functions that will remain interface functions*/
 
 /*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
 	void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
+	void genInput();
 	void resolve();		/*The main loop of the game*/
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
 	void drawGame();
@@ -73,6 +77,7 @@ public:
 	bool boxen:1;
 	bool firstFrame:1;
 	bool shortcut:1;
+	bool continuous:1;
 	int combo[2];
 	int damage[2];
 	bool illegit[2];
