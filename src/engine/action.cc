@@ -136,8 +136,7 @@ void action::build(const char * n)
 	read.close();
 	unsigned int b = SDL_WasInit(SDL_INIT_VIDEO);
 	if(b != 0)
-// loadMisc(n); 
-		printf("%i\n", b);
+		loadMisc(n); 
 }
 
 void action::loadMisc(const char *n)

@@ -2,37 +2,35 @@
 class frame {
 public:
 	frame();
-	int dir:4;
+	frame(bool[], int[], bool[]);
+	bool axis[4];
 	bool neg[5];
 	int pos[5];
 	frame * next;
+	frame * operator+=(const frame *&);
 	virtual void cull();
-};
-
-class sequence {
-public:
-	sequence();
-	frame * start;
-	frame * curr;
 	virtual void append(frame*);
-	~sequence();
 };
 
 class replay {
 public:
-	replay()
+	replay();
+	replay(int, int);
 	int selection[2];
-	sequence * start[2];
+	frame * start[2];
+	frame * current[2];
 	virtual void append(frame*, frame*);
 	virtual void load(const char*);
 	virtual void write();
 	~replay();
-}
+};
 
-class  : public sequence {
+class combo {
 public:
 	combo();
 	combo(action*);
+	frame * start;
+	frame * current;
 	int posX, posY;
 	int proxX, proxY;
 	int damage;

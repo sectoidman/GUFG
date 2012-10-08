@@ -68,19 +68,19 @@ public:
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
 	SDL_Event writeConfig(int);
-	bool readConfig();
+	virtual bool readConfig();
 	virtual void characterSelect(int);
-	void drawHitParticle(int, int, float);
+	virtual void drawHitParticle(int, int, float);
 
-	void land();
-	void enforceGravity(int, int);
-	void drawMeters(int, float);
-	void readEvent(SDL_Event &, bool *&, int *&, bool *&);
+	virtual void land();
+	virtual void enforceGravity(int, int);
+	virtual void drawMeters(int, float);
+	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
 	virtual void genEvent(bool *&, int *&, bool *&) {}
 	virtual void roundInit();
-	int takeHit(int, hStat&);
-	void connect(int, hStat&);
-	bool CHState();
+	virtual int takeHit(int, hStat&);
+	virtual void connect(int, hStat&);
+	virtual bool CHState();
 	bool elasticX:1;
 	bool elasticY:1;
 	bool slide:1;
@@ -92,13 +92,13 @@ public:
 	int particleLife;
 
 	/*Helper functions for "resolve" tick*/
-	void checkBlocking();
-	void checkFacing(player*);
-	int dragBG(int, int);
-	void checkCorners(int, int, int);
-	void getThrown(action*, int, int);
+	virtual void checkBlocking();
+	virtual void checkFacing(player*);
+	virtual int dragBG(int, int);
+	virtual void checkCorners(int, int, int);
+	virtual void getThrown(action*, int, int);
 
-	void init();
+	virtual void init();
 	int wins;
 protected:
 	character * v;
