@@ -1,5 +1,6 @@
 gufg
 bmpout
+rand
 *.o
 *.a
 *.7z
@@ -13,7 +14,7 @@ Makefile
 cmake_install.cmake
 CMakeCache.txt
 CMakeFiles
-Misc/.data
+.data
 dump
 doc/*
 Doxyfile
