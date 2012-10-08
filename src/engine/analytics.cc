@@ -65,7 +65,28 @@ void replay::append(frame * p1, frame * p2)
 
 void replay::load(const char* filename)
 {
-	printf("Stub function: This will load a replay file\n");
+	std::ifstream read;
+	read.open(filename);
+	frame * iterator[2];
+	for(int i = 0; i < 2; i++){
+		if(start[i]) start[i]->cull();
+		else start[i] = new frame;
+		iterator[i] = start[i];
+	}
+	read >> selection[0] >> selection[1] >> fcounter;
+	for(int i = 0; i < fcounter; i++){
+		for(int i = 0; i < 2; i++){
+			for(int j = 0; j < 5; j++){
+				if(j < 4) read >> iterator[i]->axis[j];
+				read >> iterator[i]->pos[j];
+				read >> iterator[i]->neg[j];
+			}
+			iterator[i]->next = new frame;
+			iterator[i] = iterator[i]->next;
+		}
+	}
+	for(int i = 0; i < 2; i++) iterator[i]->cull();
+	read.close();
 }
 
 void replay::write()
@@ -79,7 +100,7 @@ void replay::write()
 	time(&currtime);
 	sprintf(buffer, ".data/replays/%s.frp", asctime(localtime(&currtime)));
 	scribe.open(buffer);
-	scribe << selection[0] << " v " << selection[1] << "\n";
+	scribe << selection[0] << " " << selection[1] << " " << fcounter << "\n";
 	do{
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 5; j++){
