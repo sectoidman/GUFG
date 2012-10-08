@@ -1,6 +1,0 @@
-We could eventually put all of the characters folders here. 
-This would establish a clear hierarchy where GUFG_ROOT_DIRECTORY holds 
-src (things to be built to run the game) 
-resources (runtime-needed stuff like character constructor files, images, sound)
-.config and .data (local info dealt with by the game itself)
-misc src related stuff (e.g. CMakeLists.txt, Doxyfile.in).
