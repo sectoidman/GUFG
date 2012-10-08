@@ -11,9 +11,11 @@
 #include <algorithm>
 #include <assert.h>
 #include <cstring>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <math.h>
+
 interface::interface()
 {
 	numChars = 2;

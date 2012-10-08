@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <ctime>
+
 frame::frame()
 {
 	next = NULL;
