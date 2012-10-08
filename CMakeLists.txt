@@ -49,11 +49,19 @@ if (APPLE)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -stdlib=libc++")
 endif (APPLE)
 
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data)
 
 add_executable (gufg 
 		WIN32
 		MACOSX_BUNDLE
 		src/game.cc
+		${SOURCES})
+
+add_executable (rand
+		WIN32
+		MACOSX_BUNDLE
+		EXCLUDE_FROM_ALL
+		src/rand.cc
 		${SOURCES})
 
 add_executable (bmpout
@@ -76,11 +84,15 @@ INSTALL(TARGETS gufg
 	DESTINATION package
 	COMPONENT gufg)
 
-INSTALL(DIRECTORY characters
+INSTALL(DIRECTORY .config
 	DESTINATION package
 	COMPONENT gufg)
 
-INSTALL(DIRECTORY art
+INSTALL(DIRECTORY .data
+	DESTINATION package
+	COMPONENT gufg)
+
+INSTALL(DIRECTORY resources
 	DESTINATION package
 	COMPONENT gufg)
 
@@ -103,7 +115,7 @@ INSTALL(FILES ${ACTUAL_SDL_LIBRARY}
 	DESTINATION package
 	COMPONENT utilities)
 
-INSTALL(FILES README COPYING
+INSTALL(FILES README.md Disclaimer.md COPYING
 	DESTINATION package
 	COMPONENT gufg
 	DESTINATION package

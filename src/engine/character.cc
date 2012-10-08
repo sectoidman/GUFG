@@ -142,7 +142,7 @@ void avatar::getName(const char* directory, const char* file)
 {
 	char buffer[101];
 	std::ifstream read;
-	sprintf(buffer, "%s/%s.ch", directory, file);
+	sprintf(buffer, "resources/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
 	assert(!read.fail());
@@ -171,7 +171,7 @@ void avatar::build(const char* directory, const char* file)
 	action * m = NULL;
 	bool commentFlag;
 	std::ifstream read;
-	sprintf(buffer, "%s/%s.ch", directory, file);
+	sprintf(buffer, "resources/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
 	assert(!read.fail());
@@ -430,7 +430,7 @@ action * avatar::createMove(char * fullName)
 		break;
 	default:
 		m = new action(actionName);
-		break;	
+		break;
 	}
 	return m;
 }
@@ -526,7 +526,11 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
 {
 	bool dead = false;
-	int freeze = s.stun/4 + 10;
+	int freeze;
+	if(s.pause < 0){ 
+		freeze = s.stun/4 + 10;
+		if(s.ghostHit) freeze = 0;
+	} else freeze = s.pause;
 	p = cMove->takeHit(s, b, f, c, h);
 	if(p == 1) meter[0] -= s.damage;
 	else if(p > -2) { 

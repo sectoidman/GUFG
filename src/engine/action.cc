@@ -73,6 +73,8 @@ void action::zero()
 	next = NULL;
 	attempt = NULL;
 	riposte = NULL;
+	basis = NULL;
+	modifier = 0;
 }
 
 void action::build(const char * n)
@@ -84,7 +86,7 @@ void action::build(const char * n)
 	char savedBuffer[100];
 	buffer[0] = '\0';
 
-	sprintf(fname, "%s.mv", n);
+	sprintf(fname, "resources/characters/%s.mv", n);
 	read.open(fname);
 	assert(!read.fail());
 
@@ -132,13 +134,20 @@ void action::build(const char * n)
 		}
 	}
 	read.close();
+	unsigned int b = SDL_WasInit(SDL_INIT_VIDEO);
+	if(b != 0)
+		loadMisc(n); 
+}
 
+void action::loadMisc(const char *n)
+{
+	char fname[40];
 	SDL_Surface *temp;
 	width = new int[frames];
 	height = new int[frames];
 	sprite = new GLuint[frames];
 	for(int i = 0; i < frames; i++){
-		sprintf(fname, "%s#%i.png", n, i);
+		sprintf(fname, "resources/characters/%s#%i.png", n, i);
 		temp = aux::load_image(fname);
 		if(!temp){
 			width[i] = 0;
@@ -150,7 +159,7 @@ void action::build(const char * n)
 			sprite[i] = aux::surface_to_texture(temp);
 		}
 	}
-	sprintf(fname, "%s.ogg", n);
+	sprintf(fname, "resources/characters/%s.ogg", n);
 	soundClip = Mix_LoadWAV(fname);
 }
 
@@ -370,6 +379,16 @@ bool action::setParameter(char * buffer)
 			}
 		}
 		return 1;
+	} else if (!strcmp("Pause", token)) {
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			if(savedBuffer[0] == '+')
+				CHStats[i].pause = atoi(token);
+			else {
+				stats[i].pause = atoi(token);
+			}
+		}
+		return 1;
 	} else if (!strcmp("Untech", token)) {
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
@@ -480,6 +499,9 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'h':
 			if(!counter) hidesMeter = 1;
 			break;
+		case 'm':
+			if(!counter) modifier = 1;
+			break;
 		default:
 			break;
 		}
@@ -488,6 +510,9 @@ void action::parseProperties(char * buffer, bool counter)
 
 bool action::window(int f)
 {
+	if(modifier && basis){
+		if(basis->window(currentFrame)) return 1;
+	}
 	if(!attempt) return 0;
 	if(f < attemptStart) return 0;
 	if(f > attemptEnd) return 0;
@@ -517,98 +542,120 @@ bool action::check(SDL_Rect &p, int meter[])
 
 void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)
 {
-	if(f >= frames) f = frames-1;
-	if(rc > 0 && r) delete [] r;
-	if(hc > 0 && b) delete [] b;
-	rc = regComplexity[f];
-	hc = hitComplexity[f];
-	r = new SDL_Rect[rc];
-	b = new SDL_Rect[hc];
+	if(modifier && basis) basis->pollRects(c, r, rc, b, hc, currentFrame, connectFlag);
+	else {
+		if(f >= frames) f = frames-1;
+		if(rc > 0 && r) delete [] r;
+		if(hc > 0 && b) delete [] b;
+		rc = regComplexity[f];
+		hc = hitComplexity[f];
+		r = new SDL_Rect[rc];
+		b = new SDL_Rect[hc];
 
-	c.x = collision[f].x; c.w = collision[f].w;
-	c.y = collision[f].y; c.h = collision[f].h;
+		c.x = collision[f].x; c.w = collision[f].w;
+		c.y = collision[f].y; c.h = collision[f].h;
 
-	SDL_Rect * tempreg = hitreg[f];
-	for(int i = 0; i < rc; i++){
-		r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
-		r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
-	}
-	SDL_Rect * temphit = hitbox[f];
-	for(int i = 0; i < hc; i++){
-		if(cFlag > calcCurrentHit(f)) {
-			b[i].x = 0; b[i].w = 0;
-			b[i].y = 0; b[i].h = 0;
-		} else {
-			b[i].x = temphit[i].x; b[i].w = temphit[i].w;
-			b[i].y = temphit[i].y; b[i].h = temphit[i].h;
+		SDL_Rect * tempreg = hitreg[f];
+		for(int i = 0; i < rc; i++){
+			r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
+			r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
+		}
+		SDL_Rect * temphit = hitbox[f];
+		for(int i = 0; i < hc; i++){
+			if(cFlag > calcCurrentHit(f)) {
+				b[i].x = 0; b[i].w = 0;
+				b[i].y = 0; b[i].h = 0;
+			} else {
+				b[i].x = temphit[i].x; b[i].w = temphit[i].w;
+				b[i].y = temphit[i].y; b[i].h = temphit[i].h;
+			}
 		}
 	}
 }
 
 void action::pollDelta(SDL_Rect *& d, int & dc, int f)
 {
-	dc = deltaComplexity[f];
-	d = new SDL_Rect[dc];
-	SDL_Rect * tempdelta = delta[f];
-	for(int i = 0; i < dc; i++){
-		d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
-		d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
+	if(modifier && basis) basis->pollDelta(d, dc, currentFrame);
+	else{
+		if(f >= frames) f = frames-1;
+		dc = deltaComplexity[f];
+		d = new SDL_Rect[dc];
+		SDL_Rect * tempdelta = delta[f];
+		for(int i = 0; i < dc; i++){
+			d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
+			d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
+		}
 	}
 }
 
-int action::displace(int x, int &y)
+int action::displace(int x, int &y, int f)
 {
-	y += displaceY;
-	return displaceX;
+	int dx = 0;
+	if(modifier && basis) dx += basis->displace(x, y, currentFrame);
+	if(f == displaceFrame){
+		y += displaceY;
+		dx += displaceX;
+	}
+	return dx;
 }
 
 void action::pollStats(hStat & s, int f, bool CH)
 {
-	int c = calcCurrentHit(f);
-	s.damage = stats[c].damage + CHStats[c].damage * CH;
-	s.chip = stats[c].chip;
-	s.stun = stats[c].stun + CHStats[c].stun * CH;
-	s.push = stats[c].push + CHStats[c].push * CH;
-	s.lift = stats[c].lift + CHStats[c].lift * CH;
-	s.untech = stats[c].untech + CHStats[c].untech * CH;
-	s.blowback = stats[c].blowback + CHStats[c].blowback * CH;
-	if(CH){
-		s.launch = CHStats[c].launch || stats[c].launch;
-		s.hover = CHStats[c].hover;
-		s.wallBounce = CHStats[c].wallBounce;
-		s.floorBounce = CHStats[c].floorBounce;
-		s.slide = CHStats[c].slide;
-		s.stick = CHStats[c].stick;
-		s.ghostHit = CHStats[c].ghostHit;
-	} else {
-		s.launch = stats[c].launch;
-		s.hover = stats[c].hover;
-		s.wallBounce = stats[c].wallBounce;
-		s.floorBounce = stats[c].floorBounce;
-		s.slide = stats[c].slide;
-		s.stick = stats[c].stick;
-		s.ghostHit = stats[c].ghostHit;
+	if(modifier && basis) basis->pollStats(s, currentFrame, CH);
+	else{
+		int c = calcCurrentHit(f);
+		s.damage = stats[c].damage + CHStats[c].damage * CH;
+		s.chip = stats[c].chip;
+		s.stun = stats[c].stun + CHStats[c].stun * CH;
+		s.push = stats[c].push + CHStats[c].push * CH;
+		s.lift = stats[c].lift + CHStats[c].lift * CH;
+		s.untech = stats[c].untech + CHStats[c].untech * CH;
+		s.blowback = stats[c].blowback + CHStats[c].blowback * CH;
+		if(CH){
+			s.launch = CHStats[c].launch || stats[c].launch;
+			s.hover = CHStats[c].hover;
+			s.wallBounce = CHStats[c].wallBounce;
+			s.floorBounce = CHStats[c].floorBounce;
+			s.slide = CHStats[c].slide;
+			s.stick = CHStats[c].stick;
+			s.ghostHit = CHStats[c].ghostHit;
+		} else {
+			s.launch = stats[c].launch;
+			s.hover = stats[c].hover;
+			s.wallBounce = stats[c].wallBounce;
+			s.floorBounce = stats[c].floorBounce;
+			s.slide = stats[c].slide;
+			s.stick = stats[c].stick;
+			s.ghostHit = stats[c].ghostHit;
+		}
+		s.blockMask.i = stats[c].blockMask.i;
 	}
-	s.blockMask.i = stats[c].blockMask.i;
 }
 
 bool action::cancel(action * x, int& c, int &h)
 {
 	cancelField r;
-	r.i = x->state[c].i;
-	if(h > 0 && h == c){ 
-		r.i = r.i + x->stats[h - 1].hitState.i;
-	}
 	if(x == NULL) return 1;
-	else{
-		if(allowed.i & r.i){
-			if(x == this){
-				if(c == 0) return 0;
-				else if(allowed.b.chain1) return 1;
-				else return 0;
-			}
-			else return 1;
+	if(x->modifier && x->basis){
+		if(x->basis == NULL) return 1;
+		r.i = x->basis->state[x->connectFlag].i;
+		if(x->hitFlag > 0 && x->hitFlag == x->connectFlag){ 
+			r.i = r.i + x->basis->stats[x->hitFlag - 1].hitState.i;
 		}
+		x = basis;
+	} else {
+		r.i = x->state[c].i;
+		if(h > 0 && h == c){ 
+			r.i = r.i + x->stats[h - 1].hitState.i;
+		}
+	}
+	if(allowed.i & r.i){
+		if(x == this){
+			if(c == 0) return 0;
+			else if(allowed.b.chain1) return 1;
+			else return 0;
+		}
+		else return 1;
 	}
 	return 0;
 }
@@ -620,6 +667,16 @@ void action::step(int *& meter, int &f)
 		else meter[1] = 300;
 	}
 	f++;
+	if(modifier && basis){
+		currentFrame++;
+		if(basis && currentFrame >= basis->frames){
+		if(basis->next) basis = basis->next;
+		else basis = NULL;
+		currentFrame = 0;
+		connectFlag = 0;
+		hitFlag = 0;
+	}
+}
 }
 
 int action::calcCurrentHit(int frame)
@@ -627,23 +684,26 @@ int action::calcCurrentHit(int frame)
 	int b = 0;
 	for(int i = 0; i < hits; i++){
 		if(frame > totalStartup[i]) b = i;
-	} 
+	}
 	return b;
 }
 
 action * action::connect(int *& meter, int &c, int f)
 {
-	c = calcCurrentHit(f)+1;
-	if(meter[1] + gain[c] < 300) meter[1] += gain[c];
-	else meter[1] = 300;
-	if(onConnect[c-1] != NULL){
-		return onConnect[c-1];
+	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
+	else{
+		c = calcCurrentHit(f)+1;
+		if(meter[1] + gain[c] < 300) meter[1] += gain[c];
+		else meter[1] = 300;
+		if(onConnect[c-1] != NULL){
+			return onConnect[c-1];
+		} else return NULL;
 	}
-	else return NULL;
 }
 
 action * action::blockSuccess()
 {
+	if(modifier && basis) return basis->blockSuccess();
 	if(riposte) return riposte;
 	else return this;
 }
@@ -657,6 +717,13 @@ void action::execute(action * last, int *& meter, int &f, int &c, int &h)
 {
 	armorCounter = 0;
 	meter[1] -= cost;
+	if(modifier){
+		if(last == NULL) basis = NULL;
+		basis = last;
+		currentFrame = f;
+		connectFlag = c;
+		hitFlag = f;
+	}
 	f = 0;
 	c = 0;
 	h = 0;
@@ -687,9 +754,9 @@ void action::feed(action * c, int code, int i)
 char * action::request(int code, int i)
 {
 	switch(code){
-	case 0: 
+	case 0:
 		return tempNext;
-	case 2: 
+	case 2:
 		return tempOnConnect[i];
 	case 3:
 		return tempAttempt;
@@ -702,26 +769,30 @@ char * action::request(int code, int i)
 
 int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 {
-	if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
-		if(riposte != NULL) return -2;
-		else return 0;
-	}
-	else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
-		s.stun = 0;
-		armorCounter++;
-		return 1;
-	} else {
-		if(s.stun != 0){
-			f = 0;
-			c = 0;
-			h = 0;
+	if(modifier && basis) return basis->takeHit(s, b, f, c, h);
+	else{
+		if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
+			if(riposte != NULL) return -5;
+			else return 0;
 		}
-		return 1;
+		else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
+			s.stun = 0;
+			armorCounter++;
+			return 1;
+		} else {
+			if(s.stun != 0){
+				f = 0;
+				c = 0;
+				h = 0;
+			}
+			return 1;
+		}
 	}
 }
 
 bool action::CHState(int f)
 {
+	if(modifier && basis) return basis->CHState(currentFrame);
 	if(hits < 1) return false;
 	else if(f < totalStartup[hits-1] + active[hits-1]) return true;
 	else return fch;

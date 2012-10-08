@@ -5,19 +5,19 @@ Frames: 34 : 10 : 4 : 20
 Check: 2048
 State: 256 : 8576
 HitAllows: 4096
-Damage: 45
+Damage: 33
 Chip: 8
 Stun: 19
-Untech: 19
-Push: 10
+Untech: 25
+Push: 16
 Float: 10
-Lift: 19
-Blowback: 10
+Lift: -29
+Blowback: 6
 Gain: 1 : 6
 Cost: 0
 Blockable: 7
 Blocks: 0
-Properties: S>
+Properties: Sv
 #0 
 $C	10 0 110 300
 $R	0 300 0 0

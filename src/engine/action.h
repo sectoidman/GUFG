@@ -25,10 +25,11 @@ struct attractor{
 };
 
 struct hStat{
-	hStat() : damage(0), chip(0), stun(0), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
+	hStat() : damage(0), chip(0), stun(0), pause(-1), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
 	int damage;	/*How much damage the hit does*/
 	int chip;	/*How much damage the hit does if blocked*/
 	int stun;	/*How many frames of stun the hit causes*/
+	int pause;
 	int push;	/*How many pixels the hit pushes the opponent back*/
 	int lift;	/*How many pixels the hit lifts an aerial opponent.*/
 	int untech;	/*How many more frames of stun are added for an aerial hit*/
@@ -51,6 +52,7 @@ public:
 	action(const char*);
 	virtual ~action();
 	virtual void build(const char *);
+	virtual void loadMisc(const char *);
 
 	//Okay so, hopefully the idea here is that we can init()
 	//the action we're cancelling out of in the usual case, and, well
@@ -66,7 +68,7 @@ public:
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	virtual void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
 	virtual void pollDelta(SDL_Rect *&, int&, int);
-	virtual int displace(int, int&);
+	virtual int displace(int, int&, int);
 	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
@@ -137,6 +139,10 @@ public:
 	action ** onConnect;
 	action * attempt;
 	action * riposte;
+
+	action * basis;
+	int connectFlag, currentFrame, hitFlag;
+
 	attractor * distortion;
 	int distortSpawn;
 	int attemptStart, attemptEnd;
@@ -162,6 +168,7 @@ public:
 	GLuint *sprite;
 
 	bool isProjectile:1;
+	bool modifier:1;
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*, bool);
 	virtual void zero();

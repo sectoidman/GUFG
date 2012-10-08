@@ -5,10 +5,11 @@ SuperFreeze: 9 - 30
 Frames: 36 : 9 : 4 : 25
 Check: 129
 State: 256 : 256
-Damage: 35
+Damage: 39
 Chip: 5
 Landing: -j214CLR
 Stun: 35
+Pause: 0
 +Stun: 30
 Cost: 75
 Untech: 55
@@ -16,7 +17,7 @@ Float: 40
 Gain: 0 : 0
 Blockable: 7
 Blocks: 0
-Properties: gS
+Properties: S
 #0 
 $C	10 40 110 250
 $R	10 40 110 250
