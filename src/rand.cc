@@ -1,9 +1,9 @@
 /**GUFG
  *Written by Alex Kelly in 2012
- *Modified by H Forrest Alexander just now.
+ *H Forrest Alexander hasn't yet modified this file, other than two trivial lines in the license.
  *Under the MIT OSI license
  *For detailed licensing information, see the COPYING file in this directory.
- *This file runs a loop of everything that takes place in the GUFG engine. 
+ *This file runs a headless, random subset of everything that takes place in the GUFG engine, forcing innocent daemons to fight against eachother. 
  
  **/
 
