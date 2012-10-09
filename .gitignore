@@ -1,6 +1,7 @@
 gufg
 bmpout
 rand
+replay
 *.o
 *.a
 *.7z
