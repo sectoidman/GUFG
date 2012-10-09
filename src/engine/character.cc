@@ -123,6 +123,11 @@ action * avatar::hook(int inputBuffer[30], int i, int f, int * r, int down[5], b
 	return head->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
 }
 
+action * avatar::moveSignal(int)
+{
+	return NULL;
+}
+
 action * character::hook(int inputBuffer[30], int i, int f, int * r, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
 {
 	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);

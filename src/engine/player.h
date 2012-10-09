@@ -10,7 +10,7 @@ class frame;
 class instance{
 public:
 	instance();
-	instance(avatar * f);
+	instance(avatar*);
 	virtual ~instance();
 	virtual avatar * pick() { return v; }
 
@@ -51,6 +51,7 @@ public:
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
 	virtual void pushInput(bool*);
+	virtual int passSignal(int);
 	int particleType;
 	int blockType;
 	int counter;

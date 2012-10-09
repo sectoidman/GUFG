@@ -11,6 +11,9 @@ class instance;
 class avatar {
 public:
 	avatar() {}
+	virtual int passSignal(int) { return 0; }
+	virtual void setParam(int, int) {}
+	virtual action * moveSignal(int);
 	virtual void init(action *&) = 0;
 	bool spriteCheck(action *&, int);
 	virtual void draw(action *&, int, int, int, int, float);//Pass sprite information up.
