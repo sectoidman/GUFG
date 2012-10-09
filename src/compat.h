@@ -12,16 +12,6 @@
 	#include <chrono>
 #endif
 
-/*
- * Apple OSX-specific switches
- */
-
-#ifdef _APPLE
-	#include <SDL_image/SDL_image.h>
-#else
-	#include <SDL/SDL_image.h>
-#endif
-
 
 namespace internal {
 	#ifdef _BOOST
