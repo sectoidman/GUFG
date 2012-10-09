@@ -20,8 +20,7 @@ aux_source_directory (	src/characters CHARACTERS)
 
 set (SOURCES	${ENGINE}
 		${CHARACTERS}) 
-
-set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
+set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-overloaded-virtual -Wno-format -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
@@ -87,6 +86,7 @@ endif(DOXYGEN_FOUND)
 
 INSTALL(TARGETS gufg
 	RUNTIME
+	BUNDLE DESTINATION package
 	DESTINATION package
 	COMPONENT gufg)
 
@@ -105,21 +105,10 @@ INSTALL(DIRECTORY resources
 INSTALL(DIRECTORY scripts
 	DESTINATION package
 	COMPONENT source
-	DESTINATION .
+	DESTINATION package
 	COMPONENT utilities)
 
 LIST(GET SDL_LIBRARY 1 ACTUAL_SDL_LIBRARY)
-
-INSTALL(FILES ${ACTUAL_SDL_LIBRARY} 
-		${SDLIMAGE_LIBRARY} 
-		${PNG_LIBRARY}
-		${ZLIB_LIBRARY}
-		${SDLMIXER_LIBRARY}
-		${VORBIS_LIBRARY}
-	DESTINATION package
-	COMPONENT gufg
-	DESTINATION package
-	COMPONENT utilities)
 
 INSTALL(FILES README.md Disclaimer.md COPYING
 	DESTINATION package
@@ -172,6 +161,19 @@ if (WIN32 AND NOT UNIX)
 	set (CPACK_NSIS_CONTACT "eshink@gmail.com")
 	set (CPACK_NSIS_MODIFY_PATH OFF)
 	set (CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+
+INSTALL(FILES ${ACTUAL_SDL_LIBRARY} 
+		${SDLIMAGE_LIBRARY} 
+		${PNG_LIBRARY}
+		${ZLIB_LIBRARY}
+		${SDLMIXER_LIBRARY}
+		${VORBIS_LIBRARY}
+	DESTINATION package
+	COMPONENT gufg
+	DESTINATION package
+	COMPONENT utilities)
+
+
 else (WIN32 AND NOT UNIX)
 	set (CPACK_STRIP_FILES "gufg bmpout")
 endif (WIN32 AND NOT UNIX)
