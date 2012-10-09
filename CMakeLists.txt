@@ -20,8 +20,7 @@ aux_source_directory (	src/characters CHARACTERS)
 
 set (SOURCES	${ENGINE}
 		${CHARACTERS}) 
-
-set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-format-contains-nul -std=c++11 -pedantic")
+set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-overloaded-virtual -Wno-format -Wno-format-contains-nul -std=c++11 -pedantic")
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
