@@ -15,6 +15,7 @@
 #include <fstream>
 #include <iostream>
 #include <math.h>
+#include <vector>
 
 interface::interface()
 {
@@ -747,7 +748,6 @@ void interface::cSelectMenu()
 		assert(screenInit() != false);
 	}
 	char base[2][40];
-	char buffer[200];
 
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
@@ -976,11 +976,11 @@ void interface::resolveThrows()
 
 void interface::resolveHits()
 {
-	hStat s[thingComplexity];
-	int hit[thingComplexity];
-	bool connect[thingComplexity];
-	bool taken[thingComplexity];
-	int hitBy[thingComplexity];
+	std::vector<hStat> s(thingComplexity);
+	std::vector<int> hit(thingComplexity);
+	std::vector<bool> connect(thingComplexity);
+	std::vector<bool> taken(thingComplexity);
+	std::vector<int> hitBy(thingComplexity);
 	int h;
 	int push[2];
 	for(int i = 0; i < thingComplexity; i++){
