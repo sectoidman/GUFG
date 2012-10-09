@@ -748,7 +748,6 @@ void interface::cSelectMenu()
 		assert(screenInit() != false);
 	}
 	char base[2][40];
-	char buffer[200];
 
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
