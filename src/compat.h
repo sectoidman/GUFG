@@ -1,6 +1,14 @@
 #ifndef COMPAT_H
 #define COMPAT_H
 
+#ifdef _APPLE
+	#include <SDL_mixer/SDL_mixer.h>
+	#include <SDL_image/SDL_image.h>
+#else
+	#include <SDL/SDL_mixer.h>
+	#include <SDL/SDL_image.h>
+#endif
+
 /* 
  * Switch between boost::chrono and c++11 chrono for platforms
  * without a good C++11 implementation
