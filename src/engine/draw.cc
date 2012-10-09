@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <SDL/SDL_opengl.h>
+#include <vector>
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -219,7 +220,7 @@ void interface::drawRematchMenu()
 
 void player::drawMeters(int n, float scalingFactor)
 {
-	SDL_Rect r[n];
+	std::vector<SDL_Rect> r (n);
 	for(int i = 0; i < n; i++){
 		r[i].y = 24; r[i].w = 20; r[i].h = 10;
 		if(ID == 1) r[i].x = 680 - 24 * i; 
