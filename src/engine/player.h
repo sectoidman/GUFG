@@ -110,11 +110,11 @@ private:
 	SDL_Event input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
 };
 
-class daemon : public player{
+class demon : public player{
 public:
-	daemon();
-	daemon(int);
-	daemon(int, frame*);
+	demon();
+	demon(int);
+	demon(int, frame*);
 	frame * script;
 	virtual void genEvent(bool *&, int *&, bool *&);
 	virtual void roundInit();

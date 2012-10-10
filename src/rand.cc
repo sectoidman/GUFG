@@ -3,7 +3,7 @@
  *H Forrest Alexander hasn't yet modified this file, other than two trivial lines in the license.
  *Under the MIT OSI license
  *For detailed licensing information, see the COPYING file in this directory.
- *This file runs a headless, random subset of everything that takes place in the GUFG engine, forcing innocent daemons to fight against eachother. 
+ *This file runs a headless, random subset of everything that takes place in the GUFG engine, forcing innocent demons to fight against eachother. 
  
  **/
 
@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
 	interface game;
-	game.createDaemons();
+	game.createDemons();
 	game.startGame();
 	int rounds = 2;
 	if(argc > 1) rounds = atoi(argv[1]);

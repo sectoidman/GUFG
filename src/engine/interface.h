@@ -19,8 +19,8 @@ public:
 	interface();
 	~interface();
 	void createPlayers();
-	void createDaemons();
-	void createDaemons(replay*);
+	void createDemons();
+	void createDemons(replay*);
 	void startGame();
 	void loadMatchBackground();
 /*Important interface functions that will remain interface functions*/
