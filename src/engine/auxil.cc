@@ -4,11 +4,11 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
+#include <SDL/SDL_image.h>
 #include <string>
 #include <iostream>
 #include <cmath>
 #include "auxil.h"
-#include "../compat.h"
 #include <vector>
 
 using namespace std;
