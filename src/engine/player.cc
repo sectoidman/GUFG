@@ -45,6 +45,7 @@ void instance::init()
 	bMove = NULL;
 	sMove = NULL;
 	freeze = 0;
+	aerial = false;
 	dead = false;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
@@ -83,7 +84,7 @@ void player::init()
 void player::roundInit()
 {
 	instance::init();
-	pick()->neutralize(cMove);
+	pick()->neutralize(cMove, aerial);
 	if(v) pick()->init(cMove);
 	updateRects();
 	lCorner = 0;
@@ -256,7 +257,7 @@ void instance::enforceAttractor(attractor* p)
 	if(facing == 1) midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2;
 	else midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2 + collision.w%2;
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
-	if(!pick()->aerial) resultant.y = 0;
+	if(!aerial) resultant.y = 0;
 	int directionX = 0, directionY = 0;
 	if(midpoint > p->posX) directionX = 1;
 	else if(midpoint < p->posX) directionX = -1;
@@ -298,10 +299,10 @@ void instance::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y > floor && pick()->aerial == 0){
-		pick()->aerial = 1;
+	if(collision.y > floor && aerial == 0){
+		aerial = 1;
 	}
-	else if(pick()->aerial && !freeze){ 
+	else if(aerial && !freeze){ 
 		addVector(g);
 	}
 }
@@ -310,10 +311,10 @@ void player::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y > floor && pick()->aerial == 0){
-		pick()->aerial = 1;
+	if(collision.y > floor && aerial == 0){
+		aerial = 1;
 	}
-	else if(pick()->aerial && !freeze){ 
+	else if(aerial && !freeze){ 
 		if(hover > 0 && deltaY - 6 < 0) g.y = -deltaY;
 		addVector(g);
 	}
@@ -321,7 +322,7 @@ void player::enforceGravity(int grav, int floor)
 
 void player::checkBlocking()
 {
-	blockType = -pick()->checkBlocking(cMove, inputBuffer, connectFlag, hitFlag);
+	blockType = -pick()->checkBlocking(cMove, inputBuffer, connectFlag, hitFlag, aerial);
 	updateRects();
 }
 
@@ -344,13 +345,13 @@ void player::checkCorners(int floor, int left, int right)
 			if(cMove == pick()->untech){ 
 				if(deltaX < 0) deltaX++;
 				else if(deltaX > 0) deltaX--;
-				pick()->aerial = 1;
+				aerial = 1;
 			} else {
 				deltaX = 0;
 				slide = 0;
 			}
 		} else {
-			if(pick()->aerial == 1){
+			if(aerial == 1){
 				land();
 				updateRects();
 				deltaX = 0;
@@ -412,6 +413,7 @@ void player::land()
 		if(momentum[i].y > 0) removeVector(i);
 	}
 	pick()->land(cMove, currentFrame, connectFlag, hitFlag);
+	aerial = false;
 }
 
 void instance::step()
@@ -506,7 +508,7 @@ void instance::getMove(int down[5], bool up[5], SDL_Rect &p, bool dryrun)
 	dummyMove = cMove;
 	save = cMove;
 	int n = currentFrame;
-	pick()->prepHooks(freeze, dummyMove, bMove, sMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun);
+	pick()->prepHooks(freeze, dummyMove, bMove, sMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun, aerial);
 	if(dummyMove){
 		if(dummyMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) throwInvuln = 6;
@@ -655,19 +657,9 @@ void instance::connect(int combo, hStat & s)
 	if(bMove == cMove) bMove = NULL;
 }
 
-void player::connect(int combo, hStat & s)
-{
-//	printf("Hit with %s!\n", cMove->name);
-	SDL_Rect v = {0, 0, 1, 0};
-	if(combo < 2) v.x = 0;
-	else if (!pick()->aerial) v.x = -combo;
-	addVector(v);
-	instance::connect(combo, s);
-}
-
 int instance::takeHit(int combo, hStat & s)
 {
-	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType);
+	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial);
 }
 
 int player::takeHit(int combo, hStat & s)
@@ -693,21 +685,21 @@ int player::takeHit(int combo, hStat & s)
 	} else {
 		particleLife = 8;
 		deltaX = 0; deltaY = 0; momentumComplexity = 0;
-		if(pick()->aerial) v.y = s.lift;
+		if(aerial) v.y = s.lift;
 		else v.y = 0;
-		if(pick()->aerial) v.x = -(s.push/5 + s.blowback);
+		if(aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
 		v.x *= facing;
 		addVector(v);
-		if(pick()->aerial && s.hover) hover = s.hover;
+		if(aerial && s.hover) hover = s.hover;
 		else hover = 0;
-		if(pick()->aerial && s.wallBounce) elasticX = true;
+		if(aerial && s.wallBounce) elasticX = true;
 		else elasticX = false;
-		if(pick()->aerial && s.floorBounce) elasticY = true;
+		if(aerial && s.floorBounce) elasticY = true;
 		else elasticY = false;
-		if(pick()->aerial && s.slide) slide = true;
+		if(aerial && s.slide) slide = true;
 		else slide = false;
-		if(pick()->aerial && s.stick) stick = true;
+		if(aerial && s.stick) stick = true;
 		else stick = false;
 	}
 	if(cMove == pick()->die){ 
@@ -765,8 +757,8 @@ void player::getThrown(action *toss, int x, int y)
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
-	pick()->neutralize(cMove);
-	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType);
+	pick()->neutralize(cMove, aerial);
+	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType, aerial);
 	updateRects();
 }
 
