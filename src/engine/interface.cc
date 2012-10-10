@@ -88,11 +88,11 @@ void interface::createPlayers()
 	}
 }
 
-void interface::createDaemons()
+void interface::createDemons()
 {
 	srand(time(NULL));
 	for(int i = 0; i < 2; i++){
-		p[i] = new daemon(i+1); //Okay, so this is really stupid. APPLE doesn't like, understand that this is a class and clang won't build cause like, expected a type. Daemon's totally not a type that works on other systems and that inherits from a type that clang is okay with...
+		p[i] = new demon(i+1); //Okay, so this is really stupid. APPLE doesn't like, understand that this is a class and clang won't build cause like, expected a type. Demon's totally not a type that works on other systems and that inherits from a type that clang is okay with...
 		selection[i] = rand()%numChars + 1;
 		p[i]->characterSelect(selection[i]);
 		printf("p%i selected %s\n", i+1, p[i]->pick()->name);
@@ -103,11 +103,11 @@ void interface::createDaemons()
 	analytics = true;
 }
 
-void interface::createDaemons(replay * script)
+void interface::createDemons(replay * script)
 {
 	srand(time(NULL));
 	for(int i = 0; i < 2; i++){
-		p[i] = new daemon(i+1, script->start[i]); //APPLE
+		p[i] = new demon(i+1, script->start[i]); //APPLE
 		selection[i] = script->selection[i];
 		p[i]->characterSelect(selection[i]);
 		select[i] = 1;

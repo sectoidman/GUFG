@@ -2,7 +2,7 @@
  *Written by Alex Kelly in 2012
  *Under the MIT OSI license
  *For detailed licensing information, see the COPYING file in this directory.
- *This file runs the GUFG engine, but generates specialized daemons to play replays instead of players. 
+ *This file runs the GUFG engine, but generates specialized demons to play replays instead of players. 
  
  **/
 
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	chrono::high_resolution_clock::time_point frameStart;
 	interface game;
 	assert(game.screenInit() != false);
-	game.createDaemons(script);
+	game.createDemons(script);
 	game.loadMisc();
 	game.startGame();
 

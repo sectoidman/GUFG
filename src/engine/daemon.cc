@@ -1,13 +1,13 @@
 #include "analytics.h"
 #include <ctime>
 
-daemon::daemon()
+demon::demon()
 {
 	init();
 	script = NULL;
 }
 
-daemon::daemon(int id)
+demon::demon(int id)
 {
 	wins = 0;
 	ID = id;
@@ -15,7 +15,7 @@ daemon::daemon(int id)
 	script = NULL;
 }
 
-daemon::daemon(int id, frame * s)
+demon::demon(int id, frame * s)
 {
 	wins = 0;
 	ID = id;
@@ -23,7 +23,7 @@ daemon::daemon(int id, frame * s)
 	script = s;
 }
 
-void daemon::genEvent(bool *& sAxis, int *& posEdge, bool *& negEdge) 
+void demon::genEvent(bool *& sAxis, int *& posEdge, bool *& negEdge) 
 {
 	if(script){
 		for(int i = 0; i < 5; i++){
@@ -51,7 +51,7 @@ void daemon::genEvent(bool *& sAxis, int *& posEdge, bool *& negEdge)
 	}
 }
 
-void daemon::characterSelect(int i)
+void demon::characterSelect(int i)
 {
 	v = NULL;
 	switch(i){
@@ -67,7 +67,7 @@ void daemon::characterSelect(int i)
 	}
 }
 
-void daemon::roundInit()
+void demon::roundInit()
 {
 	instance::init();
 	pick()->neutralize(cMove);
