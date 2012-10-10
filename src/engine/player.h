@@ -83,7 +83,7 @@ public:
 	virtual void genEvent(bool *&, int *&, bool *&) {}
 	virtual void roundInit();
 	virtual int takeHit(int, hStat&);
-	virtual void connect(int, hStat&);
+//	virtual void connect(int, hStat&);
 	virtual bool CHState();
 	bool elasticX:1;
 	bool elasticY:1;

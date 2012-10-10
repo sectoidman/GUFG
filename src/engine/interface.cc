@@ -1046,7 +1046,7 @@ void interface::resolveHits()
 			else{ 
 				if(p[(i+1)%2]->aerial) residual.x = -2;
 				else {
-					if(combo[i] > 1) residual.x = -2*(abs(combo[i]-1));
+					if(combo[i] > 1) residual.x = -3*(abs(combo[i]-1));
 					if(p[(i+1)%2]->particleType == -2) residual.x -= push[i];
 					else if(p[(i+1)%2]->rCorner || p[(i+1)%2]->lCorner){
 						residual.x -= 2;

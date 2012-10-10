@@ -657,16 +657,6 @@ void instance::connect(int combo, hStat & s)
 	if(bMove == cMove) bMove = NULL;
 }
 
-void player::connect(int combo, hStat & s)
-{
-//	printf("Hit with %s!\n", cMove->name);
-	SDL_Rect v = {0, 0, 1, 0};
-	if(combo < 2) v.x = 0;
-	else if (!aerial) v.x = -combo;
-	addVector(v);
-	instance::connect(combo, s);
-}
-
 int instance::takeHit(int combo, hStat & s)
 {
 	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial);
