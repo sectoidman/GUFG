@@ -53,25 +53,21 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data/replays)
 
 add_executable (gufg 
 		WIN32
-		MACOSX_BUNDLE
 		src/game.cc
 		${SOURCES})
 
 add_executable (replay
-		MACOSX_BUNDLE
 		EXCLUDE_FROM_ALL
 		src/replay.cc
 		${SOURCES})
 
 add_executable (rand
-		MACOSX_BUNDLE
 		EXCLUDE_FROM_ALL
 		src/rand.cc
 		${SOURCES})
 
 add_executable (bmpout
 		WIN32
-		MACOSX_BUNDLE
 		EXCLUDE_FROM_ALL
 		src/bmp.cc
 		${SOURCES})
@@ -87,7 +83,6 @@ endif(DOXYGEN_FOUND)
 if(WIN32 AND NOT UNIX)
 	INSTALL(TARGETS gufg
 		RUNTIME
-		BUNDLE DESTINATION package
 		DESTINATION package
 		COMPONENT gufg)
 
