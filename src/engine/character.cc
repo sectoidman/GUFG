@@ -528,7 +528,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	return ret;
 }
 
-int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
+int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType)
 {
 	bool dead = false;
 	int freeze = 0;
@@ -536,11 +536,11 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 		freeze = s.stun/4 + 10;
 		if(s.ghostHit) freeze = 0;
 	} else freeze = s.pause;
-	p = cMove->takeHit(s, b, f, c, h);
-	if(p == 1) meter[0] -= s.damage;
-	else if(p > -2) { 
+	hitType = cMove->takeHit(s, blockType, frame, connectFlag, hitFlag);
+	if(hitType == 1) meter[0] -= s.damage;
+	else if(hitType > -2) { 
 		meter[0] -= s.chip;
-		if(p == -1 && meter[0] <= 0){ 
+		if(hitType == -1 && meter[0] <= 0){ 
 			meter[0] = 1;
 		}
 	}
@@ -551,7 +551,7 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 	if(dead == true){
 		cMove = die;
 		aerial = true;
-	} else if (p == 1){
+	} else if (hitType == 1){
 		if(s.launch) aerial = 1;
 		if(s.stun != 0){
 			f = 0;
@@ -567,11 +567,10 @@ int character::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h
 				cMove = reel;
 			}
 		} 
-	} else if (p == -1) {
+	} else if (hitType == -1) {
 		if(meter[1] + 6 < 300) meter[1] += 6;
 		else meter[1] = 300;
-	}
-	if(p > -2){
+	} else if (hitType > -2) {
 		if(meter[1] + 1 < 300) meter[1] += 1;
 		else meter[1] = 300;
 	}
