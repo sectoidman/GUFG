@@ -92,10 +92,10 @@ void interface::createDemons()
 {
 	srand(time(NULL));
 	for(int i = 0; i < 2; i++){
-		p[i] = new demon(i+1); //Okay, so this is really stupid. APPLE doesn't like, understand that this is a class and clang won't build cause like, expected a type. Demon's totally not a type that works on other systems and that inherits from a type that clang is okay with...
+		p[i] = new demon(i+1); 
 		selection[i] = rand()%numChars + 1;
-		p[i]->characterSelect(selection[i]);
-		printf("p%i selected %s\n", i+1, p[i]->pick()->name);
+		p[i]->characterSelect(selection[i]); 
+		printf("p%i selected %s\n", i+1, p[i]->pick()->name); //currently segfaults here
 		select[i] = 1;
 		menu[i] = 0;
 	}
@@ -107,7 +107,7 @@ void interface::createDemons(replay * script)
 {
 	srand(time(NULL));
 	for(int i = 0; i < 2; i++){
-		p[i] = new demon(i+1, script->start[i]); //APPLE
+		p[i] = new demon(i+1, script->start[i]);
 		selection[i] = script->selection[i];
 		p[i]->characterSelect(selection[i]);
 		select[i] = 1;
