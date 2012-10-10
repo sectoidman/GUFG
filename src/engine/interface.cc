@@ -494,7 +494,7 @@ void interface::resolve()
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(int i = 0; i < thingComplexity; i++){
 			if(i < 2){
-				if(p[(i+1)%2]->pick()->aerial) prox.y = 1;
+				if(p[(i+1)%2]->aerial) prox.y = 1;
 				else prox.y = 0;
 				prox.x = p[(i+1)%2]->throwInvuln;
 			}
@@ -547,7 +547,7 @@ void interface::resolve()
 			p[1]->checkFacing(p[0]);
 
 		for(int i = 0; i < 2; i++){
-			if(!p[i]->pick()->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
+			if(!p[i]->aerial) { p[i]->deltaX = 0; p[i]->deltaY = 0; }
 
 			if(!roundEnd){
 				switch (p[i]->pick()->comboState(p[i]->cMove)){ 
@@ -1015,7 +1015,7 @@ void interface::resolveHits()
 	for(int i = 0; i < thingComplexity; i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(i < 2 && p[i]->cMove->allowed.i < 128 && !p[i]->pick()->aerial) p[i]->checkFacing(p[(i+1)%2]);
+			if(i < 2 && p[i]->cMove->allowed.i < 128 && !p[i]->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 
@@ -1042,9 +1042,9 @@ void interface::resolveHits()
 
 	for(int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->pick()->aerial) residual.y = -8;
+			if(p[i]->aerial) residual.y = -8;
 			else{ 
-				if(p[(i+1)%2]->pick()->aerial) residual.x = -2;
+				if(p[(i+1)%2]->aerial) residual.x = -2;
 				else {
 					if(combo[i] > 1) residual.x = -2*(abs(combo[i]-1));
 					if(p[(i+1)%2]->particleType == -2) residual.x -= push[i];

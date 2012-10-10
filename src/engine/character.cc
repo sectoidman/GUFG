@@ -77,11 +77,11 @@ character::~character()
 	}
 }
 
-void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], int down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun)
+void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], int down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial)
 {
 	action * t = NULL;
-	if (cMove == NULL) neutralize(cMove);
-	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag);
+	if (cMove == NULL) neutralize(cMove, aerial);
+	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag, aerial);
 
 	if(t == NULL && cMove->window(f)){
 		if(cMove->attempt->check(p, meter)) t = cMove->attempt;
@@ -118,7 +118,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 	}
 }
 
-action * avatar::hook(int inputBuffer[30], int i, int f, int * r, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
+action * avatar::hook(int inputBuffer[30], int i, int f, int * r, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	return head->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
 }
@@ -128,17 +128,19 @@ action * avatar::moveSignal(int)
 	return NULL;
 }
 
-action * character::hook(int inputBuffer[30], int i, int f, int * r, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag)
+action * character::hook(int inputBuffer[30], int i, int f, int * r, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
-	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
+	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag, aerial);
 }
 
-void avatar::neutralize(action *& cMove){
+void avatar::neutralize(action *& cMove, bool aerial)
+{
 	cMove = neutral;
 }
 
-void character::neutralize(action *& cMove){
+void character::neutralize(action *& cMove, bool aerial)
+{
 	if(aerial) cMove = airNeutral;
 	else cMove = neutral;
 }
@@ -352,12 +354,11 @@ void character::build(const char *directory, const char *file)
 	airHead->insert(5, airNeutral);
 }
 
-void character::init(action *& cMove){
+void character::init(action *& cMove)
+{
 	meter[0] = 600;
 	meter[1] = 0;
 	resetAirOptions();
-	aerial = 0;
-	neutralize(cMove);
 }
 
 void avatar::processMove(action * m)
@@ -454,7 +455,7 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 	}
 }
 
-int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int &hitFlag)
+int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int &hitFlag, bool aerial)
 {
 	int st;
 	bool success = false;
@@ -528,7 +529,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	return ret;
 }
 
-int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType)
+int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial)
 {
 	bool dead = false;
 	int freeze = 0;
@@ -552,9 +553,9 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 		cMove = die;
 		aerial = true;
 	} else if (hitType == 1){
-		if(s.launch) aerial = 1;
+		if(s.launch) aerial = true;
 		if(s.stun != 0){
-			f = 0;
+			frame = 0;
 			if(aerial){
 				untech->init(s.stun+s.untech);
 				cMove = untech;
@@ -597,7 +598,6 @@ void character::land(action *& cMove, int &f, int &c, int &h)
 		cMove = cMove->land(f, c, h);
 		if(!cMove) cMove = neutral;
 	}
-	aerial = 0; 
 	resetAirOptions();
 }
 

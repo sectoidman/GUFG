@@ -29,7 +29,6 @@ bool projectile::acceptTarget(action * c, int f)
 void projectile::init(action *& cMove)
 {
 	cMove = neutral;
-	aerial = 0;
 }
 
 void projectile::processMove(action * m)

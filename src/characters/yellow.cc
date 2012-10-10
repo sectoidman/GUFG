@@ -86,10 +86,10 @@ void yellow::drawMeters(int ID, float scalingFactor, int hidden)
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
-int yellow::takeHit(action *& cMove, hStat & s, int b, int &f, int &c, int &h, int &p)
+int yellow::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial)
 {
-	int x = character::takeHit(cMove, s, b, f, c, h, p);
-	if(p == 1 && meter[4] > 0) meter[4] = 0;
+	int x = character::takeHit(cMove, s, blockType, frame, connectFlag, hitFlag, hitType, aerial);
+	if(hitType == 1 && meter[4] > 0) meter[4] = 0;
 	return x;
 }
 
