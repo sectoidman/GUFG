@@ -470,6 +470,26 @@ int player::dragBG(int left, int right)
 	else return 0;
 }
 
+int instance::passSignal(int sig)
+{
+	switch (sig){
+	case 1:
+		action * a; 
+		a = pick()->moveSignal(counter);
+		if(a != NULL){
+			cMove = a;
+			currentFrame = 0;
+			connectFlag = 0;
+			hitFlag = 0;
+			return 1;
+		} else return 0;
+		break;
+	default:
+		return pick()->passSignal(sig);
+		break;
+	}
+}
+
 void instance::pushInput(bool axis[4])
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;

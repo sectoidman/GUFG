@@ -57,9 +57,8 @@ While the Alpha branch currently includes only 2 characters, they are relatively
 
 
 ###Testing and Contributing on Mac OS X and Clang/LLVM
-We have only taken a preliminary look at GUFG on Mac OS X.
-While GUFG should, in theory, be completely Mac OS X compatible,[Clang/LLVM reject some of the code due to their stricter C++ standards compliance](https://github.com/h-forrest-alexander/GUFG/issues/1).
 GUFG has been partially built on Mac OS X 10.8.1, XCode 4.4 and the Command Line Tools (found in the XCode Preferences dialog), CMake 2.8.9, SDL 1.2.15 and SDL\_image 1.2.12. 
-Right now, the first block to a working Mac OS X build (and possibly even a bundle) is some variable length arrays necessary to the game logic. 
+Currently, it fails to build due to an inscrutable type error with the daemon class, and a link error due to the test system not having libSDLmain. 
+We're close to getting it working! More testing would be helpful on Mac, as on other systems.
 In addition, [GUFG cannot be currently built with Linux and Clang/LLVM](https://github.com/h-forrest-alexander/GUFG/issues/2) due to upstream incompatibilities with GCC stdlibc++.
 
