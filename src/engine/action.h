@@ -5,6 +5,7 @@
  */
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 #include "auxil.h"
 #include "masks.h"
 #ifndef ACTION
