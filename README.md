@@ -57,8 +57,19 @@ While the Alpha branch currently includes only 2 characters, they are relatively
 
 
 ###Testing and Contributing on Mac OS X and Clang/LLVM
-GUFG has been partially built on Mac OS X 10.8.1, XCode 4.4 and the Command Line Tools (found in the XCode Preferences dialog), CMake 2.8.9, SDL 1.2.15 and SDL\_image 1.2.12. 
-Currently, it fails to build due to an inscrutable type error with the daemon class, and a link error due to the test system not having libSDLmain. 
-We're close to getting it working! More testing would be helpful on Mac, as on other systems.
-In addition, [GUFG cannot be currently built with Linux and Clang/LLVM](https://github.com/h-forrest-alexander/GUFG/issues/2) due to upstream incompatibilities with GCC stdlibc++.
+GUFG now builds, and runs, with fatal errors, on Mac OS X 10.8.1, XCode 4.4 and the Command Line Tools (found in the XCode Preferences dialog).
+
+To install SDL, SDL\_image, and SDL\_mixer, use [Homebrew](http://mxcl.github.com/homebrew/).
+Install Homebrew using the instructions on the website, and then run `brew install SDL SDL_image SDL_mixer`. The SDL "framework" distributions provided on the SDL website will not work, as they are missing a linkable copy of the SDLmain library.
+
+You can use a [CMake binary distribution](http://www.cmake.org/cmake/resources/software.html), install via Homebrew, or otherwise as you see fit.
+
+Currently, Clang complains about the createDaemon function in interface.cc ("expected a type"); as such, the game can be built for testing other issues using the alpha-mac branch, which simply comments these functions out (and is otherwise currently identical to the alpha branch).
+
+Once all of the dependencies are installed, GUFG can be built on Mac OS X systems as in the Linux build.
+
+It can be run through the keyconfig, which works fine.
+However, the game has issues loading images beyond this point (and only loads the P1 selection indicator image), and has a fatal malloc error if both players select a character and try to start the game.
+I haven't yet debugged this; if you develop on Mac OS X, we would appreciate your insight!
+
 
