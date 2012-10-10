@@ -116,7 +116,9 @@ public:
 	daemon(int);
 	daemon(int, frame*);
 	frame * script;
-	void genEvent(bool *&, int *&, bool *&);
+	virtual void genEvent(bool *&, int *&, bool *&);
+	virtual void roundInit();
+	virtual void characterSelect(int);
 	character * pick() { return v; }
 protected:
 	character * v;
