@@ -23,7 +23,7 @@ demon::demon(int id, frame * s)
 	script = s;
 }
 
-void demon::genEvent(bool *& sAxis, int *& posEdge, bool *& negEdge) 
+void demon::genEvent(bool *& sAxis, int *& posEdge, bool *& negEdge)
 {
 	if(script){
 		for(int i = 0; i < 5; i++){
@@ -65,13 +65,14 @@ void demon::characterSelect(int i)
 		v = new character("White");
 		break;
 	}
+	meter = pick()->generateMeter();
 }
 
 void demon::roundInit()
 {
 	instance::init();
 	pick()->neutralize(cMove, aerial);
-	if(v) pick()->init(cMove);
+	if(v) pick()->init(meter);
 	updateRects();
 	lCorner = 0;
 	rCorner = 0;

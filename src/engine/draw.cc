@@ -141,7 +141,7 @@ void interface::drawGame()
 			Mix_PlayChannel(3, announceFight, 0);
 	}
 	if(roundEnd && endTimer > 5 * 60 - 31){ 
-		if(p[0]->pick()->meter[0] > 0 && p[1]->pick()->meter[0] > 0){
+		if(p[0]->meter[0] > 0 && p[1]->meter[0] > 0){
 			drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
 			if(endTimer == 5 * 60 - 1)
 				Mix_PlayChannel(3, announceEnd[0], 0);
@@ -152,19 +152,19 @@ void interface::drawGame()
 		}
 	}
 	if(endTimer > 3 * 60 + 29 && endTimer < 4 * 60){ 
-		if(p[0]->pick()->meter[0] > p[1]->pick()->meter[0]){ 
+		if(p[0]->meter[0] > p[1]->meter[0]){ 
 			sprintf(buffer, "%s", p[0]->pick()->name);
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
 			if(endTimer == 4 * 60 - 1)
 				Mix_PlayChannel(3, announceWinner[selection[0]], 0);
-		} else if(p[1]->pick()->meter[0] > p[0]->pick()->meter[0]){
+		} else if(p[1]->meter[0] > p[0]->meter[0]){
 			sprintf(buffer, "%s", p[1]->pick()->name);
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
 			if(endTimer == 4 * 60 - 1)
 				Mix_PlayChannel(3, announceWinner[selection[1]], 0);
-		} else if(p[0]->pick()->meter[0] <= 0){ 
+		} else if(p[0]->meter[0] <= 0){ 
 			sprintf(buffer, "Double KO");
 			drawGlyph(buffer, 0, 1600, 375, 150, 1);
 			if(endTimer == 4 * 60 - 1)
@@ -235,11 +235,11 @@ void player::drawMeters(int n, float scalingFactor)
 	int h = 0;
 	if(cMove->hidesMeter) 
 		h = cMove->cost;
-	pick()->drawMeters(ID, scalingFactor, h);
+	pick()->drawMeters(ID, scalingFactor, h, meter);
 	glFlush();
 }
 
-void character::drawMeters(int ID, float scalingFactor, int hidden)
+void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 {
 	SDL_Rect m;
 	SDL_Rect h;

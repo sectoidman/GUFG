@@ -2,25 +2,31 @@
 yellow::yellow(){
 	head = new actionTrie;
 	airHead = new actionTrie;
-	meter = new int[5];
 	build("Yellow", "Yellow");
 }
 
-void yellow::resetAirOptions()
+void yellow::resetAirOptions(int *& meter)
 {
 	meter[2] = 1;
 	meter[3] = 2;
 }
 
-void yellow::init(action *& cMove)
+int * yellow::generateMeter()
 {
-	character::init(cMove);
+	int * meter;
+	meter = new int[5];
+	return meter;
+}
+
+void yellow::init(int *& meter)
+{
+	character::init(meter);
 	meter[4] = 0;
 }
 
-void yellow::tick()
+void yellow::tick(int *& meter)
 {
-	character::tick();
+	character::tick(meter);
 	if(meter[4] > 0){ 
 		meter[4]--;
 		if(meter[4] == 0){ 
@@ -29,10 +35,10 @@ void yellow::tick()
 	}
 }
 
-void yellow::step(action *& cMove, int &f, int &freeze)
+void yellow::step(action *& cMove, int &f, int &freeze, int *& meter)
 {
 	if(meter[4] < 0) meter[4]++;
-	character::step(cMove, f, freeze);
+	character::step(cMove, f, freeze, meter);
 }
 
 action * yellow::createMove(char * fullName)
@@ -61,10 +67,10 @@ action * yellow::createMove(char * fullName)
 	return m;
 }
 
-void yellow::drawMeters(int ID, float scalingFactor, int hidden)
+void yellow::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 {
 	int color;
-	character::drawMeters(ID, scalingFactor, hidden);
+	character::drawMeters(ID, scalingFactor, hidden, meter);
 	SDL_Rect c1;
 	if(meter[4] >= 0){
 		c1.w = meter[4]/3*2; 
@@ -86,9 +92,9 @@ void yellow::drawMeters(int ID, float scalingFactor, int hidden)
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
 }
 
-int yellow::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial)
+int yellow::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
 {
-	int x = character::takeHit(cMove, s, blockType, frame, connectFlag, hitFlag, hitType, aerial);
+	int x = character::takeHit(cMove, s, blockType, frame, connectFlag, hitFlag, hitType, aerial, meter);
 	if(hitType == 1 && meter[4] > 0) meter[4] = 0;
 	return x;
 }

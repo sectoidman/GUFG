@@ -1,33 +1,36 @@
 #include "../engine/interface.h"
 red::red()
 {
-	delete [] meter;
-
-	meter = new int[6];
-
 	airHead = new actionTrie;
 	head = new actionTrie;
 	build("Red", "Red");
 	backup = new instance;
 }
 
-void red::tick()
+int * red::generateMeter()
 {
-	character::tick();
-	if(meter[4] < 540) meter[4]++;
-	if(meter[4] < 0) meter[4] = 0;
+	int * meter;
+	meter = new int[6];
+	return meter;
 }
 
-void red::step(action *& cMove, int &f, int &freeze)
+void red::tick(int *& metre)
 {
-	if(meter[5] > 0) meter[5]--;
-	character::step(cMove, f, freeze);
+	character::tick(metre);
+	if(metre[4] < 540) metre[4]++;
+	if(metre[4] < 0) metre[4] = 0;
 }
 
-void red::drawMeters(int ID, float scalingFactor, int hidden)
+void red::step(action *& cMove, int &f, int &freeze, int *& metre)
+{
+	if(metre[5] > 0) metre[5]--;
+	character::step(cMove, f, freeze, metre);
+}
+
+void red::drawMeters(int ID, float scalingFactor, int hidden, int * metre)
 {
 //	int color1, color2;
-	character::drawMeters(ID, scalingFactor, hidden);
+	character::drawMeters(ID, scalingFactor, hidden, metre);
 /*	SDL_Rect c1, c2;
 	if(meter[4] >= 0){
 		c1.w = meter[4]; 
@@ -57,11 +60,11 @@ void red::drawMeters(int ID, float scalingFactor, int hidden)
 //	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2));*/
 }
 
-void red::init(action *& cMove)
+void red::init(int *& metre)
 {
-	character::init(cMove);
-	meter[4] = 540;
-	meter[5] = 0;
+	character::init(metre);
+	metre[4] = 540;
+	metre[5] = 0;
 }
 
 action * red::createMove(char * fullName)

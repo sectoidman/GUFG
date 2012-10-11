@@ -4,13 +4,14 @@
 class yellow : public character {
 public:
 	yellow();
-	void resetAirOptions();
+	void resetAirOptions(int*&);
 	action * createMove(char*);
-	int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&);
-	void drawMeters(int, float, int);
-	void tick();
-	void init(action *&);
-	void step(action *&, int&, int&);
+	int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
+	void drawMeters(int, float, int, int*);
+	void tick(int *&);
+	void init(int *&);
+	int * generateMeter();
+	void step(action *&, int&, int&, int*&);
 };
 
 class flashStep : public airMove {
