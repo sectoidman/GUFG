@@ -89,7 +89,7 @@ void player::init()
 void player::roundInit()
 {
 	instance::init();
-	pick()->neutralize(cMove, aerial);
+	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
 	updateRects();
 	lCorner = 0;
@@ -763,7 +763,7 @@ void player::getThrown(action *toss, int x, int y)
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
-	pick()->neutralize(cMove, aerial);
+	pick()->neutralize(cMove, aerial, meter);
 	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);
 	updateRects();
 }

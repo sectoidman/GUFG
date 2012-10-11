@@ -71,7 +71,7 @@ void demon::characterSelect(int i)
 void demon::roundInit()
 {
 	instance::init();
-	pick()->neutralize(cMove, aerial);
+	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
 	updateRects();
 	lCorner = 0;

@@ -76,7 +76,7 @@ character::~character()
 void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], int down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
 {
 	action * t = NULL;
-	if (cMove == NULL) neutralize(cMove, aerial);
+	if (cMove == NULL) neutralize(cMove, aerial, meter);
 	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag, aerial);
 
 	if(t == NULL && cMove->window(f)){
@@ -130,12 +130,12 @@ action * character::hook(int inputBuffer[30], int i, int f, int * meter, int dow
 	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag, aerial);
 }
 
-void avatar::neutralize(action *& cMove, bool aerial)
+void avatar::neutralize(action *& cMove, bool aerial, int *& meter)
 {
 	cMove = neutral;
 }
 
-void character::neutralize(action *& cMove, bool aerial)
+void character::neutralize(action *& cMove, bool aerial, int *& meter)
 {
 	if(aerial) cMove = airNeutral;
 	else cMove = neutral;
