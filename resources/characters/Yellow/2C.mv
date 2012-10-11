@@ -7,11 +7,14 @@ State: 256 : 8672
 HitAllows: 65536
 Damage: 25
 Stun: 17
-+Stun: 30
++Stun: 14
 Untech: 10
++Untech: 30
 Float: 15
++Float: 10
 Push: 10
 Lift: 14
++Lift: 5
 Gain: 0 : 4 
 Cost: 0
 Blockable: 3
