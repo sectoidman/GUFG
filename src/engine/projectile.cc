@@ -25,12 +25,12 @@ bool projectile::acceptTarget(action * c, int f)
 	else return 0;
 }
 
-void projectile::init(int *& metre)
+void projectile::init(int *& meter)
 {
-	metre[0] = 600;
-	metre[1] = 0;
-	metre[2] = 1;
-	metre[3] = 1;
+	meter[0] = 600;
+	meter[1] = 0;
+	meter[2] = 1;
+	meter[3] = 1;
 }
 
 void projectile::processMove(action * m)
