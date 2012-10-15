@@ -6,6 +6,11 @@
 #include "../charlist.h"
 #ifndef PLAYER
 #define PLAYER
+struct keySetting{
+	SDL_Event trigger;
+	buttonField effect;
+	const char * name;
+};
 class frame;
 class instance{
 public:
@@ -107,6 +112,7 @@ public:
 protected:
 	character * v;
 private:
+	keySetting * innputt;
 	SDL_Event input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
 };
 
