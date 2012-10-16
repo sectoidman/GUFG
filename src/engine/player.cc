@@ -126,27 +126,27 @@ bool player::readConfig()
 		char buffer[30];
 		for(int i = 0; i < 10; i++){
 			read.get(buffer, 30, ':'); read.ignore(); 
-			input[i].type = atoi(buffer);
+			input[i].trigger.type = atoi(buffer);
 			read.ignore();
 			read.get(buffer, 30, '\n'); read.ignore();
-			switch (input[i].type){
+			switch (input[i].trigger.type){
 			case SDL_JOYAXISMOTION:
 				token = strtok(buffer, " \n");
-				input[i].jaxis.which = atoi(token);
+				input[i].trigger.jaxis.which = atoi(token);
 				token = strtok(NULL, " \n");
-				input[i].jaxis.axis = atoi(token);
+				input[i].trigger.jaxis.axis = atoi(token);
 				token = strtok(NULL, " \n");
-				input[i].jaxis.value = atoi(token);
+				input[i].trigger.jaxis.value = atoi(token);
 				break;
 			case SDL_JOYBUTTONDOWN:
 				token = strtok(buffer, " \n");
-				input[i].jbutton.which = atoi(token);
+				input[i].trigger.jbutton.which = atoi(token);
 				token = strtok(NULL, " \n");
-				input[i].jbutton.button = atoi(token);
+				input[i].trigger.jbutton.button = atoi(token);
 				break;
 			case SDL_KEYDOWN:
 				token = strtok(buffer, " \n");	
-				input[i].key.keysym.sym = (SDLKey)atoi(token);
+				input[i].trigger.key.keysym.sym = (SDLKey)atoi(token);
 				break;
 			default:
 				break;
@@ -173,16 +173,16 @@ SDL_Event player::writeConfig(int i)
 			switch (temp.type) {
 			case SDL_JOYAXISMOTION:
 				if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
-					input[i] = temp;
+					input[i].trigger = temp;
 					configFlag = 1;
 				}
 				break;
 			case SDL_JOYBUTTONDOWN:
-				input[i] = temp;
+				input[i].trigger = temp;
 				configFlag = 1;
 				break;
 			case SDL_KEYDOWN:
-				input[i] = temp;
+				input[i].trigger = temp;
 				configFlag = 1;
 				break;
 			default: 
@@ -190,6 +190,7 @@ SDL_Event player::writeConfig(int i)
 			}
 		}
 	}
+	input[i].effect.i = 1 << i;
 	return temp;
 }
 
@@ -590,31 +591,31 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *&
 	switch(event.type){
 	case SDL_JOYAXISMOTION:
 		for(int i = 0; i < 4; i++){
-			if(input[i].type == SDL_JOYAXISMOTION){
-				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == input[i].jaxis.value)
+			if(input[i].trigger.type == SDL_JOYAXISMOTION){
+				if(event.jaxis.which == input[i].trigger.jaxis.which && event.jaxis.axis == input[i].trigger.jaxis.axis && event.jaxis.value == input[i].trigger.jaxis.value)
 					sAxis[i] = 1;
-				if(event.jaxis.which == input[i].jaxis.which && event.jaxis.axis == input[i].jaxis.axis && event.jaxis.value == 0)
+				if(event.jaxis.which == input[i].trigger.jaxis.which && event.jaxis.axis == input[i].trigger.jaxis.axis && event.jaxis.value == 0)
 					sAxis[i] = 0;
 			}
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
 		for(int i = 0; i < 4; i++) {
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN)
 				sAxis[i] = 1;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN)
 				posEdge[i-4] = 1;
 		}
 		break;
 	case SDL_JOYBUTTONUP:
 		for(int i = 0; i < 4; i++) {
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN)
+			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN)
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.jbutton.which == input[i].jbutton.which && event.jbutton.button == input[i].jbutton.button && input[i].type == SDL_JOYBUTTONDOWN){
+			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN){
 				negEdge[i-4] = 1;
 				posEdge[i-4] = 0;
 			}
@@ -622,21 +623,21 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *&
 		break;
 	case SDL_KEYDOWN:
 		for(int i = 0; i < 4; i++) {
-			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN) 
+			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN) 
 				sAxis[i] = 1;
 		}
 		for(int i = 4; i < 10; i++) {
-			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
+			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN)
 				posEdge[i-4] = 1;
 		}
 		break;
 	case SDL_KEYUP:
 		for(int i = 0; i < 4; i++){
-			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN)
+			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN)
 				sAxis[i] = 0;
 		}
 		for(int i = 4; i < 10; i++){
-			if(event.key.keysym.sym == input[i].key.keysym.sym && input[i].type == SDL_KEYDOWN){
+			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN){
 				negEdge[i-4] = 1;
 				posEdge[i-4] = 0;
 			}

@@ -112,8 +112,9 @@ public:
 protected:
 	character * v;
 private:
+	int inputComplexity;
 	keySetting * innputt;
-	SDL_Event input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
+	keySetting input[10];	//Inputs. These are the SDL_Events tied to the 10 buttons in the actual game
 };
 
 class demon : public player{
