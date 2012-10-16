@@ -314,20 +314,21 @@ void interface::writeConfig(int ID)
 		switch(temp.type){
 		case SDL_JOYAXISMOTION:
 			if(temp.jaxis.value != 0 && temp.jaxis.axis < 6){
-				write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value << "\n";
+				write << (int)temp.type << " : " << (int)temp.jaxis.which << " " << (int)temp.jaxis.axis << " " << (int)temp.jaxis.value;
 //				sprintf(buffer, "Set to Joystick %i axis %i value %i\n", temp.jaxis.which, temp.jaxis.axis, temp.jaxis.value);
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
-			write << (int)temp.type << " : " << (int)temp.jbutton.which << " " << (int)temp.jbutton.button << "\n";
+			write << (int)temp.type << " : " << (int)temp.jbutton.which << " " << (int)temp.jbutton.button;
 //			sprintf(buffer, "Set to Joystick %i button %i\n", temp.jbutton.which, temp.jbutton.button);
 			break;
 		case SDL_KEYDOWN:
-			write << (int)temp.type << " : " << (int)temp.key.keysym.sym << "\n";
+			write << (int)temp.type << " : " << (int)temp.key.keysym.sym;
 //			sprintf(buffer, "Set to keyboard %s\n", SDL_GetKeyName(temp.key.keysym.sym));
 			break;
 		}
 //		drawGlyph(buffer, 0, 1600, 450, 80, 1);
+		write << " " << (1 << i) << "\n";
 		SDL_GL_SwapBuffers();
 		glDisable( GL_TEXTURE_2D );
 	}

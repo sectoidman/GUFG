@@ -125,10 +125,10 @@ bool player::readConfig()
 		char * token;
 		char buffer[30];
 		for(int i = 0; i < 10; i++){
-			read.get(buffer, 30, ':'); read.ignore(); 
+			read.get(buffer, 100, ':'); read.ignore(); 
 			input[i].trigger.type = atoi(buffer);
 			read.ignore();
-			read.get(buffer, 30, '\n'); read.ignore();
+			read.get(buffer, 100, '\n'); read.ignore();
 			switch (input[i].trigger.type){
 			case SDL_JOYAXISMOTION:
 				token = strtok(buffer, " \n");
@@ -151,6 +151,8 @@ bool player::readConfig()
 			default:
 				break;
 			}
+			token = strtok(NULL, " \n");
+			input[i].effect.i = atoi(token);
 		}
 		read.close();
 		return 1;
