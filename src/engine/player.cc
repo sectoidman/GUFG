@@ -81,6 +81,7 @@ void player::init()
 
 	v = NULL;
 	rounds = 0;
+	inputComplexity = 0;
 	instance::init();
 }
 
@@ -116,15 +117,15 @@ bool player::readConfig()
 	char fname[30];
 	sprintf(fname, ".config/p%i.conf", ID);
 	std::ifstream read;
+	int i = 0;
 	read.open(fname);
 	if(read.fail()) {
 		read.close();
 		return 0;
-	}
-	else{
+	} else {
 		char * token;
 		char buffer[30];
-		for(int i = 0; i < 10; i++){
+		do{
 			read.get(buffer, 100, ':'); read.ignore(); 
 			input[i].trigger.type = atoi(buffer);
 			read.ignore();
@@ -153,7 +154,10 @@ bool player::readConfig()
 			}
 			token = strtok(NULL, " \n");
 			input[i].effect.i = atoi(token);
-		}
+			i++;
+			inputComplexity++;
+			read.peek();
+		} while(!read.eof());
 		read.close();
 		return 1;
 	}
@@ -590,61 +594,62 @@ void instance::removeVector(int n)
 void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
 {
 //	printf("Player %i read event of type %i:\n", ID, event.type);
-	switch(event.type){
-	case SDL_JOYAXISMOTION:
-		for(int i = 0; i < 4; i++){
-			if(input[i].trigger.type == SDL_JOYAXISMOTION){
-				if(event.jaxis.which == input[i].trigger.jaxis.which && event.jaxis.axis == input[i].trigger.jaxis.axis && event.jaxis.value == input[i].trigger.jaxis.value)
-					sAxis[i] = 1;
-				if(event.jaxis.which == input[i].trigger.jaxis.which && event.jaxis.axis == input[i].trigger.jaxis.axis && event.jaxis.value == 0)
-					sAxis[i] = 0;
+	int value = -1;
+	bool pos;
+	for(int i = 0; i < inputComplexity; i++){
+		switch(event.type){
+		case SDL_JOYAXISMOTION:
+			if(input[i].trigger.type == SDL_JOYAXISMOTION && event.jaxis.which == input[i].trigger.jaxis.which && event.jaxis.axis == input[i].trigger.jaxis.axis){
+				if(event.jaxis.value == input[i].trigger.jaxis.value){
+					value = i;
+					pos = 1;
+					i = inputComplexity;
+				} else if(event.jaxis.value == 0) {
+					value = i;
+					pos = 0;
+					i = inputComplexity;
+				}
 			}
-		}
-		break;
-	case SDL_JOYBUTTONDOWN:
-		for(int i = 0; i < 4; i++) {
-			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN)
-				sAxis[i] = 1;
-		}
-		for(int i = 4; i < 10; i++){
-			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN)
-				posEdge[i-4] = 1;
-		}
-		break;
-	case SDL_JOYBUTTONUP:
-		for(int i = 0; i < 4; i++) {
-			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN)
-				sAxis[i] = 0;
-		}
-		for(int i = 4; i < 10; i++){
+			break;
+		case SDL_JOYBUTTONDOWN:
 			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN){
-				negEdge[i-4] = 1;
-				posEdge[i-4] = 0;
+				value = i;
+				pos = 1;
+				i = inputComplexity;
 			}
-		}
-		break;
-	case SDL_KEYDOWN:
-		for(int i = 0; i < 4; i++) {
-			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN) 
-				sAxis[i] = 1;
-		}
-		for(int i = 4; i < 10; i++) {
-			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN)
-				posEdge[i-4] = 1;
-		}
-		break;
-	case SDL_KEYUP:
-		for(int i = 0; i < 4; i++){
-			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN)
-				sAxis[i] = 0;
-		}
-		for(int i = 4; i < 10; i++){
+			break;
+		case SDL_JOYBUTTONUP:
+			if(event.jbutton.which == input[i].trigger.jbutton.which && event.jbutton.button == input[i].trigger.jbutton.button && input[i].trigger.type == SDL_JOYBUTTONDOWN){
+				value = i;
+				pos = 0;
+				i = inputComplexity;
+			}
+			break;
+		case SDL_KEYDOWN:
 			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN){
-				negEdge[i-4] = 1;
-				posEdge[i-4] = 0;
+				value = i;
+				pos = 1;
+				i = inputComplexity;
+			}
+			break;
+		case SDL_KEYUP:
+			if(event.key.keysym.sym == input[i].trigger.key.keysym.sym && input[i].trigger.type == SDL_KEYDOWN){
+				value = i;
+				pos = 0;
+				i = inputComplexity;
+			}
+		break;
+		}
+	}
+	if(value < 0); 
+	else{
+		for(int i = 0; i < 6; i++){
+			if(i < 4) if(input[value].effect.i & (1 << i)) sAxis[i] = pos;
+			if(input[value].effect.i & (1 << (i + 4))){
+				posEdge[i] = pos;
+				negEdge[i] = !pos;
 			}
 		}
-		break;
 	}
 }
 
