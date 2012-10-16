@@ -165,7 +165,7 @@ bool player::readConfig()
 
 SDL_Event player::writeConfig(int i)
 {
-	SDL_Event temp; 
+	SDL_Event temp;
 	/*Set up ALL the inputs*/
 
 	/*Set up dummy event*/
@@ -191,12 +191,13 @@ SDL_Event player::writeConfig(int i)
 				input[i].trigger = temp;
 				configFlag = 1;
 				break;
-			default: 
+			default:
 				break;
 			}
 		}
 	}
 	input[i].effect.i = 1 << i;
+	inputComplexity++;
 	return temp;
 }
 
