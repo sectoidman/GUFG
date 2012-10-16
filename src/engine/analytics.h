@@ -15,12 +15,13 @@ public:
 class replay {
 public:
 	replay();
-	replay(int, int);
+	replay(int, int, int);
 	replay(const char*);
 	int selection[2];
 	frame * start[2];
 	frame * current[2];
 	int fcounter;
+	int rcount;
 	virtual void append(frame*, frame*);
 	virtual void load(const char*);
 	virtual void write();

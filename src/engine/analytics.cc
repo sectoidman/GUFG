@@ -40,12 +40,13 @@ replay::replay()
 	fcounter = 0;
 }
 
-replay::replay(int p1, int p2)
+replay::replay(int p1, int p2, int r)
 {
 	start[0] = NULL;
 	current[0] = NULL;
 	selection[0] = p1;
 	selection[1] = p2;
+	rcount = r;
 	fcounter = 0;
 }
 
@@ -80,7 +81,7 @@ void replay::load(const char* filename)
 		else start[i] = new frame;
 		iterator[i] = start[i];
 	}
-	read >> selection[0] >> selection[1] >> fcounter;
+	read >> selection[0] >> selection[1] >> fcounter >> rcount;
 	for(int i = 0; i < fcounter; i++){
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 5; j++){
@@ -107,7 +108,7 @@ void replay::write()
 	time(&currtime);
 	sprintf(buffer, ".data/replays/%s.frp", asctime(localtime(&currtime)));
 	scribe.open(buffer);
-	scribe << selection[0] << " " << selection[1] << " " << fcounter << "\n";
+	scribe << selection[0] << " " << selection[1] << " " << fcounter << " " << rcount << "\n";
 	do{
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 5; j++){

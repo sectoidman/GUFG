@@ -79,8 +79,6 @@ void player::init()
 	inputName[8] = "E";
 	inputName[9] = "Start";
 
-	/*Set up the sprite*/
-
 	v = NULL;
 	rounds = 0;
 	instance::init();

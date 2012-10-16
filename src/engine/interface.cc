@@ -95,17 +95,19 @@ void interface::createDemons()
 		p[i] = new demon(i+1); 
 		selection[i] = rand()%numChars + 1;
 		p[i]->characterSelect(selection[i]); 
-		printf("p%i selected %s\n", i+1, p[i]->pick()->name); //currently segfaults here
+		printf("p%i selected %s\n", i+1, p[i]->pick()->name);
 		select[i] = 1;
 		menu[i] = 0;
 	}
 	continuous = true;
 	analytics = true;
+	numRounds = 1;
 }
 
 void interface::createDemons(replay * script)
 {
 	srand(time(NULL));
+	numRounds = script->rcount;
 	for(int i = 0; i < 2; i++){
 		p[i] = new demon(i+1, script->start[i]);
 		selection[i] = script->selection[i];
@@ -141,7 +143,7 @@ void interface::startGame()
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 	if(select[0] && select[1]){ 
-		if(analytics) currentMatch = new replay(selection[0], selection[1]);
+		if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
 		roundInit();
 	}
 }
@@ -424,14 +426,16 @@ void interface::runTimer()
 			p[0]->momentumComplexity = 0;
 			p[1]->momentumComplexity = 0;
 			if(p[0]->rounds == numRounds || p[1]->rounds == numRounds){
-				if(p[0]->rounds == numRounds){ 
+				if(p[0]->rounds == p[1]->rounds);
+				else if(p[0]->rounds == numRounds){ 
 					p[0]->wins++;
 					printf("P1: %i wins\n", p[0]->wins);
 				} else {
 					p[1]->wins++;
 					printf("P2: %i wins\n", p[1]->wins);
 				}
-				if(selection[0] != selection[1]){
+				if(p[0]->rounds == p[1]->rounds);
+				else if(selection[0] != selection[1]){
 					if(p[0]->rounds == numRounds) matchup[selection[0]][selection[1]]++;
 					else matchup[selection[1]][selection[0]]++;
 					printf("Matchup: %f\n", (float)matchup[selection[0]][selection[1]] / 
@@ -458,7 +462,7 @@ void interface::runTimer()
 					else{
 						matchInit();
 						if(select[0] && select[1]){
-							if(analytics) currentMatch = new replay(selection[0], selection[1]);
+							if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
 							roundInit();
 						}
 					}
@@ -679,8 +683,8 @@ void interface::checkWin()
 			p[1]->rounds++;
 		}
 		else {
-			if(p[0]->rounds < numRounds - 1) p[0]->rounds++;
-			if(p[1]->rounds < numRounds - 1) p[1]->rounds++;
+			if(p[0]->rounds < numRounds - 1 || continuous) p[0]->rounds++;
+			if(p[1]->rounds < numRounds - 1 || continuous) p[1]->rounds++;
 		}
 	}
 }
@@ -792,7 +796,7 @@ void interface::cSelectMenu()
 
 		loadMatchBackground();
 		Mix_HaltMusic();
-		if(analytics) if(analytics) currentMatch = new replay(selection[0], selection[1]);
+		if(analytics) if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
 
 		roundInit();
 	}
