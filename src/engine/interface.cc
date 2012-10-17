@@ -85,6 +85,7 @@ void interface::createPlayers()
 		select[i] = 0;
 		selection[i] = 1+i;
 		menu[i] = 0;
+		configMenu[i] = 0;
 	}
 }
 
@@ -98,6 +99,7 @@ void interface::createDemons()
 		printf("p%i selected %s\n", i+1, p[i]->pick()->name);
 		select[i] = 1;
 		menu[i] = 0;
+		configMenu[i] = 0;
 	}
 	continuous = true;
 	analytics = true;
@@ -114,9 +116,9 @@ void interface::createDemons(replay * script)
 		p[i]->characterSelect(selection[i]);
 		select[i] = 1;
 		menu[i] = 0;
+		configMenu[i] = 0;
 	}
 	loadMatchBackground();
-
 	single = true;
 }
 
@@ -816,6 +818,13 @@ void interface::mainMenu(int ID)
 		counter[ID] = 10;
 		menu[ID] = 0;
 	}
+}
+
+void interface::keyConfig()
+{
+
+
+
 }
 
 void interface::dragBG(int deltaX)

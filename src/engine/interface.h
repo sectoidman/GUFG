@@ -44,6 +44,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void mainMenu(int);
+	void keyConfig();
 	void rematchMenu();
 	void checkWin();
 	void dragBG(int);
@@ -69,6 +70,7 @@ public:
 	bool select[2];
 	int selection[2];
 	int menu[2];
+	int configMenu[2];
 	int rMenu;
 	SDL_Surface *screen;
 	GLuint glyph[91];

@@ -79,6 +79,7 @@ public:
 	int padding[400];	//More magic. Do not touch
 	void setKey(int);
 	bool setKey(int, SDL_Event);
+	bool setKey(SDL_Event, int);
 	void writeConfig();
 	bool readConfig();
 	virtual void characterSelect(int);
