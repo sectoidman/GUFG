@@ -78,6 +78,7 @@ public:
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
 	void setKey(int);
+	bool setKey(int, SDL_Event);
 	void writeConfig();
 	bool readConfig();
 	virtual void characterSelect(int);

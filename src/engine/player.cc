@@ -192,83 +192,85 @@ void player::cullInput(int q)
 	inputComplexity--;
 }
 
-void player::setKey(int effect)
+/*This function wraps around the normal setKey function, handling input by itself*/
+void player::setKey(int effect) 
 {
 	SDL_Event temp;
-	int workingIndex = -1;
-	/*Set up ALL the inputs*/
-
-	/*Set up dummy event*/
-
-	/*Flag for breaking the loop*/
 	bool configFlag = 0;
 
 	while(SDL_PollEvent(&temp));
 	while (configFlag == 0){
 		if (SDL_PollEvent(&temp)) {
-			switch (temp.type) {
-			case SDL_JOYAXISMOTION:
-				if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
-					for(int i = 0; i < inputComplexity; i++){
-						if(input[i]->trigger.type == temp.type &&
-						   input[i]->trigger.jaxis.which == temp.jaxis.which &&
-						   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
-						   input[i]->trigger.jaxis.value == temp.jaxis.value){
-							workingIndex = i; 
-							i = inputComplexity;
-						}
-					}
-					if(workingIndex < 0){
-						addInput();
-						workingIndex = inputComplexity - 1;
-						input[workingIndex]->trigger.type = temp.type;
-						input[workingIndex]->trigger.jaxis.which = temp.jaxis.which;
-						input[workingIndex]->trigger.jaxis.axis = temp.jaxis.axis;
-						input[workingIndex]->trigger.jaxis.value = temp.jaxis.value;
-					}
-					configFlag = 1;
-				}
-				break;
-			case SDL_JOYBUTTONDOWN:
-				for(int i = 0; i < inputComplexity; i++){
-					if(input[i]->trigger.type == temp.type &&
-					   input[i]->trigger.jbutton.which == temp.jbutton.which &&
-					   input[i]->trigger.jbutton.button == temp.jbutton.button){
-						workingIndex = i;
-						i = inputComplexity;
-					}
-				}
-				if(workingIndex < 0){
-					addInput();
-					workingIndex = inputComplexity - 1;
-					input[workingIndex]->trigger.type = temp.type;
-					input[workingIndex]->trigger.jbutton.which = temp.jbutton.which;
-					input[workingIndex]->trigger.jbutton.button = temp.jbutton.button;
-				}
-				configFlag = 1;
-				break;
-			case SDL_KEYDOWN:
-				for(int i = 0; i < inputComplexity; i++){
-					if(input[i]->trigger.type == temp.type &&
-					   input[i]->trigger.key.keysym.sym == temp.key.keysym.sym){
-						workingIndex = i;
-						i = inputComplexity;
-					}
-				}
-				if(workingIndex < 0){
-					addInput();
-					workingIndex = inputComplexity - 1;
-					input[workingIndex]->trigger.type = temp.type;
-					input[workingIndex]->trigger.key.keysym.sym = temp.key.keysym.sym;
-				}
-				configFlag = 1;
-				break;
-			default:
-				break;
-			}
+			configFlag = setKey(effect, temp);
 		}
 	}
-	if(workingIndex > -1) input[workingIndex]->effect.i += effect;
+}
+
+/*This function takes an event and a desired effect and maps them in the keysetting array*/
+bool player::setKey(int effect, SDL_Event temp)
+{
+	int workingIndex = -1;
+	switch (temp.type){
+	case SDL_JOYAXISMOTION:
+		if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
+			for(int i = 0; i < inputComplexity; i++){
+				if(input[i]->trigger.type == temp.type &&
+				   input[i]->trigger.jaxis.which == temp.jaxis.which &&
+				   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
+				   input[i]->trigger.jaxis.value == temp.jaxis.value){
+					workingIndex = i; 
+					i = inputComplexity;
+				}
+			}
+			if(workingIndex < 0){
+				addInput();
+				workingIndex = inputComplexity - 1;
+				input[workingIndex]->trigger.type = temp.type;
+				input[workingIndex]->trigger.jaxis.which = temp.jaxis.which;
+				input[workingIndex]->trigger.jaxis.axis = temp.jaxis.axis;
+				input[workingIndex]->trigger.jaxis.value = temp.jaxis.value;
+			}
+		}
+		break;
+	case SDL_JOYBUTTONDOWN:
+		for(int i = 0; i < inputComplexity; i++){
+			if(input[i]->trigger.type == temp.type &&
+			   input[i]->trigger.jbutton.which == temp.jbutton.which &&
+			   input[i]->trigger.jbutton.button == temp.jbutton.button){
+				workingIndex = i;
+				i = inputComplexity;
+			}
+		}
+		if(workingIndex < 0){
+			addInput();
+			workingIndex = inputComplexity - 1;
+			input[workingIndex]->trigger.type = temp.type;
+			input[workingIndex]->trigger.jbutton.which = temp.jbutton.which;
+			input[workingIndex]->trigger.jbutton.button = temp.jbutton.button;
+		}
+		break;
+	case SDL_KEYDOWN:
+		for(int i = 0; i < inputComplexity; i++){
+			if(input[i]->trigger.type == temp.type &&
+			   input[i]->trigger.key.keysym.sym == temp.key.keysym.sym){
+				workingIndex = i;
+				i = inputComplexity;
+			}
+		}
+		if(workingIndex < 0){
+			addInput();
+			workingIndex = inputComplexity - 1;
+			input[workingIndex]->trigger.type = temp.type;
+			input[workingIndex]->trigger.key.keysym.sym = temp.key.keysym.sym;
+		}
+		break;
+	default:
+		break;
+	}
+	if(workingIndex > -1){ 
+		input[workingIndex]->effect.i += effect;
+		return 1;
+	} else return 0;
 }
 
 void player::writeConfig()
@@ -741,7 +743,20 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *&
 			if(i < 4){
 				if(input[value]->effect.i & (1 << i)){ 
 					sAxis[i] = pos;
-					if(i % 2 == 0 && !pos) sAxis[i+1] = pos;
+					if(!pos){
+						switch(i){
+						case 0:
+							sAxis[1] = 0;
+						case 1:
+							sAxis[0] = 0;
+							break;
+						case 2:
+							sAxis[3] = 0;
+						case 3:
+							sAxis[2] = 0;
+							break;
+						}
+					}
 				}
 			}
 			if(input[value]->effect.i & (1 << (i + 4))){
