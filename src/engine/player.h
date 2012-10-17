@@ -7,6 +7,7 @@
 #ifndef PLAYER
 #define PLAYER
 struct keySetting{
+	keySetting();
 	SDL_Event trigger;
 	buttonField effect;
 	const char * name;
@@ -76,8 +77,9 @@ public:
 	const char * inputName[10];//Input names. This is really just for housekeeping.
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
-	SDL_Event writeConfig(int);
-	virtual bool readConfig();
+	void setKey(int);
+	void writeConfig();
+	bool readConfig();
 	virtual void characterSelect(int);
 	virtual void drawHitParticle(int, int, float);
 
@@ -112,8 +114,10 @@ public:
 protected:
 	character * v;
 private:
+	void addInput();
+	void cullInput(int);
 	int inputComplexity;
-	keySetting input[10];
+	keySetting ** input;
 };
 
 class demon : public player{

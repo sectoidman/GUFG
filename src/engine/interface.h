@@ -52,7 +52,7 @@ public:
 	void loadMisc();
 	void readMatchupChart();
 	void writeMatchupChart();
-	void writeConfig(int);
+	void initialConfig(int);
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
