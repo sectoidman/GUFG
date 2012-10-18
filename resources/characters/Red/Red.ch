@@ -8,7 +8,7 @@ Red
 -SJQ = h27 h37 h17
 @W = h6
 @WQ = h4
-@wsh = h5656 h3656
+-dash = h5656 h3656
 -slide = h5 h4 h1 h2
 -qsh = h5454 
 -jJN = a58 a68 a48 a38 a28 a18
