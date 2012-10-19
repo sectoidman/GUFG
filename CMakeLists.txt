@@ -110,11 +110,14 @@ if(WIN32 AND NOT UNIX)
 		DESTINATION .
 		COMPONENT gufg
 		DESTINATION .
-		COMPONENT utilities
-		DESTINATION .
-		COMPONENT source)
+		COMPONENT utilities)
 
-	INSTALL(FILES CMakeLists.txt .gitignore .gitmodules
+	INSTALL(FILES CMakeLists.txt 
+			.gitignore 
+			.gitmodules 
+			README.md 
+			Disclaimer.md 
+			COPYING
 		DESTINATION src
 		COMPONENT source)
 
@@ -123,6 +126,7 @@ if(WIN32 AND NOT UNIX)
 		COMPONENT source
 			PATTERN "*.cc"
 			PATTERN "*.h")
+
 endif (WIN32 AND NOT UNIX)
 
 set (CPACK_PACKAGE_NAME "GUFG")
