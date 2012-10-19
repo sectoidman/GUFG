@@ -233,8 +233,9 @@ void player::drawMeters(int n, float scalingFactor)
 	}
 	glFlush();
 	int h = 0;
-	if(cMove->hidesMeter) 
-		h = cMove->cost;
+	if(cMove){
+		if(cMove->hidesMeter) h = cMove->cost;
+	}
 	pick()->drawMeters(ID, scalingFactor, h, meter);
 	glFlush();
 }

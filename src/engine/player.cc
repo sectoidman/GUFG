@@ -91,7 +91,6 @@ void player::roundInit()
 	instance::init();
 	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
-	updateRects();
 	lCorner = 0;
 	rCorner = 0;
 	elasticX = 0;
@@ -724,44 +723,54 @@ void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *&
 	for(int i = 0; i < inputComplexity; i++){
 		switch(event.type){
 		case SDL_JOYAXISMOTION:
-			if(input[i]->trigger.type == SDL_JOYAXISMOTION && event.jaxis.which == input[i]->trigger.jaxis.which && event.jaxis.axis == input[i]->trigger.jaxis.axis){
-				if(event.jaxis.value == input[i]->trigger.jaxis.value){
+			if(input[i]->trigger.type == SDL_JOYAXISMOTION){
+				if(event.jaxis.which == input[i]->trigger.jaxis.which && event.jaxis.axis == input[i]->trigger.jaxis.axis){
+					if(event.jaxis.value == input[i]->trigger.jaxis.value){
+						value = i;
+						pos = 1;
+						i = inputComplexity;
+					} else if(event.jaxis.value == 0) {
+						value = i;
+						pos = 0;
+						i = inputComplexity;
+					}
+				}
+			}
+			break;
+		case SDL_JOYBUTTONDOWN:
+			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
+				if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button){
 					value = i;
 					pos = 1;
 					i = inputComplexity;
-				} else if(event.jaxis.value == 0) {
+				}
+			}
+			break;
+		case SDL_JOYBUTTONUP:
+			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
+				if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button){
 					value = i;
 					pos = 0;
 					i = inputComplexity;
 				}
 			}
 			break;
-		case SDL_JOYBUTTONDOWN:
-			if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button && input[i]->trigger.type == SDL_JOYBUTTONDOWN){
-				value = i;
-				pos = 1;
-				i = inputComplexity;
-			}
-			break;
-		case SDL_JOYBUTTONUP:
-			if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button && input[i]->trigger.type == SDL_JOYBUTTONDOWN){
-				value = i;
-				pos = 0;
-				i = inputComplexity;
-			}
-			break;
 		case SDL_KEYDOWN:
-			if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym && input[i]->trigger.type == SDL_KEYDOWN){
-				value = i;
-				pos = 1;
-				i = inputComplexity;
+			if(input[i]->trigger.type == SDL_KEYDOWN){
+				if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym){
+					value = i;
+					pos = 1;
+					i = inputComplexity;
+				}
 			}
 			break;
 		case SDL_KEYUP:
-			if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym && input[i]->trigger.type == SDL_KEYDOWN){
-				value = i;
-				pos = 0;
-				i = inputComplexity;
+			if(input[i]->trigger.type == SDL_KEYDOWN){
+				if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym){
+					value = i;
+					pos = 0;
+					i = inputComplexity;
+				}
 			}
 		break;
 		}

@@ -69,6 +69,7 @@ void action::zero()
 	displaceFrame = -1;
 	displaceX = 0;
 	displaceY = 0;
+	hidesMeter = 0;
 	soundClip = NULL;
 	next = NULL;
 	attempt = NULL;
