@@ -48,6 +48,7 @@ if (APPLE)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_APPLE -stdlib=libc++")
 endif (APPLE)
 
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .config)
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data)
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data/replays)
 
@@ -91,7 +92,7 @@ if(WIN32 AND NOT UNIX)
 		COMPONENT gufg)
 
 	INSTALL(DIRECTORY
-		DESTINATION ./.data
+		DESTINATION ./.data/replays
 		COMPONENT gufg)
 
 	INSTALL(DIRECTORY resources
@@ -110,11 +111,14 @@ if(WIN32 AND NOT UNIX)
 		DESTINATION .
 		COMPONENT gufg
 		DESTINATION .
-		COMPONENT utilities
-		DESTINATION .
-		COMPONENT source)
+		COMPONENT utilities)
 
-	INSTALL(FILES CMakeLists.txt .gitignore .gitmodules
+	INSTALL(FILES CMakeLists.txt 
+			.gitignore 
+			.gitmodules 
+			README.md 
+			Disclaimer.md 
+			COPYING
 		DESTINATION src
 		COMPONENT source)
 
@@ -123,6 +127,7 @@ if(WIN32 AND NOT UNIX)
 		COMPONENT source
 			PATTERN "*.cc"
 			PATTERN "*.h")
+
 endif (WIN32 AND NOT UNIX)
 
 set (CPACK_PACKAGE_NAME "GUFG")
