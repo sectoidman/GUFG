@@ -48,7 +48,7 @@ jC = aC
 jD = aD
 jE = aE
 qA = hA
-qB = hB
+jqB = hB
 qC = hC
 wA = hA
 wB = hB
@@ -59,5 +59,5 @@ wD = hD
 %236B = h236B
 236B214B = h4B
 236B236B = h6B
-!214E = h214E hE
+!214E = h214E
 #Moves

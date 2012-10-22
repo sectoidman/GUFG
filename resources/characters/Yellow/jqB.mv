@@ -7,6 +7,7 @@ State: 256 : 8448
 HitAllows: 4096
 Damage: 40
 Stun: 15
+Landing: -qblr
 Untech: 15
 Push: 10
 Lift: 20
