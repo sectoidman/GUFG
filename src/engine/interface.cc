@@ -510,11 +510,8 @@ void interface::resolve()
 		}
 
 		int dx = p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
-		int x1, x2;
 		if(!dx){
-			x1 = (bg.x + screenWidth/2) - p[0]->posX;
-			x2 = (bg.x + screenWidth/2) - p[1]->posX;
-			dx = -(x1 + x2);
+			dx = -(((bg.x + screenWidth/2) - p[0]->posX) + ((bg.x + screenWidth/2) - p[1]->posX));
 			dx /= 10;
 		}
 		dragBG(dx);
