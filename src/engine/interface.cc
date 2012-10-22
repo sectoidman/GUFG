@@ -509,10 +509,17 @@ void interface::resolve()
 			}
 		}
 
+		/*Really rudimentary camera logic. Really just scrolls the background (Which characters are drawn relative to)
+		 *appropriately, attempting to adjust to approximately be looking at the point in the middle of the two characters.
+		 */
 		int dx = p[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + p[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
+		/*If a character leaves the camera boundaries, follow them immediately*/
 		if(!dx){
 			dx = -(((bg.x + screenWidth/2) - p[0]->posX) + ((bg.x + screenWidth/2) - p[1]->posX));
 			dx /= 10;
+			/*Otherwise follow the middle at a rate of (disparity from middle view)/10.
+			 *Chosen by trial and error, this rate feels most natural
+			 */
 		}
 		dragBG(dx);
 		p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
