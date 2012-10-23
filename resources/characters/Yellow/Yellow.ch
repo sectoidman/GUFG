@@ -50,6 +50,7 @@ jE = aE
 qA = hA
 jqB = hB
 qC = hC
+qD = hD
 wA = hA
 wB = hB
 wC = hC
