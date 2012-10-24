@@ -8,13 +8,15 @@ Damage: 47
 Stun: 16
 Untech: 35
 Push: 16
-Lift: 26
-Float: 27
-Blowback: 11
+Lift: 29
+Float: 29
+Blowback: 10
++Blowback: 20
 Gain: 0 : 4
 Cost: 0
 Blockable: 1
 Blocks: 0
+Counterhit: >
 Properties: ^Sc
 #0 
 $C	10 0 110 294

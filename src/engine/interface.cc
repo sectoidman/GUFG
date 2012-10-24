@@ -37,9 +37,12 @@ interface::interface()
 	bg.h = 1800;
 	floor = 50; /*Value of the floor. This is the maximum distance downward that characters can travel.*/
 	wall = 50; /*The size of the offset at which characters start to scroll the background, and get stuck.*/
+	menuMusic = NULL;
 
 	select[0] = 0;
 	select[1] = 0;
+	p[0] = NULL;
+	p[1] = NULL;
 
 	read.open(".config/resolution.conf");
 	if(read.fail()){ 
@@ -893,9 +896,9 @@ interface::~interface()
 {
 	if(select[0]) delete p[0]->pick();
 	if(select[1]) delete p[1]->pick();
-	delete p[0];
-	delete p[1];
-	if(menuMusic) Mix_FreeMusic(menuMusic);
+	if(p[0] != NULL) delete p[0];
+	if(p[1] != NULL) delete p[1];
+	if(menuMusic != NULL) Mix_FreeMusic(menuMusic);
 	SDL_FreeSurface(screen);
 	SDL_Quit();
 }

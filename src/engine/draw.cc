@@ -498,7 +498,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 				 rmask, gmask, bmask, amask);
 	screenInit(w, h);
 
-	sprintf(fname, "%s#%i.bmp", movename, frame);
+	sprintf(fname, "resources/characters/%s#%i.bmp", movename, frame);
 
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
