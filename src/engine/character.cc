@@ -76,42 +76,46 @@ character::~character()
 void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], int down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
 {
 	action * t = NULL;
-	if (cMove == NULL) neutralize(cMove, aerial, meter);
+	if (cMove == NULL){
+		if(sMove){
+			if(sMove->check(p, meter)){
+				if(!dryrun) sMove->execute(neutral, meter, f, cFlag, hFlag);
+				cMove = sMove;
+				if(!dryrun) sMove = NULL;
+			}
+		}
+		else neutralize(cMove, aerial, meter);
+	}
 	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag, aerial);
 
-	if(t == NULL && cMove->window(f)){
-		if(cMove->attempt->check(p, meter)) t = cMove->attempt;
-	}
-
-	if(t != NULL){
+	if(t == NULL){
+		if(cMove->window(f)){
+			if(cMove->attempt->check(p, meter)) t = cMove->attempt;
+		} else if (bMove != NULL && freeze <= 0) {
+			if(!dryrun){ 
+				bMove->execute(cMove, meter, f, cFlag, hFlag);
+			}
+			cMove = bMove;
+			if(!dryrun) bMove = NULL;
+		} else {
+			action * r;
+			neutralize(r, aerial, meter);
+			if (!sMove && f + 4 > cMove->frames && cMove->frames > 10 && cMove != r) {
+				int l = 0, m = 0;
+				sMove = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, aerial);
+				if(r == sMove || cMove == sMove) sMove = NULL;
+			}
+		}
+	} else {
 		if(freeze > 0){
 			if(bMove == NULL){ 
 				if(!dryrun) bMove = t;
-/*			} else if(sMove == NULL){
-				if(!dryrun) sMove = t;
-*/			}
-		}
-		else {
-			if(!dryrun){ 
-				t->execute(cMove, meter, f, cFlag, hFlag);
 			}
+		} else {
+			if(!dryrun) t->execute(cMove, meter, f, cFlag, hFlag);
 			cMove = t;
 		}
-	} else if (bMove != NULL && freeze <= 0) {
-		if(!dryrun){ 
-			bMove->execute(cMove, meter, f, cFlag, hFlag);
-		}
-		cMove = bMove;
-		if(!dryrun) bMove = NULL;
-	} else if (sMove != NULL && freeze <= 0) {
-		if(sMove->check(p, meter) && sMove->cancel(cMove, cFlag, hFlag)){
-			cMove = sMove;
-			if(!dryrun){
-				sMove->execute(cMove, meter, f, cFlag, hFlag);
-				sMove = NULL;
-			}
-		}
-	}
+	} 
 }
 
 action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
@@ -439,7 +443,6 @@ void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & 
 {
 	action * t = cMove->connect(meter, connectFlag, frame);
 	if(t != NULL){
-		if(bMove != NULL) sMove = bMove;
 		bMove = t;
 	}
 }

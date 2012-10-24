@@ -431,6 +431,7 @@ void instance::enforceGravity(int grav, int floor)
 
 	if(collision.y > floor && aerial == 0){
 		aerial = 1;
+		sMove = NULL;
 	}
 	else if(aerial && !freeze){ 
 		addVector(g);
@@ -443,6 +444,7 @@ void player::enforceGravity(int grav, int floor)
 
 	if(collision.y > floor && aerial == 0){
 		aerial = 1;
+		sMove = NULL;
 	}
 	else if(aerial && !freeze){ 
 		if(hover > 0 && deltaY - 6 < 0) g.y = -deltaY;
@@ -543,6 +545,7 @@ void player::land()
 		if(momentum[i].y > 0) removeVector(i);
 	}
 	pick()->land(cMove, currentFrame, connectFlag, hitFlag, meter);
+	sMove = NULL;
 	aerial = false;
 }
 
