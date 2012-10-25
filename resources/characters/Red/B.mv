@@ -2,13 +2,13 @@ Name: B
 Buffer: 30 : 30
 Hits: 1
 Frames: 24 : 7 : 5 : 12
-Check: 9 
+Check: 9
 State: 256 : 506
 Damage: 25.5
 Stun: 12
 Untech: 15
 Push: 16
-Lift: 26
+Lift: 24
 Float: 12
 Blowback: 0
 Gain: 0 : 3
