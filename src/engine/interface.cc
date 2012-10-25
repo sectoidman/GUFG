@@ -957,7 +957,9 @@ void interface::resolveThrows()
 {
 	bool isThrown[2] = {false, false};
 	for(int i = 0; i < 2; i++){
-		if(p[i]->cMove->arbitraryPoll(28, p[i]->currentFrame)) isThrown[(i+1)%2] = true;
+		if(p[i]->cMove->arbitraryPoll(28, p[i]->currentFrame)){ 
+			isThrown[(i+1)%2] = true;
+		}
 	}
 	if(isThrown[0] && isThrown[1]){
 		p[0]->cMove = p[0]->pick()->throwBreak;
