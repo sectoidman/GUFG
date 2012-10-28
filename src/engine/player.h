@@ -41,8 +41,8 @@ public:
 	virtual void init();
 	virtual void step();
 
-	virtual void getMove(int*, bool*, SDL_Rect &, bool);
-	virtual int takeHit(int, hStat&);
+	virtual void getMove(int*, bool*, SDL_Rect&, bool);
+	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
 	void enforceAttractor(attractor*);
 	virtual void invertVectors(int);
@@ -91,7 +91,7 @@ public:
 	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
 	virtual void genEvent(bool *&, int *&, bool *&) {}
 	virtual void roundInit();
-	virtual int takeHit(int, hStat&);
+	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
 	virtual bool CHState();
 	bool elasticX:1;
