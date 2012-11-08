@@ -26,4 +26,17 @@ class aux{
 		static bool checkCollision(SDL_Rect, SDL_Rect);
 		static int defineRectArray(char*, SDL_Rect*&); 
 };
+
+struct attractor{
+	attractor() : x(0), y(0), type(0) {}
+	int x, y; //X-Yvalue. For globals this is only influenced by facingness, for local it is attractive force (negative for repulsive) based on mean Y
+	unsigned int length; //How long the attractor holds
+	int ID; //Who the attractor affects
+	unsigned int type:2; //Type check variable. Type 0 is global, type 1 is linear decay, type 2 is half-life, and type 3 is a flat cut-off.
+	int posX, posY; //Used to keep track of where local attractors actually are. Not set by the move itself, but used by the game later.
+	int radius;	/*The radius at which the vector decay. Irrelevant (unchecked) for type 0, is the distance at which the vector loses one
+			 *from its absolute value in type 1, the half-life point for type 2, and the cut-off point for type 3.
+			 */
+};
+
 #endif
