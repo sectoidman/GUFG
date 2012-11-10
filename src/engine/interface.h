@@ -15,8 +15,8 @@
 #define INTERFACE
 class gameInstance{
 public:
-	void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
-	virtual void resolve() = 0;
+	virtual void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
+	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 
 //Input layer stuff. Players, inputs, etc.
 	player * p[2];
