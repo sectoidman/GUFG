@@ -13,8 +13,7 @@
 #include "analytics.h"
 #ifndef INTERFACE
 #define INTERFACE
-class interface
-{
+class interface{
 public:
 	interface();
 	~interface();
