@@ -13,7 +13,25 @@
 #include "analytics.h"
 #ifndef INTERFACE
 #define INTERFACE
-class interface{
+class gameInstance{
+public:
+	void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
+	virtual void resolve() = 0;
+
+//Input layer stuff. Players, inputs, etc.
+	player * p[2];
+	bool * sAxis[2];
+	int * posEdge[2];
+	bool * negEdge[2];
+
+//Meta-interface stuff. Gameover state, screen size, etc.
+	bool gameover;
+	bool fullscreen;
+	float scalingFactor, sf;
+	bool initd:1;
+};
+
+class interface : public gameInstance{
 public:
 	interface();
 	~interface();
@@ -25,7 +43,6 @@ public:
 /*Important interface functions that will remain interface functions*/
 
 /*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
-	void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
 	void genInput();
 	void resolve();		/*The main loop of the game*/
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
@@ -62,10 +79,6 @@ public:
 	void cullAttractor(int);
 	void writeImage(const char*, int, action*);
 
-	player * p[2];
-	bool * sAxis[2];
-	int * posEdge[2];
-	bool * negEdge[2];
 	bool select[2];
 	int selection[2];
 	int menu[2];
@@ -76,8 +89,6 @@ public:
 	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
-	bool fullscreen;
-	bool initd:1;
 	bool boxen:1;
 	bool firstFrame:1;
 	bool shortcut:1;
@@ -89,8 +100,6 @@ public:
 	bool illegit[2];
 	int ** matchup;
 	int numRounds;
-	bool gameover;
-	float scalingFactor, sf;
 	int grav;	//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;

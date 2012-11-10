@@ -682,7 +682,7 @@ void interface::genInput()
 }
 
 /*Read the input that's happened this frame*/
-void interface::readInput()
+void gameInstance::readInput()
 {
 	/*Make our dummy event for polls*/
 	SDL_Event event;
@@ -702,10 +702,6 @@ void interface::readInput()
 				case SDLK_q:
 				case SDLK_ESCAPE:
 					gameover = 1;
-					break;
-				case SDLK_F9:
-					initialConfig(0);
-					initialConfig(1);
 					break;
 				case SDLK_F10:
 					if(scalingFactor == 1.0) sf = 0.5;
