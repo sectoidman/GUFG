@@ -340,10 +340,10 @@ void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalin
 	cMove->draw(facing, x, y, f, scalingFactor);
 }
 
-int interface::drawGlyph(const char * string, int x, int space, int y, int height, int just)
+int gameInstance::drawGlyph(const char * string, int x, int space, int y, int height, int just)
 {
 	int w, h, width = 0, padding = 0, totalWidth = 0;
-	if(just != 0){	
+	if(just != 0){
 		for(unsigned int i = 0; i < strlen(string); i++){
 			if(string[i] == ' ') totalWidth += w * sf / 2;
 			else if(string[i] == '\0');

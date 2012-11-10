@@ -15,8 +15,10 @@
 #define INTERFACE
 class gameInstance{
 public:
-	virtual void readInput();	/*Accepts input into input containers, for use by anything that wants it*/
+	void readInput();		/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
+	int drawGlyph(const char *, int, int, int, int, int);
+	virtual void loadMisc();
 
 //Input layer stuff. Players, inputs, etc.
 	player * p[2];
@@ -29,12 +31,15 @@ public:
 	bool fullscreen;
 	float scalingFactor, sf;
 	bool initd:1;
+	GLuint glyph[91];
+	GLuint background;
 };
 
 class interface : public gameInstance{
 public:
 	interface();
 	~interface();
+	void loadMisc();
 	void createPlayers();
 	void createDemons();
 	void createDemons(replay*);
@@ -54,7 +59,6 @@ public:
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
 	bool screenInit();
-	int drawGlyph(const char *, int, int, int, int, int);
 	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
@@ -66,7 +70,6 @@ public:
 	void dragBG(int);
 	void doSuperFreeze();
 	void unitCollision();
-	void loadMisc();
 	void readMatchupChart();
 	void writeMatchupChart();
 	void initialConfig(int);
@@ -85,8 +88,6 @@ public:
 	int configMenu[2];
 	int rMenu;
 	SDL_Surface *screen;
-	GLuint glyph[91];
-	GLuint background;
 	SDL_Rect bg;
 	SDL_Rect prox;
 	bool boxen:1;

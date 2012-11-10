@@ -154,13 +154,19 @@ void interface::startGame()
 }
 
 /*This function loads a few miscellaneous things the game will need in all cases*/
-void interface::loadMisc()
+void gameInstance::loadMisc()
 {
 	char buffer[200];
 	for(int i = 0; i < 91; i++){
 		sprintf(buffer, "resources/glyphs/%i.png", i);
 		glyph[i] = aux::load_texture(buffer);
 	}
+}
+
+void interface::loadMisc()
+{
+	gameInstance::loadMisc();
+	char buffer[200];
 	selectScreen = aux::load_texture("resources/menu/Select.png");
 	menuMusic = Mix_LoadMUS("resources/sound/Menu.ogg");
 	announceWinner = new Mix_Chunk*[numChars + 1];
