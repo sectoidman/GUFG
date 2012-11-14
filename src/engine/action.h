@@ -13,18 +13,6 @@
 class avatar;
 class instance;
 
-struct attractor{
-	attractor() : x(0), y(0), type(0) {}
-	int x, y; //X-Yvalue. For globals this is only influenced by facingness, for local it is attractive force (negative for repulsive) based on mean Y
-	unsigned int length; //How long the attractor holds
-	int ID; //Who the attractor affects
-	unsigned int type:2; //Type check variable. Type 0 is global, type 1 is linear decay, type 2 is half-life, and type 3 is a flat cut-off.
-	int posX, posY; //Used to keep track of where local attractors actually are. Not set by the move itself, but used by the game later.
-	int radius;	/*The radius at which the vector decay. Irrelevant (unchecked) for type 0, is the distance at which the vector loses one
-			 *from its absolute value in type 1, the half-life point for type 2, and the cut-off point for type 3.
-			 */
-};
-
 struct hStat{
 	hStat() : damage(0), chip(0), stun(0), pause(-1), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile() {}
 	int damage;	/*How much damage the hit does*/

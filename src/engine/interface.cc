@@ -1022,14 +1022,14 @@ void interface::resolveHits()
 	for(int i = 0; i < thingComplexity; i++){ 
 		if(taken[i]){
 			h = p[i]->meter[0];
-			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]]);
+			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]], prox);
 			if(i < 2 && hitBy[i] < 2){
 				if(p[i]->particleType == -2){ 
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
 					ths.ghostHit = true;
 					ths.stun = 0;
-					p[hitBy[i]]->takeHit(combo[i], ths);
+					p[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
 			combo[(i+1)%2] += hit[hitBy[i]];

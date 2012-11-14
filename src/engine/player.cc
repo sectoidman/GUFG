@@ -816,12 +816,12 @@ void instance::connect(int combo, hStat & s)
 	if(bMove == cMove) bMove = NULL;
 }
 
-int instance::takeHit(int combo, hStat & s)
+int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 {
 	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);
 }
 
-int player::takeHit(int combo, hStat & s)
+int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 {
 	SDL_Rect v = {0, 0, 1, 0};
 	action * temp = NULL;
@@ -832,12 +832,12 @@ int player::takeHit(int combo, hStat & s)
 	s.untech -= combo;
 	int f;
 	if(slide) s.lift += 7 - s.lift/5;
-	f = instance::takeHit(combo, s);
+	f = instance::takeHit(combo, s, p);
 	freeze = f;
-	if(particleType != 1){ 
+	if(particleType != 1){
 		temp = cMove->blockSuccess();
 	}
-	if(temp && temp != cMove){
+	if(temp && temp != cMove && temp->check(p, meter)){
 		combo = 0;
 		bMove = temp;
 		freeze = 0;
