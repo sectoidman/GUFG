@@ -5,7 +5,7 @@
  *This file runs a loop of everything that takes place in the GUFG engine.
  */
 #include "compat.h"
-#include "engine/interface.h"
+#include "engine/cockfight.h"
 #include <SDL/SDL_opengl.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,10 +19,10 @@ int main(int argc, char* argv[])
 	typedef chrono::duration<float,std::ratio<1,FPS>> frame_t;
 	chrono::high_resolution_clock::time_point frameStart;
 	cockfight game;
-	assert(game.screenInit() != false);
-	game.createPlayers();
-	game.loadMisc();
-	game.startGame();
+	//assert(game.screenInit() != false);
+	//game.createPlayers();
+	//game.loadMisc();
+	//game.startGame();
 
 	/*As long as the game doesn't detect a request to quit, it loops over a few basic resolutions of game events*/
 	while (!game.gameover){
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 		game.readInput();
 		game.resolve();
 		game.draw();
-		game.cleanup();
+	//	game.cleanup();
 		frame_t frameElapsed;
 		/*Now eat up the rest of the frame: 
 		 *Check the time elapsed thus far in a loop

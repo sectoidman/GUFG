@@ -1,8 +1,9 @@
-#ifdef TRAINER_INCLUDED
-#define TRAINER_INCLUDED
+#include "player.h"
+#ifndef TRAINER
+#define TRAINER
 class trainer : public controller{
 public:
 	int HP;
-	organism * party[6];
+	//organism * party[6];
 };
 #endif

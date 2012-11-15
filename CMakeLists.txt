@@ -52,9 +52,14 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .config)
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data)
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory .data/replays)
 
-add_executable (gufg 
+add_executable (gufg
 		WIN32
 		src/game.cc
+		${SOURCES})
+
+add_executable (pkbtl
+		EXCLUDE_FROM_ALL
+		src/pkbtl.cc
 		${SOURCES})
 
 add_executable (replay
