@@ -694,6 +694,7 @@ void interface::readInput()
 			switch (event.type){
 			/*Kill handler*/
 			case SDL_QUIT:
+				printf("Sigterm received!\n");
 				gameover = 1;
 				break;
 				/*Keyboard handler. Maybe I'll optimize such that the knows if it even needs to check this (EG if sticks are used)*/

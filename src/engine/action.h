@@ -126,11 +126,14 @@ public:
 
 	action * next;
 	action ** onConnect;
+	action * onHold;
 	action * attempt;
 	action * riposte;
 
 	action * basis;
 	int connectFlag, currentFrame, hitFlag;
+	int holdFrame;
+	int holdCheck;
 
 	attractor * distortion;
 	int distortSpawn;
@@ -143,6 +146,7 @@ public:
 	char ** tempOnConnect;
 	char * tempAttempt;
 	char * tempRiposte;
+	char * tempOnHold;
 
 	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
 	SDL_Rect ** hitbox;     //Same but for hitboxes
@@ -187,6 +191,7 @@ class negNormal : virtual public action {
 public:
 	negNormal() {}
 	negNormal(const char *);
+	virtual void zero();
 	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
@@ -235,6 +240,7 @@ class airNegNormal : public airMove, public negNormal {
 public:
 	airNegNormal() {}
 	airNegNormal(const char* n) {build(n); }
+	void zero() { airMove::zero(); negNormal::zero(); }
 };
 
 class airUtility : public airMove, public utility {

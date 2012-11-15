@@ -91,9 +91,16 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 	if(t == NULL){
 		if(cMove->window(f)){
 			if(cMove->attempt->check(p, meter)){
+				cMove->attempt->execute(cMove, meter, f, cFlag, hFlag);
 				t = cMove->attempt;
 			}
-		} 
+		}
+		else if(cMove->holdFrame == f){
+			if(cMove->onHold->activate(down, up, cMove->holdCheck, 0, 0, meter, p)){
+				cMove->onHold->execute(cMove, meter, f, cFlag, hFlag);
+				t = cMove->onHold;
+			}
+		}
 		if (bMove != NULL && freeze <= 0) {
 			if(!dryrun){ 
 				bMove->execute(cMove, meter, f, cFlag, hFlag);
@@ -402,6 +409,10 @@ action * avatar::createMove(char * fullName)
 	case '%':
 		if(type[1] == 'j') m = new airSpecial(actionName);
 		else m = new special(actionName);
+		break;
+	case '~':
+		if(type[1] == 'j') m = new airNegNormal(actionName);
+		else m = new negNormal(actionName);
 		break;
 	case '-':
 		if(type[1] == 'j') m = new airUtility(actionName);
