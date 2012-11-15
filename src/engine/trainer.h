@@ -1,6 +1,6 @@
 #ifdef TRAINER_INCLUDED
 #define TRAINER_INCLUDED
-class trainer{
+class trainer : public controller{
 public:
 	int HP;
 	organism * party[6];
