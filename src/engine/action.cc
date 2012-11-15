@@ -43,6 +43,8 @@ void action::zero()
 {
 	attemptStart = 0;
 	attemptEnd = 0;
+	holdCheck = -1;
+	holdFrame = -1;
 	xRequisite = 0;
 	yRequisite = 0;
 	stop = 0;
@@ -66,6 +68,7 @@ void action::zero()
 	tempNext = NULL;
 	tempAttempt = NULL;
 	tempRiposte = NULL;
+	tempOnHold = NULL;
 	displaceFrame = -1;
 	displaceX = 0;
 	displaceY = 0;
@@ -75,7 +78,15 @@ void action::zero()
 	attempt = NULL;
 	riposte = NULL;
 	basis = NULL;
+	onHold = NULL;
 	modifier = 0;
+}
+
+void negNormal::zero()
+{
+	action::zero();
+	minHold = 0;
+	maxHold = 0;
 }
 
 void action::build(const char * n)
@@ -199,7 +210,6 @@ bool action::setParameter(char * buffer)
 	} else if (!strcmp("Hold", token)) {
 		token = strtok(NULL, "\t: \n-");
 		minHold = atoi(token);
-
 		token = strtok(NULL, "\t: \n-");
 		maxHold = atoi(token);
 		return 1;
@@ -232,6 +242,28 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		tempRiposte = new char[strlen(token)+1];
 		strcpy(tempRiposte, token);
+		return 1;
+	} else if (!strcmp("OnHold", token)) {
+		token = strtok(NULL, "\t:- \n");
+		holdFrame = atoi(token);
+		token = strtok(NULL, "\t:- \n");
+		holdCheck = 0;
+		printf("%s\n", token);
+		for(unsigned int i = 0; i < strlen(token); i++){
+			switch(token[i]){
+			case 'A':
+			case 'B':
+			case 'C':
+			case 'D':
+			case 'E':
+				printf("%c\n", token[i]);
+				holdCheck += 1 << (token[i] - 'A');
+				break;
+			}
+		}
+		token = strtok(NULL, "\t:- \n");
+		tempOnHold = new char[strlen(token)+1];
+		strcpy(tempOnHold, token);
 		return 1;
 	} else if (!strcmp("Distort", token)) {
 		distortion = new attractor;
@@ -750,6 +782,10 @@ void action::feed(action * c, int code, int i)
 		riposte = c;
 		if(tempRiposte) delete [] tempRiposte;
 		break;
+	case 6:
+		onHold = c;
+		if(tempOnHold) delete [] tempOnHold;
+		break;
 	}
 }
 
@@ -764,6 +800,8 @@ char * action::request(int code, int i)
 		return tempAttempt;
 	case 5:
 		return tempRiposte;
+	case 6:
+		return tempOnHold;
 	default:
 		return NULL;
 	}
