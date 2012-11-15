@@ -12,6 +12,7 @@ struct keySetting{
 	buttonField effect;
 	const char * name;
 };
+
 class frame;
 class instance{
 public:
@@ -67,29 +68,38 @@ protected:
 	avatar * v;
 };
 
-class player : public instance{
+class controller{
+public:
+	const char * inputName[10];//Input names. This is really just for housekeeping.
+	void setKey(int);
+	bool setKey(int, SDL_Event);
+	bool setKey(SDL_Event, int);
+	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
+	virtual void genEvent(bool *&, int *&, bool *&) {}
+	void writeConfig(int);
+	bool readConfig(int);
+protected:
+	void addInput();
+	void cullInput(int);
+	int inputComplexity;
+	keySetting ** input;
+};
+
+class player : public instance, public controller{
 public:
 	player();
 	player(int);
 	~player();
 	virtual character * pick() { return v; }
 
-	const char * inputName[10];//Input names. This is really just for housekeeping.
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
-	void setKey(int);
-	bool setKey(int, SDL_Event);
-	bool setKey(SDL_Event, int);
-	void writeConfig();
-	bool readConfig();
 	virtual void characterSelect(int);
 	virtual void drawHitParticle(int, int, float);
 
 	virtual void land();
 	virtual void enforceGravity(int, int);
 	virtual void drawMeters(int, float);
-	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
-	virtual void genEvent(bool *&, int *&, bool *&) {}
 	virtual void roundInit();
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
@@ -113,13 +123,8 @@ public:
 
 	virtual void init();
 	int wins;
-protected:
-	character * v;
 private:
-	void addInput();
-	void cullInput(int);
-	int inputComplexity;
-	keySetting ** input;
+	character * v;
 };
 
 class demon : public player{
@@ -132,7 +137,7 @@ public:
 	virtual void roundInit();
 	virtual void characterSelect(int);
 	character * pick() { return v; }
-protected:
+private:
 	character * v;
 };
 #endif

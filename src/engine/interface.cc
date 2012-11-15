@@ -177,7 +177,7 @@ void interface::loadMisc()
 	for(int i = 0; i < 2; i++){
 		sprintf(buffer, "resources/menu/P%iSelect%i.png", i+1, selection[i]);
 		cursor[i] = aux::load_texture(buffer);
-		if(!p[i]->readConfig()) initialConfig(i);
+		if(!p[i]->readConfig(i+1)) initialConfig(i);
 	}
 	readMatchupChart();
 	announceRound[0] = Mix_LoadWAV("resources/sound/announcer/Round1.ogg");
@@ -311,7 +311,7 @@ void interface::initialConfig(int ID)
 		glClear(GL_COLOR_BUFFER_BIT);
 		p[ID]->setKey(1 << i);
 	}
-	p[ID]->writeConfig();
+	p[ID]->writeConfig(ID+1);
 }
 
 /*This functions sets things up for a new match. Initializes some things and draws the background*/

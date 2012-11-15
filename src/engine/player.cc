@@ -112,7 +112,7 @@ void player::roundInit()
 	updateRects();
 }
 
-bool player::readConfig()
+bool controller::readConfig(int ID)
 {
 	char fname[30];
 	sprintf(fname, ".config/p%i.conf", ID);
@@ -169,7 +169,7 @@ keySetting::keySetting()
 	effect.i = 0;
 }
 
-void player::addInput()
+void controller::addInput()
 {
 	keySetting ** temp;
 	int i;
@@ -182,7 +182,7 @@ void player::addInput()
 	inputComplexity++;
 }
 
-void player::cullInput(int q)
+void controller::cullInput(int q)
 {
 	if(input[q] != NULL) delete input[q];
 	for(int i = q; i < inputComplexity - 1; i++){
@@ -192,7 +192,7 @@ void player::cullInput(int q)
 }
 
 /*This function wraps around the normal setKey function, handling input by itself*/
-void player::setKey(int effect) 
+void controller::setKey(int effect) 
 {
 	SDL_Event temp;
 	bool configFlag = 0;
@@ -206,7 +206,7 @@ void player::setKey(int effect)
 }
 
 /*This function will only set buttons to the existing stick*/
-bool player::setKey(SDL_Event temp, int effect)
+bool controller::setKey(SDL_Event temp, int effect)
 {
 	int type = -10, controller = -10;
 	for(int i = 0; i < inputComplexity; i++){
@@ -234,7 +234,7 @@ bool player::setKey(SDL_Event temp, int effect)
 }
 
 /*This function takes an event and a desired effect and maps them in the keysetting array*/
-bool player::setKey(int effect, SDL_Event temp)
+bool controller::setKey(int effect, SDL_Event temp)
 {
 	int workingIndex = -1;
 	switch (temp.type){
@@ -300,7 +300,7 @@ bool player::setKey(int effect, SDL_Event temp)
 	} else return 0;
 }
 
-void player::writeConfig()
+void controller::writeConfig(int ID)
 {
 	char fname[30];
 	sprintf(fname, ".config/p%i.conf", ID);
@@ -719,7 +719,7 @@ void instance::removeVector(int n)
 	momentumComplexity--;
 }
 
-void player::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
+void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
 {
 	int value = -1;
 	bool pos;
