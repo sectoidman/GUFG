@@ -528,7 +528,7 @@ void action::drawBoxen(int frame, int x, int y){
 	glFlush();
 }
 
-bool interface::screenInit(int w, int h)
+bool gameInstance::screenInit(int w, int h)
 {
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;

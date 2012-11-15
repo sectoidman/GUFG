@@ -19,6 +19,8 @@ public:
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
 	virtual void loadMisc();
+	bool screenInit();
+	bool screenInit(int, int);
 
 //Input layer stuff. Players, inputs, etc.
 	player * p[2];
@@ -27,6 +29,9 @@ public:
 	bool * negEdge[2];
 
 //Meta-interface stuff. Gameover state, screen size, etc.
+	SDL_Surface *screen;
+	int screenHeight, screenWidth, floor, wall;
+	int freeze;
 	bool gameover;
 	bool fullscreen;
 	float scalingFactor, sf;
@@ -58,8 +63,6 @@ public:
 	void cleanup();
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
-	bool screenInit();
-	bool screenInit(int, int);
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();
@@ -87,7 +90,6 @@ public:
 	int menu[2];
 	int configMenu[2];
 	int rMenu;
-	SDL_Surface *screen;
 	SDL_Rect bg;
 	SDL_Rect prox;
 	bool boxen:1;
@@ -128,8 +130,5 @@ public:
 	bool roundEnd:1;
 	int endTimer;
 	replay * currentMatch;
-private:
-	int screenHeight, screenWidth, floor, wall;
-	int freeze;
 };
 #endif

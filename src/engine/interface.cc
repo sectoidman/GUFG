@@ -238,7 +238,7 @@ void interface::writeMatchupChart()
 }
 
 /*Initialize SDL and openGL, creating a window, among other things*/
-bool interface::screenInit()
+bool gameInstance::screenInit()
 {
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
