@@ -220,10 +220,10 @@ void avatar::sortMove(action * m, char* buffer)
 	int pattern;
 	int q;
 	actionTrie * t = NULL;
-	token = strtok(buffer, " \t=>-&?@%$_!\n");
+	token = strtok(buffer, " \t=~>-&?@%$_!\n");
 	while (token){
 		token = NULL;
-		token = strtok(NULL, " \t=>-&?@%$_!\n");
+		token = strtok(NULL, " \t=~>-&?@%$_!\n");
 		if(token) {
 			switch (token[0]){
 			case 'h':
@@ -369,7 +369,7 @@ void avatar::processMove(action * m)
 {
 	char* temp = NULL;
 	action* t = NULL;
-	for(int i = 0; i < 6; i++){
+	for(int i = 0; i < 7; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
 				temp = m->request(i, j);
@@ -401,7 +401,7 @@ action * avatar::createMove(char * fullName)
 	char type[2] = {fullName[0], fullName[1]};
 	char actionName[151];
 
-	token = strtok(fullName, " \t=>-&?@%$_!\n");
+	token = strtok(fullName, " \t=~>-&?@%$_!\n");
 	sprintf(actionName, "%s/%s", name, token);
 
 	action * m;
