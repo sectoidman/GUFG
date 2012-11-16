@@ -15,6 +15,7 @@ void cockfight::matchInit()
 
 void cockfight::resolve()
 {
+	srand ( time (NULL));
 	if(rand() % 2) p[0]->HP--;
 	else p[1]->HP--;
 	checkWin();
@@ -32,5 +33,8 @@ void cockfight::checkWin()
 
 void cockfight::draw()
 {
+	srand (time (NULL));
+	if(rand() % 2) printf("Squirtle used tackle\nIt's super effective\n");
+	else printf("Butterfree used sleep powder\nIt's not very effective\n");
 	if(winner > -1) printf("Player %i wins!\n", winner + 1);
 }

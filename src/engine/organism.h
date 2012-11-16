@@ -1,5 +1,5 @@
-#ifndef CREATURE_INCLUDED
-#define CREATURE_INCLUDED
+#ifndef ORGANISM
+#define ORGANISM
 class organism{
 public:
 	char * name;
