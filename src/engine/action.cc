@@ -248,7 +248,6 @@ bool action::setParameter(char * buffer)
 		holdFrame = atoi(token);
 		token = strtok(NULL, "\t:- \n");
 		holdCheck = 0;
-		printf("%s\n", token);
 		for(unsigned int i = 0; i < strlen(token); i++){
 			switch(token[i]){
 			case 'A':
@@ -256,7 +255,6 @@ bool action::setParameter(char * buffer)
 			case 'C':
 			case 'D':
 			case 'E':
-				printf("%c\n", token[i]);
 				holdCheck += 1 << (token[i] - 'A');
 				break;
 			}

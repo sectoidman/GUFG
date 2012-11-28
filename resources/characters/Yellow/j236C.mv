@@ -1,5 +1,5 @@
 Name: 236C
-Buffer: 30 : 15
+Buffer: 30 : 5
 Hits: 1
 Frames: 36 : 13 : 6 : 17
 Check: 129
@@ -12,6 +12,7 @@ Blowback: 0
 Lift: 30
 +Lift: -50
 Landing: -j236CLR
+OnHold: 11 : C : -j236Chold
 Gain: 0 : 10
 Cost: 0
 Blocks: 0

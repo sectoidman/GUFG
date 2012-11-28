@@ -87,17 +87,14 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 		else neutralize(cMove, aerial, meter);
 	}
 	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag, aerial);
-
 	if(t == NULL){
 		if(cMove->window(f)){
 			if(cMove->attempt->check(p, meter)){
-				cMove->attempt->execute(cMove, meter, f, cFlag, hFlag);
 				t = cMove->attempt;
 			}
 		}
 		else if(cMove->holdFrame == f){
 			if(cMove->onHold->activate(down, up, cMove->holdCheck, 0, 0, meter, p)){
-				cMove->onHold->execute(cMove, meter, f, cFlag, hFlag);
 				t = cMove->onHold;
 			}
 		}
@@ -126,7 +123,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 			if(!dryrun) t->execute(cMove, meter, f, cFlag, hFlag);
 			cMove = t;
 		}
-	} 
+	}
 }
 
 action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
