@@ -702,13 +702,13 @@ void action::step(int *& meter, int &f)
 	if(modifier && basis){
 		currentFrame++;
 		if(basis && currentFrame >= basis->frames){
-		if(basis->next) basis = basis->next;
-		else basis = NULL;
-		currentFrame = 0;
-		connectFlag = 0;
-		hitFlag = 0;
+			if(basis->next) basis = basis->next;
+			else basis = NULL;
+			currentFrame = 0;
+			connectFlag = 0;
+			hitFlag = 0;
+		}
 	}
-}
 }
 
 int action::calcCurrentHit(int frame)
