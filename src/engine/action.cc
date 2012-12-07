@@ -248,7 +248,6 @@ bool action::setParameter(char * buffer)
 		holdFrame = atoi(token);
 		token = strtok(NULL, "\t:- \n");
 		holdCheck = 0;
-		printf("%s\n", token);
 		for(unsigned int i = 0; i < strlen(token); i++){
 			switch(token[i]){
 			case 'A':
@@ -256,7 +255,6 @@ bool action::setParameter(char * buffer)
 			case 'C':
 			case 'D':
 			case 'E':
-				printf("%c\n", token[i]);
 				holdCheck += 1 << (token[i] - 'A');
 				break;
 			}
@@ -704,13 +702,13 @@ void action::step(int *& meter, int &f)
 	if(modifier && basis){
 		currentFrame++;
 		if(basis && currentFrame >= basis->frames){
-		if(basis->next) basis = basis->next;
-		else basis = NULL;
-		currentFrame = 0;
-		connectFlag = 0;
-		hitFlag = 0;
+			if(basis->next) basis = basis->next;
+			else basis = NULL;
+			currentFrame = 0;
+			connectFlag = 0;
+			hitFlag = 0;
+		}
 	}
-}
 }
 
 int action::calcCurrentHit(int frame)

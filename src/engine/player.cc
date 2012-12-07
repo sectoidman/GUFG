@@ -504,7 +504,7 @@ void player::checkCorners(int floor, int left, int right)
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
 		}
-		if(collision.x <= 50){ 
+		if(collision.x <= 50){
 			if(facing == 1) lCorner = 1;
 			if (stick) {
 				if(cMove == pick()->untech){
@@ -514,14 +514,14 @@ void player::checkCorners(int floor, int left, int right)
 				} else stick = 0;
 			}
 		}
-		if(collision.x < left) 
+		if(collision.x < left)
 			posX = left + lOffset;
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(elasticX){
 			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
-		} 
+		}
 		if(collision.x + collision.w >= 3150){ 
 			if(facing == -1) rCorner = 1;
 			if (stick) {

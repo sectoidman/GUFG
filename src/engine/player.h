@@ -104,10 +104,10 @@ public:
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
 	virtual bool CHState();
-	bool elasticX:1;
-	bool elasticY:1;
-	bool slide:1;
-	bool stick:1;
+	bool elasticX;
+	bool elasticY;
+	bool slide;
+	bool stick;
 	int hover;
 
 	bool rCorner, lCorner;

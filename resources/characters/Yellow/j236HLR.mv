@@ -1,13 +1,25 @@
-Name: j214B Landing
+Name: NS
 Buffer: 0 : 0
 Hits: 0
-Frames: 9 : 9
+Frames: 4 : 4
 Check: 1
 State: 256
 Gain: 0
 Cost: 0
 Blocks: 0
 Properties: c
+#0 
+$C	10 0 110 250
+$R	10 0 110 250
+$D	0 0 0 0
+#0 
+$C	10 0 110 257
+$R	10 0 110 257
+$D	0 0 0 0
+#0 
+$C	10 0 110 264
+$R	10 0 110 264
+$D	0 0 0 0
 #0 
 $C	10 0 110 270
 $R	10 0 110 270

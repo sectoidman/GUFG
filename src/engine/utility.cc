@@ -25,6 +25,10 @@ looping::looping(const char * n)
 void looping::step(int *& meter, int &f)
 {
 	action::step(meter, f);
+	if(f != 0){ 
+		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
+		else meter[1] = 300;
+	}
 	if(f >= frames) f = 0;
 }
 
