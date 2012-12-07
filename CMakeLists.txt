@@ -57,19 +57,9 @@ add_executable (gufg
 		src/game.cc
 		${SOURCES})
 
-add_executable (pkbtl
-		EXCLUDE_FROM_ALL
-		src/pkbtl.cc
-		${SOURCES})
-
 add_executable (replay
 		EXCLUDE_FROM_ALL
 		src/replay.cc
-		${SOURCES})
-
-add_executable (rand
-		EXCLUDE_FROM_ALL
-		src/rand.cc
 		${SOURCES})
 
 add_executable (bmpout
