@@ -118,7 +118,8 @@ public:
 	virtual void checkBlocking();
 	virtual void checkFacing(player*);
 	virtual int dragBG(int, int);
-	virtual void checkCorners(int, int, int);
+	virtual void checkCorners(int, int);
+	virtual void enforceFloor(int);
 	virtual void getThrown(action*, int, int);
 
 	virtual void init();

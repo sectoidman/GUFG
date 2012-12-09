@@ -531,8 +531,10 @@ void interface::resolve()
 			 */
 		}
 		dragBG(dx);
-		p[0]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
-		p[1]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+		for(int i = 0; i < 2; i++){
+			p[i]->enforceFloor(floor);
+			p[i]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
+		}
 
 		unitCollision();
 
@@ -948,11 +950,9 @@ void interface::unitCollision()
 			left->posX = totalMiddle - left->collision.w + lLOffset;
 		}
 		if(left->collision.x < 50) {
-//			left->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			left->updateRects();
 			right->posX = left->collision.x + left->collision.w + rLOffset;
 		} else if (right->collision.x + right->collision.w > 3150) {
-//			right->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
 			right->updateRects();
 			left->posX = right->collision.x + lROffset;
 		}
@@ -1044,7 +1044,8 @@ void interface::resolveHits()
 			}
 			combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
-			p[(i+1)%2]->checkCorners(floor, bg.x + wall, bg.x + screenWidth - wall);
+			p[(i+1)%2]->enforceFloor(floor);
+			p[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
 			damage[(i+1)%2] += h - p[i]->meter[0];
 		}

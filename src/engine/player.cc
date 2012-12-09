@@ -458,14 +458,8 @@ void player::checkBlocking()
 	updateRects();
 }
 
-void player::checkCorners(int floor, int left, int right)
+void player::enforceFloor(int floor)
 {
-	/*Offset variables. I could do these calculations on the fly, but it's easier this way.
-	Essentially, this represents the offset between the sprite and the collision box, since
-	even though we're *checking* collision, we're still *moving* spr*/
-	int lOffset = posX - collision.x;
-	int rOffset = posX - (collision.x + collision.w);
-
 	/*Floor, or "Bottom corner"*/
 
 	if (collision.y < floor){
@@ -493,11 +487,20 @@ void player::checkCorners(int floor, int left, int right)
 		posY = floor - cMove->collision[currentFrame].y;
 	}
 	updateRects();
+}
 
+void player::checkCorners(int left, int right)
+{
 	/*Walls, or "Left and Right" corners
-
 	This not only keeps the characters within the stage boundaries, but flags them as "in the corner"
 	so we can specialcase collision checks for when one player is in the corner.*/
+
+	/*Offset variables. I could do these calculations on the fly, but it's easier this way.
+	Essentially, this represents the offset between the sprite and the collision box, since
+	even though we're *checking* collision, we're still *moving* spr*/
+	int lOffset = posX - collision.x;
+	int rOffset = posX - (collision.x + collision.w);
+
 
 	if(collision.x <= left){
 		if(elasticX){
