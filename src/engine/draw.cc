@@ -270,16 +270,16 @@ void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 void instance::drawBoxen(int x, int y, float scalingFactor)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(-collision.y - y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - y)*scalingFactor);
+	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(-collision.y - collision.h + 1800 + y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(-collision.y + 1800 + y)*scalingFactor);
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y - y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h - y)*scalingFactor);
+		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y + 1800 + y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h + 1800 + y)*scalingFactor);
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(-hitbox[i].y - y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].y - hitbox[i].h - y)*scalingFactor);
+		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(-hitbox[i].y + 1800 + y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].y - hitbox[i].h + 1800 + y)*scalingFactor);
 	}
 	glFlush();
 	glDisable( GL_TEXTURE_2D );
@@ -308,7 +308,7 @@ void instance::draw(int x, int y, float scalingFactor)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(cMove, facing, realPosX - x, -realPosY - y, currentFrame, scalingFactor);
+	pick()->draw(cMove, facing, realPosX - x, -realPosY + 1800 + y, currentFrame, scalingFactor);
 }
 
 void player::drawHitParticle(int x, int y, float scalingFactor)

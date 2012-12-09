@@ -846,9 +846,16 @@ void interface::keyConfig()
 
 void interface::dragBG(int deltaX)
 {
+	int dy = 900;
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > 1600) bg.x = 1600;
+	for(int i = 0; i < 2; i++){
+		if(dy < p[i]->posY + p[i]->collision.h){
+			dy = p[i]->posY + p[i]->collision.h;
+		}
+	}
+	bg.y = dy - bg.h;
 }
 
 void interface::rematchMenu()
