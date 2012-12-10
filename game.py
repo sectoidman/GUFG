@@ -1,7 +1,7 @@
 
 """
 Usage:
-  game.py [-hmr] [-w | -f]
+  game.py [-h] [-m <ROUNDS>] [-r <RATE>] [-w | -f]
 
 -h --help   Show this screen
 -m ROUNDS   Set the number of rounds
