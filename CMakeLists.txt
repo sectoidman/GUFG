@@ -2,7 +2,6 @@
 #
 # CMake build file, cobbled together from past experience and the SDL wiki
 #And modified by me, probably to the point of not working right.
-
 cmake_minimum_required(VERSION 2.6)
 
 set (CMAKE_MODULE_PATH 
@@ -20,13 +19,17 @@ aux_source_directory (	src/characters CHARACTERS)
 
 set (SOURCES	${ENGINE}
 		${CHARACTERS}) 
-set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-overloaded-virtual -Wno-format -Wno-format-contains-nul -std=c++11 -pedantic")
+              set (CMAKE_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -O2 -g -Wall -Wctor-dtor-privacy -Wno-overloaded-virtual -Wno-format -Wno-format-contains-nul -std=c++11 -pedantic -fPIC")
 set (QT_USE_QTOPENGL TRUE)
 
 find_package (SDL REQUIRED)
 find_package (SDL_image REQUIRED)
 find_package (SDL_mixer REQUIRED)
 find_package (OpenGL REQUIRED)
+find_package (SWIG REQUIRED)
+INCLUDE(${SWIG_USE_FILE})
+find_package (PythonLibs)
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 link_libraries (	
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
@@ -34,6 +37,22 @@ link_libraries (
 	${OPENGL_LIBRARIES}
 	SDLmain # not included in SDL_LIBRARY variable
 )
+
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(CMAKE_SWIG_FLAGS "")
+SET(SWIG_HEADERS
+  src/engine/interface.i
+  )
+SET(SWIG_SOURCES
+  ${ENGINE}
+  ${CHARACTERS}
+  )
+SET_SOURCE_FILES_PROPERTIES(${SWIG_HEADERS} PROPERTIES CPLUSPLUS ON)
+#SET_SOURCE_FILES_PROPERTIES(${SWIG_HEADERS} PROPERTIES SWIG_FLAGS "-includeall")
+SWIG_ADD_MODULE(interface python ${SWIG_HEADERS} ${SWIG_SOURCES})
+SWIG_LINK_LIBRARIES(interface ${PYTHON_LIBRARIES})
 
 if (WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32 -static-libstdc++ -static-libgcc")
