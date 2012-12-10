@@ -15,21 +15,8 @@ from time import time
 from docopt import docopt
 from interface import interface
 
-class frame:
-  def __init__(self, rate):
-    self.rate = rate
-    self.width = 1.0 / rate
-    self.count = 0
-    self.time = 0.0
-  def __call__(self):
-    self.count += 1
-    self.time = time() + self.width
-    while time() <= self.time:
-      pass
-
 class game:
   def __init__(self, rate, rounds):
-    self.timer = frame(rate)
     self.interface = interface()
     assert self.interface.screenInit()
     self.interface.createPlayers()
@@ -37,21 +24,23 @@ class game:
     self.interface.startGame()
     if rounds > 0 and rounds < 10:
       self.interface.numRounds = rounds
+    self.frameWidth = 1.0 / rate
   def step(self):
-      self.interface.readInput()
-      self.interface.resolve()
-      self.interface.draw()
-      self.interface.cleanup()
-  def loop(self, count=float('infinity')):
+    endTime = time() + self.frameWidth
+    self.interface.readInput()
+    self.interface.resolve()
+    self.interface.draw()
+    self.interface.cleanup()
+    while time() <= endTime:
+      pass
+  def loop(self):
    """
     Loops forever or until count is exceeded.
     Each step of the loop performs all relevant game actions
     for one frame.
    """
    while not self.interface.gameover:
-     while self.timer.count <= count:
-      self.step()
-      self.timer()
+    self.step()
 
 if __name__ == '__main__':
   arguments = docopt(__doc__)
