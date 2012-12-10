@@ -184,10 +184,10 @@ void interface::drawGame()
 	glEnable( GL_TEXTURE_2D );
 	for(int i = 0; i < thingComplexity; i++){
 		if(things[i]->spriteCheck())
-			things[i]->draw(bg.x, bg.y, scalingFactor);
+			things[i]->draw(bg.h, bg.x, bg.y, scalingFactor);
 		glDisable(GL_TEXTURE_2D);
 		if(!things[i]->spriteCheck() || boxen)
-			things[i]->drawBoxen(bg.x, bg.y, scalingFactor);
+			things[i]->drawBoxen(bg.h, bg.x, bg.y, scalingFactor);
 		if(i < 2)
 			p[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -267,25 +267,25 @@ void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 	glRectf((GLfloat)(m.x)*scalingFactor, (GLfloat)(m.y)*scalingFactor, (GLfloat)(m.x + m.w)*scalingFactor, (GLfloat)(m.y + m.h)*scalingFactor);
 }
 
-void instance::drawBoxen(int x, int y, float scalingFactor)
+void instance::drawBoxen(int stageHeight, int x, int y, float scalingFactor)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(-collision.y - collision.h + 1800 + y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(-collision.y + 1800 + y)*scalingFactor);
+	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(-collision.y - collision.h + stageHeight + y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(-collision.y + stageHeight + y)*scalingFactor);
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y + 1800 + y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h + 1800 + y)*scalingFactor);
+		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y + stageHeight + y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h + stageHeight + y)*scalingFactor);
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(-hitbox[i].y + 1800 + y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].y - hitbox[i].h + 1800 + y)*scalingFactor);
+		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(-hitbox[i].y + stageHeight + y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].y - hitbox[i].h + stageHeight + y)*scalingFactor);
 	}
 	glFlush();
 	glDisable( GL_TEXTURE_2D );
 }
 
-void instance::draw(int x, int y, float scalingFactor)
+void instance::draw(int stageHeight, int x, int y, float scalingFactor)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
@@ -308,7 +308,7 @@ void instance::draw(int x, int y, float scalingFactor)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(cMove, facing, realPosX - x, -realPosY + 1800 + y, currentFrame, scalingFactor);
+	pick()->draw(cMove, facing, realPosX - x, -realPosY + stageHeight + y, currentFrame, scalingFactor);
 }
 
 void player::drawHitParticle(int x, int y, float scalingFactor)
