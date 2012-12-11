@@ -37,7 +37,6 @@ public:
 	float scalingFactor, sf;
 	bool initd:1;
 	GLuint glyph[91];
-	GLuint background;
 };
 
 class interface : public gameInstance{
@@ -106,8 +105,10 @@ public:
 	int grav;	//Gravitational constant. 
 	instance ** things;
 	int thingComplexity;
-	Mix_Music *menuMusic;
+
+	GLuint background;
 	Mix_Music *matchMusic;
+	Mix_Music *menuMusic;
 	Mix_Chunk **announceWinner;
 	Mix_Chunk *announceRound[3];
 	Mix_Chunk *announceDraw[2];

@@ -507,7 +507,8 @@ void interface::resolve()
 
 		for(int i = 0; i < thingComplexity; i++){
 			if(!things[i]->freeze){
-				if(things[i]->cMove->stop != 3){ 
+				if(things[i]->cMove->stop & 4);
+				else { 
 					things[i]->pullVolition();
 					things[i]->combineDelta();
 					things[i]->enforceGravity(grav, floor);

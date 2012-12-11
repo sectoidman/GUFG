@@ -17,7 +17,7 @@ Cost: 0
 Blockable: 1
 Blocks: 0
 Counterhit: >
-Properties: ^Sc
+Properties: ^sSc
 #0 
 $C	10 0 110 323
 $R	10 0 110 323

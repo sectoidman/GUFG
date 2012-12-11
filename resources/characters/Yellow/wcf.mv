@@ -14,7 +14,7 @@ Proximity: 241 : 0
 Position: 240 : 0
 Cost: 0
 Blocks: 0
-Properties: Sg : ^
+Properties: sSg : ^
 #0 
 $C	10 0 110 330
 $R	0 300 0 0

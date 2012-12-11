@@ -664,9 +664,11 @@ void instance::pullVolition()
 			top = (short)momentum[i].h;
 		}
 	if(cMove->stop){
-		if(currentFrame == 0){ 
-			deltaX = 0; deltaY = 0;
-			if(cMove->stop == 2)
+		if(currentFrame == 0){
+			if(cMove->stop & 1){ 
+				deltaX = 0; deltaY = 0;
+			}
+			if(cMove->stop & 2)
 				momentumComplexity = 0;
 		}
 	}
