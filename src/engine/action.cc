@@ -495,13 +495,13 @@ void action::parseProperties(char * buffer, bool counter)
 			else stats[ch].stick = 1;
 			break;
 		case 's':
-			if(!counter) stop = 1;
+			if(!counter) stop += 1;
 			break;
 		case 'S': 
-			if(!counter) stop = 2;
+			if(!counter) stop += 2;
 			break;
 		case '*':
-			if(!counter) stop = 3;
+			if(!counter) stop += 4;
 			break;
 		case 'c':
 			if(!counter) crouch = 1;

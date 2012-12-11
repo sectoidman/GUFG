@@ -17,7 +17,7 @@ Gain: 1 : 6
 Cost: 0
 Blockable: 7
 Blocks: 0
-Properties: Sv
+Properties: sSv
 #0 
 $C	10 0 110 330
 $R	0 300 0 0
