@@ -29,9 +29,9 @@ instance::instance()
 instance::instance(avatar * f)
 {
 	v = f;
-	init();
 	meter = pick()->generateMeter();
 	pick()->init(meter);
+	init();
 }
 
 void instance::init()
