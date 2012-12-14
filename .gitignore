@@ -22,7 +22,6 @@ CMakeFiles
 dump
 doc/*
 Doxyfile
-_interface.so
-interface.py
-interface.pyc
+_engine.so
+engine.py
 src/engine/*wrap.cxx
