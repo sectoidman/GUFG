@@ -2,6 +2,7 @@ gufg
 bmpout
 rand
 replay
+*.pyc
 *.o
 *.a
 *.7z
