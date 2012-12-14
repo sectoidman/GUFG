@@ -1,4 +1,4 @@
-%module interface
+%module engine
 
 %{
 #include "interface.h"
