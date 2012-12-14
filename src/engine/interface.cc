@@ -175,8 +175,6 @@ void interface::loadMisc()
 		announceWinner[i] = Mix_LoadWAV(buffer);
 	}
 	for(int i = 0; i < 2; i++){
-		sprintf(buffer, "resources/menu/P%iSelect%i.png", i+1, selection[i]);
-		cursor[i] = aux::load_texture(buffer);
 		if(!p[i]->readConfig(i+1)) initialConfig(i);
 	}
 	readMatchupChart();
@@ -742,22 +740,17 @@ void interface::cSelectMenu()
 		scalingFactor = sf;
 		assert(screenInit() != false);
 	}
-	char base[2][40];
 
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
 			if(sAxis[i][2] && !select[i] && counter[i] == 0){
 				selection[i]--;
 				if(selection[i] < 1) selection[i] = numChars;
-				sprintf(base[i], "resources/menu/P%iSelect%i.png", i+1, selection[i]);
-				cursor[i] = aux::load_texture(base[i]);
 				counter[i] = 10;
 			}
 			if(sAxis[i][3] && !select[i] && counter[i] == 0){
 				selection[i]++;
 				if(selection[i] > numChars) selection[i] = 1;
-				sprintf(base[i], "resources/menu/P%iSelect%i.png", i+1, selection[i]);
-				cursor[i] = aux::load_texture(base[i]);
 				counter[i] = 10;
 			}
 			for(int j = 0; j < 5; j++){

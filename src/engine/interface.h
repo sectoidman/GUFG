@@ -122,7 +122,6 @@ public:
 //Variables for cSelectMenu 
 	int numChars;
 	GLuint selectScreen; 
-	GLuint cursor [2];
 	SDL_Rect wheel;
 	int counter[2];
 
