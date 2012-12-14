@@ -4,6 +4,7 @@
  *For detailed license information, see the file COPYING in this directory
  */
 
+#define _USE_MATH_DEFINES
 #include "interface.h"
 #include <math.h>
 #include <iomanip>
@@ -21,6 +22,8 @@ void interface::draw()
 
 void interface::drawCSelect()
 {
+	char buffer[20];
+	int x, y;
 	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -45,20 +48,11 @@ void interface::drawCSelect()
 
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
-			glBindTexture(GL_TEXTURE_2D, cursor[i]);
-			glBegin(GL_QUADS);
-				glTexCoord2i(0, 0);
-				glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(1, 0);
-				glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(1, 1);
-				glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-
-				glTexCoord2i(0, 1);
-				glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
-			glEnd();
+			sprintf(buffer, "P%i", i+1);
+			x = ((float)screenWidth/2.0 + ((float)screenHeight/4.0) * cos(M_PI*(float)selection[i])) - 100.0;
+			y = ((float)screenHeight/2.0 + ((float)screenHeight/4.0) * sin(M_PI*(float)selection[i]));
+			glColor4f(0.0, 0.3+i*0.3, 0.3+(1-i)*0.3, 1.0-select[i]*0.5);
+			drawGlyph(buffer, x, 200, y, 50, i*2);
 		}
 	}
 
