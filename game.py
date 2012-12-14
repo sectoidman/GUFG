@@ -13,7 +13,7 @@ Usage:
 
 from time import time
 from docopt import docopt
-from engine import interface
+from interface import interface
 
 class game:
   def __init__(self, rate, rounds):
