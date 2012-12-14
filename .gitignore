@@ -26,3 +26,4 @@ _engine.so
 engine.py
 characters.py
 src/engine/*wrap.cxx
+src/*wrap.cxx
