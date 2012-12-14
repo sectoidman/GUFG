@@ -49,8 +49,8 @@ void interface::drawCSelect()
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
 			sprintf(buffer, "P%i", i+1);
-			x = ((float)screenWidth/2.0 + ((float)screenHeight/4.0) * cos(M_PI*(float)selection[i])) - 100.0;
-			y = ((float)screenHeight/2.0 + ((float)screenHeight/4.0) * sin(M_PI*(float)selection[i]));
+			x = ((float)screenWidth/2.0 + ((float)screenHeight/4.0) * cos(((M_PI*2.0)/(float)numChars)*(float)selection[i]) - 100.0);
+			y = ((float)screenHeight/2.0 + ((float)screenHeight/4.0) * sin(((M_PI*2.0)/(float)numChars)*(float)selection[i]));
 			glColor4f(0.0, 0.3+i*0.3, 0.3+(1-i)*0.3, 1.0-select[i]*0.5);
 			drawGlyph(buffer, x, 200, y, 50, i*2);
 		}
