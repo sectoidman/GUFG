@@ -22,7 +22,7 @@ CMakeFiles
 dump
 doc/*
 Doxyfile
-_engine.so
+_*.so
 engine.py
 characters.py
 src/engine/*wrap.cxx
