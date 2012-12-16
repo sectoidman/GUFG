@@ -1010,6 +1010,7 @@ void interface::resolveHits()
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
 								hitBy[h] = i;
+								break;
 							}
 						}
 					}

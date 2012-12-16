@@ -602,7 +602,7 @@ void character::resetAirOptions(int *& meter)
 	meter[3] = 1;
 }
 
-bool avatar::acceptTarget(action * c, int f)
+int avatar::acceptTarget(action * c, int f)
 {
 	return 1;
 }
