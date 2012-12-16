@@ -84,6 +84,7 @@ public:
 	projectile() {}
 	virtual void build(const char*, const char*);
 	virtual bool acceptTarget(action*, int);
+	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
 
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int, int);

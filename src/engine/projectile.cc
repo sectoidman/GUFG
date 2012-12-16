@@ -72,6 +72,15 @@ void summon::zero()
 	action::zero();
 }
 
+int projectile::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
+{
+	if(s.killsProjectile){ 
+		die->execute(cMove, meter, frame, connectFlag, hitFlag);
+		cMove = die;
+		return 1;
+	} else return 0;
+}
+
 bool projectile::death(action *& cMove, int f, int counter)
 {
 	if(cMove == die){

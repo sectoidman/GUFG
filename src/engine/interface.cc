@@ -1028,7 +1028,7 @@ void interface::resolveHits()
 			h = p[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[hitBy[i]], s[hitBy[i]], prox);
 			if(i < 2 && hitBy[i] < 2){
-				if(p[i]->particleType == -2){ 
+				if(p[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
 					ths.ghostHit = true;
