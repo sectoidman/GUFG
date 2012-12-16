@@ -21,10 +21,8 @@ void projectile::build(const char* directory, const char* file)
 
 int projectile::acceptTarget(action * c, int f)
 {
-	if(c->stats[c->calcCurrentHit(f)].hitsProjectile || c->stats[c->calcCurrentHit(f)].killsProjectile) {
-		if(c->stats[c->calcCurrentHit(f)].hitsProjectile) return 1;
-		else return 2;
-	}
+	if(c->stats[c->calcCurrentHit(f)].hitsProjectile || c->stats[c->calcCurrentHit(f)].killsProjectile)
+		return 1;
 	else return 0;
 }
 
