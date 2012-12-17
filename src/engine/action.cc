@@ -521,6 +521,12 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'p':
 			if(!counter) stats[ch].hitsProjectile = 1;
 			break;
+		case 'r':
+			if(!counter) stats[ch].turnsProjectile = 1;
+			break;
+		case 'k':
+			if(!counter) stats[ch].killsProjectile = 1;
+			break;
 		case 'd':
 			if(!counter) dies = 1;
 			break;
@@ -660,6 +666,9 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.stick = stats[c].stick;
 			s.ghostHit = stats[c].ghostHit;
 		}
+		s.hitsProjectile = stats[c].hitsProjectile;
+		s.turnsProjectile = stats[c].turnsProjectile;
+		s.killsProjectile = stats[c].killsProjectile;
 		s.blockMask.i = stats[c].blockMask.i;
 	}
 }

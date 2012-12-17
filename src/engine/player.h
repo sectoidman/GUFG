@@ -59,6 +59,7 @@ public:
 	virtual void connect(int, hStat&);
 	virtual void pushInput(bool*);
 	virtual int passSignal(int);
+	void flip();
 	bool aerial;
 	int * meter;
 	int particleType;

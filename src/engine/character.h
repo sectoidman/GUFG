@@ -30,10 +30,11 @@ public:
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, action *&, action *&, hStat&, int&, int, int*&);
 	virtual void step(action *&, int&, int&, int*&);
-	virtual bool acceptTarget(action*, int);
+	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
 	virtual void tick(int *&) {}
 	virtual void neutralize(action *&, bool, int*&);
+	virtual bool turn(int&) { return 0; }
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	actionTrie * head;	//Trie for ground actions
 	int lifespan;
@@ -83,7 +84,9 @@ public:
 	projectile(const char* directory, const char* file);
 	projectile() {}
 	virtual void build(const char*, const char*);
-	virtual bool acceptTarget(action*, int);
+	virtual int acceptTarget(action*, int);
+	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
+	virtual bool turn(int&);
 
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int, int);
