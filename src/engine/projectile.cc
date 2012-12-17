@@ -73,6 +73,12 @@ void summon::zero()
 	action::zero();
 }
 
+bool projectile::turn(int &ID)
+{
+	ID = ID % 2 + 1;
+	return 1;
+}
+
 int projectile::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
 {
 	if(s.killsProjectile){ 

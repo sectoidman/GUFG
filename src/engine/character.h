@@ -34,6 +34,7 @@ public:
 	virtual instance * spawn(action*);
 	virtual void tick(int *&) {}
 	virtual void neutralize(action *&, bool, int*&);
+	virtual bool turn(int&) { return 0; }
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	actionTrie * head;	//Trie for ground actions
 	int lifespan;
@@ -85,6 +86,7 @@ public:
 	virtual void build(const char*, const char*);
 	virtual int acceptTarget(action*, int);
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
+	virtual bool turn(int&);
 
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int, int);

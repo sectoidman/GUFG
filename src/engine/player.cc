@@ -831,6 +831,9 @@ void instance::connect(int combo, hStat & s)
 
 int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 {
+	if(s.turnsProjectile){
+		if(turn(ID)) flip();
+	}
 	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);
 }
 
