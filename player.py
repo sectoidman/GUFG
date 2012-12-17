@@ -4,7 +4,8 @@ class Input:
   sAxis = [bool()] * 4
   posEdge = [int()] * 6
   negEdge = [bool()] * 6
-
+  def __init__(self):
+    pass
   def get(self):
     """
       Accept input into input containers for anything that wants it.
@@ -13,15 +14,16 @@ class Input:
       for t, e in events.items():
         if t == i.type:
           e(self)
-
-
-class Player(Input):
-  events = {\
-      KEYDOWN: self.keydown,
-      KEYUP: self.keyup
-      }
-  counter = 0
   def keydown(self):
     pass
   def keyup(self):
     pass
+
+class Player(Input):
+  def __init__(self):
+    self.events = {\
+      KEYDOWN: self.keydown,
+      KEYUP: self.keyup
+      }
+    self.counter = 0
+
