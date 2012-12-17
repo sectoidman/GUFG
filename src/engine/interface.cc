@@ -1003,7 +1003,6 @@ void interface::resolveHits()
 							switch(things[i]->acceptTarget(things[h])){
 							case 1:
 								connect[i] = 1;
-							case 2:
 								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
 								if(i < 2) push[i] = s[i].push;
 								k = things[h]->regComplexity;
