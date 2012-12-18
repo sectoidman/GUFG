@@ -110,11 +110,11 @@ bool summon::setParameter(char * buffer)
 
 	if(!strcmp("SpawnPosition", token)){
 		token = strtok(NULL, "\t: \n");
-		if(token[0] == t) spawnTrackX = true;
+		if(token[0] == 't') spawnTrackX = true;
 		else spawnPosX = atoi(token);
 
 		token = strtok(NULL, "\t: \n");
-		if(token[0] == t) spawnTrackY = true;
+		if(token[0] == 't') spawnTrackY = true;
 		else spawnPosY = atoi(token);
 		return 1;
 	} else if(!strcmp("SpawnsOn", token)){
