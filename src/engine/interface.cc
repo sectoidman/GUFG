@@ -647,6 +647,7 @@ void interface::resolveSummons()
 			avec->type = tvec->type;
 			avec->length = tvec->length;
 			avec->radius = tvec->radius;
+			avec->effectCode = tvec->effectCode;
 			if(things[i]->facing == 1) avec->posX = things[i]->collision.x + things[i]->collision.w / 2;
 			else avec->posX = things[i]->collision.x + things[i]->collision.w / 2 + things[i]->collision.w % 2;
 			avec->posY = things[i]->collision.y + things[i]->collision.h/2;
