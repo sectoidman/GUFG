@@ -325,6 +325,7 @@ public:
 	int lifespan;
 	bool spawnTrackX:1;
 	bool spawnTrackY:1;
+	bool spawnTrackFloor:1;
 };
 
 class airSummon : virtual public airMove, virtual public summon {

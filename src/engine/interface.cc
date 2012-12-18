@@ -512,7 +512,11 @@ void interface::resolve()
 					things[i]->enforceGravity(grav, floor);
 				}
 				for(int j = 0; j < attractorComplexity; j++){
-					if(globals[j]->ID != things[i]->ID) things[i]->enforceAttractor(globals[j]);
+					if(globals[j]->ID != things[i]->ID){
+						if((i < 2 && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
+ 							things[i]->enforceAttractor(globals[j]);
+						}
+					}
 				}
 			}
 		}
@@ -621,10 +625,12 @@ void interface::resolveSummons()
 				}
 				if(temp->arbitraryPoll(52, things[i]->currentFrame))
 					y = p[(things[i]->ID)%2]->posY;
+				else if(temp->arbitraryPoll(53, things[i]->currentFrame))
+					y = 0;
 				else
 					y = p[(things[i]->ID)-1]->posY;
-				x += temp->arbitraryPoll(53, things[i]->currentFrame)*f;
-				y += temp->arbitraryPoll(54, things[i]->currentFrame);
+				x += temp->arbitraryPoll(54, things[i]->currentFrame)*f;
+				y += temp->arbitraryPoll(55, things[i]->currentFrame);
 				larva->facing = f;
 				larva->setPosition(x, y);
 				addThing(larva);
@@ -641,6 +647,7 @@ void interface::resolveSummons()
 			avec->type = tvec->type;
 			avec->length = tvec->length;
 			avec->radius = tvec->radius;
+			avec->effectCode = tvec->effectCode;
 			if(things[i]->facing == 1) avec->posX = things[i]->collision.x + things[i]->collision.w / 2;
 			else avec->posX = things[i]->collision.x + things[i]->collision.w / 2 + things[i]->collision.w % 2;
 			avec->posY = things[i]->collision.y + things[i]->collision.h/2;
