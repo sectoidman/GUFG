@@ -7,10 +7,15 @@ swig_src = Glob("c++/engine/*.i")
 
 env = Environment(CPPPATH=[distutils.sysconfig.get_python_inc()],
                   SHLIBPREFIX="",
-                  CXXFLAGS="-O2 -g -Wall -Wctor-dtor-privacy \
+                  CXXFLAGS="-emit-llvm -O2 -g -Wall \
                             -Wno-overloaded-virtual -Wno-format\
-                            -Wno-format-contains-nul -std=c++11 -pedantic")
+                            -Wno-format-contains-nul \
+                            -std=c++11 -pedantic")
+env.Replace(CXX='clang')
 
-env.Program('../gufg', ['c++/game.cc'] + engine_src + char_src,
-            LIBS=['SDLmain', 'SDL', 'SDL_mixer', 'SDL_image', 'GL'],
-            LIBPATH=['.', '/usr/lib'])
+linker = Builder(action = 'llvm-ld $SOURCE -b $TARGET')
+env.Append(BUILDERS = {'Linker':linker})
+
+objs = [env.Object(s) for s in engine_src + char_src]
+
+env.Linker('engine', objs)
