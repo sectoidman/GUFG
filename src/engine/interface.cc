@@ -512,7 +512,11 @@ void interface::resolve()
 					things[i]->enforceGravity(grav, floor);
 				}
 				for(int j = 0; j < attractorComplexity; j++){
-					if(globals[j]->ID != things[i]->ID) things[i]->enforceAttractor(globals[j]);
+					if(globals[j]->ID != things[i]->ID){
+						if((i < 2 && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
+ 							things[i]->enforceAttractor(globals[j]);
+						}
+					}
 				}
 			}
 		}
