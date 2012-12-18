@@ -7,20 +7,19 @@
  
  **/
 
-#include "compat.h"
+#include <chrono>
 #include "engine/interface.h"
 #include <SDL/SDL_opengl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <assert.h>
-using namespace internal;
 
 int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
 	const int FPS = 60;
-	typedef chrono::duration<float,std::ratio<1,FPS>> frame_t;
-	chrono::high_resolution_clock::time_point frameStart;
+	typedef std::chrono::duration<float,std::ratio<1,FPS>> frame_t;
+        std::chrono::high_resolution_clock::time_point frameStart;
 	interface game;
 	assert(game.screenInit() != false);
 	game.createPlayers();
@@ -32,7 +31,7 @@ int main(int argc, char* argv[])
 
 	/*As long as the game doesn't detect a request to quit, it loops over a few basic resolutions of game events*/
 	while (!game.gameover){
-		frameStart = chrono::high_resolution_clock::now();
+		frameStart = std::chrono::high_resolution_clock::now();
 		game.readInput();
 		game.resolve();
 		game.draw();
@@ -43,7 +42,7 @@ int main(int argc, char* argv[])
 		 *until it is one frame_t unit.
 		 *Then go on to the next frame
 		 */
-		do frameElapsed = chrono::duration_cast<frame_t>(chrono::high_resolution_clock::now() - frameStart);
+		do frameElapsed = std::chrono::duration_cast<frame_t>(std::chrono::high_resolution_clock::now() - frameStart);
 		while(frameElapsed.count() < 1);
 	}
 	game.writeMatchupChart();
