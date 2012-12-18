@@ -22,8 +22,10 @@ CMakeFiles
 dump
 doc/*
 Doxyfile
+.sconsign.dblite
 _*.so
 engine.py
 characters.py
 src/engine/*wrap.cxx
 src/*wrap.cxx
+build/

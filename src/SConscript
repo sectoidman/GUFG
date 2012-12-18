@@ -1,0 +1,20 @@
+characters = ["Red", "Yellow"]
+
+from glob import glob
+import distutils.sysconfig
+from os.path import realpath
+
+
+engine_src = glob("c++/engine/*")
+character_src = glob("c++/characters/{" +
+                      "".join(map(lambda s:s+",",
+                      characters))+"}".replace(",}","}"))
+
+env = Environment(SWIGFLAGS=["-python"],
+                  CPPPATH=[distutils.sysconfig.get_python_inc()],
+                  SHLIBPREFIX="",
+                  CXXFLAGS="-O2 -g -Wall -Wctor-dtor-privacy \
+                            -Wno-overloaded-virtual -Wno-format\
+                            -Wno-format-contains-nul -std=c++11 -pedantic")
+
+env.SharedLibrary("_engine.so", engine_src + character_src)
