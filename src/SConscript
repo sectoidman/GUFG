@@ -1,14 +1,16 @@
 import distutils.sysconfig
+from os.path import realpath
 
 engine_src = Glob("c++/engine/*.cc")
 char_src = Glob("c++/characters/*.cc")
 swig_src = Glob("c++/engine/*.i")
 
-env = Environment(SWIGFLAGS=["-c++", "-python"],
-                  CPPPATH=[distutils.sysconfig.get_python_inc()],
+env = Environment(CPPPATH=[distutils.sysconfig.get_python_inc()],
                   SHLIBPREFIX="",
                   CXXFLAGS="-O2 -g -Wall -Wctor-dtor-privacy \
                             -Wno-overloaded-virtual -Wno-format\
                             -Wno-format-contains-nul -std=c++11 -pedantic")
 
-env.SharedLibrary("_engine.so", engine_src + char_src)
+env.Program('../gufg', ['c++/game.cc'] + engine_src + char_src,
+            LIBS=['SDLmain', 'SDL', 'SDL_mixer', 'SDL_image', 'GL'],
+            LIBPATH=['.', '/usr/lib'])
