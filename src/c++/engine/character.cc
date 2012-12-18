@@ -10,48 +10,12 @@
 character::character()
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
 {
+	//build("genericCharacter", "genericCharacter");
 }
 
-character::character(const char*)
+character::character(const char* name)
 {
-/*	action * temp;
-
-	name = NULL;
-
-	head = new actionTrie(new action("White/A"));
-
-	temp = new action("White/D");
-	head->insert(temp, 0);
-	airHead = new actionTrie(temp, 0);
-	
-	head->insert(new action("White/B"), 0);
-	neutral = new looping("White/NS");
-	crouch = new looping("White/NL");
-	head->insert(5, neutral);
-	head->insert(2, crouch);
-	head->insert(1, crouch);
-	head->insert(3, crouch);
-
-	airNeutral = new airLooping("White/NS");
-	airNeutral->feed(neutral, 1, 0);
-
-	head->insert(4, new looping("White/WQ"));
-	head->insert(6, new looping("White/W"));
-
-	reel = new hitstun("White/HS");
-	untech = new untechState("White/UT");
-	crouchReel = new hitstun("White/HL");
-
-	airBlock = new hitstun("White/BA");
-	standBlock = new hitstun("White/BH");
-	crouchBlock = new hitstun("White/BL");
-
-	head->insert(8, new utility("White/JN"));
-	head->insert(7, new utility("White/JQ"));
-	head->insert(9, new utility("White/JF"));
-	
-	throwBreak = new utility("White/break");
-*/
+	build(name, name);
 }
 
 character::~character()
@@ -602,7 +566,7 @@ void character::resetAirOptions(int *& meter)
 	meter[3] = 1;
 }
 
-bool avatar::acceptTarget(action * c, int f)
+int avatar::acceptTarget(action * c, int f)
 {
 	return 1;
 }

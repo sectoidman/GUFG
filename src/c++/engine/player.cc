@@ -29,9 +29,9 @@ instance::instance()
 instance::instance(avatar * f)
 {
 	v = f;
-	init();
 	meter = pick()->generateMeter();
 	pick()->init(meter);
+	init();
 }
 
 void instance::init()
@@ -579,6 +579,17 @@ void instance::step()
 	}
 }
 
+void instance::flip()
+{
+		if(facing == -1){
+			posX += collision.x - (posX + (posX - collision.x - collision.w));
+			facing = 1;
+		} else { 
+			posX += (collision.w + collision.x) - posX*2 + collision.x;
+			facing = -1;
+		}
+}
+
 void player::checkFacing(player * other){
 	int comparison, midpoint;
 	midpoint = collision.x + collision.w/2;
@@ -590,12 +601,9 @@ void player::checkFacing(player * other){
 	if (lCorner) facing = 1;
 	else if (rCorner) facing = -1;
 	else if (midpoint < comparison){
-		if(facing == -1) posX += collision.x - (posX + (posX - collision.x - collision.w));
-		facing = 1;
-	}
-	else if (midpoint > comparison){
-		if(facing == 1) posX += (collision.w + collision.x) - posX*2 + collision.x;
-		facing = -1;
+		if(facing == -1) flip();
+	} else if (midpoint > comparison){
+		if(facing == 1) flip();
 	}
 
 	updateRects();
@@ -823,6 +831,13 @@ void instance::connect(int combo, hStat & s)
 
 int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 {
+	if(s.turnsProjectile){
+		if(pick()->turn(ID)){ 
+			flip();
+			invertVectors(1);
+			deltaX = -deltaX;
+		}
+	}
 	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);
 }
 

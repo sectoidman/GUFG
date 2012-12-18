@@ -19,9 +19,10 @@ void projectile::build(const char* directory, const char* file)
 	lifespan = -1;
 }
 
-bool projectile::acceptTarget(action * c, int f)
+int projectile::acceptTarget(action * c, int f)
 {
-	if(c->stats[c->calcCurrentHit(f)].hitsProjectile) return 1;
+	if(c->stats[c->calcCurrentHit(f)].hitsProjectile || c->stats[c->calcCurrentHit(f)].killsProjectile || c->stats[c->calcCurrentHit(f)].turnsProjectile)
+		return 1;
 	else return 0;
 }
 
@@ -70,6 +71,21 @@ void summon::zero()
 	spawnPosX = 0;
 	lifespan = -1;
 	action::zero();
+}
+
+bool projectile::turn(int &ID)
+{
+	ID = ID % 2 + 1;
+	return 1;
+}
+
+int projectile::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
+{
+	if(s.killsProjectile){ 
+		die->execute(cMove, meter, frame, connectFlag, hitFlag);
+		cMove = die;
+		return 1;
+	} else return 0;
 }
 
 bool projectile::death(action *& cMove, int f, int counter)

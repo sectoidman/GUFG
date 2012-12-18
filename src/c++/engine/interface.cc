@@ -1008,6 +1008,7 @@ void interface::resolveHits()
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
 								hitBy[h] = i;
+								break;
 							}
 						}
 					}
@@ -1025,10 +1026,10 @@ void interface::resolveHits()
 
 	for(int i = 0; i < thingComplexity; i++){ 
 		if(taken[i]){
-			h = p[i]->meter[0];
-			hit[hitBy[i]] = p[i]->takeHit(combo[hitBy[i]], s[hitBy[i]], prox);
+			h = p[things[i]->ID-1]->meter[0];
+			hit[hitBy[i]] = things[i]->takeHit(combo[hitBy[i]], s[hitBy[i]], prox);
 			if(i < 2 && hitBy[i] < 2){
-				if(p[i]->particleType == -2){ 
+				if(p[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
 					ths.ghostHit = true;
@@ -1040,8 +1041,8 @@ void interface::resolveHits()
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->enforceFloor(floor);
 			p[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
-			if(p[i]->facing * p[(i+1)%2]->facing == 1) p[i]->invertVectors(1);
-			damage[(i+1)%2] += h - p[i]->meter[0];
+			if(things[i]->facing * things[(i+1)%2]->facing == 1) things[i]->invertVectors(1);
+			if(i < 2) damage[(i+1)%2] += h - p[i]->meter[0];
 		}
 	}
 
