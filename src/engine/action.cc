@@ -283,6 +283,8 @@ bool action::setParameter(char * buffer)
 		distortion->radius = atoi(token);
 		token = strtok(NULL, "\t: \n");
 		distortion->ID = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		distortion->effectCode = atoi(token);
 		return 1;
 	} else if (!strcmp("Next", token)) {
 		token = strtok(NULL, "\t: \n");

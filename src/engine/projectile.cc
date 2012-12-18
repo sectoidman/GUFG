@@ -67,6 +67,7 @@ void summon::zero()
 	spawnFrame = 0;
 	spawnTrackY = 0;
 	spawnTrackX = 0;
+	spawnTrackFloor = 0;
 	spawnPosY = 0;
 	spawnPosX = 0;
 	lifespan = -1;
@@ -110,12 +111,26 @@ bool summon::setParameter(char * buffer)
 
 	if(!strcmp("SpawnPosition", token)){
 		token = strtok(NULL, "\t: \n");
-		if(token[0] == 't') spawnTrackX = true;
-		else spawnPosX = atoi(token);
+		spawnPosX = atoi(token);
 
 		token = strtok(NULL, "\t: \n");
-		if(token[0] == 't') spawnTrackY = true;
-		else spawnPosY = atoi(token);
+		spawnPosY = atoi(token);
+		return 1;
+	} else if(!strcmp("Track", token)){
+		token = strtok(NULL, "\t: \n");
+		for(unsigned int i = 0; i < strlen(token + 1); i++){
+			switch(token[i]){
+			case 'x': 
+				spawnTrackX = true;
+				break;
+			case 'y':
+				spawnTrackY = true;
+				break;
+			case 'f':
+				spawnTrackFloor = true;
+				break;
+			}
+		}
 		return 1;
 	} else if(!strcmp("SpawnsOn", token)){
 		token = strtok(NULL, "\t: \n");
@@ -148,8 +163,11 @@ int summon::arbitraryPoll(int q, int f)
 		if(spawnTrackY) return 1;
 		else break;
 	case 53:
-		return spawnPosX;
+		if(spawnTrackFloor) return 1;
+		else break;
 	case 54:
+		return spawnPosX;
+	case 55:
 		return spawnPosY;
 	default:
 		break;

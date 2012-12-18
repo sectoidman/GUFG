@@ -621,10 +621,12 @@ void interface::resolveSummons()
 				}
 				if(temp->arbitraryPoll(52, things[i]->currentFrame))
 					y = p[(things[i]->ID)%2]->posY;
+				else if(temp->arbitraryPoll(53, things[i]->currentFrame))
+					y = 0;
 				else
 					y = p[(things[i]->ID)-1]->posY;
-				x += temp->arbitraryPoll(53, things[i]->currentFrame)*f;
-				y += temp->arbitraryPoll(54, things[i]->currentFrame);
+				x += temp->arbitraryPoll(54, things[i]->currentFrame)*f;
+				y += temp->arbitraryPoll(55, things[i]->currentFrame);
 				larva->facing = f;
 				larva->setPosition(x, y);
 				addThing(larva);
