@@ -1027,7 +1027,7 @@ void interface::resolveHits()
 	for(int i = 0; i < thingComplexity; i++){ 
 		if(taken[i]){
 			h = p[things[i]->ID-1]->meter[0];
-			hit[hitBy[i]] = things[i]->takeHit(combo[hitBy[i]], s[hitBy[i]], prox);
+			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID - 1], s[hitBy[i]], prox);
 			if(i < 2 && hitBy[i] < 2){
 				if(p[i]->particleType == -2){
 					hStat ths;
