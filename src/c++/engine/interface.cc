@@ -130,11 +130,11 @@ void interface::loadMatchBackground()
 	char buffer[100];
 	if(selection[0] == selection[1]) p[1]->secondInstance = true;
 
-	sprintf(buffer, "resources/stages/%i/bg.png", selection[0]);
+	sprintf(buffer, "content/stages/%i/bg.png", selection[0]);
 	background = aux::load_texture(buffer);
 
-	if(selection[0] == selection[1]) sprintf(buffer, "resources/sound/Mirror.ogg");
-	else sprintf(buffer, "resources/sound/%i.ogg", selection[1]);
+	if(selection[0] == selection[1]) sprintf(buffer, "content/sound/Mirror.ogg");
+	else sprintf(buffer, "content/sound/%i.ogg", selection[1]);
 	matchMusic = Mix_LoadMUS(buffer);
 }
 
@@ -158,7 +158,7 @@ void gameInstance::loadMisc()
 {
 	char buffer[200];
 	for(int i = 0; i < 91; i++){
-		sprintf(buffer, "resources/glyphs/%i.png", i);
+		sprintf(buffer, "content/glyphs/%i.png", i);
 		glyph[i] = aux::load_texture(buffer);
 	}
 }
@@ -167,25 +167,25 @@ void interface::loadMisc()
 {
 	gameInstance::loadMisc();
 	char buffer[200];
-	selectScreen = aux::load_texture("resources/menu/Select.png");
-	menuMusic = Mix_LoadMUS("resources/sound/Menu.ogg");
+	selectScreen = aux::load_texture("content/menu/Select.png");
+	menuMusic = Mix_LoadMUS("content/sound/Menu.ogg");
 	announceWinner = new Mix_Chunk*[numChars + 1];
 	for(int i = 0; i < numChars + 1; i++){
-		sprintf(buffer, "resources/sound/announcer/Win%i.ogg", i);
+		sprintf(buffer, "content/sound/announcer/Win%i.ogg", i);
 		announceWinner[i] = Mix_LoadWAV(buffer);
 	}
 	for(int i = 0; i < 2; i++){
 		if(!p[i]->readConfig(i+1)) initialConfig(i);
 	}
 	readMatchupChart();
-	announceRound[0] = Mix_LoadWAV("resources/sound/announcer/Round1.ogg");
-	announceRound[1] = Mix_LoadWAV("resources/sound/announcer/Round2.ogg");
-	announceRound[2] = Mix_LoadWAV("resources/sound/announcer/RoundF.ogg");
-	announceDraw[1] = Mix_LoadWAV("resources/sound/announcer/Draw.ogg");
-	announceFight = Mix_LoadWAV("resources/sound/announcer/Fight.ogg");
-	announceEnd[0] = Mix_LoadWAV("resources/sound/announcer/Timeout.ogg");
-	announceEnd[1] = Mix_LoadWAV("resources/sound/announcer/Down.ogg");
-	announceSelect = Mix_LoadWAV("resources/sound/announcer/Select.ogg");
+	announceRound[0] = Mix_LoadWAV("content/sound/announcer/Round1.ogg");
+	announceRound[1] = Mix_LoadWAV("content/sound/announcer/Round2.ogg");
+	announceRound[2] = Mix_LoadWAV("content/sound/announcer/RoundF.ogg");
+	announceDraw[1] = Mix_LoadWAV("content/sound/announcer/Draw.ogg");
+	announceFight = Mix_LoadWAV("content/sound/announcer/Fight.ogg");
+	announceEnd[0] = Mix_LoadWAV("content/sound/announcer/Timeout.ogg");
+	announceEnd[1] = Mix_LoadWAV("content/sound/announcer/Down.ogg");
+	announceSelect = Mix_LoadWAV("content/sound/announcer/Select.ogg");
 }
 
 void interface::readMatchupChart()
