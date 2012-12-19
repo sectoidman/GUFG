@@ -1,21 +1,14 @@
 from os.path import realpath
 import distutils.sysconfig
-from re import compile as regex
 
 ##SOURCES
 engine_src = Glob("c++/engine/*.cc")
 char_src = Glob("c++/characters/*.cc")
-cython_src = Glob("python/*.p{yx,xd}")
-print cython_src
-##STUFF FOR BUILDING CYTHON
-pyxcpp = Builder(action='cython --cplus $SOURCE')
-def cythonLibrary(env, name, source, **kwargs):
-  cpp = env.PyxCpp(source)
-  env.SharedLibrary(name, cpp, **kwargs)
+swig_src = Glob("c++/engine/*.i")
 
 ##ENVIRONMENT
-env = Environment(BUILDERS={'PyxCpp':pyxcpp},
-                  PYEXT_USE_DISTUTILS=True,
+env = Environment(PYEXT_USE_DISTUTILS=True,
+                  SWIGFLAGS=['-c++','-python'],
                   CPPPATH=[distutils.sysconfig.get_python_inc()],
                   CXXFLAGS="-O2 -g\
                             -Wno-overloaded-virtual\
@@ -24,20 +17,25 @@ env = Environment(BUILDERS={'PyxCpp':pyxcpp},
                             -Wctor-dtor-privacy\
                             -std=c++11")
 
-env.AddMethod(cythonLibrary, 'CythonLibrary')
 
-libs = ['engine',
-        'SDL',
+libs = ['SDL',
         'SDLmain',
         'SDL_image',
         'SDL_mixer',
         'GL'],
 
 #TARGETS
-env.SharedLibrary('engine', engine_src + char_src)
-env.CythonLibrary("api", cython_src,
-                  LIBS=libs,
-                  LIBPATH=["."])
-Program('../gufg', 'c++/game.cc',
-            LIBS=libs,
-            LIBPATH=["."])
+engine = env.SharedLibrary('engine', engine_src + char_src + swig_src,
+                   LIBS=libs, LIBPATH=["."], SHLIBPREFIX="_")
+
+wrapper = "c++/engine/engine.py"
+
+runtime = env.Install(source=[wrapper,engine,
+                              Glob("../src/python/*.py")],
+                      target="../dist/runtime")
+scripts = env.Install(source="../src/scripts",
+                      target="../dist")
+gufg = env.Install(source="../src/gufg", target="../dist")
+distFiles = env.Install(source=["../content",
+                                Glob("../info/*")],
+                        target="../dist")
