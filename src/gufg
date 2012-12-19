@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 
 """
 Usage:
@@ -13,7 +14,7 @@ Usage:
 
 from time import time
 from docopt import docopt
-from interface import interface
+from runtime.engine import interface
 
 class game:
   def __init__(self, rate, rounds):
