@@ -29,12 +29,10 @@ This fork of GUFG has currently been tested only on Linux.
 3. Run `scons`.
    All targets will be built, if necessary, and installed in `./dist/`:
     * `dist/`:
-        * `info`: folder containing documentation such as this file
-        * `runtime/`:
-            * `_engine.so`: the shared library for the game
-            * Python modules used to run the game
+        * `content/`:  a selection of freely available game data
         * `gufg`:  a Python script to run a basic instance of the game
-        * `content`:  a selection of freely available game data
+        * `info/`: folder containing documentation such as this file
+        * `runtime/`: the shared library and Python modules for the game
 
   Due to SWIG output files that are mistaken by SCons scanners as source files,
    the build may fail if output from a previous build exists.
