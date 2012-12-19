@@ -9,15 +9,15 @@ This fork of GUFG has currently been tested only on Linux.
 1. Install the dependencies, which are available in most Linux distribution
     package repositories, or can be compiled manually from source.
   * Build time:
-    * [SDL](http://www.libsdl.org/download-1.2.php)
-    * [SDL\_image](http://www.libsdl.org/projects/SDL_image/)
-    * [SDL\_mixer](http://www.libsdl.org/projects/SDL_mixer/)
-    * [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux)
-    * [Glut](http://freeglut.sourceforge.net/)
-    * [SCons](http://www.scons.org/)
-    * [SWIG](http://www.swig.org/)
+      * [SDL](http://www.libsdl.org/download-1.2.php)
+      * [SDL\_image](http://www.libsdl.org/projects/SDL_image/)
+      * [SDL\_mixer](http://www.libsdl.org/projects/SDL_mixer/)
+      * [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux)
+      * [Glut](http://freeglut.sourceforge.net/)
+      * [SCons](http://www.scons.org/)
+      * [SWIG](http://www.swig.org/)
   * Run time:
-    * [Docopt](https://github.com/docopt/docopt)
+      * [Docopt](https://github.com/docopt/docopt)
 
   The runtime Python dependencies are available via `pip`, 
     and need not be installed before building GUFG.
