@@ -1,8 +1,8 @@
-from os.path import realpath
 import distutils.sysconfig
 
 ##SOURCES
-engine_src = Glob("c++/engine/*.cc")
+engine_src = File(filter(lambda s: not("wrap" in s),
+                         Glob("c++/engine/*.cc", strings=True)))
 char_src = Glob("c++/characters/*.cc")
 swig_src = Glob("c++/engine/*.i")
 
@@ -26,12 +26,12 @@ libs = ['SDL',
 miscdirs = [".config", ".data"]
 for d in miscdirs:
   Execute(Mkdir(d))
+wrappy = "c++/engine/engine.py"
+
 
 #TARGETS
-wrappy = "c++/engine/engine.py"
 engine = env.SharedLibrary('engine', engine_src + char_src + swig_src,
                    LIBS=libs, LIBPATH=["."], SHLIBPREFIX="_")
-
 #INSTALL
 env.Install(source=[wrappy,
                     engine,
