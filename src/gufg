@@ -48,6 +48,6 @@ if __name__ == '__main__':
   rate = int(arguments['-r'] or 60)
   rounds = int(arguments['-m'] or 2)
   #Width and fullscreen could be handled here
-  gufpe = game(rate, rounds)
-  gufpe.loop()
+  gufg = game(rate, rounds)
+  gufg.loop()
 
