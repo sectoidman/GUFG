@@ -6,17 +6,17 @@ The game is built using C++, SDL, and OpenGL without any RNGs.
 ##Building and testing GUFG
 This fork of GUFG has currently been tested only on Linux.
 
-1. Install the dependencies. Buildtime dependencies are available in most
-    Linux distribution package repositories:
+1. Install the dependencies, which are available in most Linux distribution
+    package repositories, or can be compiled manually from source.
   * [SDL](http://www.libsdl.org/download-1.2.php)
   * [SDL\_image](http://www.libsdl.org/projects/SDL_image/)
   * [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux)
   * [Glut](http://freeglut.sourceforge.net/)
   * [SCons](http://www.scons.org/)
   * [SWIG](http://www.swig.org/)
+  * [Docopt](https://github.com/docopt/docopt) (available via `pip`)
 
-  Runtime Python dependencies are available via `pip`:
-  * [Docopt](https://github.com/docopt/docopt)
+
 
 2. Clone this repository
   (`git clone git@github.com:h-forrest-alexander/GUFG.git`) 
