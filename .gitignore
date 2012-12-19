@@ -1,4 +1,4 @@
 *.swp
 .sconsign.dblite
-build/
+.build/
 dist/
