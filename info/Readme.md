@@ -30,7 +30,9 @@ This fork of GUFG has currently been tested only on Linux.
    All targets will be built, if necessary, and installed in `./dist/`:
     * `dist/`:
         * `info`: folder containing documentation such as this file
-        * `runtime/_engine.so`: the compiled runtime library for the game
+        * `runtime/`:
+            * `_engine.so`: the shared library for the game
+            * Python modules used to run the game
         * `gufg`:  a Python script to run a basic instance of the game
         * `content`:  a selection of freely available game data
 
