@@ -6,11 +6,8 @@ The game is built using C++, SDL, and OpenGL without any RNGs.
 ##Building and testing GUFG
 This fork of GUFG has currently been tested only on Linux.
 
-1. Install the dependencies.
-
-   Build-time dependencies are available in most
+1. Install the dependencies. Buildtime dependencies are available in most
     Linux distribution package repositories:
-
   * [SDL](http://www.libsdl.org/download-1.2.php)
   * [SDL\_image](http://www.libsdl.org/projects/SDL_image/)
   * [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux)
