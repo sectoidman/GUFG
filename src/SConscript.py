@@ -17,25 +17,32 @@ env = Environment(PYEXT_USE_DISTUTILS=True,
                             -Wctor-dtor-privacy\
                             -std=c++11")
 
-
 libs = ['SDL',
         'SDLmain',
         'SDL_image',
         'SDL_mixer',
-        'GL'],
+        'GL']
+
+miscdirs = [".config", ".data"]
+for d in miscdirs:
+  Execute(Mkdir(d))
 
 #TARGETS
+wrappy = "c++/engine/engine.py"
 engine = env.SharedLibrary('engine', engine_src + char_src + swig_src,
                    LIBS=libs, LIBPATH=["."], SHLIBPREFIX="_")
 
-wrapper = "c++/engine/engine.py"
+#INSTALL
+env.Install(source=[wrappy,
+                    engine,
+                    Glob("../src/python/*.py")],
+            target="runtime")
 
-runtime = env.Install(source=[wrapper,engine,
-                              Glob("../src/python/*.py")],
-                      target="../dist/runtime")
-scripts = env.Install(source="../src/scripts",
-                      target="../dist")
-gufg = env.Install(source="../src/gufg", target="../dist")
-distFiles = env.Install(source=["../content",
-                                Glob("../info/*")],
-                        target="../dist")
+env.Install(source=["runtime",
+                    "../content",
+                    "../src/scripts",
+                    Glob("../info/*"),
+                    miscdirs],
+            target="../dist")
+
+env.InstallAs(target='../dist/gufg', source='../src/scripts/gufg.py')
