@@ -576,7 +576,10 @@ void interface::cleanup()
 	if(!rMenu && select[0] && select[1]){
 		for(unsigned int i = 0; i < things.size(); i++){
 			things[i]->step();
-			if(i > 1 && things[i]->dead) things.erase(things.begin()+i);
+			if(i > 1 && things[i]->dead){ 
+				things.erase(things.begin()+i);
+				i--;
+			}
 		}
 		for(int i = 0; i < attractorComplexity; i++){
 			if(globals[i]->length <= 0) cullAttractor(i);
