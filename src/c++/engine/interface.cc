@@ -88,6 +88,7 @@ void interface::createPlayers()
 		selection[i] = 1+i;
 		menu[i] = 0;
 		configMenu[i] = 0;
+		things.push_back(p[i]);
 	}
 }
 
@@ -102,6 +103,7 @@ void interface::createDemons()
 		select[i] = 1;
 		menu[i] = 0;
 		configMenu[i] = 0;
+		things.push_back(p[i]);
 	}
 	continuous = true;
 	analytics = true;
@@ -119,6 +121,7 @@ void interface::createDemons(replay * script)
 		select[i] = 1;
 		menu[i] = 0;
 		configMenu[i] = 0;
+		things.push_back(p[i]);
 	}
 	loadMatchBackground();
 	single = true;
@@ -332,8 +335,8 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	roundEnd = false;
-	for(int i = 0; i < 2; i++)
-		things.push_back(p[i]);
+	for(unsigned int i = 2; i < things.size(); i++)
+		things.erase(things.begin()+i);
 	bg.x = 800;
 	bg.y = -900;
 
