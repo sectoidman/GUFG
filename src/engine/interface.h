@@ -10,6 +10,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <stdio.h>
+#include <vector>
 #include "analytics.h"
 #ifndef INTERFACE
 #define INTERFACE
@@ -23,8 +24,8 @@ public:
 	bool screenInit(int, int);
 
 //Input layer stuff. Players, inputs, etc.
-	instance ** things;
-	int thingComplexity;
+	std::vector<instance*> things;
+//	int thingComplexity;
 	player * p[2];
 	bool * sAxis[2];
 	int * posEdge[2];
@@ -80,8 +81,8 @@ public:
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
-	void addThing(instance*);
-	void cullThing(int);
+//	void addThing(instance*);
+//	void cullThing(int);
 	void addAttractor(attractor*);
 	void cullAttractor(int);
 	void writeImage(const char*, int, action*);

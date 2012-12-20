@@ -144,7 +144,6 @@ void interface::startGame()
 	while(SDL_PollEvent(&temp));
 
 	/*Start a match*/
-	things = NULL;
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 	if(select[0] && select[1]){ 
@@ -334,16 +333,10 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	roundEnd = false;
-	if(things){ 
-		delete [] things;
-	}
-	things = NULL;
-	thingComplexity = 0;
 	globals = NULL;
 	attractorComplexity = 0;
 	for(int i = 0; i < 2; i++)
-		addThing(p[i]);
-	thingComplexity = 2;
+		things.push_back(p[i]);
 	bg.x = 800;
 	bg.y = -900;
 
@@ -471,10 +464,10 @@ void interface::resolve()
 				}
 			}
 		} else { 
-			for(int i = 0; i < thingComplexity; i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+			for(unsigned int i = 0; i < things.size(); i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		}
 		p[1]->getMove(posEdge[1], negEdge[1], prox, 1);
-		for(int i = 0; i < thingComplexity; i++){
+		for(unsigned int i = 0; i < things.size(); i++){
 			if(i < 2){
 				if(p[(i+1)%2]->aerial) prox.y = 1;
 				else prox.y = 0;
@@ -494,16 +487,16 @@ void interface::resolve()
 		6. Initialize sprites.
 	*/
 
-		for(int i = 0; i < thingComplexity; i++)
+		for(unsigned int i = 0; i < things.size(); i++)
 			things[i]->updateRects();
 
 		resolveThrows();
 		doSuperFreeze();
 
-		for(int i = 0; i < thingComplexity; i++)
+		for(unsigned int i = 0; i < things.size(); i++)
 			things[i]->updateRects();
 
-		for(int i = 0; i < thingComplexity; i++){
+		for(unsigned int i = 0; i < things.size(); i++){
 			if(!things[i]->freeze){
 				if(things[i]->cMove->stop & 4);
 				else { 
@@ -565,7 +558,7 @@ void interface::resolve()
 			}
 		}
 
-		for(int i = 0; i < thingComplexity; i++){
+		for(unsigned int i = 0; i < things.size(); i++){
 			if(things[i]->hitbox[0].w > 0){
 				if(!freeze) p[(things[i]->ID)%2]->checkBlocking();
 			}
@@ -581,9 +574,9 @@ void interface::resolve()
 void interface::cleanup()
 {
 	if(!rMenu && select[0] && select[1]){
-		for(int i = 0; i < thingComplexity; i++){
+		for(unsigned int i = 0; i < things.size(); i++){
 			things[i]->step();
-			if(i > 1 && things[i]->dead) cullThing(i);
+			if(i > 1 && things[i]->dead) things.erase(things.begin()+i);
 		}
 		for(int i = 0; i < attractorComplexity; i++){
 			if(globals[i]->length <= 0) cullAttractor(i);
@@ -610,7 +603,7 @@ void interface::resolveSummons()
 	attractor * tvec = NULL, * avec = NULL;
 	instance * larva;
 	int x, y, f;
-	for(int i = 0; i < thingComplexity; i++){
+	for(unsigned int i = 0; i < things.size(); i++){
 		if(things[i]->cMove){
 			temp = things[i]->cMove;
 			if(temp->arbitraryPoll(50, things[i]->currentFrame)){
@@ -633,12 +626,12 @@ void interface::resolveSummons()
 				y += temp->arbitraryPoll(55, things[i]->currentFrame);
 				larva->facing = f;
 				larva->setPosition(x, y);
-				addThing(larva);
+				things.push_back(larva);
 				larva->init();
 			}
 		}
 	}
-	for(int i = 0; i < thingComplexity; i++){
+	for(unsigned int i = 0; i < things.size(); i++){
 		if(things[i]->cMove && things[i]->currentFrame == things[i]->cMove->distortSpawn) tvec = things[i]->cMove->distortion;
 		if(tvec != NULL){ 
 			avec = new attractor;
@@ -987,22 +980,22 @@ void interface::resolveThrows()
 
 void interface::resolveHits()
 {
-	std::vector<hStat> s(thingComplexity);
-	std::vector<int> hit(thingComplexity);
-	std::vector<bool> connect(thingComplexity);
-	std::vector<bool> taken(thingComplexity);
-	std::vector<int> hitBy(thingComplexity);
+	std::vector<hStat> s(things.size());
+	std::vector<int> hit(things.size());
+	std::vector<bool> connect(things.size());
+	std::vector<bool> taken(things.size());
+	std::vector<int> hitBy(things.size());
 	int h;
 	int push[2];
-	for(int i = 0; i < thingComplexity; i++){
+	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
 		hit[i] = 0;
 		connect[i] = 0;
 		hitBy[i] = -1;
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
-	for(int i = 0; i < thingComplexity; i++){
-		for(int h = 0; h < thingComplexity; h++){
+	for(unsigned int i = 0; i < things.size(); i++){
+		for(unsigned int h = 0; h < things.size(); h++){
 			if(h != i && !taken[h]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
@@ -1024,14 +1017,14 @@ void interface::resolveHits()
 		}
 	}
 
-	for(int i = 0; i < thingComplexity; i++){
+	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
 			if(i < 2 && p[i]->cMove->allowed.i < 128 && !p[i]->aerial) p[i]->checkFacing(p[(i+1)%2]);
 		}
 	}
 
-	for(int i = 0; i < thingComplexity; i++){ 
+	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
 			h = p[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
@@ -1053,7 +1046,7 @@ void interface::resolveHits()
 		}
 	}
 
-	for(int i = 0; i < 2; i++){ 
+	for(unsigned int i = 0; i < 2; i++){ 
 		if(connect[i]){
 			if(p[i]->aerial) residual.y = -8;
 			else{ 
@@ -1102,26 +1095,6 @@ void interface::doSuperFreeze()
 	}
 	if(go[0] > 0 || go[1] > 0)
 		freeze = std::max(go[0], go[1]);
-}
-
-void interface::addThing(instance *v)
-{
-	int i;
-	instance ** temp;
-	temp = new instance*[thingComplexity+1];
-	for(i = 0; i < thingComplexity; i++)
-		temp[i] = things[i];
-	temp[i] = v;
-	if(thingComplexity > 0) delete [] things;
-	things = temp;
-	thingComplexity++;
-}
-
-void interface::cullThing(int q)
-{
-	for(int i = q; i < thingComplexity - 1; i++)
-		things[i] = things[i+1];
-	thingComplexity--;
 }
 
 void interface::addAttractor(attractor *v)
