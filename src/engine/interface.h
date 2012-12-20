@@ -23,6 +23,8 @@ public:
 	bool screenInit(int, int);
 
 //Input layer stuff. Players, inputs, etc.
+	instance ** things;
+	int thingComplexity;
 	player * p[2];
 	bool * sAxis[2];
 	int * posEdge[2];
@@ -103,8 +105,6 @@ public:
 	int ** matchup;
 	int numRounds;
 	int grav;	//Gravitational constant. 
-	instance ** things;
-	int thingComplexity;
 
 	GLuint background;
 	Mix_Music *matchMusic;
