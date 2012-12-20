@@ -64,7 +64,6 @@ public:
 	void drawRematchMenu();
 	void cleanup();
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
-	void spriteInit();	/*Part of the rendering toolchain. Sets up sprites for drawing.*/
 	void roundInit();
 	void matchInit();
 	void cSelectMenu();

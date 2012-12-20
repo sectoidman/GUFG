@@ -121,7 +121,7 @@ void avatar::getName(const char* directory, const char* file)
 {
 	char buffer[101];
 	std::ifstream read;
-	sprintf(buffer, "resources/characters/%s/%s.ch", directory, file);
+	sprintf(buffer, "content/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
 	assert(!read.fail());
@@ -150,7 +150,7 @@ void avatar::build(const char* directory, const char* file)
 	action * m = NULL;
 	bool commentFlag;
 	std::ifstream read;
-	sprintf(buffer, "resources/characters/%s/%s.ch", directory, file);
+	sprintf(buffer, "content/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
 	assert(!read.fail());

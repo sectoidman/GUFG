@@ -6,7 +6,6 @@
 #include <SDL/SDL.h>
 #include <string>
 #include <SDL/SDL_opengl.h>
-#include "../compat.h"
 #include <stdio.h>
 #ifndef AUXIL
 #define AUXIL
