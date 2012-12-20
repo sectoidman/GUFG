@@ -3,51 +3,28 @@ actionTrie::actionTrie()
 {
 	for(int i = 0; i < 10; i++)
 		child[i] = NULL;
-	fish = NULL;
-	pattern = NULL;
-	occupants = 0;
 }
 
 actionTrie::actionTrie(action * a, int p)
 {
 	for(int i = 0; i < 10; i++)
 		child[i] = NULL;
-	fish = new action*[1];
-	fish[0] = a;
-	pattern = new int[1];
-	pattern[0] = p;
-	occupants = 1;
+	pattern.push_back(p);
+	fish.push_back(a);
 }
 
 actionTrie::actionTrie(action * a)
 {
 	for(int i = 0; i < 10; i++)
 		child[i] = NULL;
-	fish = new action*[1];
-	fish[0] = a;
-	pattern = new int[1];
-	pattern[0] = 0;
-	occupants = 1;
+	pattern.push_back(0);
+	fish.push_back(a);
 }
 
 void actionTrie::insert(action * b, int p)
 {
-	int i;
-	action ** temp;
-	int * tPat;
-	occupants++;
-	temp = new action*[occupants];
-	tPat = new int[occupants];
-	for(i = 0; i < occupants-1; i++){
-		temp[i] = fish[i];
-		tPat[i] = pattern[i];
-	}
-	temp[i] = b;
-	tPat[i] = p;
-	if(fish) delete [] fish;
-	if(pattern) delete [] pattern;
-	fish = temp;
-	pattern = tPat;
+	fish.push_back(b);
+	pattern.push_back(p);
 }
 
 actionTrie * actionTrie::insert(int a, action * b)
@@ -77,8 +54,6 @@ actionTrie::~actionTrie()
 			child[i] = NULL;
 		}
 	}
-	if(fish != NULL) delete [] fish;
-	fish = NULL;
 }
 
 action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, int pos[5], bool neg[5], action * c, SDL_Rect &prox, int &cFlag, int &hFlag)
@@ -94,8 +69,8 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, 
 			if(result != NULL) return result;
 		}
 	}
-	if(occupants != 0){
-		for(int k = 0; k < occupants; k++){
+	if(fish.size() != 0){
+		for(unsigned int k = 0; k < fish.size(); k++){
 			if(fish[k] != NULL){
 				if(fish[k]->activate(pos, neg, pattern[k], i, first, r, prox) == 1){
 					if(fish[k]->cancel(c, cFlag, hFlag)){
