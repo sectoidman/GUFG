@@ -176,7 +176,7 @@ void interface::drawGame()
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	glEnable( GL_TEXTURE_2D );
-	for(int i = 0; i < thingComplexity; i++){
+	for(unsigned int i = 0; i < things.size(); i++){
 		if(things[i]->spriteCheck())
 			things[i]->draw(bg.h, bg.x, bg.y, scalingFactor);
 		glDisable(GL_TEXTURE_2D);

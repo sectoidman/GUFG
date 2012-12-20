@@ -10,6 +10,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <stdio.h>
+#include <vector>
 #include "analytics.h"
 #ifndef INTERFACE
 #define INTERFACE
@@ -23,6 +24,8 @@ public:
 	bool screenInit(int, int);
 
 //Input layer stuff. Players, inputs, etc.
+	std::vector<instance*> things;
+//	int thingComplexity;
 	player * p[2];
 	bool * sAxis[2];
 	int * posEdge[2];
@@ -77,10 +80,6 @@ public:
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
-	void addThing(instance*);
-	void cullThing(int);
-	void addAttractor(attractor*);
-	void cullAttractor(int);
 	void writeImage(const char*, int, action*);
 
 	bool select[2];
@@ -102,8 +101,6 @@ public:
 	int ** matchup;
 	int numRounds;
 	int grav;	//Gravitational constant. 
-	instance ** things;
-	int thingComplexity;
 
 	GLuint background;
 	Mix_Music *matchMusic;
@@ -115,8 +112,7 @@ public:
 	Mix_Chunk *announceEnd[2];
 	Mix_Chunk *announceSelect;
 
-	attractor ** globals;
-	int attractorComplexity;
+	std::vector<attractor *> globals;
 
 //Variables for cSelectMenu 
 	int numChars;
