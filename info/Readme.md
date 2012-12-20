@@ -33,8 +33,3 @@ This fork of GUFG has currently been tested only on Linux.
         * `gufg`:  a Python script to run a basic instance of the game
         * `info/`: folder containing documentation such as this file
         * `runtime/`: the shared library and Python modules for the game
-
-  Due to SWIG output files that are mistaken by SCons scanners as source files,
-   the build may fail if output from a previous build exists.
-  This output is found in `.build` and can be cleaned using
-    `rm .build` or `scons -c`.
