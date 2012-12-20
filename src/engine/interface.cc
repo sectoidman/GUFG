@@ -15,7 +15,6 @@
 #include <fstream>
 #include <iostream>
 #include <math.h>
-#include <vector>
 
 interface::interface()
 {
@@ -333,8 +332,6 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	roundEnd = false;
-	globals = NULL;
-	attractorComplexity = 0;
 	for(int i = 0; i < 2; i++)
 		things.push_back(p[i]);
 	bg.x = 800;
@@ -504,7 +501,7 @@ void interface::resolve()
 					things[i]->combineDelta();
 					things[i]->enforceGravity(grav, floor);
 				}
-				for(int j = 0; j < attractorComplexity; j++){
+				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
 						if((i < 2 && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
  							things[i]->enforceAttractor(globals[j]);
@@ -581,8 +578,8 @@ void interface::cleanup()
 				i--;
 			}
 		}
-		for(int i = 0; i < attractorComplexity; i++){
-			if(globals[i]->length <= 0) cullAttractor(i);
+		for(unsigned int i = 0; i < globals.size(); i++){
+			if(globals[i]->length <= 0) globals.erase(globals.begin()+i);
 			else globals[i]->length--;
 		}
 		resolveSummons();
@@ -659,7 +656,7 @@ void interface::resolveSummons()
 				avec->ID = 0;
 				break;
 			}
-			addAttractor(avec);
+			globals.push_back(avec);
 			avec = NULL;
 			tvec = NULL;
 		}
@@ -1100,23 +1097,3 @@ void interface::doSuperFreeze()
 		freeze = std::max(go[0], go[1]);
 }
 
-void interface::addAttractor(attractor *v)
-{
-	int i;
-	attractor ** temp;
-	temp = new attractor*[attractorComplexity+1];
-	for(i = 0; i < attractorComplexity; i++)
-		temp[i] = globals[i];
-	temp[i] = v;
-	if(attractorComplexity > 0) delete [] globals;
-	globals = temp;
-	attractorComplexity++;
-}
-
-void interface::cullAttractor(int q)
-{
-	delete globals[q];
-	for(int i = q; i < attractorComplexity - 1; i++)
-		globals[i] = globals[i+1];
-	attractorComplexity--;
-}

@@ -81,10 +81,6 @@ public:
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
-//	void addThing(instance*);
-//	void cullThing(int);
-	void addAttractor(attractor*);
-	void cullAttractor(int);
 	void writeImage(const char*, int, action*);
 
 	bool select[2];
@@ -117,8 +113,7 @@ public:
 	Mix_Chunk *announceEnd[2];
 	Mix_Chunk *announceSelect;
 
-	attractor ** globals;
-	int attractorComplexity;
+	std::vector<attractor *> globals;
 
 //Variables for cSelectMenu 
 	int numChars;
