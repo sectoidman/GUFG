@@ -28,25 +28,19 @@ for d in miscdirs:
 wrappy = "c++/engine/engine.py"
 
 #TARGETS
-runtime = env.SharedLibrary('engine', backend_src + swig_src,)
+engine = env.SharedLibrary('engine', backend_src + swig_src,)
 bmpout = env.Program('bmpout', backend_src + bmpout_src)
 replay = env.Program('replay', backend_src + replay_src)
 gufg_exec = env.Program('gufg',backend_src + gufg_exec_src)
 
+pyTargets=[wrappy, engine, Glob("../src/python/*.py")]
+binTargets=[replay, bmpout, gufg_exec]
+distTargets=["../content", "../src/scripts", Glob("../info/*"), miscdirs, binTargets]
 
-#INSTALL
-env.Install(source=[wrappy,
-                    runtime,
-                    Glob("../src/python/*.py")],
-            target="runtime")
+#INSTALL TARGETS
+bins = [env.Install(target="..", source=t) for t in binTargets]
+py = env.Install(target="../runtime", source=pyTargets)
+dist = env.Install(target="../dist", source=distTargets) +\
+       env.Install(target="../dist/runtime", source=pyTargets)
 
-env.Install(source=["runtime",
-                    "../src/scripts",
-                    Glob("../info/*"),
-                    bmpout,
-                    replay,
-                    gufg_exec,
-                    miscdirs],
-            target="../")
-
-env.InstallAs(target='../gufg.py', source='../src/scripts/gufg.py')
+Default("../gufg")
