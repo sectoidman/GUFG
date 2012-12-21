@@ -852,6 +852,7 @@ void interface::dragBG(int deltaX)
 	for(int i = 0; i < 2; i++){
 		if(dy < p[i]->posY + p[i]->collision.h){
 			dy = p[i]->posY + p[i]->collision.h;
+			if(dy > 1800) dy = 1800;
 		}
 	}
 	bg.y = dy - bg.h;
