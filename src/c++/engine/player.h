@@ -21,7 +21,7 @@ public:
 	virtual ~instance();
 	virtual avatar * pick() { return v; }
 
-	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum, lock;
+	SDL_Rect spr, *hitbox, *hitreg, collision, *momentum;
 	int hitComplexity, regComplexity, momentumComplexity;
 	bool secondInstance;
 	int posX, posY;
