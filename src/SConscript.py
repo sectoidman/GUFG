@@ -41,13 +41,12 @@ env.Install(source=[wrappy,
             target="runtime")
 
 env.Install(source=["runtime",
-                    "../content",
                     "../src/scripts",
                     Glob("../info/*"),
                     bmpout,
                     replay,
                     gufg_exec,
                     miscdirs],
-            target="../dist")
+            target="../")
 
-env.InstallAs(target='../dist/gufg.py', source='../src/scripts/gufg.py')
+env.InstallAs(target='../gufg.py', source='../src/scripts/gufg.py')
