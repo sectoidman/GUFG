@@ -1052,7 +1052,7 @@ void interface::resolveHits()
 
 	for(unsigned int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->aerial) residual.y = -8;
+			if(p[i]->aerial) residual.y = 9;
 			else{ 
 				if(p[(i+1)%2]->aerial) residual.x = -2;
 				else {
