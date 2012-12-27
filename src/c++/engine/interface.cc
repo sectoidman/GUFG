@@ -335,8 +335,8 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	roundEnd = false;
-	for(unsigned int i = 2; i < things.size(); i++)
-		things.erase(things.begin()+i);
+	while(things.size() > 2)
+		things.erase(things.begin()+2);
 	bg.x = 800;
 	bg.y = -900;
 
