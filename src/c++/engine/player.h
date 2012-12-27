@@ -45,7 +45,6 @@ public:
 	virtual void getMove(int*, bool*, SDL_Rect&, bool);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
-	void enforceAttractor(attractor*);
 	virtual void invertVectors(int);
 	virtual void addVector(SDL_Rect&);
 	virtual void removeVector(int);
@@ -59,7 +58,10 @@ public:
 	virtual void connect(int, hStat&);
 	virtual void pushInput(bool*);
 	virtual int passSignal(int);
+	void enforceAttractor(attractor*);
+	int middle();
 	void flip();
+
 	bool aerial;
 	int * meter;
 	int particleType;

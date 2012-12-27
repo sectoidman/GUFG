@@ -532,7 +532,7 @@ void interface::resolve()
 			p[i]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 		}
 
-		unitCollision();
+		resolveCollision();
 
 		if(p[0]->cMove->state[p[0]->connectFlag].i & 1 && p[0]->cMove != p[0]->pick()->airNeutral) 
 			p[0]->checkFacing(p[1]);
@@ -913,21 +913,16 @@ interface::~interface()
 	SDL_Quit();
 }
 
-void interface::unitCollision()
+void interface::unitCollision(player *a, player *b)
 {
-	player *right = p[1], *left = p[0];
-	int middle[2];
-	for(int i = 0; i < 2; i++){
-		if(p[i]->facing == 1) middle[i] = p[i]->collision.x + p[i]->collision.w / 2;
-		else middle[i] = p[i]->collision.x + p[i]->collision.w / 2 + p[i]->collision.w % 2;
-	}
-	if(middle[0] > middle[1]){ right = p[0]; left = p[1]; }
-	else if(middle[0] < middle[1]){ right = p[1]; left = p[0]; }
+	player *right = b, *left = a;
+	if(a->middle() > b->middle()){ right = a; left = b; }
+	else if(a->middle() < b->middle()){ right = b; left = a; }
 	else {
-		if(p[0]->facing == 1 && p[1]->facing == -1){ left = p[0]; right = p[1]; }
-		else if(p[1]->facing == 1 && p[0]->facing == -1){ left = p[1]; right = p[0]; }
+		if(a->facing == 1 && b->facing == -1){ left = a; right = b; }
+		else if(b->facing == 1 && a->facing == -1){ left = b; right = a; }
 	}
-	if (aux::checkCollision(p[0]->collision, p[1]->collision)){
+	if (aux::checkCollision(a->collision, b->collision)){
 
 	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
 
@@ -957,8 +952,13 @@ void interface::unitCollision()
 		right->updateRects();
 		left->updateRects();
 	}
-	prox.w = right->posX - left->posX;
-	prox.h = abs(right->posY - left->posY);
+}
+
+void interface::resolveCollision()
+{
+	unitCollision(p[0], p[1]);
+	prox.w = abs(p[0]->posX - p[1]->posX);
+	prox.h = abs(p[0]->posY - p[1]->posY);
 }
 
 void interface::resolveThrows()
@@ -1071,7 +1071,7 @@ void interface::resolveHits()
 	}
 
 	if(connect[0] || connect[1]){
-		unitCollision();
+		resolveCollision();
 	}
 
 	for(int i = 0; i < 2; i++) {
