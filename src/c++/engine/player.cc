@@ -732,6 +732,12 @@ void instance::removeVector(int n)
 	momentumComplexity--;
 }
 
+int instance::middle()
+{
+	if(facing == 1) return collision.x + collision.w / 2;
+	else return collision.x + collision.w / 2 + collision.w % 2;
+}
+
 void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
 {
 	int value = -1;

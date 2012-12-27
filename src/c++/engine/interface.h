@@ -73,7 +73,8 @@ public:
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
-	void unitCollision();
+	void resolveCollision();
+	void unitCollision(player*, player*);
 	void readMatchupChart();
 	void writeMatchupChart();
 	void initialConfig(int);
