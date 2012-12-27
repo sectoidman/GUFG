@@ -1052,7 +1052,7 @@ void interface::resolveHits()
 
 	for(unsigned int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->aerial) residual.y = 9;
+			if(p[i]->aerial) residual.y = 10;
 			else{ 
 				if(p[(i+1)%2]->aerial) residual.x = -2;
 				else {
@@ -1065,8 +1065,8 @@ void interface::resolveHits()
 					}
 				}
 				residual.x *= p[i]->facing;
-				p[i]->addVector(residual);
 			}
+			p[i]->addVector(residual);
 		}
 	}
 
