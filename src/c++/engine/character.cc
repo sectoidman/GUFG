@@ -523,7 +523,6 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 	} else if (hitType == 1){
 		if(s.launch) aerial = true;
 		if(s.stun != 0){
-			printf("%i\n", s.stun);
 			frame = 0;
 			if(aerial){
 				untech->init(s.stun+s.untech);
