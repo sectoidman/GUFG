@@ -35,10 +35,10 @@ void yellow::tick(int *& meter)
 	}
 }
 
-void yellow::step(action *& cMove, int &f, int &freeze, int *& meter)
+void yellow::step(action *& cMove, int &f, int &freeze, int &connectFlag, int &hitFlag, int *& meter)
 {
 	if(meter[4] < 0) meter[4]++;
-	character::step(cMove, f, freeze, meter);
+	character::step(cMove, f, freeze, connectFlag, hitFlag, meter);
 }
 
 action * yellow::createMove(char * fullName)
@@ -167,11 +167,11 @@ void flashStep::execute(action * last, int *& meter, int &f, int &c, int &h)
 	action::execute(last, meter, f, c, h);
 }
 
-void flashSummon::step(int *& meter, int &f)
+void flashSummon::step(int *& meter, int &f, int &c, int &h)
 {
 	if(uFlag){
 		if(f == frames - 1) meter[4] = 0;
 	} else meter[4] += flashMeterGain / frames + 1;
 	if(meter[4] > 540) meter[4] = 540;
-	action::step(meter, f);
+	action::step(meter, f, c, h);
 }

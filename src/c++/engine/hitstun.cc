@@ -6,12 +6,12 @@ void hitstun::init(int n)
 	counter = n;
 }
 
-void hitstun::step(int *& meter, int &f)
+void hitstun::step(int *& meter, int &f, int &c, int &h)
 {
 	if(counter <= 0){ 
-		action::step(meter, f);
+		action::step(meter, f, c, h);
 	} else {
-		if(f < frames - 1) action::step(meter, f);
+		if(f < frames - 1) action::step(meter, f, c, h);
 		counter--;
 	}
 }

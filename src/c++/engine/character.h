@@ -29,7 +29,7 @@ public:
 	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&) { return 0; }
 	virtual void getName(const char*, const char*);
 	virtual void connect(action *&, action *&, action *&, hStat&, int&, int, int*&);
-	virtual void step(action *&, int&, int&, int*&);
+	virtual void step(action *&, int&, int&, int&, int&, int*&);
 	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
 	virtual void tick(int *&) {}

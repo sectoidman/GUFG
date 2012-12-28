@@ -583,10 +583,11 @@ void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag
 	resetAirOptions(meter);
 }
 
-void avatar::step(action *& cMove, int &currentFrame, int &freeze, int *& meter)
+void avatar::step(action *& cMove, int &currentFrame, int &freeze, int &connectFlag, int &hitFlag, int *& meter)
 {
 	if(freeze <= 0) {
-		cMove->step(meter, currentFrame);
+		cMove->step(meter, currentFrame, connectFlag, hitFlag);
+		if(cMove->hits > 0 && cMove->stats[connectFlag-1].noConnect) connectFlag--;
 		tick(meter);
 	} else {
 		freeze--;

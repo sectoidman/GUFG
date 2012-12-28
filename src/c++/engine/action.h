@@ -64,7 +64,7 @@ public:
 	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
-	virtual void step(int *&, int&);
+	virtual void step(int *&, int&, int&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
 	virtual instance * spawn() { return NULL; }
@@ -175,7 +175,7 @@ public:
 	hitstun() {}
 	void init(int);
 	int counter;
-	virtual void step(int *&, int&);
+	virtual void step(int *&, int&, int&, int&);
 	virtual action * blockSuccess(int);
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
 	virtual int arbitraryPoll(int, int);
@@ -209,7 +209,7 @@ class looping : virtual public utility {
 public:
 	looping() {}
 	looping(const char*);
-	virtual void step(int *&, int&);
+	virtual void step(int *&, int&, int&, int&);
 };
 
 class airMove : virtual public action {

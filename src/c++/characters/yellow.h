@@ -11,7 +11,7 @@ public:
 	void tick(int *&);
 	void init(int *&);
 	int * generateMeter();
-	void step(action *&, int&, int&, int*&);
+	void step(action *&, int&, int&, int&, int&, int*&);
 };
 
 class flashStep : public airMove {
@@ -33,7 +33,7 @@ public:
 	bool check(SDL_Rect&, int[]);
 	void execute(action *, int *&, int&, int&, int&);
 	bool setParameter(char*);
-	void step(int *&, int&);
+	void step(int *&, int&, int&, int&);
 	virtual void zero() { flashMeterGain = 0; special::zero(); }
 private:
 	bool uFlag;

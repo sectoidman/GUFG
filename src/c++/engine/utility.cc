@@ -22,9 +22,9 @@ looping::looping(const char * n)
 	build(n);
 }
 
-void looping::step(int *& meter, int &f)
+void looping::step(int *& meter, int &f, int &c, int &h)
 {
-	action::step(meter, f);
+	action::step(meter, f, c, h);
 	if(f != 0){ 
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
 		else meter[1] = 300;

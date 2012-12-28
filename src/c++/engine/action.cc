@@ -711,7 +711,7 @@ bool action::cancel(action * x, int& c, int &h)
 	return 0;
 }
 
-void action::step(int *& meter, int &f)
+void action::step(int *& meter, int &f, int &connectFlag, int &hitFlag)
 {
 	if(f == 0){
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
@@ -743,7 +743,7 @@ action * action::connect(int *& meter, int &c, int f)
 {
 	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
 	else{
-		if(!stats[c+1].noConnect) c = calcCurrentHit(f)+1;
+		c = calcCurrentHit(f)+1;
 		if(meter[1] + gain[c] < 300) meter[1] += gain[c];
 		else meter[1] = 300;
 		if(onConnect[c-1] != NULL){

@@ -563,7 +563,7 @@ void instance::step()
 	}
 	if(posX > 3300 || posX < -100) dead = true;
 	if(!freeze) counter++;
-	pick()->step(cMove, currentFrame, freeze, meter);
+	pick()->step(cMove, currentFrame, freeze, connectFlag, hitFlag, meter);
 	if(cMove && currentFrame >= cMove->frames){
 		if(cMove->modifier && cMove->basis){ 
 			currentFrame = cMove->currentFrame;

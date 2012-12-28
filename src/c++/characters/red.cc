@@ -21,10 +21,10 @@ void red::tick(int *& metre)
 	if(metre[4] < 0) metre[4] = 0;
 }
 
-void red::step(action *& cMove, int &f, int &freeze, int *& metre)
+void red::step(action *& cMove, int &f, int &freeze, int &connectFlag, int &hitFlag, int *& metre)
 {
 	if(metre[5] > 0) metre[5]--;
-	character::step(cMove, f, freeze, metre);
+	character::step(cMove, f, freeze, connectFlag, hitFlag, metre);
 }
 
 void red::drawMeters(int ID, float scalingFactor, int hidden, int * metre)

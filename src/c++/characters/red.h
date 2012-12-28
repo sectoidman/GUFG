@@ -9,7 +9,7 @@ public:
 	void drawMeters(int, float, int, int*);
 	void tick(int *&);
 	int * generateMeter();
-	void step(action *&, int&, int&, int*&);
+	void step(action *&, int&, int&, int&, int&, int*&);
 	void init(int *&);
 	instance * backup;
 };
