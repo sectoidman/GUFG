@@ -498,6 +498,10 @@ void action::parseProperties(char * buffer, bool counter)
 			if(counter) CHStats[ch].stick = 1;
 			else stats[ch].stick = 1;
 			break;
+		case 'D':
+			if(counter) CHStats[ch].noConnect = 1;
+			else stats[ch].noConnect = 1;
+			break;
 		case 's':
 			if(!counter) stop += 1;
 			break;
@@ -661,6 +665,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.slide = CHStats[c].slide;
 			s.stick = CHStats[c].stick;
 			s.ghostHit = CHStats[c].ghostHit;
+			s.noConnect = CHStats[c].noConnect;
 		} else {
 			s.launch = stats[c].launch;
 			s.hover = stats[c].hover;
@@ -669,6 +674,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.slide = stats[c].slide;
 			s.stick = stats[c].stick;
 			s.ghostHit = stats[c].ghostHit;
+			s.noConnect = stats[c].noConnect;
 		}
 		s.hitsProjectile = stats[c].hitsProjectile;
 		s.turnsProjectile = stats[c].turnsProjectile;
@@ -737,7 +743,7 @@ action * action::connect(int *& meter, int &c, int f)
 {
 	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
 	else{
-		c = calcCurrentHit(f)+1;
+		if(!stats[c+1].noConnect) c = calcCurrentHit(f)+1;
 		if(meter[1] + gain[c] < 300) meter[1] += gain[c];
 		else meter[1] = 300;
 		if(onConnect[c-1] != NULL){
