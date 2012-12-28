@@ -337,6 +337,8 @@ void interface::roundInit()
 	roundEnd = false;
 	while(things.size() > 2)
 		things.erase(things.begin()+2);
+	while(globals.size() > 0)
+		globals.erase(things.begin());
 	bg.x = 800;
 	bg.y = -900;
 
