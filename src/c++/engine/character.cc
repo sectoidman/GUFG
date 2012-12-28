@@ -15,6 +15,8 @@ character::character()
 
 character::character(const char* name)
 {
+	head = new actionTrie;
+	airHead = new actionTrie;
 	build(name, name);
 }
 
