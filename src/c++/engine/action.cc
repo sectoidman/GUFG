@@ -665,7 +665,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.slide = CHStats[c].slide;
 			s.stick = CHStats[c].stick;
 			s.ghostHit = CHStats[c].ghostHit;
-			s.noConnect = CHStats[c].noConnect;
+			s.noConnect = stats[c].noConnect || CHStats[c].noConnect;
 		} else {
 			s.launch = stats[c].launch;
 			s.hover = stats[c].hover;

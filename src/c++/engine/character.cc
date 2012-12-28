@@ -523,6 +523,7 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 	} else if (hitType == 1){
 		if(s.launch) aerial = true;
 		if(s.stun != 0){
+			printf("%i\n", s.stun);
 			frame = 0;
 			if(aerial){
 				untech->init(s.stun+s.untech);
@@ -535,7 +536,7 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 				reel->init(s.stun);
 				cMove = reel;
 			}
-		} 
+		}
 	} else if (hitType == -1) {
 		if(meter[1] + 6 < 300) meter[1] += 6;
 		else meter[1] = 300;
