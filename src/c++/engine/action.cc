@@ -79,6 +79,7 @@ void action::zero()
 	riposte = NULL;
 	basis = NULL;
 	onHold = NULL;
+	hittable = 0;
 	modifier = 0;
 }
 
@@ -516,6 +517,9 @@ void action::parseProperties(char * buffer, bool counter)
 			break;
 		case ':':
 			ch++;
+			break;
+		case 'H':
+			if(!counter) hittable = 1;
 			break;
 		case 't':
 			if(!counter) throwinvuln = 1;
