@@ -1001,7 +1001,7 @@ void interface::resolveHits()
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(unsigned int h = 0; h < things.size(); h++){
+		for(int h = (int)things.size()-1; h >= 0; h--){
 			if(h != i && !taken[h] && !connect[i]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
