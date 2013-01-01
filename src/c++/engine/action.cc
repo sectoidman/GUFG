@@ -691,6 +691,7 @@ bool action::cancel(action * x, int& c, int &h)
 {
 	cancelField r;
 	if(x == NULL) return 1;
+	if(c > hits || h > hits) return 0;
 	if(x->modifier && x->basis){
 		if(x->basis == NULL) return 1;
 		r.i = x->basis->state[x->connectFlag].i;
