@@ -986,41 +986,41 @@ void interface::unitCollision(player *a, player *b)
 		if(a->facing == 1 && b->facing == -1){ left = a; right = b; }
 		else if(b->facing == 1 && a->facing == -1){ left = b; right = a; }
 	}
-	if (aux::checkCollision(a->collision, b->collision)){
 
 	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
 
-		int rLOffset = right->posX - right->collision.x;
-		int rROffset = right->posX - (right->collision.x + right->collision.w);
-		int lLOffset = left->posX - left->collision.x;
-		int lROffset = left->posX - (left->collision.x + left->collision.w);
-		int dOffset = (left->deltaX - right->deltaX) % 2;
-		int totalMiddle = (right->collision.x + left->collision.x + left->collision.w)/2;
-		if(abs(left->deltaX) > abs(right->deltaX)) totalMiddle += dOffset;
+	int rLOffset = right->posX - right->collision.x;
+	int rROffset = right->posX - (right->collision.x + right->collision.w);
+	int lLOffset = left->posX - left->collision.x;
+	int lROffset = left->posX - (left->collision.x + left->collision.w);
+	int dOffset = (left->deltaX - right->deltaX) % 2;
+	int totalMiddle = (right->collision.x + left->collision.x + left->collision.w)/2;
+	if(abs(left->deltaX) > abs(right->deltaX)) totalMiddle += dOffset;
 
-		if(left->lCorner){ 
-			right->posX = left->collision.x + left->collision.w + rLOffset;
-		}
-		else if(right->rCorner) left->posX = right->collision.x + lROffset;
-		else {
-			right->posX = totalMiddle + right->collision.w + rROffset;
-			left->posX = totalMiddle - left->collision.w + lLOffset;
-		}
-		if(left->collision.x < 50) {
-			left->updateRects();
-			right->posX = left->collision.x + left->collision.w + rLOffset;
-		} else if (right->collision.x + right->collision.w > 3150) {
-			right->updateRects();
-			left->posX = right->collision.x + lROffset;
-		}
-		right->updateRects();
-		left->updateRects();
+	if(left->lCorner){ 
+		right->posX = left->collision.x + left->collision.w + rLOffset;
 	}
+	else if(right->rCorner) left->posX = right->collision.x + lROffset;
+	else {
+		right->posX = totalMiddle + right->collision.w + rROffset;
+		left->posX = totalMiddle - left->collision.w + lLOffset;
+	}
+	if(left->collision.x < 50) {
+		left->updateRects();
+		right->posX = left->collision.x + left->collision.w + rLOffset;
+	} else if (right->collision.x + right->collision.w > 3150) {
+		right->updateRects();
+		left->posX = right->collision.x + lROffset;
+	}
+	right->updateRects();
+	left->updateRects();
+
 }
 
 void interface::resolveCollision()
 {
-	unitCollision(p[0], p[1]);
+	if (aux::checkCollision(p[0]->collision, p[1]->collision))
+		unitCollision(p[0], p[1]);
 	prox.w = abs(p[0]->posX - p[1]->posX);
 	prox.h = abs(p[0]->posY - p[1]->posY);
 }
