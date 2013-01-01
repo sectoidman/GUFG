@@ -843,6 +843,7 @@ int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 			flip();
 			invertVectors(1);
 			deltaX = -deltaX;
+			freeze = 0;
 		}
 	}
 	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);

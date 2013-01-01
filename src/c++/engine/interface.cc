@@ -1043,7 +1043,7 @@ void interface::resolveHits()
 					p[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
-			combo[(i+1)%2] += hit[hitBy[i]];
+			if(i < 2) combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->enforceFloor(floor);
 			p[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
@@ -1083,8 +1083,8 @@ void interface::resolveHits()
 	for(int i = 0; i < 2; i++) {
 		if(p[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
-			p[0]->freeze = 30;
-			p[1]->freeze = 30;
+			for(unsigned int j = 0; j < things.size(); j++)
+				things[j]->freeze = 30;
 		}
 	}
 }
