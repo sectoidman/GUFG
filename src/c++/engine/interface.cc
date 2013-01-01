@@ -760,26 +760,31 @@ void interface::cSelectMenu()
 	}
 
 	for(int i = 0; i < 2; i++){
-		if(!menu[i]){
-			if(sAxis[i][2] && !select[i] && counter[i] == 0){
-				selection[i]--;
-				if(selection[i] < 1) selection[i] = numChars;
-				counter[i] = 10;
-			}
-			if(sAxis[i][3] && !select[i] && counter[i] == 0){
-				selection[i]++;
-				if(selection[i] > numChars) selection[i] = 1;
-				counter[i] = 10;
-			}
-			for(int j = 0; j < 5; j++){
-				if(posEdge[i][j] == 1 && !select[i]){
-					select[i] = 1;
+		if(numChars < 2){
+			select[i] = 1;
+			selection[i] = 1;
+		} else {
+			if(!menu[i]){
+				if(sAxis[i][2] && !select[i] && counter[i] == 0){
+					selection[i]--;
+					if(selection[i] < 1) selection[i] = numChars;
+					counter[i] = 10;
 				}
-			}
-			if(posEdge[i][5] == 1){
-				if(!select[i]) menu[i] = 3;
-				else select[i] = 0;
-				counter[i] = 10;
+				if(sAxis[i][3] && !select[i] && counter[i] == 0){
+					selection[i]++;
+					if(selection[i] > numChars) selection[i] = 1;
+					counter[i] = 10;
+				}
+				for(int j = 0; j < 5; j++){
+					if(posEdge[i][j] == 1 && !select[i]){
+						select[i] = 1;
+					}
+				}
+				if(posEdge[i][5] == 1){
+					if(!select[i]) menu[i] = 3;
+					else select[i] = 0;
+					counter[i] = 10;
+				}
 			}
 		}
 	}
