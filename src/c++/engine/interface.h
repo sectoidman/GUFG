@@ -62,6 +62,7 @@ public:
 	void drawCSelect();
 	void drawMainMenu(int);
 	void drawRematchMenu();
+	void drawPauseMenu();
 	void cleanup();
 	void runTimer();	/*Currently just a decrementer. May always just be a decrementer.*/
 	void roundInit();
@@ -70,6 +71,7 @@ public:
 	void mainMenu(int);
 	void keyConfig();
 	void rematchMenu();
+	void pauseMenu();
 	void checkWin();
 	void dragBG(int);
 	void doSuperFreeze();
@@ -88,6 +90,7 @@ public:
 	int menu[2];
 	int configMenu[2];
 	int rMenu;
+	int pMenu;
 	SDL_Rect bg;
 	SDL_Rect prox;
 	bool boxen:1;
@@ -96,6 +99,7 @@ public:
 	bool continuous:1;
 	bool single:1;
 	bool analytics:1;
+	bool pauseEnabled:1;
 	int combo[2];
 	int damage[2];
 	bool illegit[2];

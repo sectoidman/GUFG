@@ -24,6 +24,7 @@ interface::interface()
 	shortcut = false;
 	continuous = false;
 	analytics = false;
+	pauseEnabled = false;
 	single = false;
 	boxen = false;
 	std::ifstream read;
@@ -318,6 +319,7 @@ void interface::matchInit()
 {
 	SDL_Event event;
 	rMenu = 0;
+	pMenu = 0;
 	p[0]->rounds = 0;
 	p[1]->rounds = 0;
 	p[0]->secondInstance = 0;
@@ -451,6 +453,7 @@ void interface::resolve()
 {
 	if(!select[0] || !select[1]) cSelectMenu(); 
 	else if(rMenu) rematchMenu();
+	else if(pMenu) pauseMenu();
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
@@ -570,29 +573,39 @@ void interface::resolve()
 		resolveHits();
 
 		/*Draw the sprites*/
-	}	
+	}
 }
 
 void interface::cleanup()
 {
-	if(!rMenu && select[0] && select[1]){
-		for(unsigned int i = 0; i < things.size(); i++){
-			things[i]->step();
-			if(i > 1 && things[i]->dead){ 
-				things.erase(things.begin()+i);
-				i--;
+	if(!pMenu){
+		if(!rMenu && select[0] && select[1]){
+			for(unsigned int i = 0; i < things.size(); i++){
+				things[i]->step();
+				if(i > 1 && things[i]->dead){ 
+					things.erase(things.begin()+i);
+					i--;
+				}
+			}
+			for(unsigned int i = 0; i < globals.size(); i++){
+				if(globals[i]->length <= 0) globals.erase(globals.begin()+i);
+				else globals[i]->length--;
+			}
+			resolveSummons();
+			if(!roundEnd) checkWin();
+			runTimer();
+		}
+	/*Reinitialize inputs*/
+		if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
+	}
+	if(pauseEnabled && !roundEnd){
+		for(int i = 0; i < 2; i++){
+			if(posEdge[i][5] == 1 && counter[i] <= 0){
+				if(pMenu) pMenu = 0;
+				else pMenu = 1;
 			}
 		}
-		for(unsigned int i = 0; i < globals.size(); i++){
-			if(globals[i]->length <= 0) globals.erase(globals.begin()+i);
-			else globals[i]->length--;
-		}
-		resolveSummons();
-		if(!roundEnd) checkWin();
-		runTimer();
 	}
-	/*Reinitialize inputs*/
-	if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
 	for(int i = 0; i < 2; i++){
 		for(int j = 0; j < 6; j++){
 			if(posEdge[i][j] > 0) posEdge[i][j]++;
@@ -800,8 +813,8 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 5) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 5;
+	if(menu[ID] > 6) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 6;
 	for(int i = 0; i < 5; i++){
 		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(menu[ID]){
@@ -826,9 +839,16 @@ void interface::mainMenu(int ID)
 					shortcut = true;
 				break;
 			case 5:
+				if(pauseEnabled)
+					pauseEnabled = false;
+				else
+					pauseEnabled = true;
+				break;
+			case 6:
 				gameover = 1;
 				break;
 			}
+			
 			counter[ID] = 10;
 		}
 	}
@@ -858,6 +878,48 @@ void interface::dragBG(int deltaX)
 		}
 	}
 	bg.y = dy - bg.h;
+}
+
+void interface::pauseMenu()
+{
+	for(int j = 0; j < 2; j++){
+		if(sAxis[j][0] && !counter[j]){
+			pMenu--;
+			counter[j] = 10;
+		} else if(sAxis[j][1] && !counter[j]){ 
+			pMenu++;
+			counter[j] = 10;
+		}
+		if(pMenu > 3) pMenu = 1;
+		else if(pMenu < 1) pMenu = 3;
+		for(int i = 0; i < 5; i++){
+			if(posEdge[j][i] == 1){
+				switch(pMenu){
+				case 1:
+					pMenu = 0;
+					break;
+				case 2:
+					delete p[0]->pick();
+					delete p[1]->pick();
+					select[0] = 0;
+					select[1] = 0;
+					delete [] p[0]->meter;
+					delete [] p[1]->meter;
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					//Mix_PlayChannel(3, announceSelect, 0);
+					matchInit();
+					break;
+				case 3:
+					Mix_HaltMusic();
+					Mix_FreeMusic(matchMusic);
+					gameover = 1;
+					break;
+				}
+				j = 2;
+			}
+		}
+	}
 }
 
 void interface::rematchMenu()
