@@ -325,6 +325,7 @@ public:
 	int spawnPosX;
 	int spawnPosY;
 	int lifespan;
+	int allegiance;
 	bool spawnTrackX:1;
 	bool spawnTrackY:1;
 	bool spawnTrackFloor:1;

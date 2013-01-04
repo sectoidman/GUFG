@@ -71,6 +71,7 @@ void summon::zero()
 	spawnPosY = 0;
 	spawnPosX = 0;
 	lifespan = -1;
+	allegiance = 1;
 	action::zero();
 }
 
@@ -140,6 +141,10 @@ bool summon::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		lifespan = atoi(token);
 		return 1;
+	} else if(!strcmp("Allegiance", token)){
+		token = strtok(NULL, "\t: \n");
+		allegiance = atoi(token);
+		return 1;
 	} else if(!strcmp("Payload", token)){
 		token = strtok(NULL, "\t: \n");
 		tempPayload = new char[strlen(token)+1];
@@ -169,6 +174,8 @@ int summon::arbitraryPoll(int q, int f)
 		return spawnPosX;
 	case 55:
 		return spawnPosY;
+	case 56:
+		return allegiance;
 	default:
 		break;
 	}
