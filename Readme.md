@@ -23,7 +23,7 @@ This fork of GUFG has currently been tested only on Linux.
     and need not be installed before building GUFG.
 
 2. Clone this repository
-  (`git clone git@github.com:h-forrest-alexander/GUFG.git`) 
+  (`git clone git@github.com:Advael/GUFG.git`) 
     and `cd` to it.
 
 3. Run `scons`.
