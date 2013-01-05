@@ -1131,8 +1131,19 @@ void interface::resolveHits()
 
 	for(unsigned int i = 0; i < 2; i++){ 
 		if(connect[i]){
-			if(p[i]->aerial) residual.y = 10;
-			else{ 
+			if(p[i]->aerial){ 
+				switch(s[i].pause){
+				case -1:
+					residual.y = 6 + (s[i].stun/4+9)/4;
+					break;
+				case 0:
+					residual.y = 0;
+					break;
+				default:
+					residual.y = 6 + (s[i].pause - 1)/4;
+					break;
+				}
+			} else { 
 				if(p[(i+1)%2]->aerial) residual.x = -2;
 				else {
 					if(combo[i] > 1) residual.x = -3*(abs(combo[i]-1));
