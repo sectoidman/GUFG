@@ -119,7 +119,7 @@ bool summon::setParameter(char * buffer)
 		return 1;
 	} else if(!strcmp("Track", token)){
 		token = strtok(NULL, "\t: \n");
-		for(unsigned int i = 0; i < strlen(token + 1); i++){
+		for(unsigned int i = 0; i < strlen(token) + 1; i++){
 			switch(token[i]){
 			case 'x': 
 				spawnTrackX = true;
