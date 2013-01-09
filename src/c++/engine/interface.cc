@@ -338,9 +338,9 @@ void interface::roundInit()
 {
 	roundEnd = false;
 	while(things.size() > 2)
-		things.erase(things.begin()+2);
+		things.pop_back();
 	while(globals.size() > 0)
-		globals.erase(globals.end());
+		globals.pop_back();
 	bg.x = 800;
 	bg.y = -900;
 
