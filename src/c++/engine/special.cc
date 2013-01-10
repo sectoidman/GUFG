@@ -58,6 +58,14 @@ bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int mete
 	return 0;
 }
 
+bool releaseCheck::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
+{
+	for(int i = 0; i < 5; i++){
+		if(pos[i] > 0) return 0;
+	}
+	return check(p, meter);
+}
+
 int super::arbitraryPoll(int q, int f)
 {
 	if(q == 2 && f == freezeFrame) return freezeLength;

@@ -669,6 +669,7 @@ void interface::resolveSummons()
 			avec->length = tvec->length;
 			avec->radius = tvec->radius;
 			avec->effectCode = tvec->effectCode;
+			avec->eventHorizon = tvec->eventHorizon;
 			if(things[i]->facing == 1) avec->posX = things[i]->collision.x + things[i]->collision.w / 2;
 			else avec->posX = things[i]->collision.x + things[i]->collision.w / 2 + things[i]->collision.w % 2;
 			avec->posY = things[i]->collision.y + things[i]->collision.h/2;
@@ -1120,7 +1121,7 @@ void interface::resolveHits()
 					p[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
-			if(i < 2) combo[(i+1)%2] += hit[hitBy[i]];
+			if(i < 2 && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			p[(i+1)%2]->enforceFloor(floor);
 			p[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);

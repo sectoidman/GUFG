@@ -62,7 +62,7 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, 
 	action * result = NULL;
 	int j;
 	for(j = i; j < 30; j++){
-		test = child[inputBuffer[j]];
+		if(inputBuffer[j] < 10) test = child[inputBuffer[j]];
 		if(test != NULL){
 			if (first < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, prox, cFlag, hFlag);
 			else result = test->actionHook(inputBuffer, j, first, r, pos, neg, c, prox, cFlag, hFlag);

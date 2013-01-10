@@ -364,7 +364,7 @@ action * avatar::createMove(char * fullName)
 	char type[2] = {fullName[0], fullName[1]};
 	char actionName[151];
 
-	token = strtok(fullName, " \t=~>-&?@%$_!\n");
+	token = strtok(fullName, " \t=~>-&?@%$_!^\n");
 	sprintf(actionName, "%s/%s", name, token);
 
 	action * m;
@@ -390,6 +390,9 @@ action * avatar::createMove(char * fullName)
 //		else 
 		if(type[1] == 'j') m = new airSuper(actionName);
 		else m = new super(actionName);
+		break;
+	case '^':
+		m = new releaseCheck(actionName);
 		break;
 	case '?':
 		m = new mash(actionName);

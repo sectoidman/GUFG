@@ -339,4 +339,11 @@ public:
 	virtual bool setParameter(char*);
 	virtual char* request(int, int);
 };
+
+class releaseCheck : virtual public action {
+public:
+	releaseCheck() {}
+	releaseCheck(const char* n) {build(n); }
+	virtual bool activate(int[], bool[], int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+};
 #endif

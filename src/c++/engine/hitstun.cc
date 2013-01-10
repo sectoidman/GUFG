@@ -3,7 +3,7 @@
 
 void hitstun::init(int n)
 {
-	counter = n;
+	if(n > 0) counter = n;
 }
 
 void hitstun::step(int *& meter, int &f, int &c, int &h)
@@ -17,12 +17,13 @@ void hitstun::step(int *& meter, int &f, int &c, int &h)
 }
 
 action * hitstun::blockSuccess(int st){
-	init(st);
+	if(st > 0) init(st);
 	return this;
 }
 
 int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
 {
+	if(!s.stun) return 1;
 	if(s.blockMask.i & blockState.i){
 		switch (b){
 		case -2:

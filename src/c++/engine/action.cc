@@ -283,6 +283,10 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		distortion->radius = atoi(token);
 		return 1;
+	} else if (!strcmp("EventHorizon", token)) {
+		token = strtok(NULL, "\t: \n");
+		distortion->eventHorizon = atoi(token);
+		return 1;
 	} else if (!strcmp("Attracts", token)) {
 		token = strtok(NULL, "\t: \n");
 		distortion->ID = atoi(token);
