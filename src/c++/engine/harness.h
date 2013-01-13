@@ -9,5 +9,6 @@ public:
 	virtual void processInput(SDL_Event&);
 	bool gameover;
 	double camX, camY, camZ, pan, tilt, size;
+	bool rrX, rlX, rrY, rlY, tuX, tuY, tuZ, tdX, tdY, tdZ;
 };
 #endif
