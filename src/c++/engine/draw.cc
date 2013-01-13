@@ -1,5 +1,35 @@
 #include "thing.h"
 #include "auxil.h"
+#include "gameinstance.h"
+void gameInstance::draw(thing & object)
+{
+	glViewport(0, 0, w, h);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION); 
+	glLoadIdentity(); 
+	glMatrixMode(GL_MODELVIEW); 
+	glLoadIdentity(); 
+	glPushMatrix(); 
+	glPushMatrix(); 
+	glMatrixMode( GL_PROJECTION );
+	// void gluOrtho2D ( left, right, bottom, top);
+	gluPerspective(50.0, 1.0, 1.0, 120.0);
+	glMatrixMode( GL_MODELVIEW );
+	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
+	glPushMatrix(); 
+	glRotatef(pan, 0.0, 0.0, 1.0f);
+	glPushMatrix(); 
+	glRotatef(tilt, 1.0, 0.0, 0.0f);
+	glPushMatrix();
+	glTranslatef(camX, camY, camZ);
+	object.draw();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix(); 
+	SDL_GL_SwapBuffers();
+}
+
 void thing::draw()
 {
 /* Load the identity matrix into modelmatrix. rotate the model, and move it back 5 */
