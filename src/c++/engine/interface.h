@@ -12,9 +12,10 @@
 #include <vector>
 #include "analytics.h"
 #include "window.h"
+#include "harness.h"
 #ifndef INTERFACE
 #define INTERFACE
-class gameInstance : public window{
+class gameInstance : public window, public harness{
 public:
 	void readInput();		/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/

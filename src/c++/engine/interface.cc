@@ -253,8 +253,7 @@ bool gameInstance::screenInit()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	/*Set up input buffers and joysticks*/
-	for(int i = 0; i < SDL_NumJoysticks(); i++)
-		SDL_JoystickOpen(i);
+	init();
 	initd = ret;
 	return ret;
 }
