@@ -10,5 +10,6 @@ public:
 	window();
 	bool screenInit();
 	SDL_Surface * screen;
+	int h, w;
 };
 #endif
