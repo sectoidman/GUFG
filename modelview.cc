@@ -9,6 +9,8 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 	joy.init();
-	while(true);
+	while(!joy.gameover){
+		joy.readInput();
+	}
 	return 1;
 }

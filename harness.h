@@ -3,6 +3,9 @@
 #define HARNESS_INCLUDED
 class harness{
 public:
+	harness();
 	void init();
+	virtual void readInput();
+	bool gameover;
 };
 #endif
