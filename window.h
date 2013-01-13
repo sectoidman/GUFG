@@ -5,7 +5,7 @@
 #include <GL/glut.h>
 class window{
 public:
-	window() : screen(NULL) {}
+	window();
 	bool screenInit();
-	SDL_Surface *& screen;
+	SDL_Surface * screen;
 };

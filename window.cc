@@ -1,4 +1,9 @@
 #include "window.h"
+window::window()
+{
+	screen = NULL;
+}
+
 bool window::screenInit()
 {
 	/*Initialize SDL*/
