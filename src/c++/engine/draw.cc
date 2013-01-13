@@ -17,12 +17,15 @@ void gameInstance::draw(thing & object)
 	glMatrixMode( GL_MODELVIEW );
 	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
 	glPushMatrix(); 
+	glRotatef(spin, 0.0, 0.0, 1.0f);
+	glPushMatrix(); 
 	glRotatef(pan, 0.0, 1.0, 0.0f);
 	glPushMatrix(); 
 	glRotatef(tilt, 1.0, 0.0, 0.0f);
 	glPushMatrix();
 	glTranslatef(camX, camY, camZ);
 	object.draw();
+	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();

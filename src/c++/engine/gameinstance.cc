@@ -10,6 +10,7 @@ void gameInstance::init()
 	size = 1.0;
 	pan = 0.0; rlX = 0; rrX = 0;
 	tilt = 0.0; rlY = 0; rrY = 0;
+	spin = 0.0; rlZ = 0; rrZ = 0;
 }
 
 void gameInstance::processInput(SDL_Event &event)
@@ -20,11 +21,9 @@ void gameInstance::processInput(SDL_Event &event)
 	case SDL_KEYUP:
 		switch (event.key.keysym.sym) {
 		case SDLK_w:
-			printf("%d\n", camZ);
 			tuZ = !tuZ;
 			break;
 		case SDLK_s:
-			printf("%d\n", camZ);
 			tdZ = !tdZ;
 			break;
 		case SDLK_d:
@@ -45,11 +44,17 @@ void gameInstance::processInput(SDL_Event &event)
 		case SDLK_RIGHT:
 			rrX = !rrX;
 			break;
-		case SDLK_e:
+		case SDLK_h:
 			rlY = !rlY;
 			break;
-		case SDLK_r:
+		case SDLK_l:
 			rrY = !rrY;
+			break;
+		case SDLK_j:
+			rlZ = !rlZ;
+			break;
+		case SDLK_k:
+			rrZ = !rrZ;
 			break;
 		case SDLK_z:
 			size -= 1.0f;
@@ -76,8 +81,10 @@ void gameInstance::readInput()
 	if(tdX) camX -= 0.1f;
 	if(tdY) camY -= 0.1f;
 	if(tdZ) camZ -= 0.1f;
-	if(rlX) pan -= 0.1f;
-	if(rlY) tilt -= 0.1f;
-	if(rrX) pan += 0.1f;
-	if(rrY) tilt += 0.1f;
+	if(rlX) pan -= 0.5f;
+	if(rlY) tilt -= 0.5f;
+	if(rlZ) spin -= 0.5f;
+	if(rrX) pan += 0.5f;
+	if(rrY) tilt += 0.5f;
+	if(rrZ) spin += 0.5f;
 }
