@@ -8,7 +8,10 @@ window::window()
 bool window::screenInit()
 {
 	/*Initialize SDL*/
-	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0){  
+		return false;
+
+	}
 	/*WM stuff*/
 	SDL_WM_SetCaption("downtop", "downtop");
 	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
@@ -37,5 +40,6 @@ bool window::screenInit()
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	return true;
 }
 
