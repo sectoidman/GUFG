@@ -17,7 +17,7 @@
 #define INTERFACE
 class gameInstance : public window, public harness{
 public:
-	void readInput();		/*Accepts input into input containers, for use by anything that wants it*/
+	virtual void processInput(SDL_Event&);		/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
 	virtual void loadMisc();
@@ -35,7 +35,6 @@ public:
 //Meta-interface stuff. Gameover state, screen size, etc.
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
-	bool gameover;
 	float scalingFactor, sf;
 	bool initd:1;
 	GLuint glyph[91];

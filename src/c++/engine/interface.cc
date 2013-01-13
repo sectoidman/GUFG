@@ -685,42 +685,31 @@ void interface::genInput()
 }
 
 /*Read the input that's happened this frame*/
-void gameInstance::readInput()
+void gameInstance::processInput(SDL_Event &event)
 {
-	/*Make our dummy event for polls*/
-	SDL_Event event;
-	for(int i = 0; i < 20; i++){
-		if (SDL_PollEvent(&event)){
-			/*Do stuff with event*/
-			for(int i = 0; i < 2; i++)
-				p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
-			switch (event.type){
-			/*Kill handler*/
-			case SDL_QUIT:
-				printf("Sigterm received!\n");
-				gameover = 1;
-				break;
-				/*Keyboard handler. Maybe I'll optimize such that the knows if it even needs to check this (EG if sticks are used)*/
-			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
-				case SDLK_q:
-				case SDLK_ESCAPE:
-					gameover = 1;
-					break;
-				case SDLK_F10:
-					if(scalingFactor == 1.0) sf = 0.5;
-					else sf = 1.0;
-					initd = false;
-					break;
-				case SDLK_F11:
-					initd = false;
-					break;
-				default:
-					break;
-				}
-				break;
-			}
+	/*Do stuff with event*/
+	for(int i = 0; i < 2; i++)
+		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
+	switch (event.type){
+	/*Kill handler*/
+	case SDL_KEYDOWN:
+		switch (event.key.keysym.sym) {
+		case SDLK_F10:
+			if(scalingFactor == 1.0) sf = 0.5;
+			else sf = 1.0;
+			initd = false;
+			break;
+		case SDLK_F11:
+			initd = false;
+			break;
+		default:
+			harness::processInput(event);
+			break;
 		}
+		break;
+	default:
+		harness::processInput(event);
+		break;
 	}
 }
 
