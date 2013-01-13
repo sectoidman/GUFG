@@ -14,7 +14,9 @@ void harness::init()
 	camY = 0.0;
 	camX = 0.0;
 	camZ = 0.0;
-	pan = 1.0;
+	size = 1.0;
+	pan = 0.0;
+	tilt = 0.0;
 }
 
 void harness::processInput(SDL_Event &event)
@@ -54,10 +56,22 @@ void harness::processInput(SDL_Event &event)
 			camY -= 0.1f;
 			break;
 		case SDLK_LEFT:
-			pan += 0.1f;
+			pan += 10.0f;
 			break;
 		case SDLK_RIGHT:
-			pan -= 0.1f;
+			pan -= 10.0f;
+			break;
+		case SDLK_e:
+			tilt += 5.0f;
+			break;
+		case SDLK_r:
+			tilt -= 5.0f;
+			break;
+		case SDLK_z:
+			size -= 1.0f;
+			break;
+		case SDLK_x:
+			size += 1.0f;
 			break;
 		default:
 			break;

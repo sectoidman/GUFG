@@ -4,6 +4,8 @@
 #include <time.h>
 void draw(window & mainWin, thing & object, harness & joy)
 {
+	float dim = 5.0;
+
 	glViewport(0, 0, mainWin.w, mainWin.h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION); 
@@ -12,14 +14,19 @@ void draw(window & mainWin, thing & object, harness & joy)
 	glLoadIdentity(); 
 	glPushMatrix(); 
 	glPushMatrix(); 
-	glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
-	glRectf(0.0f, 0.0f, mainWin.w/2, mainWin.h);
-	glPopMatrix();
-	glPushMatrix(); 
+	glMatrixMode( GL_PROJECTION );
+	// void gluOrtho2D ( left, right, bottom, top);
+	gluOrtho2D(-dim, dim, -dim, dim);
+	glMatrixMode( GL_MODELVIEW );
 	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
+	glPushMatrix(); 
+	glRotatef(joy.pan, 0.0, 1.0, 0.0f);
+	glPushMatrix(); 
+	glRotatef(joy.tilt, 1.0, 0.0, 0.0f);
 	glTranslatef(joy.camX, joy.camY, joy.camZ);
-	glRotatef(45, joy.pan, 0.0f, 0.0f);
-	object.draw(joy.pan);
+	object.draw(joy.size);
+	glPopMatrix();
+	glPopMatrix();
 	glPopMatrix(); 
 	SDL_GL_SwapBuffers();
 }

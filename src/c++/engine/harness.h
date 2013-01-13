@@ -8,6 +8,6 @@ public:
 	virtual void readInput();
 	virtual void processInput(SDL_Event&);
 	bool gameover;
-	double camX, camY, camZ, pan;
+	double camX, camY, camZ, pan, tilt, size;
 };
 #endif
