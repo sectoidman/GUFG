@@ -3,15 +3,17 @@
  *Written by Alex Kelly in 2012, under MIT OSI
  *For detailed license information, see the file COPYING in this directory
  */
+#include "session.h"
 #include "thing.h"
 #include "auxil.h"
-
 #define _USE_MATH_DEFINES
 #include "interface.h"
 #include <math.h>
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #include <SDL/SDL_opengl.h>
 #include <vector>
 void interface::draw()
@@ -584,6 +586,38 @@ bool gameInstance::screenInit(int w, int h)
 
 	initd = true;
 	return true;
+}
+
+void session::draw(thing & object)
+{
+	glViewport(0, 0, w, h);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION); 
+	glLoadIdentity(); 
+	glMatrixMode(GL_MODELVIEW); 
+	glLoadIdentity(); 
+	glPushMatrix(); 
+	glPushMatrix(); 
+	glMatrixMode( GL_PROJECTION );
+	// void gluOrtho2D ( left, right, bottom, top);
+	gluPerspective(50.0, 1.0, 1.0, 120.0);
+	glMatrixMode( GL_MODELVIEW );
+	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
+	glPushMatrix(); 
+	glRotatef(spin, 0.0, 0.0, 1.0f);
+	glPushMatrix(); 
+	glRotatef(pan, 0.0, 1.0, 0.0f);
+	glPushMatrix(); 
+	glRotatef(tilt, 1.0, 0.0, 0.0f);
+	glPushMatrix();
+	glTranslatef(camX, camY, camZ);
+	object.draw();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix(); 
+	SDL_GL_SwapBuffers();
 }
 
 void thing::draw()

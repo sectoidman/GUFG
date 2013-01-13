@@ -6,10 +6,15 @@
 #include <cstring>
 bool thing::readModel()
 {
+	readModel("model.obj");
+}
+
+bool thing::readModel(const char * fname)
+{
 	char buffer[300];
 	char * token;
 	std::ifstream read;
-	read.open("model.obj");
+	read.open(fname);
 	assert(!read.fail());
 	while(!read.eof()){
 		int t = 0;
