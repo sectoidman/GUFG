@@ -9,6 +9,7 @@ class thing{
 public:
 	virtual void draw();
 	virtual bool readModel();
+	virtual bool readModel(const char*);
 	std::vector<double> vertices[3];
 	~thing();
 };
