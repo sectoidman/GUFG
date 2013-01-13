@@ -2,6 +2,7 @@
 window::window()
 {
 	screen = NULL;
+	h = 450, w = 800;
 }
 
 bool window::screenInit()
@@ -9,8 +10,6 @@ bool window::screenInit()
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
 	/*WM stuff*/
-	int h = 450, w = 800;
-	screen = NULL;
 	SDL_WM_SetCaption("downtop", "downtop");
 	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
 		return false;
