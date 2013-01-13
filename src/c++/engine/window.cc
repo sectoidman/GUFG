@@ -18,9 +18,6 @@ bool window::screenInit()
 		return false;
 	SDL_ShowCursor(SDL_DISABLE);
 
-	/*Set up input buffers and joysticks*/
-	for(int i = 0; i < SDL_NumJoysticks(); i++)
-		SDL_JoystickOpen(i);
 //	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

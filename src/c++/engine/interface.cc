@@ -255,8 +255,8 @@ bool gameInstance::screenInit()
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
-	initd = true;
-	return true;
+	initd = ret;
+	return ret;
 }
 
 void interface::initialConfig(int ID)
