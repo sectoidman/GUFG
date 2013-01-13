@@ -8,7 +8,7 @@
 class window{
 public:
 	window();
-	bool screenInit();
+	virtual bool screenInit();
 	SDL_Surface * screen;
 	int h, w;
 };
