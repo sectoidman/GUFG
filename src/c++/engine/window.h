@@ -9,6 +9,7 @@ class window{
 public:
 	window();
 	virtual bool screenInit();
+	virtual void setLighting();
 	SDL_Surface * screen;
 	int h, w;
 };
