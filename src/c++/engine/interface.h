@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <vector>
 #include "analytics.h"
+#include "window.h"
 #ifndef INTERFACE
 #define INTERFACE
 class gameInstance : public window{
@@ -19,6 +20,7 @@ public:
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
 	virtual void loadMisc();
+	bool screenInit();
 	bool screenInit(int, int);
 
 //Input layer stuff. Players, inputs, etc.
