@@ -6,6 +6,7 @@ public:
 	harness();
 	void init();
 	virtual void readInput();
+	virtual void processInput(SDL_Event&);
 	bool gameover;
 };
 #endif
