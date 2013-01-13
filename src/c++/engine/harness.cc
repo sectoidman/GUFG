@@ -13,7 +13,7 @@ void harness::init()
 		SDL_JoystickOpen(i);
 	camY = 0.0;
 	camX = 0.0;
-	camZ = 0.0;
+	camZ = -5.0;
 	size = 1.0;
 	pan = 0.0;
 	tilt = 0.0;

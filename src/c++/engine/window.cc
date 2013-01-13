@@ -35,6 +35,7 @@ bool window::screenInit()
 	glDepthFunc(GL_LESS);
 
 	glClearColor(1, 1, 1, 1);
+	glShadeModel (GL_FLAT);
 	glClearDepth(1.0f);
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
