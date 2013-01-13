@@ -1,4 +1,6 @@
 #include "window.h"
+#include <GL/glu.h>
+#include <GL/glut.h>
 window::window()
 {
 	screen = NULL;
@@ -27,13 +29,16 @@ bool window::screenInit()
 	glEnable (GL_POLYGON_SMOOTH);
 
 	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
-	glClearColor(0, 0, 0, 0);
+	glClearColor(1, 1, 1, 1);
 	glClearDepth(1.0f);
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, w, h, 0, 1, -1);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

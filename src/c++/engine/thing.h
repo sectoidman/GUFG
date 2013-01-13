@@ -7,7 +7,7 @@
 #define THING_INCLUDED
 class thing{
 public:
-	virtual void draw();
+	virtual void draw(double);
 	virtual bool readModel();
 	std::vector<double> vertices[3];
 	~thing();

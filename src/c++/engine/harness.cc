@@ -1,4 +1,6 @@
 #include "harness.h"
+#include "window.h"
+#include <GL/glu.h>
 harness::harness()
 {
 	gameover = false;
@@ -9,6 +11,10 @@ void harness::init()
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
+	camY = 0.0;
+	camX = 0.0;
+	camZ = 0.0;
+	pan = 1.0;
 }
 
 void harness::processInput(SDL_Event &event)
@@ -26,6 +32,32 @@ void harness::processInput(SDL_Event &event)
 		case SDLK_q:
 		case SDLK_ESCAPE:
 			gameover = 1;
+			break;
+		case SDLK_w:
+			printf("%d\n", camZ);
+			camZ += 0.1f;
+			break;
+		case SDLK_s:
+			printf("%d\n", camZ);
+			camZ -= 0.1f;
+			break;
+		case SDLK_d:
+			camX += 0.1f;
+			break;
+		case SDLK_a:
+			camX -= 0.1f;
+			break;
+		case SDLK_UP:
+			camY += 0.1f;
+			break;
+		case SDLK_DOWN:
+			camY -= 0.1f;
+			break;
+		case SDLK_LEFT:
+			pan += 0.1f;
+			break;
+		case SDLK_RIGHT:
+			pan -= 0.1f;
 			break;
 		default:
 			break;
