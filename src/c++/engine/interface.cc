@@ -47,11 +47,9 @@ interface::interface()
 	read.open(".config/resolution.conf");
 	if(read.fail()){ 
 		scalingFactor = 0.5;
-		fullscreen = false;
 	} else {
 		read >> scalingFactor;
 		read.ignore(100, '\n');
-		read >> fullscreen;
 	}
 	read.close();
 	sf = scalingFactor;
@@ -240,11 +238,6 @@ void interface::writeMatchupChart()
 /*Initialize SDL and openGL, creating a window, among other things*/
 bool gameInstance::screenInit()
 {
-	/*Initialize SDL*/
-	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
-	Mix_OpenAudio(44100, AUDIO_S16, 2, 2048);
-	/*WM stuff*/
-	int h, w;
 	if(scalingFactor == 1.0){ 
 		w = screenWidth; h = screenHeight;
 	} else {
@@ -254,39 +247,14 @@ bool gameInstance::screenInit()
 		SDL_FreeSurface(screen);
 		screen = NULL;
 	}
+	bool ret = window::screenInit();
 	SDL_WM_SetCaption("GUFG", "GUFG");
-	if(!fullscreen){
-		if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
-			return false;
-	} else {
-		if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL)
-			return false;
-	}
+	Mix_OpenAudio(44100, AUDIO_S16, 2, 2048);
 	SDL_ShowCursor(SDL_DISABLE);
 
 	/*Set up input buffers and joysticks*/
 	for(int i = 0; i < SDL_NumJoysticks(); i++)
 		SDL_JoystickOpen(i);
-//	glDisable (GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable (GL_BLEND);
-	glEnable (GL_POINT_SMOOTH);
-	glEnable (GL_LINE_SMOOTH);
-	glEnable (GL_POLYGON_SMOOTH);
-
-	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-	glClearColor(0, 0, 0, 0);
-	glClearDepth(1.0f);
-	glViewport(0, 0, w, h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, w, h, 0, 1, -1);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
 	initd = true;
 	return true;
 }
@@ -746,7 +714,6 @@ void gameInstance::readInput()
 					initd = false;
 					break;
 				case SDLK_F11:
-					fullscreen = !fullscreen;
 					initd = false;
 					break;
 				default:
@@ -764,7 +731,7 @@ void interface::cSelectMenu()
 	if(!initd){ 
 		std::ofstream write;
 		write.open(".config/resolution.conf");
-		write << sf << '\n' << fullscreen;
+		write << sf << '\n';
 		write.close();
 		scalingFactor = sf;
 		assert(screenInit() != false);

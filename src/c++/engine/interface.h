@@ -35,7 +35,6 @@ public:
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
 	bool gameover;
-	bool fullscreen;
 	float scalingFactor, sf;
 	bool initd:1;
 	GLuint glyph[91];
