@@ -1,6 +1,6 @@
-#include "gameinstance.h"
+#include "session.h"
 #include <assert.h>
-void gameInstance::init()
+void session::init()
 {
 	assert(screenInit());
 	harness::init();
@@ -13,7 +13,7 @@ void gameInstance::init()
 	spin = 0.0; rlZ = 0; rrZ = 0;
 }
 
-void gameInstance::processInput(SDL_Event &event)
+void session::processInput(SDL_Event &event)
 {
 	/*Do stuff with event*/
 	switch (event.type){
@@ -72,7 +72,7 @@ void gameInstance::processInput(SDL_Event &event)
 	}
 }
 
-void gameInstance::readInput()
+void session::readInput()
 {
 	harness::readInput();
 	if(tuX) camX += 0.1f;

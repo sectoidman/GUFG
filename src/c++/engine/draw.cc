@@ -1,7 +1,7 @@
 #include "thing.h"
 #include "auxil.h"
-#include "gameinstance.h"
-void gameInstance::draw(thing & object)
+#include "session.h"
+void session::draw(thing & object)
 {
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

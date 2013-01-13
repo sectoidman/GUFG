@@ -1,9 +1,9 @@
-#include "gameinstance.h"
+#include "session.h"
 #include "thing.h"
 #include <time.h>
 int main(int argc, char * argv[])
 {
-	gameInstance game;
+	session game;
 	thing object;
 	game.init();
 	if(argc > 1) object.readModel(argv[1]);
