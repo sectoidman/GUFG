@@ -550,7 +550,7 @@ bool gameInstance::screenInit(int w, int h)
 	/*Initialize SDL*/
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) return false;
 	/*WM stuff*/
-	if(screen){ 
+	if(window::screen){ 
 		SDL_FreeSurface(screen);
 		screen = NULL;
 	}

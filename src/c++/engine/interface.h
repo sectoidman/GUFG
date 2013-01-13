@@ -6,17 +6,18 @@
  *Written by Alex Kelly in 2012
  *Licensed under MIT OSI: Additional information in the file "COPYING"
  */
-
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <stdio.h>
 #include <vector>
 #include "analytics.h"
+#include "window.h"
+#include "harness.h"
 #ifndef INTERFACE
 #define INTERFACE
-class gameInstance{
+class gameInstance : public window, public harness{
 public:
-	void readInput();		/*Accepts input into input containers, for use by anything that wants it*/
+	virtual void processInput(SDL_Event&);		/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
 	virtual void loadMisc();
@@ -32,11 +33,8 @@ public:
 	bool * negEdge[2];
 
 //Meta-interface stuff. Gameover state, screen size, etc.
-	SDL_Surface *screen;
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
-	bool gameover;
-	bool fullscreen;
 	float scalingFactor, sf;
 	bool initd:1;
 	GLuint glyph[91];
