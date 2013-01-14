@@ -4,6 +4,7 @@
  *Under MIT OSI license, see the file "COPYING" for details
  */
 #include "../charlist.h"
+#include <vector>
 #ifndef PLAYER
 #define PLAYER
 struct keySetting{
@@ -81,11 +82,7 @@ public:
 	virtual void genEvent(bool *&, int *&, bool *&) {}
 	void writeConfig(int);
 	bool readConfig(int);
-protected:
-	void addInput();
-	void cullInput(int);
-	int inputComplexity;
-	keySetting ** input;
+	std::vector<keySetting*> input;
 };
 
 class player : public instance, public controller{

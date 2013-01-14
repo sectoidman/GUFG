@@ -82,8 +82,6 @@ void player::init()
 
 	v = NULL;
 	rounds = 0;
-	inputComplexity = 0;
-	input = NULL;
 	instance::init();
 }
 
@@ -127,7 +125,7 @@ bool controller::readConfig(int ID)
 		char * token;
 		char buffer[30];
 		do{
-			addInput();
+			input.push_back(new keySetting);
 			read.get(buffer, 100, ':'); read.ignore(); 
 			input[i]->trigger.type = atoi(buffer);
 			read.ignore();
@@ -170,28 +168,6 @@ keySetting::keySetting()
 	effect.i = 0;
 }
 
-void controller::addInput()
-{
-	keySetting ** temp;
-	int i;
-	temp = new keySetting*[inputComplexity + 1];
-	for(i = 0; i < inputComplexity; i++){
-		temp[i] = input[i];
-	}
-	temp[i] = new keySetting;
-	input = temp;
-	inputComplexity++;
-}
-
-void controller::cullInput(int q)
-{
-	if(input[q] != NULL) delete input[q];
-	for(int i = q; i < inputComplexity - 1; i++){
-		input[i] = input[i + 1];
-	}
-	inputComplexity--;
-}
-
 /*This function wraps around the normal setKey function, handling input by itself*/
 void controller::setKey(int effect) 
 {
@@ -199,7 +175,7 @@ void controller::setKey(int effect)
 	bool configFlag = 0;
 
 	while(SDL_PollEvent(&temp));
-	while (configFlag == 0){
+	while (!configFlag){
 		if (SDL_PollEvent(&temp)) {
 			configFlag = setKey(effect, temp);
 		}
@@ -210,7 +186,7 @@ void controller::setKey(int effect)
 bool controller::setKey(SDL_Event temp, int effect)
 {
 	int type = -10, controller = -10;
-	for(int i = 0; i < inputComplexity; i++){
+	for(unsigned int i = 0; i < input.size(); i++){
 		if(input[i]->effect.i & 1){ //Compares to the "up" direction
 			type = input[i]->trigger.type;
 			switch(input[i]->trigger.type){
@@ -221,7 +197,7 @@ bool controller::setKey(SDL_Event temp, int effect)
 				controller = input[i]->trigger.jbutton.which;
 				break;
 			}
-			i = inputComplexity;
+			i = input.size();
 		}
 	}
 	if(temp.type != type) return 0;
@@ -234,25 +210,25 @@ bool controller::setKey(SDL_Event temp, int effect)
 	return setKey(effect, temp);
 }
 
-/*This function takes an event and a desired effect and maps them in the keysetting array*/
+/*This function takes an event and a desired effect and maps them in the keySetting array*/
 bool controller::setKey(int effect, SDL_Event temp)
 {
 	int workingIndex = -1;
 	switch (temp.type){
 	case SDL_JOYAXISMOTION:
 		if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
-			for(int i = 0; i < inputComplexity; i++){
+			for(unsigned int i = 0; i < input.size(); i++){
 				if(input[i]->trigger.type == temp.type &&
 				   input[i]->trigger.jaxis.which == temp.jaxis.which &&
 				   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
 				   input[i]->trigger.jaxis.value == temp.jaxis.value){
 					workingIndex = i; 
-					i = inputComplexity;
+					i = input.size();
 				}
 			}
 			if(workingIndex < 0){
-				addInput();
-				workingIndex = inputComplexity - 1;
+				input.push_back(new keySetting);
+				workingIndex = input.size() - 1;
 				input[workingIndex]->trigger.type = temp.type;
 				input[workingIndex]->trigger.jaxis.which = temp.jaxis.which;
 				input[workingIndex]->trigger.jaxis.axis = temp.jaxis.axis;
@@ -261,33 +237,33 @@ bool controller::setKey(int effect, SDL_Event temp)
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
-		for(int i = 0; i < inputComplexity; i++){
+		for(unsigned int i = 0; i < input.size(); i++){
 			if(input[i]->trigger.type == temp.type &&
 			   input[i]->trigger.jbutton.which == temp.jbutton.which &&
 			   input[i]->trigger.jbutton.button == temp.jbutton.button){
 				workingIndex = i;
-				i = inputComplexity;
+				i = input.size();
 			}
 		}
 		if(workingIndex < 0){
-			addInput();
-			workingIndex = inputComplexity - 1;
+			input.push_back(new keySetting);
+			workingIndex = input.size() - 1;
 			input[workingIndex]->trigger.type = temp.type;
 			input[workingIndex]->trigger.jbutton.which = temp.jbutton.which;
 			input[workingIndex]->trigger.jbutton.button = temp.jbutton.button;
 		}
 		break;
 	case SDL_KEYDOWN:
-		for(int i = 0; i < inputComplexity; i++){
+		for(unsigned int i = 0; i < input.size(); i++){
 			if(input[i]->trigger.type == temp.type &&
 			   input[i]->trigger.key.keysym.sym == temp.key.keysym.sym){
 				workingIndex = i;
-				i = inputComplexity;
+				i = input.size();
 			}
 		}
 		if(workingIndex < 0){
-			addInput();
-			workingIndex = inputComplexity - 1;
+			input.push_back(new keySetting);
+			workingIndex = input.size() - 1;
 			input[workingIndex]->trigger.type = temp.type;
 			input[workingIndex]->trigger.key.keysym.sym = temp.key.keysym.sym;
 		}
@@ -295,8 +271,9 @@ bool controller::setKey(int effect, SDL_Event temp)
 	default:
 		break;
 	}
-	if(workingIndex > -1){ 
-		input[workingIndex]->effect.i += effect;
+	if(workingIndex > -1){
+		if(input[workingIndex]->effect.i & effect);
+		else input[workingIndex]->effect.i += effect;
 		return 1;
 	} else return 0;
 }
@@ -307,7 +284,7 @@ void controller::writeConfig(int ID)
 	sprintf(fname, ".config/p%i.conf", ID);
 	std::ofstream write;
 	write.open(fname);
-	for(int i = 0; i < inputComplexity; i++){
+	for(unsigned int i = 0; i < input.size(); i++){
 		switch(input[i]->trigger.type){
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.jaxis.value != 0 && input[i]->trigger.jaxis.axis < 6){
@@ -752,7 +729,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 {
 	int value = -1;
 	bool pos;
-	for(int i = 0; i < inputComplexity; i++){
+	for(unsigned int i = 0; i < input.size(); i++){
 		switch(event.type){
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.type == SDL_JOYAXISMOTION){
@@ -760,11 +737,11 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 					if(event.jaxis.value == input[i]->trigger.jaxis.value){
 						value = i;
 						pos = 1;
-						i = inputComplexity;
+						i = input.size();
 					} else if(event.jaxis.value == 0) {
 						value = i;
 						pos = 0;
-						i = inputComplexity;
+						i = input.size();
 					}
 				}
 			}
@@ -774,7 +751,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 				if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button){
 					value = i;
 					pos = 1;
-					i = inputComplexity;
+					i = input.size();
 				}
 			}
 			break;
@@ -783,7 +760,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 				if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button){
 					value = i;
 					pos = 0;
-					i = inputComplexity;
+					i = input.size();
 				}
 			}
 			break;
@@ -792,7 +769,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 				if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym){
 					value = i;
 					pos = 1;
-					i = inputComplexity;
+					i = input.size();
 				}
 			}
 			break;
@@ -801,7 +778,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 				if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym){
 					value = i;
 					pos = 0;
-					i = inputComplexity;
+					i = input.size();
 				}
 			}
 		break;
