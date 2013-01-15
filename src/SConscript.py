@@ -21,7 +21,7 @@ env = Environment(PYEXT_USE_DISTUTILS=True,
                             -Wctor-dtor-privacy\
                             -std=c++11",
                   SHLIBPREFIX="_",
-                  LIBS=['SDL','SDLmain','SDL_image','SDL_mixer','GL'])
+                  LIBS=['SDL','SDLmain','SDL_image','SDL_mixer','GL', 'GLU', 'glut'])
 miscdirs = [".config", ".data"]
 for d in miscdirs:
   Execute(Mkdir(d))

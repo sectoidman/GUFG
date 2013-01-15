@@ -4,13 +4,13 @@
  *Under MIT OSI license, see the file "COPYING" for details
  */
 #include "../charlist.h"
+#include <vector>
 #ifndef PLAYER
 #define PLAYER
 struct keySetting{
 	keySetting();
 	SDL_Event trigger;
-	buttonField effect;
-	const char * name;
+	int effect;
 };
 
 class frame;
@@ -73,7 +73,7 @@ protected:
 
 class controller{
 public:
-	const char * inputName[10];//Input names. This is really just for housekeeping.
+	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
 	void setKey(int);
 	bool setKey(int, SDL_Event);
 	bool setKey(SDL_Event, int);
@@ -81,11 +81,7 @@ public:
 	virtual void genEvent(bool *&, int *&, bool *&) {}
 	void writeConfig(int);
 	bool readConfig(int);
-protected:
-	void addInput();
-	void cullInput(int);
-	int inputComplexity;
-	keySetting ** input;
+	std::vector<keySetting*> input;
 };
 
 class player : public instance, public controller{

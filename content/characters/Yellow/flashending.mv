@@ -7,7 +7,7 @@ State: 509
 Gain: 1
 Cost: 0
 Blocks: 0
-Properties: 
+Properties: *
 #0 
 $C	10 30 110 286
 $R	10 30 110 286

@@ -280,3 +280,9 @@ GLuint aux::load_texture (string filename)
 	return surface_to_texture(load_image(filename));
 }
 
+void vect::crossProduct(float Ax, float Ay, float Az, float Bx, float By, float Bz)
+{
+	x = (Ay*Bz)-(By*Az);
+	y = -(Ax*Bz)+(Bx*Az);
+	z = (Ax*By)-(Ay*Bx);
+};

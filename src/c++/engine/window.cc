@@ -1,4 +1,6 @@
 #include "window.h"
+#include <GL/glu.h>
+#include <GL/glut.h>
 window::window()
 {
 	screen = NULL;
@@ -39,5 +41,13 @@ bool window::screenInit()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	return true;
+}
+
+void window::setLighting()
+{
+	GLfloat lightColor0[] = {0.5f, 0.2f, 0.2f, 1.0f}; //Color (0.5, 0.5, 0.5)
+	GLfloat lightPos0[] = {5.0f, 0.0f, 9.0f, 1.0f}; //Positioned at (4, 0, 8)
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 }
 

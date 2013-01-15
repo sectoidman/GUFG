@@ -1,4 +1,6 @@
 #include "harness.h"
+#include "window.h"
+#include <GL/glu.h>
 harness::harness()
 {
 	gameover = false;
@@ -22,6 +24,7 @@ void harness::processInput(SDL_Event &event)
 		break;
 	/*Keyboard handler. Maybe I'll optimize such that the knows if it even needs to check this (EG if sticks are used)*/
 	case SDL_KEYDOWN:
+	case SDL_KEYUP:
 		switch (event.key.keysym.sym) {
 		case SDLK_q:
 		case SDLK_ESCAPE:

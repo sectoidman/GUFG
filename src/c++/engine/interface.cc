@@ -263,6 +263,7 @@ void interface::initialConfig(int ID)
 	char buffer[200];
 	char pident[30];
 	sprintf(pident, "Player %i", ID + 1);
+	for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
 	for(int i = 0; i < 10; i++){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
