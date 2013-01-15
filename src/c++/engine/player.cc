@@ -162,14 +162,8 @@ bool controller::readConfig(int ID)
 	}
 }
 
-keySetting::keySetting()
-{
-	trigger.type = 0;
-	effect = 0;
-}
-
 /*This function wraps around the normal setKey function, handling input by itself*/
-void controller::setKey(int effect) 
+void player::setKey(int effect) 
 {
 	SDL_Event temp;
 	bool configFlag = 0;
@@ -182,36 +176,8 @@ void controller::setKey(int effect)
 	}
 }
 
-/*This function will only set buttons to the existing stick*/
-bool controller::setKey(SDL_Event temp, int effect)
-{
-	int type = -10, controller = -10;
-	for(unsigned int i = 0; i < input.size(); i++){
-		if(input[i]->effect & 1){ //Compares to the "up" direction
-			type = input[i]->trigger.type;
-			switch(input[i]->trigger.type){
-			case SDL_JOYAXISMOTION:
-				controller = input[i]->trigger.jaxis.which;
-				break;
-			case SDL_JOYBUTTONDOWN:
-				controller = input[i]->trigger.jbutton.which;
-				break;
-			}
-			i = input.size();
-		}
-	}
-	if(temp.type != type) return 0;
-	switch(temp.type){
-		case SDL_JOYAXISMOTION:
-			if(temp.jaxis.which != controller) return 0;
-		case SDL_JOYBUTTONDOWN:
-			if(temp.jbutton.which != controller) return 0;
-	}
-	return setKey(effect, temp);
-}
-
 /*This function takes an event and a desired effect and maps them in the keySetting array*/
-bool controller::setKey(int effect, SDL_Event temp)
+bool player::setKey(int effect, SDL_Event temp)
 {
 	int workingIndex = -1;
 	switch (temp.type){

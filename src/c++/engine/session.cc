@@ -81,10 +81,10 @@ void session::readInput()
 	if(tdX) camX -= 0.1f;
 	if(tdY) camY -= 0.1f;
 	if(tdZ) camZ -= 0.1f;
-	if(rlX) pan -= 0.5f;
-	if(rlY) tilt -= 0.5f;
-	if(rlZ) spin -= 0.5f;
-	if(rrX) pan += 0.5f;
-	if(rrY) tilt += 0.5f;
-	if(rrZ) spin += 0.5f;
+	if(rlX) pan -= 1.0f;
+	if(rlY) tilt -= 1.0f;
+	if(rlZ) spin -= 1.0f;
+	if(rrX) pan += 1.0f;
+	if(rrY) tilt += 1.0f;
+	if(rrZ) spin += 1.0f;
 }

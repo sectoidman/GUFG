@@ -4,15 +4,9 @@
  *Under MIT OSI license, see the file "COPYING" for details
  */
 #include "../charlist.h"
-#include <vector>
+#include "controller.h"
 #ifndef PLAYER
 #define PLAYER
-struct keySetting{
-	keySetting();
-	SDL_Event trigger;
-	int effect;
-};
-
 class frame;
 class instance{
 public:
@@ -71,19 +65,6 @@ protected:
 	avatar * v;
 };
 
-class controller{
-public:
-	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
-	void setKey(int);
-	bool setKey(int, SDL_Event);
-	bool setKey(SDL_Event, int);
-	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
-	virtual void genEvent(bool *&, int *&, bool *&) {}
-	void writeConfig(int);
-	bool readConfig(int);
-	std::vector<keySetting*> input;
-};
-
 class player : public instance, public controller{
 public:
 	player();
@@ -103,6 +84,10 @@ public:
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
 	virtual bool CHState();
+
+	void setKey(int);
+	bool setKey(int, SDL_Event);
+
 	bool elasticX;
 	bool elasticY;
 	bool slide;

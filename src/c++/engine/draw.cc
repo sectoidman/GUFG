@@ -604,6 +604,7 @@ void session::draw(thing & object)
 	gluPerspective(50.0, 1.0, 1.0, 120.0);
 	glMatrixMode( GL_MODELVIEW );
 	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
+	glTranslatef(camX, camY, camZ);
 	glPushMatrix(); 
 	glRotatef(spin, 0.0, 0.0, 1.0f);
 	glPushMatrix(); 
@@ -611,7 +612,6 @@ void session::draw(thing & object)
 	glPushMatrix(); 
 	glRotatef(tilt, 1.0, 0.0, 0.0f);
 	glPushMatrix();
-	glTranslatef(camX, camY, camZ);
 	object.draw();
 	glPopMatrix();
 	glPopMatrix();
