@@ -11,7 +11,6 @@ struct keySetting{
 	keySetting();
 	SDL_Event trigger;
 	int effect;
-	const char * name;
 };
 
 class frame;
@@ -74,7 +73,7 @@ protected:
 
 class controller{
 public:
-	const char * inputName[10];//Input names. This is really just for housekeeping.
+	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
 	void setKey(int);
 	bool setKey(int, SDL_Event);
 	bool setKey(SDL_Event, int);

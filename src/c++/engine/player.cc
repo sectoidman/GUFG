@@ -69,16 +69,16 @@ void player::init()
 		inputBuffer[i] = 5;
 
 	/*Yeah yeah, I know, char* to literal conversion. I'm lazy right now. Will fix later. Maybe with cstring*/
-	inputName[0] = "Up";
-	inputName[1] = "Down";
-	inputName[2] = "Left";
-	inputName[3] = "Right";
-	inputName[4] = "A";
-	inputName[5] = "B";
-	inputName[6] = "C";
-	inputName[7] = "D";
-	inputName[8] = "E";
-	inputName[9] = "Start";
+	inputName.push_back("Up");
+	inputName.push_back("Down");
+	inputName.push_back("Left");
+	inputName.push_back("Right");
+	inputName.push_back("A");
+	inputName.push_back("B");
+	inputName.push_back("C");
+	inputName.push_back("D");
+	inputName.push_back("E");
+	inputName.push_back("Start");
 
 	v = NULL;
 	rounds = 0;
