@@ -292,6 +292,7 @@ void instance::drawBoxen(int stageHeight, int x, int y, float scalingFactor)
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
+		glNormal3f(0.0f, 0.0f, 1.0f);
 		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y + stageHeight + y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h + stageHeight + y)*scalingFactor);
 	}
 	for(int i = 0; i < hitComplexity; i++){

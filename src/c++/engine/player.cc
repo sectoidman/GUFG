@@ -153,7 +153,7 @@ bool controller::readConfig(int ID)
 				break;
 			}
 			token = strtok(NULL, " \n");
-			input[i]->effect.i = atoi(token);
+			input[i]->effect = atoi(token);
 			i++;
 			read.peek();
 		} while(!read.eof());
@@ -165,7 +165,7 @@ bool controller::readConfig(int ID)
 keySetting::keySetting()
 {
 	trigger.type = 0;
-	effect.i = 0;
+	effect = 0;
 }
 
 /*This function wraps around the normal setKey function, handling input by itself*/
@@ -187,7 +187,7 @@ bool controller::setKey(SDL_Event temp, int effect)
 {
 	int type = -10, controller = -10;
 	for(unsigned int i = 0; i < input.size(); i++){
-		if(input[i]->effect.i & 1){ //Compares to the "up" direction
+		if(input[i]->effect & 1){ //Compares to the "up" direction
 			type = input[i]->trigger.type;
 			switch(input[i]->trigger.type){
 			case SDL_JOYAXISMOTION:
@@ -272,8 +272,8 @@ bool controller::setKey(int effect, SDL_Event temp)
 		break;
 	}
 	if(workingIndex > -1){
-		if(input[workingIndex]->effect.i & effect);
-		else input[workingIndex]->effect.i += effect;
+		if(input[workingIndex]->effect & effect);
+		else input[workingIndex]->effect += effect;
 		return 1;
 	} else return 0;
 }
@@ -298,7 +298,7 @@ void controller::writeConfig(int ID)
 			write << (int)input[i]->trigger.type << " : " << (int)input[i]->trigger.key.keysym.sym;
 			break;
 		}
-		write << " " << input[i]->effect.i << "\n";
+		write << " " << input[i]->effect << "\n";
 	}
 	write.close();
 }
@@ -672,7 +672,7 @@ void instance::pullVolition()
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
 			int complexity;
-			SDL_Rect * temp; 
+			SDL_Rect * temp;
 			cMove->pollDelta(temp, complexity, currentFrame);
 			for(int i = 0; i < complexity; i++){
 				temp[i].x *= facing;
@@ -787,7 +787,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 	if(value > -1){
 		for(int i = 0; i < 6; i++){
 			if(i < 4){
-				if(input[value]->effect.i & (1 << i)){ 
+				if(input[value]->effect & (1 << i)){ 
 					sAxis[i] = pos;
 					if(!pos){
 						switch(i){
@@ -805,7 +805,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 					}
 				}
 			}
-			if(input[value]->effect.i & (1 << (i + 4))){
+			if(input[value]->effect & (1 << (i + 4))){
 				posEdge[i] = pos;
 				negEdge[i] = !pos;
 			}

@@ -1,19 +1,5 @@
 #ifndef MASKS
 #define MASKS
-struct buttonBits
-{
-	bool up:1;
-	bool down:1;
-	bool left:1;
-	bool right:1;
-	bool A:1;
-	bool B:1;
-	bool C:1;
-	bool D:1;
-	bool E:1;
-	bool S:1;
-};
-
 //A 6-bit field to keep track of block states.
 struct blockBits{
 	bool low:1;
@@ -51,9 +37,4 @@ typedef union {
 	unsigned int i;
 	blockBits b; 
 } blockField;
-
-typedef union {
-	unsigned int i;
-	buttonBits b;
-} buttonField;
 #endif

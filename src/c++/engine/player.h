@@ -10,7 +10,7 @@
 struct keySetting{
 	keySetting();
 	SDL_Event trigger;
-	buttonField effect;
+	int effect;
 	const char * name;
 };
 
