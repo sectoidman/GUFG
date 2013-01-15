@@ -13,6 +13,9 @@ void controller::setKey(int effect)
 	while(SDL_PollEvent(&temp));
 	while (!configFlag){
 		if (SDL_PollEvent(&temp)) {
+			for(int i = 0; i < input.size(); i++){
+				if(input[i].effect = effect) input.erase(input.begin()+i);
+			}
 			configFlag = setKey(effect, temp);
 		}
 	}
@@ -25,6 +28,15 @@ bool controller::setKey(int effect, SDL_Event temp)
 	switch (temp.type){
 	case SDL_JOYAXISMOTION:
 		if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
+			for(unsigned int i = 0; i < input.size(); i++){
+				if(input[i]->trigger.type == temp.type &&
+				   input[i]->trigger.jaxis.which == temp.jaxis.which &&
+				   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
+				   input[i]->trigger.jaxis.value == temp.jaxis.value){
+					input.erase(input.begin()+i);
+					i = input.size();
+				}
+			}
 			input.push_back(new keySetting);
 			workingIndex = input.size() - 1;
 			input[workingIndex]->trigger.type = temp.type;
@@ -34,6 +46,14 @@ bool controller::setKey(int effect, SDL_Event temp)
 		}
 		break;
 	case SDL_JOYBUTTONDOWN:
+		for(unsigned int i = 0; i < input.size(); i++){
+			if(input[i]->trigger.type == temp.type &&
+			   input[i]->trigger.jbutton.which == temp.jbutton.which &&
+			   input[i]->trigger.jbutton.button == temp.jbutton.button){
+				input.erase(input.begin()+i);
+				i = input.size();
+			}
+		}
 		input.push_back(new keySetting);
 		workingIndex = input.size() - 1;
 		input[workingIndex]->trigger.type = temp.type;
@@ -41,6 +61,13 @@ bool controller::setKey(int effect, SDL_Event temp)
 		input[workingIndex]->trigger.jbutton.button = temp.jbutton.button;
 		break;
 	case SDL_KEYDOWN:
+		for(unsigned int i = 0; i < input.size(); i++){
+			if(input[i]->trigger.type == temp.type &&
+			   input[i]->trigger.key.keysym.sym == temp.key.keysym.sym){
+				input.erase(input.begin()+i);
+				i = input.size();
+			}
+		}
 		input.push_back(new keySetting);
 		workingIndex = input.size() - 1;
 		input[workingIndex]->trigger.type = temp.type;
