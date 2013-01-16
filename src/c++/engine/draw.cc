@@ -121,7 +121,7 @@ void interface::drawGame()
 
 	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	for(int i = 0; i < 2; i++){
-		drawGlyph(p[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
+		drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(combo[i] > 1){
 			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0);
 			sprintf(buffer, "%i hits", combo[i]);
@@ -133,7 +133,7 @@ void interface::drawGame()
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
-		int l = p[0]->rounds + p[1]->rounds + 1;
+		int l = P[0]->rounds + P[1]->rounds + 1;
 		sprintf(buffer, "Round %i", l);
 		if(timer == 100 * 60 + 30)
 			Mix_PlayChannel(3, announceRound[l - 1], 0);
@@ -145,7 +145,7 @@ void interface::drawGame()
 			Mix_PlayChannel(3, announceFight, 0);
 	}
 	if(roundEnd && endTimer > 5 * 60 - 31){ 
-		if(p[0]->meter[0] > 0 && p[1]->meter[0] > 0){
+		if(things[0]->meter[0] > 0 && things[1]->meter[0] > 0){
 			drawGlyph("TIME OUT", 0, 1600, 300, 200, 1);
 			if(endTimer == 5 * 60 - 1)
 				Mix_PlayChannel(3, announceEnd[0], 0);
@@ -156,19 +156,19 @@ void interface::drawGame()
 		}
 	}
 	if(endTimer > 3 * 60 + 29 && endTimer < 4 * 60){ 
-		if(p[0]->meter[0] > p[1]->meter[0]){ 
-			sprintf(buffer, "%s", p[0]->pick()->name);
+		if(things[0]->meter[0] > things[1]->meter[0]){ 
+			sprintf(buffer, "%s", things[0]->pick()->name);
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
 			if(endTimer == 4 * 60 - 1)
 				Mix_PlayChannel(3, announceWinner[selection[0]], 0);
-		} else if(p[1]->meter[0] > p[0]->meter[0]){
-			sprintf(buffer, "%s", p[1]->pick()->name);
+		} else if(things[1]->meter[0] > things[0]->meter[0]){
+			sprintf(buffer, "%s", things[1]->pick()->name);
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
 			if(endTimer == 4 * 60 - 1)
 				Mix_PlayChannel(3, announceWinner[selection[1]], 0);
-		} else if(p[0]->meter[0] <= 0){ 
+		} else if(things[0]->meter[0] <= 0){ 
 			sprintf(buffer, "Double KO");
 			drawGlyph(buffer, 0, 1600, 375, 150, 1);
 			if(endTimer == 4 * 60 - 1)
@@ -182,7 +182,7 @@ void interface::drawGame()
 	}
 	glDisable( GL_TEXTURE_2D );
 	for(int i = 0; i < 2; i++){
-		p[i]->drawMeters(numRounds, scalingFactor);
+		P[i]->drawMeters(numRounds, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	glEnable( GL_TEXTURE_2D );
@@ -193,7 +193,7 @@ void interface::drawGame()
 		if(!things[i]->spriteCheck() || boxen)
 			things[i]->drawBoxen(bg.h, bg.x, bg.y, scalingFactor);
 		if(i < 2)
-			p[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
+			P[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnable( GL_TEXTURE_2D );
 	}

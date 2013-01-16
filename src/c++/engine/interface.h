@@ -26,7 +26,7 @@ public:
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
-	player * p[2];
+	player * P[2];
 	bool * sAxis[2];
 	int * posEdge[2];
 	bool * negEdge[2];
