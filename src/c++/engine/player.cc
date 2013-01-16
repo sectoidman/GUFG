@@ -562,7 +562,7 @@ void player::checkFacing(player * other){
 	updateRects();
 }
 
-int player::dragBG(int left, int right)
+int instance::dragBG(int left, int right)
 {
 	if(collision.x < left) return collision.x - left;
 	else if (collision.x + collision.w > right) return (collision.x + collision.w) - right;

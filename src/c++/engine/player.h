@@ -52,6 +52,7 @@ public:
 	virtual void connect(int, hStat&);
 	virtual void pushInput(bool*);
 	virtual int passSignal(int);
+	virtual int dragBG(int, int);
 	void enforceAttractor(attractor*);
 	int middle();
 	void flip();
@@ -101,7 +102,6 @@ public:
 	/*Helper functions for "resolve" tick*/
 	virtual void checkBlocking();
 	virtual void checkFacing(player*);
-	virtual int dragBG(int, int);
 	virtual void checkCorners(int, int);
 	virtual void enforceFloor(int);
 	virtual void getThrown(action*, int, int);

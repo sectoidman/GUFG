@@ -100,7 +100,7 @@ void interface::createDemons()
 		p.push_back(P[i]);
 		selection[i] = rand()%numChars + 1;
 		P[i]->characterSelect(selection[i]); 
-		printf("p%i selected %s\n", i+1, P[i]->pick()->name);
+		printf("p%i selected %s\n", i+1, things[i]->pick()->name);
 		select[i] = 1;
 		menu[i] = 0;
 		configMenu[i] = 0;
@@ -265,7 +265,7 @@ void interface::initialConfig(int ID)
 	char buffer[200];
 	char pident[30];
 	sprintf(pident, "Player %i", ID + 1);
-	for(unsigned int i = 0; i < P[ID]->input.size(); i++) P[ID]->input.pop_back();
+	for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
 	for(int i = 0; i < 10; i++){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -274,7 +274,7 @@ void interface::initialConfig(int ID)
 		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 		drawGlyph(pident, 0, 1600, 300, 80, 1);
 		drawGlyph("Please enter a", 0, 1600, 400, 80, 1);
-		sprintf(buffer, "command for %s", P[ID]->inputName[i]);
+		sprintf(buffer, "command for %s", p[ID]->inputName[i]);
 		drawGlyph(buffer, 0, 1600, 500, 80, 1);
 		SDL_GL_SwapBuffers();
 		glDisable( GL_TEXTURE_2D );
@@ -315,7 +315,7 @@ void interface::roundInit()
 	bg.y = -900;
 
 	for(int i = 0; i < 2; i++){
-		P[i]->posY = floor;
+		things[i]->posY = floor;
 		P[i]->roundInit();
 	}
 	/*Initialize input containers*/
@@ -333,7 +333,6 @@ void interface::roundInit()
 	grav = -6;
 	timer = 60 * 101;
 	endTimer = 60 * 5;
-//	if(P[0]->rounds + P[1]->rounds < 1) timer += 60 * 6;
 	prox.w = 200;
 	prox.h = 0;
 	freeze = 0;
@@ -349,9 +348,9 @@ void interface::runTimer()
 	int plus;
 	for(int i = 0; i < 2; i++){
 		if(select[i] == true){
-			if(P[i]->cMove != NULL)
+			if(things[i]->cMove != NULL)
 			{
-				plus = (P[i]->cMove->arbitraryPoll(31, P[i]->currentFrame));
+				plus = (things[i]->cMove->arbitraryPoll(31, things[i]->currentFrame));
 				if(plus != 0){ 
 					timer += plus;
 					if(timer > 60*99) timer = 60*99 + 1;
@@ -368,8 +367,8 @@ void interface::runTimer()
 		 */
 		if(endTimer > 0) endTimer--;
 		else{
-			P[0]->momentumComplexity = 0;
-			P[1]->momentumComplexity = 0;
+			things[0]->momentumComplexity = 0;
+			things[1]->momentumComplexity = 0;
 			if(P[0]->rounds == numRounds || P[1]->rounds == numRounds){
 				if(P[0]->rounds == P[1]->rounds);
 				else if(P[0]->rounds == numRounds){ 
@@ -389,8 +388,8 @@ void interface::runTimer()
 				if(shortcut) rMenu = 1;
 				else{
 					if(!continuous){
-						delete P[0]->pick();
-						delete P[1]->pick();
+						delete things[0]->pick();
+						delete things[1]->pick();
 						select[0] = 0;
 						select[1] = 0;
 					}
@@ -427,12 +426,12 @@ void interface::resolve()
 	else {
 		if(timer > 99 * 60){
 			for(int i = 0; i < 2; i++){
-				if(timer == 106 * 60) P[i]->inputBuffer[0] = 0;
-				if(timer == 106 * 60 - 1) P[i]->inputBuffer[0] = i;
-				if(timer == 106 * 60 - 2) P[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
-				if(timer == 106 * 60 - 3) P[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
-				if(timer == 106 * 60 - 4) P[i]->inputBuffer[0] = 0;
-				else(P[i]->inputBuffer[0] = 5);
+				if(timer == 106 * 60) things[i]->inputBuffer[0] = 0;
+				if(timer == 106 * 60 - 1) things[i]->inputBuffer[0] = i;
+				if(timer == 106 * 60 - 2) things[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
+				if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
+				if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
+				else(things[i]->inputBuffer[0] = 5);
 				for(int j = 0; j < 6; j++){
 					posEdge[i][j] = 0;
 					negEdge[i][j] = 0;
@@ -441,12 +440,12 @@ void interface::resolve()
 		} else { 
 			for(unsigned int i = 0; i < things.size(); i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		}
-		P[1]->getMove(posEdge[1], negEdge[1], prox, 1);
+		things[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(unsigned int i = 0; i < things.size(); i++){
 			if(i < 2){
-				if(P[(i+1)%2]->aerial) prox.y = 1;
+				if(things[(i+1)%2]->aerial) prox.y = 1;
 				else prox.y = 0;
-				prox.x = P[(i+1)%2]->throwInvuln;
+				prox.x = things[(i+1)%2]->throwInvuln;
 			}
 			things[i]->getMove(posEdge[things[i]->ID - 1], negEdge[things[i]->ID - 1], prox, 0);
 		}
@@ -492,10 +491,10 @@ void interface::resolve()
 		/*Really rudimentary camera logic. Really just scrolls the background (Which characters are drawn relative to)
 		 *appropriately, attempting to adjust to approximately be looking at the point in the middle of the two characters.
 		 */
-		int dx = P[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + P[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
+		int dx = things[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + things[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
 		/*If a character leaves the camera boundaries, follow them immediately*/
 		if(!dx){
-			dx = -(((bg.x + screenWidth/2) - P[0]->posX) + ((bg.x + screenWidth/2) - P[1]->posX));
+			dx = -(((bg.x + screenWidth/2) - things[0]->posX) + ((bg.x + screenWidth/2) - things[1]->posX));
 			dx /= 10;
 			/*Otherwise follow the middle at a rate of (disparity from middle view)/10.
 			 *Chosen by trial and error, this rate feels most natural
@@ -509,16 +508,16 @@ void interface::resolve()
 
 		resolveCollision();
 
-		if(P[0]->cMove->state[P[0]->connectFlag].i & 1 && P[0]->cMove != P[0]->pick()->airNeutral) 
+		if(things[0]->cMove->state[things[0]->connectFlag].i & 1 && things[0]->cMove != P[0]->pick()->airNeutral)
 			P[0]->checkFacing(P[1]);
-		if(P[1]->cMove->state[P[1]->connectFlag].i & 1 && P[1]->cMove != P[1]->pick()->airNeutral) 
+		if(things[1]->cMove->state[things[1]->connectFlag].i & 1 && things[1]->cMove != P[1]->pick()->airNeutral) 
 			P[1]->checkFacing(P[0]);
 
 		for(int i = 0; i < 2; i++){
-			if(!P[i]->aerial) { P[i]->deltaX = 0; P[i]->deltaY = 0; }
+			if(!things[i]->aerial) { things[i]->deltaX = 0; things[i]->deltaY = 0; }
 
 			if(!roundEnd){
-				switch (P[i]->pick()->comboState(P[i]->cMove)){ 
+				switch (P[i]->pick()->comboState(things[i]->cMove)){ 
 				case -2: 
 					illegit[(i+1)%2] = 1;
 					break;
@@ -608,18 +607,18 @@ void interface::resolveSummons()
 					break;
 				}
 				if(temp->arbitraryPoll(51, things[i]->currentFrame)){
-					x = P[(things[i]->ID)%2]->posX;
-					f = P[(things[i]->ID)%2]->facing;
+					x = things[(things[i]->ID)%2]->posX;
+					f = things[(things[i]->ID)%2]->facing;
 				} else {
-					x = P[(things[i]->ID)-1]->posX;
-					f = P[(things[i]->ID)-1]->facing;
+					x = things[(things[i]->ID)-1]->posX;
+					f = things[(things[i]->ID)-1]->facing;
 				}
 				if(temp->arbitraryPoll(52, things[i]->currentFrame))
-					y = P[(things[i]->ID)%2]->posY;
+					y = things[(things[i]->ID)%2]->posY;
 				else if(temp->arbitraryPoll(53, things[i]->currentFrame))
 					y = 0;
 				else
-					y = P[(things[i]->ID)-1]->posY;
+					y = things[(things[i]->ID)-1]->posY;
 				x += temp->arbitraryPoll(54, things[i]->currentFrame)*f;
 				y += temp->arbitraryPoll(55, things[i]->currentFrame);
 				larva->facing = f;
@@ -836,7 +835,6 @@ void interface::keyConfig()
 {
 
 
-
 }
 
 void interface::dragBG(int deltaX)
@@ -846,8 +844,8 @@ void interface::dragBG(int deltaX)
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > bg.w - screenWidth) bg.x = bg.w - screenWidth;
 	for(int i = 0; i < 2; i++){
-		if(dy < P[i]->posY + P[i]->collision.h){
-			dy = P[i]->posY + P[i]->collision.h;
+		if(dy < things[i]->posY + things[i]->collision.h){
+			dy = things[i]->posY + things[i]->collision.h;
 			if(dy > bg.h) dy = bg.h;
 		}
 	}
@@ -873,12 +871,12 @@ void interface::pauseMenu()
 					pMenu = 0;
 					break;
 				case 2:
-					delete P[0]->pick();
-					delete P[1]->pick();
+					delete things[0]->pick();
+					delete things[1]->pick();
 					select[0] = 0;
 					select[1] = 0;
-					delete [] P[0]->meter;
-					delete [] P[1]->meter;
+					delete [] things[0]->meter;
+					delete [] things[1]->meter;
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
 					//Mix_PlayChannel(3, announceSelect, 0);
@@ -917,12 +915,12 @@ void interface::rematchMenu()
 					matchInit();
 					break;
 				case 2:
-					delete P[0]->pick();
-					delete P[1]->pick();
+					delete things[0]->pick();
+					delete things[1]->pick();
 					select[0] = 0;
 					select[1] = 0;
-					delete [] P[0]->meter;
-					delete [] P[1]->meter;
+					delete [] things[0]->meter;
+					delete [] things[1]->meter;
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
 					//Mix_PlayChannel(3, announceSelect, 0);
@@ -988,32 +986,31 @@ void interface::unitCollision(player *a, player *b)
 	}
 	right->updateRects();
 	left->updateRects();
-
 }
 
 void interface::resolveCollision()
 {
 	if (aux::checkCollision(P[0]->collision, P[1]->collision))
 		unitCollision(P[0], P[1]);
-	prox.w = abs(P[0]->posX - P[1]->posX);
-	prox.h = abs(P[0]->posY - P[1]->posY);
+	prox.w = abs(things[0]->posX - things[1]->posX);
+	prox.h = abs(things[0]->posY - things[1]->posY);
 }
 
 void interface::resolveThrows()
 {
 	bool isThrown[2] = {false, false};
 	for(int i = 0; i < 2; i++){
-		if(P[i]->cMove->arbitraryPoll(28, P[i]->currentFrame)){ 
+		if(things[i]->cMove->arbitraryPoll(28, things[i]->currentFrame)){ 
 			isThrown[(i+1)%2] = true;
 		}
 	}
 	if(isThrown[0] && isThrown[1]){
-		P[0]->cMove = P[0]->pick()->throwBreak;
-		P[1]->cMove = P[1]->pick()->throwBreak;
+		things[0]->cMove = P[0]->pick()->throwBreak;
+		things[1]->cMove = P[1]->pick()->throwBreak;
 	} else {
 		for(int i = 0; i < 2; i++){
 			if(isThrown[i]){
-				P[i]->getThrown(P[(i+1)%2]->cMove, P[(i+1)%2]->posX*P[(i+1)%2]->facing, P[(i+1)%2]->posY);
+				P[i]->getThrown(things[(i+1)%2]->cMove, things[(i+1)%2]->posX*things[(i+1)%2]->facing, things[(i+1)%2]->posY);
 				P[i]->checkFacing(P[(i+1)%2]);
 			}
 		}
@@ -1062,21 +1059,21 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(i < 2 && P[i]->cMove->allowed.i < 128 && !P[i]->aerial) P[i]->checkFacing(P[(i+1)%2]);
+			if(i < 2 && things[i]->cMove->allowed.i < 128 && !things[i]->aerial) P[i]->checkFacing(P[(i+1)%2]);
 		}
 	}
 
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
-			h = P[things[i]->ID-1]->meter[0];
+			h = things[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
 			if(i < 2 && hitBy[i] < 2){
-				if(P[i]->particleType == -2){
+				if(things[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
 					ths.ghostHit = true;
 					ths.stun = 0;
-					P[hitBy[i]]->takeHit(combo[i], ths, prox);
+					things[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
 			if(i < 2 && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
@@ -1103,19 +1100,19 @@ void interface::resolveHits()
 					break;
 				}
 			} else { 
-				if(P[(i+1)%2]->aerial) residual.x = -2;
+				if(things[(i+1)%2]->aerial) residual.x = -2;
 				else {
 					if(combo[i] > 1) residual.x = -3*(abs(combo[i]-1));
-					if(P[(i+1)%2]->particleType == -2) residual.x -= push[i];
+					if(things[(i+1)%2]->particleType == -2) residual.x -= push[i];
 					else if(P[(i+1)%2]->rCorner || P[(i+1)%2]->lCorner){
 						residual.x -= 2;
 						residual.x -= s[i].push/2;
 						residual.x -= abs(combo[i]);
 					}
 				}
-				residual.x *= P[i]->facing;
+				residual.x *= things[i]->facing;
 			}
-			P[i]->addVector(residual);
+			things[i]->addVector(residual);
 		}
 	}
 
@@ -1124,11 +1121,11 @@ void interface::resolveHits()
 	}
 
 	for(int i = 0; i < 2; i++) {
-		P[i]->throwInvuln--;
+		things[i]->throwInvuln--;
 		P[i]->hover--;
 	}
 	for(int i = 0; i < 2; i++) {
-		if(P[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
+		if(things[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
 			for(unsigned int j = 0; j < things.size(); j++)
 				things[j]->freeze = 30;
@@ -1140,10 +1137,10 @@ void interface::doSuperFreeze()
 {
 	int go[2] = {0, 0};
 	for(int i = 0; i < 2; i++){
-		go[i] = P[i]->cMove->arbitraryPoll(2, P[i]->currentFrame);
+		go[i] = things[i]->cMove->arbitraryPoll(2, things[i]->currentFrame);
 		if(go[i] > 0){ 
 			P[(i+1)%2]->checkBlocking();
-			P[(i+1)%2]->freeze += go[i];
+			things[(i+1)%2]->freeze += go[i];
 		}
 	}
 	if(go[0] > 0 || go[1] > 0)
