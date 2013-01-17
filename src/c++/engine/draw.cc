@@ -12,8 +12,7 @@ void session::draw(thing & object)
 	glPushMatrix(); 
 	glPushMatrix(); 
 	glMatrixMode( GL_PROJECTION );
-	// void gluOrtho2D ( left, right, bottom, top);
-	gluPerspective(50.0, 1.0, 1.0, 120.0);
+	gluPerspective(100.0, 1.5, 1.0, 100.0);
 	glMatrixMode( GL_MODELVIEW );
 	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
 	glTranslatef(camX, camY, camZ);
