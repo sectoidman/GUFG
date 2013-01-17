@@ -45,17 +45,17 @@ void thing::draw()
 		switch (faces[i].size()){
 		case 3:
 			glBegin(GL_TRIANGLES);
-				glVertex3f(vertices[0][faces[i][0]], vertices[1][faces[i][0]], vertices[2][faces[i][0]]);
-				glVertex3f(vertices[0][faces[i][1]], vertices[1][faces[i][1]], vertices[2][faces[i][1]]);
-				glVertex3f(vertices[0][faces[i][2]], vertices[1][faces[i][2]], vertices[2][faces[i][2]]);
+				glVertex3f(vertices[0][faces[i][0]-1], vertices[1][faces[i][0]-1], vertices[2][faces[i][0]-1]);
+				glVertex3f(vertices[0][faces[i][1]-1], vertices[1][faces[i][1]-1], vertices[2][faces[i][1]-1]);
+				glVertex3f(vertices[0][faces[i][2]-1], vertices[1][faces[i][2]-1], vertices[2][faces[i][2]-1]);
 			glEnd();
 			break;
 		case 4:
 			glBegin(GL_QUADS);
-				glVertex3f(vertices[0][faces[i][0]], vertices[1][faces[i][0]], vertices[2][faces[i][0]]);
-				glVertex3f(vertices[0][faces[i][1]], vertices[1][faces[i][1]], vertices[2][faces[i][1]]);
-				glVertex3f(vertices[0][faces[i][2]], vertices[1][faces[i][2]], vertices[2][faces[i][2]]);
-				glVertex3f(vertices[0][faces[i][3]], vertices[1][faces[i][3]], vertices[2][faces[i][3]]);
+				glVertex3f(vertices[0][faces[i][0]-1], vertices[1][faces[i][0]-1], vertices[2][faces[i][0]-1]);
+				glVertex3f(vertices[0][faces[i][1]-1], vertices[1][faces[i][1]-1], vertices[2][faces[i][1]-1]);
+				glVertex3f(vertices[0][faces[i][2]-1], vertices[1][faces[i][2]-1], vertices[2][faces[i][2]-1]);
+				glVertex3f(vertices[0][faces[i][3]-1], vertices[1][faces[i][3]-1], vertices[2][faces[i][3]-1]);
 			glEnd();
 			break;
 		}
