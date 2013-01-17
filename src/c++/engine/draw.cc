@@ -12,7 +12,7 @@ void session::draw(thing & object)
 	glPushMatrix(); 
 	glPushMatrix(); 
 	glMatrixMode( GL_PROJECTION );
-	gluPerspective(100.0, 1.5, 1.0, 100.0);
+	gluPerspective(100.0, 1.5, 1.0, 150.0);
 	glMatrixMode( GL_MODELVIEW );
 	glColor4f(0.1f, 0.1f, 0.1f, 0.9f);
 	glTranslatef(camX, camY, camZ);
@@ -35,11 +35,6 @@ void session::draw(thing & object)
 void thing::draw()
 {
 /* Load the identity matrix into modelmatrix. rotate the model, and move it back 5 */
-	GLfloat lightColor0[] = {0.5f, 0.2f, 0.2f, 1.0f};
-	GLfloat lightPos0[] = {5.0f, 0.0f, -2.0f, 1.0f};
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-	float nx[2], ny[2], nz[2];
 	for(unsigned int i = 0; i < faces.size(); i ++){
 		switch (faces[i].size()){
 		case 3:
