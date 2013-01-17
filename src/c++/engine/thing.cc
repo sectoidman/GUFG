@@ -17,17 +17,24 @@ bool thing::readModel(const char * fname)
 	read.open(fname);
 	assert(!read.fail());
 	while(!read.eof()){
-		int t = 0;
 		read.getline(buffer, 300);
 		if(token = strtok(buffer, " \n")){
 			if(!strcmp(token, "v")){
+				printf("Vertex: ");
 				for(int j = 0; j < 3; j++){
 					token = strtok(NULL, " \n");
 					printf("%f ", atof(token));
 					vertices[j].push_back(atof(token));
 				}
 				printf("\n");
-				t++;
+			} else if(!strcmp(token, "f")){
+				std::vector<int> face;
+				while(token = strtok(NULL, " \n")){
+					printf("%i ", atoi(token));
+					face.push_back(atoi(token));
+				}
+				faces.push_back(face);
+				printf("\n");
 			}
 		}
 	}

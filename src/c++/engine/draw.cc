@@ -41,19 +41,23 @@ void thing::draw()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 	float nx[2], ny[2], nz[2];
-	for(unsigned int i = 0; i < vertices[0].size(); i += 3){
-		glBegin(GL_TRIANGLES);
-			for(int j = 0; j < 2; j++){
-				nx[j] = vertices[0][i+j] - vertices[0][i];
-				ny[j] = vertices[1][i+j] - vertices[1][i];
-				nz[j] = vertices[2][i+j] - vertices[2][i];
-			}
-			vect v; 
-			v.crossProduct(nx[0], ny[0], nz[0], nx[1], ny[1], nz[1]);
-			glNormal3f(v.x, v.y, v.z);
-			glVertex3f(vertices[0][i], vertices[1][i], vertices[2][i]);
-			glVertex3f(vertices[0][i+1], vertices[1][i+1], vertices[2][i+1]);
-			glVertex3f(vertices[0][i+2], vertices[1][i+2], vertices[2][i+2]);
-		glEnd();
+	for(unsigned int i = 0; i < faces.size(); i ++){
+		switch (faces[i].size()){
+		case 3:
+			glBegin(GL_TRIANGLES);
+				glVertex3f(vertices[0][faces[i][0]], vertices[1][faces[i][0]], vertices[2][faces[i][0]]);
+				glVertex3f(vertices[0][faces[i][1]], vertices[1][faces[i][1]], vertices[2][faces[i][1]]);
+				glVertex3f(vertices[0][faces[i][2]], vertices[1][faces[i][2]], vertices[2][faces[i][2]]);
+			glEnd();
+			break;
+		case 4:
+			glBegin(GL_QUADS);
+				glVertex3f(vertices[0][faces[i][0]], vertices[1][faces[i][0]], vertices[2][faces[i][0]]);
+				glVertex3f(vertices[0][faces[i][1]], vertices[1][faces[i][1]], vertices[2][faces[i][1]]);
+				glVertex3f(vertices[0][faces[i][2]], vertices[1][faces[i][2]], vertices[2][faces[i][2]]);
+				glVertex3f(vertices[0][faces[i][3]], vertices[1][faces[i][3]], vertices[2][faces[i][3]]);
+			glEnd();
+			break;
+		}
 	}
 }
