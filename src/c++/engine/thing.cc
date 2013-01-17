@@ -29,6 +29,7 @@ bool thing::readModel(const char * fname)
 				printf("\n");
 			} else if(!strcmp(token, "f")){
 				std::vector<int> face;
+				printf("Face: ");
 				while(token = strtok(NULL, " \n")){
 					printf("%i ", atoi(token));
 					face.push_back(atoi(token));
@@ -40,14 +41,4 @@ bool thing::readModel(const char * fname)
 	}
 	read.close();
 	return 1;
-}
-
-thing::~thing()
-{
-	for(unsigned int j = 0; j < vertices[0].size(); j++){
-		for(int i = 0; i < 3; i++){
-			printf("%f ", vertices[i][j]);
-		}
-		printf("\n");
-	}
 }
