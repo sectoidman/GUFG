@@ -28,7 +28,7 @@ bool thing::readModel(const char * fname)
 				std::vector<int> face;
 				while(token = strtok(NULL, " \n"))
 					face.push_back(atoi(token));
-				if(face.size() > 2 && face.size() < 4) faces.push_back(face);
+				if(face.size() > 2 && face.size() < 5) faces.push_back(face);
 			}
 		}
 	}

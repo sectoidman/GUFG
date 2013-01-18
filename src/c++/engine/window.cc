@@ -33,7 +33,7 @@ bool window::screenInit()
 	glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	glClearColor(1, 1, 1, 1);
-	glShadeModel (GL_FLAT);
+	glShadeModel (GL_SMOOTH);
 	glClearDepth(1.0f);
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
