@@ -12,10 +12,10 @@ void session::camInit()
 	camY = 0.0; tuY = 0; tdY = 0;
 	camX = 0.0; tuX = 0; tdX = 0;
 	camZ = -5.0; tuZ = 0; tdZ = 0;
-	size = 1.0;
 	pan = 0.0; rlX = 0; rrX = 0;
 	tilt = 0.0; rlY = 0; rrY = 0;
 	spin = 0.0; rlZ = 0; rrZ = 0;
+	r = 0.5; g = 0.5; b = 0.5;
 }
 
 void session::processInput(SDL_Event &event)
@@ -61,14 +61,17 @@ void session::processInput(SDL_Event &event)
 		case SDLK_k:
 			rrZ = !rrZ;
 			break;
-		case SDLK_z:
-			size -= 1.0f;
-			break;
-		case SDLK_x:
-			size += 1.0f;
-			break;
 		case SDLK_SPACE:
 			camInit();
+			break;
+		case SDLK_r:
+			if(r < 1) r += 0.05f;
+			break;
+		case SDLK_g:
+			if(g < 1) g += 0.05f;
+			break;
+		case SDLK_b:
+			if(b < 1) b += 0.05f;
 			break;
 		default:
 			harness::processInput(event);
