@@ -250,6 +250,8 @@ bool gameInstance::screenInit()
 		screen = NULL;
 	}
 	bool ret = window::screenInit();
+	glDisable(GL_DEPTH_TEST);
+	glDisable (GL_LIGHTING);
 	SDL_WM_SetCaption("GUFG", "GUFG");
 	Mix_OpenAudio(44100, AUDIO_S16, 2, 2048);
 	SDL_ShowCursor(SDL_DISABLE);
