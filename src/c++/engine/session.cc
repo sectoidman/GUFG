@@ -4,6 +4,11 @@ void session::init()
 {
 	assert(screenInit());
 	harness::init();
+	camInit();
+}
+
+void session::camInit()
+{
 	camY = 0.0; tuY = 0; tdY = 0;
 	camX = 0.0; tuX = 0; tdX = 0;
 	camZ = -5.0; tuZ = 0; tdZ = 0;
@@ -61,6 +66,9 @@ void session::processInput(SDL_Event &event)
 			break;
 		case SDLK_x:
 			size += 1.0f;
+			break;
+		case SDLK_SPACE:
+			camInit();
 			break;
 		default:
 			harness::processInput(event);

@@ -44,6 +44,6 @@ class vect
 {
 public:
 	float x, y, z;
-	void crossProduct(float, float, float, float, float, float);
+	void unitNormal(float, float, float, float, float, float, float, float, float);
 };
 #endif
