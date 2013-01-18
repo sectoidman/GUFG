@@ -37,7 +37,7 @@ void thing::draw()
 /* Load the identity matrix into modelmatrix. rotate the model, and move it back 5 */
 	vect v;
 	for(unsigned int i = 0; i < faces.size(); i ++){
-		v.crossProduct( vertices[0][faces[i][0]-1], vertices[1][faces[i][0]-1], vertices[2][faces[i][0]-1],
+		v.unitNormal( vertices[0][faces[i][0]-1], vertices[1][faces[i][0]-1], vertices[2][faces[i][0]-1],
 				vertices[0][faces[i][1]-1], vertices[1][faces[i][1]-1], vertices[2][faces[i][1]-1],
 				vertices[0][faces[i][2]-1], vertices[1][faces[i][2]-1], vertices[2][faces[i][2]-1]);
 		switch (faces[i].size()){

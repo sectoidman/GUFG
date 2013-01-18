@@ -1,6 +1,6 @@
 #include "auxil.h"
 #include <math.h>
-void vect::crossProduct(float Ax, float Ay, float Az, float Bx, float By, float Bz, float Cx, float Cy, float Cz)
+void vect::unitNormal(float Ax, float Ay, float Az, float Bx, float By, float Bz, float Cx, float Cy, float Cz)
 {
 	vect AB, AC;
 	float i, j, k, len;
