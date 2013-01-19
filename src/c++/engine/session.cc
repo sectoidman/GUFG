@@ -66,12 +66,24 @@ void session::processInput(SDL_Event &event)
 			break;
 		case SDLK_r:
 			if(r < 1) r += 0.05f;
+			else{
+				if(g > 0.0f) g -= 0.05;
+				if(b > 0.0f) b -= 0.05;
+			}
 			break;
 		case SDLK_g:
 			if(g < 1) g += 0.05f;
+			else{
+				if(r > 0.0f) r -= 0.05;
+				if(b > 0.0f) b -= 0.05;
+			}
 			break;
 		case SDLK_b:
 			if(b < 1) b += 0.05f;
+			else{
+				if(r > 0.0f) r -= 0.05;
+				if(g > 0.0f) g -= 0.05;
+			}
 			break;
 		default:
 			harness::processInput(event);
