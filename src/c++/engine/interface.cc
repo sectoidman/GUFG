@@ -693,7 +693,6 @@ void gameInstance::processInput(SDL_Event &event)
 	for(unsigned int i = 0; i < p.size(); i++)
 		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
 	switch (event.type){
-	/*Kill handler*/
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {
 		case SDLK_F10:
