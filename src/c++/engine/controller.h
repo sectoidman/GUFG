@@ -14,6 +14,8 @@ public:
 //	virtual void writeConfig(int);
 //	virtual bool readConfig(int);
 	virtual bool setKey(int, SDL_Event);
+	virtual bool same(SDL_Event);
+	virtual void swapKey(int, SDL_Event);
 	std::vector<keySetting*> input;
 	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
 };
