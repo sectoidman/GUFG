@@ -307,7 +307,7 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	roundEnd = false;
-	while(things.size() > 2)
+	while(things.size() > P.size())
 		things.pop_back();
 	while(globals.size() > 0)
 		globals.pop_back();
@@ -914,12 +914,11 @@ void interface::rematchMenu()
 					matchInit();
 					break;
 				case 2:
-					delete things[0]->pick();
-					delete things[1]->pick();
-					select[0] = 0;
-					select[1] = 0;
-					delete [] things[0]->meter;
-					delete [] things[1]->meter;
+					for(unsigned int i = 0; i < P.size(); i++){
+						delete P[i]->pick();
+						select[i] = 0;
+						delete [] things[i]->meter;
+					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
 					//Mix_PlayChannel(3, announceSelect, 0);
@@ -941,8 +940,6 @@ interface::~interface()
 {
 	if(select[0]) delete P[0]->pick();
 	if(select[1]) delete P[1]->pick();
-	if(P[0] != NULL) delete P[0];
-	if(P[1] != NULL) delete P[1];
 	if(menuMusic != NULL) Mix_FreeMusic(menuMusic);
 	SDL_FreeSurface(screen);
 	SDL_Quit();
