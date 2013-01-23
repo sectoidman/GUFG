@@ -149,7 +149,7 @@ int controller::tap(SDL_Event temp)
 		if(input[i]->trigger.type = temp.type){
 			switch(temp.type){
 			case SDL_KEYDOWN:
-				if(input[i]->trigger.key.keysym.sym = temp.key.keysym.sym) 
+				if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
 					return input[i]->effect;
 			case SDL_JOYBUTTONDOWN:
 				if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
