@@ -41,8 +41,6 @@ interface::interface()
 
 	select[0] = 0;
 	select[1] = 0;
-	P[0] = NULL;
-	P[1] = NULL;
 
 	read.open(".config/resolution.conf");
 	if(read.fail()){ 
@@ -82,7 +80,7 @@ void interface::createPlayers()
 {
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
-		P[i] = new player(i+1);
+		P.push_back(new player(i+1));
 		p.push_back(P[i]);
 		select[i] = 0;
 		selection[i] = 1+i;
@@ -96,7 +94,7 @@ void interface::createDemons()
 {
 	srand(time(NULL));
 	for(int i = 0; i < 2; i++){
-		P[i] = new demon(i+1); 
+		P.push_back(new demon(i+1));
 		p.push_back(P[i]);
 		selection[i] = rand()%numChars + 1;
 		P[i]->characterSelect(selection[i]); 
@@ -116,7 +114,7 @@ void interface::createDemons(replay * script)
 	srand(time(NULL));
 	numRounds = script->rcount;
 	for(int i = 0; i < 2; i++){
-		P[i] = new demon(i+1, script->start[i]);
+		P.push_back(new demon(i+1, script->start[i]));
 		selection[i] = script->selection[i];
 		P[i]->characterSelect(selection[i]);
 		select[i] = 1;
@@ -176,7 +174,7 @@ void interface::loadMisc()
 		sprintf(buffer, "content/sound/announcer/Win%i.ogg", i);
 		announceWinner[i] = Mix_LoadWAV(buffer);
 	}
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < p.size(); i++){
 		if(!p[i]->readConfig(i+1)) initialConfig(i);
 	}
 	readMatchupChart();
@@ -316,12 +314,12 @@ void interface::roundInit()
 	bg.x = 800;
 	bg.y = -900;
 
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		things[i]->posY = floor;
 		P[i]->roundInit();
 	}
 	/*Initialize input containers*/
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		for(int j = 0; j < 6; j++){
 			if(j < 4) sAxis[i][j] = 0;
 			posEdge[i][j] = 0;
@@ -348,7 +346,7 @@ void interface::runTimer()
 		Mix_PlayMusic(matchMusic,-1);
 	}
 	int plus;
-	for(int i = 0; i < 2; i++){
+	for(int i = 0; i < P.size(); i++){
 		if(select[i] == true){
 			if(things[i]->cMove != NULL)
 			{
@@ -390,10 +388,10 @@ void interface::runTimer()
 				if(shortcut) rMenu = 1;
 				else{
 					if(!continuous){
-						delete things[0]->pick();
-						delete things[1]->pick();
-						select[0] = 0;
-						select[1] = 0;
+						for(unsigned int i = 0; i < P.size(); i++){
+							delete P[i]->pick();
+							select[i] = 0;
+						}
 					}
 					if(SDL_WasInit(SDL_INIT_VIDEO) != 0){
 						Mix_HaltMusic();
@@ -427,7 +425,7 @@ void interface::resolve()
 	else if(pMenu) pauseMenu();
 	else {
 		if(timer > 99 * 60){
-			for(int i = 0; i < 2; i++){
+			for(unsigned int i = 0; i < P.size(); i++){
 				if(timer == 106 * 60) things[i]->inputBuffer[0] = 0;
 				if(timer == 106 * 60 - 1) things[i]->inputBuffer[0] = i;
 				if(timer == 106 * 60 - 2) things[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
@@ -444,7 +442,7 @@ void interface::resolve()
 		}
 		things[1]->getMove(posEdge[1], negEdge[1], prox, 1);
 		for(unsigned int i = 0; i < things.size(); i++){
-			if(i < 2){
+			if(i < P.size()){
 				if(things[(i+1)%2]->aerial) prox.y = 1;
 				else prox.y = 0;
 				prox.x = things[(i+1)%2]->throwInvuln;
@@ -482,7 +480,7 @@ void interface::resolve()
 				}
 				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
-						if((i < 2 && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
+						if((i < P.size() && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
  							things[i]->enforceAttractor(globals[j]);
 						}
 					}
@@ -503,7 +501,7 @@ void interface::resolve()
 			 */
 		}
 		dragBG(dx);
-		for(int i = 0; i < 2; i++){
+		for(unsigned int i = 0; i < P.size(); i++){
 			P[i]->enforceFloor(floor);
 			P[i]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 		}
@@ -515,7 +513,7 @@ void interface::resolve()
 		if(things[1]->cMove->state[things[1]->connectFlag].i & 1 && things[1]->cMove != P[1]->pick()->airNeutral) 
 			P[1]->checkFacing(P[0]);
 
-		for(int i = 0; i < 2; i++){
+		for(int i = 0; i < P.size(); i++){
 			if(!things[i]->aerial) { things[i]->deltaX = 0; things[i]->deltaY = 0; }
 
 			if(!roundEnd){
@@ -570,20 +568,20 @@ void interface::cleanup()
 		if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
 	}
 	if(pauseEnabled && !roundEnd){
-		for(int i = 0; i < 2; i++){
+		for(unsigned int i = 0; i < P.size(); i++){
 			if(posEdge[i][5] == 1 && counter[i] <= 0){
 				if(pMenu) pMenu = 0;
 				else pMenu = 1;
 			}
 		}
 	}
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		for(int j = 0; j < 6; j++){
 			if(posEdge[i][j] > 0) posEdge[i][j]++;
 			negEdge[i][j] = 0;
 		}
 	}
-	for(int i = 0; i < 2; i++) if(counter[i] > 0) counter[i]--;
+	for(unsigned int i = 0; i < P.size(); i++) if(counter[i] > 0) counter[i]--;
 }
 
 void interface::resolveSummons()
@@ -683,7 +681,7 @@ void interface::checkWin()
 
 void interface::genInput()
 {
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < p.size(); i++){
 		p[i]->genEvent(sAxis[i], posEdge[i], negEdge[i]);
 	}
 }
@@ -692,7 +690,7 @@ void interface::genInput()
 void gameInstance::processInput(SDL_Event &event)
 {
 	/*Do stuff with event*/
-	for(int i = 0; i < 2; i++)
+	for(unsigned int i = 0; i < p.size(); i++)
 		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
 	switch (event.type){
 	/*Kill handler*/
@@ -729,7 +727,7 @@ void interface::cSelectMenu()
 		assert(screenInit() != false);
 	}
 
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		if(numChars < 2){
 			select[i] = 1;
 			selection[i] = 1;
@@ -765,7 +763,7 @@ void interface::cSelectMenu()
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	for(int i = 0; i < 2; i++) if(menu[i] > 0) mainMenu(i);
+	for(unsigned int i = 0; i < P.size(); i++) if(menu[i] > 0) mainMenu(i);
 
 	if(select[0] && select[1]){
 		P[0]->characterSelect(selection[0]);
@@ -845,7 +843,7 @@ void interface::dragBG(int deltaX)
 	bg.x += deltaX;
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > bg.w - screenWidth) bg.x = bg.w - screenWidth;
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		if(dy < things[i]->posY + things[i]->collision.h){
 			dy = things[i]->posY + things[i]->collision.h;
 			if(dy > bg.h) dy = bg.h;
@@ -856,7 +854,7 @@ void interface::dragBG(int deltaX)
 
 void interface::pauseMenu()
 {
-	for(int j = 0; j < 2; j++){
+	for(int j = 0; j < p.size(); j++){
 		if(sAxis[j][0] && !counter[j]){
 			pMenu--;
 			counter[j] = 10;
@@ -873,12 +871,11 @@ void interface::pauseMenu()
 					pMenu = 0;
 					break;
 				case 2:
-					delete things[0]->pick();
-					delete things[1]->pick();
-					select[0] = 0;
-					select[1] = 0;
-					delete [] things[0]->meter;
-					delete [] things[1]->meter;
+					for(unsigned int i = 0; i < P.size(); i++){
+						delete P[i]->pick();
+						select[i] = 0;
+						delete [] things[i]->meter;
+					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
 					//Mix_PlayChannel(3, announceSelect, 0);
@@ -898,7 +895,7 @@ void interface::pauseMenu()
 
 void interface::rematchMenu()
 {
-	for(int j = 0; j < 2; j++){
+	for(int j = 0; j < P.size(); j++){
 		if(sAxis[j][0] && !counter[j]){
 			rMenu--;
 			counter[j] = 10;
@@ -1001,7 +998,7 @@ void interface::resolveCollision()
 void interface::resolveThrows()
 {
 	bool isThrown[2] = {false, false};
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		if(things[i]->cMove->arbitraryPoll(28, things[i]->currentFrame)){ 
 			isThrown[(i+1)%2] = true;
 		}
@@ -1010,7 +1007,7 @@ void interface::resolveThrows()
 		things[0]->cMove = P[0]->pick()->throwBreak;
 		things[1]->cMove = P[1]->pick()->throwBreak;
 	} else {
-		for(int i = 0; i < 2; i++){
+		for(unsigned int i = 0; i < P.size(); i++){
 			if(isThrown[i]){
 				P[i]->getThrown(things[(i+1)%2]->cMove, things[(i+1)%2]->posX*things[(i+1)%2]->facing, things[(i+1)%2]->posY);
 				P[i]->checkFacing(P[(i+1)%2]);
@@ -1044,7 +1041,7 @@ void interface::resolveHits()
 							if(things[i]->acceptTarget(things[h])){
 								connect[i] = 1;
 								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
-								if(i < 2) push[i] = s[i].push;
+								if(i < P.size()) push[i] = s[i].push;
 								k = things[h]->regComplexity;
 								j = things[i]->hitComplexity;
 								taken[h] = 1;
@@ -1069,7 +1066,7 @@ void interface::resolveHits()
 		if(taken[i]){
 			h = things[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
-			if(i < 2 && hitBy[i] < 2){
+			if(i < P.size() && hitBy[i] < P.size()){
 				if(things[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
@@ -1087,7 +1084,7 @@ void interface::resolveHits()
 		}
 	}
 
-	for(unsigned int i = 0; i < 2; i++){ 
+	for(unsigned int i = 0; i < P.size(); i++){ 
 		if(connect[i]){
 			if(P[i]->aerial){ 
 				switch(s[i].pause){
