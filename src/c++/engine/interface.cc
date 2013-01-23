@@ -692,7 +692,8 @@ void interface::processInput(SDL_Event &event)
 	/*Do stuff with event*/
 	for(unsigned int i = 0; i < p.size(); i++){
 		int t = p[i]->tap(event);
-		if((t < 1 || t > 8) && t < 1024){
+		if(t == 0) t = p[(i+1)%2]->tap(event);
+		if((t < 1 || t > 8) && t < 512){
 			if(p[i]->same(event)){
 				if(configMenu[i] > 1 && configMenu[i] < 7){
 					p[i]->swapKey(1 << (configMenu[i]+2), event);

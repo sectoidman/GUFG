@@ -122,7 +122,7 @@ void interface::drawConfigMenu(int ID)
 	for(i = 2; i < 7; i++){
 		sprintf(buffer, "%c", 'A'+i-2);
 		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
-		drawGlyph(buffer, 20 + 1260*ID, 300, 310+40*(i-1), 40, 2*ID);
+		drawGlyph(buffer, 20 + 1230*ID, 300, 310+40*(i-1), 40, 0);
 		for(unsigned int j = 0; j < p[ID]->input.size(); j++)
 			if(p[ID]->input[j]->effect == 1 << (i+2)){
 				switch(p[ID]->input[j]->trigger.type){
@@ -139,7 +139,7 @@ void interface::drawConfigMenu(int ID)
 			}
 		}
 		glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
-		drawGlyph(buffer, 70 + 1190*ID, 300, 310+40*(i-1), 40, 2*ID);
+		drawGlyph(buffer, 70 + 1230*ID, 300, 310+40*(i-1), 40, 0);
 	}
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 7)*0.4);
 	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 310+40*(i-1), 40, 2*ID);
