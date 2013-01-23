@@ -801,10 +801,7 @@ void interface::mainMenu(int ID)
 					analytics = true;
 				break;
 			case 2:
-				glDisable( GL_TEXTURE_2D );
-				configMenu[ID] = 6;
-				initialConfig(ID);
-				glEnable( GL_TEXTURE_2D );
+				configMenu[ID] = 7;
 				break;
 			case 3:
 				menu[ID] = 0;

@@ -113,16 +113,31 @@ void interface::drawConfigMenu(int ID)
 		sprintf(buffer, "Joystick %i", p[ID]->input[0]->trigger.jbutton.which);
 		break;
 	}
-	glColor4f(0.0, 0.0, 1.0, 0.8);
-	drawGlyph(buffer, 20 + 1260*ID, 300, 530, 40, 2*ID);
+	glColor4f(0.5, 0.0, 0.1, 0.8);
+	drawGlyph(buffer, 20 + 800*ID, 300, 290, 40, 0);
 	for(int i = 1; i < 6; i++){
-		sprintf(buffer, "%c", 'A'+i);
+		for(unsigned int j = 0; j < p[ID]->input.size(); j++)
+			if(p[ID]->input[j]->effect == 1 << (i+3)){
+				switch(p[ID]->input[j]->trigger.type){
+				case SDL_KEYDOWN:
+					sprintf(buffer, "%c  Key %i", 'A'+i-1, p[ID]->input[j]->trigger.key.keysym.sym);
+					break;
+				case SDL_JOYBUTTONDOWN:
+					sprintf(buffer, "%c  Button %i", 'A'+i-1, p[ID]->input[j]->trigger.jbutton.button);
+					break;
+				case SDL_JOYAXISMOTION:
+					sprintf(buffer, "%c  Axis %i %i", 'A'+i-1, p[ID]->input[j]->trigger.jaxis.axis,
+						p[ID]->input[j]->trigger.jaxis.value);
+					break;
+			}
+		}
 		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
-		drawGlyph(buffer, 20 + 1260*ID, 300, 290+40*i, 40, ID);
+		drawGlyph(buffer, 20 + 800*ID, 300, 290+40*i, 40, 0);
 	}
-	drawGlyph("Change Controller", 20 + 1260*ID, 300, 530, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 6)*0.4);
+	drawGlyph("Change Controller", 20 + 800*ID, 300, 530, 40, 0);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 7)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 570, 40, 2*ID);
+	drawGlyph("Exit Menu", 20 + 800*ID, 300, 570, 40, 0);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
