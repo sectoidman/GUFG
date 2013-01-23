@@ -41,8 +41,6 @@ interface::interface()
 
 	select[0] = 0;
 	select[1] = 0;
-	P[0] = NULL;
-	P[1] = NULL;
 
 	read.open(".config/resolution.conf");
 	if(read.fail()){ 
@@ -82,7 +80,7 @@ void interface::createPlayers()
 {
 	/*Initialize players.*/
 	for(int i = 0; i < 2; i++){
-		P[i] = new player(i+1);
+		P.push_back(new player(i+1));
 		p.push_back(P[i]);
 		select[i] = 0;
 		selection[i] = 1+i;
@@ -96,7 +94,7 @@ void interface::createDemons()
 {
 	srand(time(NULL));
 	for(int i = 0; i < 2; i++){
-		P[i] = new demon(i+1); 
+		P.push_back(new demon(i+1));
 		p.push_back(P[i]);
 		selection[i] = rand()%numChars + 1;
 		P[i]->characterSelect(selection[i]); 
@@ -116,7 +114,7 @@ void interface::createDemons(replay * script)
 	srand(time(NULL));
 	numRounds = script->rcount;
 	for(int i = 0; i < 2; i++){
-		P[i] = new demon(i+1, script->start[i]);
+		P.push_back(new demon(i+1, script->start[i]));
 		selection[i] = script->selection[i];
 		P[i]->characterSelect(selection[i]);
 		select[i] = 1;
@@ -309,7 +307,7 @@ void interface::matchInit()
 void interface::roundInit()
 {
 	roundEnd = false;
-	while(things.size() > 2)
+	while(things.size() > P.size())
 		things.pop_back();
 	while(globals.size() > 0)
 		globals.pop_back();
@@ -390,10 +388,10 @@ void interface::runTimer()
 				if(shortcut) rMenu = 1;
 				else{
 					if(!continuous){
-						delete things[0]->pick();
-						delete things[1]->pick();
-						select[0] = 0;
-						select[1] = 0;
+						for(unsigned int i = 0; i < P.size(); i++){
+							delete P[i]->pick();
+							select[i] = 0;
+						}
 					}
 					if(SDL_WasInit(SDL_INIT_VIDEO) != 0){
 						Mix_HaltMusic();
@@ -873,12 +871,11 @@ void interface::pauseMenu()
 					pMenu = 0;
 					break;
 				case 2:
-					delete things[0]->pick();
-					delete things[1]->pick();
-					select[0] = 0;
-					select[1] = 0;
-					delete [] things[0]->meter;
-					delete [] things[1]->meter;
+					for(unsigned int i = 0; i < P.size(); i++){
+						delete P[i]->pick();
+						select[i] = 0;
+						delete [] things[i]->meter;
+					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
 					//Mix_PlayChannel(3, announceSelect, 0);
@@ -917,12 +914,11 @@ void interface::rematchMenu()
 					matchInit();
 					break;
 				case 2:
-					delete things[0]->pick();
-					delete things[1]->pick();
-					select[0] = 0;
-					select[1] = 0;
-					delete [] things[0]->meter;
-					delete [] things[1]->meter;
+					for(unsigned int i = 0; i < P.size(); i++){
+						delete P[i]->pick();
+						select[i] = 0;
+						delete [] things[i]->meter;
+					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
 					//Mix_PlayChannel(3, announceSelect, 0);
@@ -944,8 +940,6 @@ interface::~interface()
 {
 	if(select[0]) delete P[0]->pick();
 	if(select[1]) delete P[1]->pick();
-	if(P[0] != NULL) delete P[0];
-	if(P[1] != NULL) delete P[1];
 	if(menuMusic != NULL) Mix_FreeMusic(menuMusic);
 	SDL_FreeSurface(screen);
 	SDL_Quit();
