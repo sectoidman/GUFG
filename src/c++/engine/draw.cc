@@ -651,8 +651,9 @@ void session::draw(thing & object)
 	glPushMatrix(); 
 	glMatrixMode( GL_PROJECTION );
 	gluPerspective(100.0, 1.5, 1.0, 150.0);
+	float modelColor[] = { r, g, b, 1.0f };
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, modelColor);
 	glMatrixMode( GL_MODELVIEW );
-	glColor4f(0.1f, 0.1f, 0.1f, 0.5f);
 	glTranslatef(camX, camY, camZ);
 	glPushMatrix(); 
 	glRotatef(spin, 0.0, 0.0, 1.0f);
