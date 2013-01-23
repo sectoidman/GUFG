@@ -17,7 +17,6 @@
 #define INTERFACE
 class gameInstance : public window, public harness{
 public:
-	virtual void processInput(SDL_Event&);		/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
 	virtual void loadMisc();
@@ -44,6 +43,7 @@ public:
 	interface();
 	~interface();
 	void loadMisc();
+	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
 	void createDemons();
 	void createDemons(replay*);

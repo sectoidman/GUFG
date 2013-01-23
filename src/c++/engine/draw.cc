@@ -34,7 +34,10 @@ void interface::drawCSelect()
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	for(int i = 0; i < 2; i++) if(!configMenu[i] && menu[i]) drawMainMenu(i);
+	for(int i = 0; i < 2; i++){ 
+		if(configMenu[i]) drawConfigMenu(i);
+		else if (menu[i]) drawMainMenu(i);
+	}
 	glEnable( GL_TEXTURE_2D );
 
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
@@ -63,7 +66,6 @@ void interface::drawCSelect()
 	}
 
 	glDisable( GL_TEXTURE_2D );
-	for(int i = 0; i < 2; i++) if(configMenu[i]) drawConfigMenu(i);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
@@ -116,11 +118,11 @@ void interface::drawConfigMenu(int ID)
 		break;
 	}
 	glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == 1)*0.4);
-	drawGlyph(buffer, 20 + 800*ID, 300, 310, 40, 0);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 310, 40, 2*ID);
 	for(i = 2; i < 7; i++){
 		sprintf(buffer, "%c", 'A'+i-2);
 		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
-		drawGlyph(buffer, 20 + 800*ID, 300, 310+40*(i-1), 40, 0);
+		drawGlyph(buffer, 20 + 1260*ID, 300, 310+40*(i-1), 40, 2*ID);
 		for(unsigned int j = 0; j < p[ID]->input.size(); j++)
 			if(p[ID]->input[j]->effect == 1 << (i+2)){
 				switch(p[ID]->input[j]->trigger.type){
@@ -137,10 +139,10 @@ void interface::drawConfigMenu(int ID)
 			}
 		}
 		glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
-		drawGlyph(buffer, 70 + 800*ID, 300, 310+40*(i-1), 40, 0);
+		drawGlyph(buffer, 70 + 1190*ID, 300, 310+40*(i-1), 40, 2*ID);
 	}
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 7)*0.4);
-	drawGlyph("Exit Menu", 20 + 800*ID, 300, 310+40*(i-1), 40, 0);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 310+40*(i-1), 40, 2*ID);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }

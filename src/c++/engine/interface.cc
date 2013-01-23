@@ -687,11 +687,20 @@ void interface::genInput()
 }
 
 /*Read the input that's happened this frame*/
-void gameInstance::processInput(SDL_Event &event)
+void interface::processInput(SDL_Event &event)
 {
 	/*Do stuff with event*/
-	for(unsigned int i = 0; i < p.size(); i++)
+	for(unsigned int i = 0; i < p.size(); i++){
+		int t = p[i]->tap(event);
+		if((t < 1 || t > 8) && t < 1024){
+			if(p[i]->same(event)){
+				if(configMenu[i] > 1 && configMenu[i] < 7){
+					p[i]->swapKey(1 << (configMenu[i]+2), event);
+				}
+			}
+		}
 		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
+	}
 	switch (event.type){
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {
@@ -861,6 +870,8 @@ void interface::keyConfig(int ID)
 			case 7:
 				configMenu[ID] = 0;
 				menu[ID] = 2;
+				p[ID]->writeConfig(ID+1);
+				break;
 			}
 			counter[ID] = 10;
 		}
@@ -869,6 +880,7 @@ void interface::keyConfig(int ID)
 		counter[ID] = 10;
 		configMenu[ID] = 0;
 		menu[ID] = 0;
+		p[ID]->writeConfig(ID+1);
 	}
 }
 

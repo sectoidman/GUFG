@@ -99,7 +99,7 @@ bool controller::same(SDL_Event temp)
 
 void controller::swapKey(int effect, SDL_Event temp)
 {
-	int sameKey = -1, sameEffect = -1, tempEffect;
+	int sameKey = -1, sameEffect = -1;
 	for(unsigned int i = 0; i < input.size(); i++){
 		if(input[i]->effect == effect){
 			sameEffect = i;
@@ -110,46 +110,48 @@ void controller::swapKey(int effect, SDL_Event temp)
 		switch(temp.type){
 		case SDL_KEYDOWN:
 			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym){
-				if(input[i]->effect != effect) sameKey = i;
+				sameKey = i;
 				i = input.size();
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
 			if(input[i]->trigger.jbutton.button == temp.jbutton.button){
-				if(input[i]->effect != effect) sameKey = i;
+				sameKey = i;
 				i = input.size();
 			}
 			break;
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.jaxis.axis == temp.jaxis.axis && input[i]->trigger.jaxis.value == temp.jaxis.value){
-				if(input[i]->effect != effect) sameKey = i;
+				sameKey = i;
 				i = input.size();
 			}
 			break;
+		default:
+			return;
 		}
-		if(sameEffect >= 0){
-			if(sameKey >= 0){ 
-				tempEffect = input[sameKey]->effect;
-				input[sameKey]->effect = effect;
-				input[sameEffect]->effect = tempEffect;
-			} else {
-				input.erase(input.begin()+sameEffect);
-				setKey(effect, temp);
-			}
+	}
+	if(sameEffect >= 0){
+		if(sameKey >= 0){
+			if(sameKey == sameEffect) return;
+			input[sameEffect]->effect = input[sameKey]->effect;
+			input[sameKey]->effect = effect;
 		} else {
-			if(sameKey >= 0) input[sameKey]->effect = effect;
-			else setKey(effect, temp);
+			setKey(effect, temp);
+			input.erase(input.begin()+sameEffect);
 		}
+	} else {
+		if(sameKey >= 0) input[sameKey]->effect = effect;
+		else setKey(effect, temp);
 	}
 }
 
 int controller::tap(SDL_Event temp)
 {
 	for(unsigned int i = 0; i < input.size(); i++){
-		if(input[i]->trigger.type = temp.type){
+		if(input[i]->trigger.type == temp.type){
 			switch(temp.type){
 			case SDL_KEYDOWN:
-				if(input[i]->trigger.key.keysym.sym = temp.key.keysym.sym) 
+				if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
 					return input[i]->effect;
 			case SDL_JOYBUTTONDOWN:
 				if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
