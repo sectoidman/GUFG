@@ -11,10 +11,6 @@ struct keySetting{
 class controller{
 public:
 	virtual void setKey(int);
-	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
-	virtual void genEvent(bool *&, int *&, bool *&) {}
-	void writeConfig(int);
-	bool readConfig(int);
 	virtual bool setKey(int, SDL_Event);
 	virtual bool same(SDL_Event);
 	virtual int tap(SDL_Event);
