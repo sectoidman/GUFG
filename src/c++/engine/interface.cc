@@ -847,15 +847,17 @@ void interface::keyConfig(int ID)
 		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(configMenu[ID]){
 			case 1:
+				glDisable( GL_TEXTURE_2D );
+				initialConfig(ID);
+				glEnable( GL_TEXTURE_2D );
+				configMenu[ID] = 7;
+				break;
 			case 2:
 			case 3:
 			case 4:
 			case 5:
-				break;
 			case 6:
-				glDisable( GL_TEXTURE_2D );
-				initialConfig(ID);
-				glEnable( GL_TEXTURE_2D );
+				configMenu[ID]++;
 				break;
 			case 7:
 				configMenu[ID] = 0;
@@ -869,8 +871,6 @@ void interface::keyConfig(int ID)
 		configMenu[ID] = 0;
 		menu[ID] = 0;
 	}
-
-
 }
 
 void interface::dragBG(int deltaX)

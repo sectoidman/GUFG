@@ -98,6 +98,8 @@ void interface::drawMainMenu(int ID)
 
 void interface::drawConfigMenu(int ID)
 {
+	int i;
+	int macros;
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 	char buffer[200];
 	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
@@ -113,31 +115,32 @@ void interface::drawConfigMenu(int ID)
 		sprintf(buffer, "Joystick %i", p[ID]->input[0]->trigger.jbutton.which);
 		break;
 	}
-	glColor4f(0.5, 0.0, 0.1, 0.8);
-	drawGlyph(buffer, 20 + 800*ID, 300, 290, 40, 0);
-	for(int i = 1; i < 6; i++){
+	glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == 1)*0.4);
+	drawGlyph(buffer, 20 + 800*ID, 300, 310, 40, 0);
+	for(i = 2; i < 7; i++){
+		sprintf(buffer, "%c", 'A'+i-2);
+		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
+		drawGlyph(buffer, 20 + 800*ID, 300, 310+40*(i-1), 40, 0);
 		for(unsigned int j = 0; j < p[ID]->input.size(); j++)
-			if(p[ID]->input[j]->effect == 1 << (i+3)){
+			if(p[ID]->input[j]->effect == 1 << (i+2)){
 				switch(p[ID]->input[j]->trigger.type){
 				case SDL_KEYDOWN:
-					sprintf(buffer, "%c  Key %i", 'A'+i-1, p[ID]->input[j]->trigger.key.keysym.sym);
+					sprintf(buffer, "Key %s", SDL_GetKeyName(p[ID]->input[j]->trigger.key.keysym.sym));
 					break;
 				case SDL_JOYBUTTONDOWN:
-					sprintf(buffer, "%c  Button %i", 'A'+i-1, p[ID]->input[j]->trigger.jbutton.button);
+					sprintf(buffer, "Button %i", p[ID]->input[j]->trigger.jbutton.button);
 					break;
 				case SDL_JOYAXISMOTION:
-					sprintf(buffer, "%c  Axis %i %i", 'A'+i-1, p[ID]->input[j]->trigger.jaxis.axis,
+					sprintf(buffer, "Axis %i %i", p[ID]->input[j]->trigger.jaxis.axis,
 						p[ID]->input[j]->trigger.jaxis.value);
 					break;
 			}
 		}
-		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
-		drawGlyph(buffer, 20 + 800*ID, 300, 290+40*i, 40, 0);
+		glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
+		drawGlyph(buffer, 70 + 800*ID, 300, 310+40*(i-1), 40, 0);
 	}
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 6)*0.4);
-	drawGlyph("Change Controller", 20 + 800*ID, 300, 530, 40, 0);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 7)*0.4);
-	drawGlyph("Exit Menu", 20 + 800*ID, 300, 570, 40, 0);
+	drawGlyph("Exit Menu", 20 + 800*ID, 300, 310+40*(i-1), 40, 0);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
