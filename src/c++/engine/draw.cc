@@ -34,7 +34,7 @@ void interface::drawCSelect()
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	for(int i = 0; i < 2; i++) if(menu[i] > 0) drawMainMenu(i);
+	for(int i = 0; i < 2; i++) if(!configMenu[i] && menu[i]) drawMainMenu(i);
 	glEnable( GL_TEXTURE_2D );
 
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
@@ -63,6 +63,7 @@ void interface::drawCSelect()
 	}
 
 	glDisable( GL_TEXTURE_2D );
+	for(int i = 0; i < 2; i++) if(configMenu[i]) drawConfigMenu(i);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
@@ -91,6 +92,37 @@ void interface::drawMainMenu(int ID)
 	drawGlyph(buffer, 20 + 1260*ID, 300, 490, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 6)*0.4);
 	drawGlyph("Quit Game", 20 + 1260*ID, 300, 530, 40, 2*ID);
+	glDisable( GL_TEXTURE_2D );
+	glColor4f(1.0, 1.0, 1.0, 1.0f);
+}
+
+void interface::drawConfigMenu(int ID)
+{
+	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
+	char buffer[200];
+	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glEnable( GL_TEXTURE_2D );
+	switch(p[ID]->input[0]->trigger.type){
+	case SDL_KEYDOWN:
+		sprintf(buffer, "Keyboard");
+		break;
+	case SDL_JOYBUTTONDOWN:
+		sprintf(buffer, "Joystick %i", p[ID]->input[0]->trigger.jaxis.which);
+		break;
+	case SDL_JOYAXISMOTION:
+		sprintf(buffer, "Joystick %i", p[ID]->input[0]->trigger.jbutton.which);
+		break;
+	}
+	glColor4f(0.0, 0.0, 1.0, 0.8);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 530, 40, 2*ID);
+	for(int i = 1; i < 6; i++){
+		sprintf(buffer, "%c", 'A'+i);
+		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
+		drawGlyph(buffer, 20 + 1260*ID, 300, 290+40*i, 40, ID);
+	}
+	drawGlyph("Change Controller", 20 + 1260*ID, 300, 530, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == 7)*0.4);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 570, 40, 2*ID);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }

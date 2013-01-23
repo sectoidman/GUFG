@@ -763,7 +763,10 @@ void interface::cSelectMenu()
 	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	for(unsigned int i = 0; i < P.size(); i++) if(menu[i] > 0) mainMenu(i);
+	for(unsigned int i = 0; i < P.size(); i++){
+		if(configMenu[i] > 0) keyConfig(i);
+		else if(menu[i] > 0) mainMenu(i);
+	}
 
 	if(select[0] && select[1]){
 		P[0]->characterSelect(selection[0]);
@@ -782,7 +785,7 @@ void interface::mainMenu(int ID)
 	if(sAxis[ID][0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
-	} else if(sAxis[ID][1] && !counter[ID]){ 
+	} else if(sAxis[ID][1] && !counter[ID]){
 		menu[ID]++;
 		counter[ID] = 10;
 	}
@@ -799,6 +802,7 @@ void interface::mainMenu(int ID)
 				break;
 			case 2:
 				glDisable( GL_TEXTURE_2D );
+				configMenu[ID] = 6;
 				initialConfig(ID);
 				glEnable( GL_TEXTURE_2D );
 				break;
@@ -831,8 +835,43 @@ void interface::mainMenu(int ID)
 	}
 }
 
-void interface::keyConfig()
+void interface::keyConfig(int ID)
 {
+	if(sAxis[ID][0] && !counter[ID]){
+		configMenu[ID]--;
+		counter[ID] = 10;
+	} else if(sAxis[ID][1] && !counter[ID]){
+		configMenu[ID]++;
+		counter[ID] = 10;
+	}
+	if(configMenu[ID] > 7) configMenu[ID] = 1;
+	else if(configMenu[ID] < 1) configMenu[ID] = 7;
+	for(int i = 0; i < 5; i++){
+		if(posEdge[ID][i] == 1 && !counter[ID]){
+			switch(configMenu[ID]){
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+				break;
+			case 6:
+				glDisable( GL_TEXTURE_2D );
+				initialConfig(ID);
+				glEnable( GL_TEXTURE_2D );
+				break;
+			case 7:
+				configMenu[ID] = 0;
+				menu[ID] = 2;
+			}
+			counter[ID] = 10;
+		}
+	}
+	if(posEdge[ID][5] == 1 && !counter[ID]){ 
+		counter[ID] = 10;
+		configMenu[ID] = 0;
+		menu[ID] = 0;
+	}
 
 
 }

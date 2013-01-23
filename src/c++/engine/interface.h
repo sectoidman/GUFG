@@ -58,6 +58,7 @@ public:
 	void drawGame();
 	void drawCSelect();
 	void drawMainMenu(int);
+	void drawConfigMenu(int);
 	void drawRematchMenu();
 	void drawPauseMenu();
 	void cleanup();
@@ -66,7 +67,7 @@ public:
 	void matchInit();
 	void cSelectMenu();
 	void mainMenu(int);
-	void keyConfig();
+	void keyConfig(int);
 	void rematchMenu();
 	void pauseMenu();
 	void checkWin();

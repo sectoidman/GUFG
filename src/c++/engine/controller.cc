@@ -5,7 +5,7 @@ keySetting::keySetting()
 	effect = 0;
 }
 
-void controller::setKey(int effect) 
+void controller::setKey(int effect)
 {
 	SDL_Event temp;
 	bool configFlag = 0;
