@@ -1055,7 +1055,7 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(i < 2 && things[i]->cMove->allowed.i < 128 && !things[i]->aerial) P[i]->checkFacing(P[(i+1)%2]);
+			if(i < P.size() && things[i]->cMove->allowed.i < 128 && !things[i]->aerial) P[i]->checkFacing(P[(i+1)%2]);
 		}
 	}
 
@@ -1072,12 +1072,12 @@ void interface::resolveHits()
 					things[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
-			if(i < 2 && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
+			if(i < P.size() && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
 			P[(i+1)%2]->enforceFloor(floor);
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 			if(things[i]->facing * things[(i+1)%2]->facing == 1) things[i]->invertVectors(1);
-			if(i < 2) damage[(i+1)%2] += h - P[i]->meter[0];
+			if(i < P.size()) damage[(i+1)%2] += h - P[i]->meter[0];
 		}
 	}
 
@@ -1116,11 +1116,11 @@ void interface::resolveHits()
 		resolveCollision();
 	}
 
-	for(int i = 0; i < 2; i++) {
+	for(unsigned int i = 0; i < P.size(); i++) {
 		things[i]->throwInvuln--;
 		P[i]->hover--;
 	}
-	for(int i = 0; i < 2; i++) {
+	for(unsigned int i = 0; i < P.size(); i++) {
 		if(things[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
 			for(unsigned int j = 0; j < things.size(); j++)
@@ -1132,7 +1132,7 @@ void interface::resolveHits()
 void interface::doSuperFreeze()
 {
 	int go[2] = {0, 0};
-	for(int i = 0; i < 2; i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		go[i] = things[i]->cMove->arbitraryPoll(2, things[i]->currentFrame);
 		if(go[i] > 0){ 
 			P[(i+1)%2]->checkBlocking();
