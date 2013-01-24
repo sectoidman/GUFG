@@ -681,6 +681,7 @@ void interface::processInput(SDL_Event &event)
 			if(p[i]->same(event)){
 				if(configMenu[i] > 1 && configMenu[i] < 7){
 					p[i]->swapKey(1 << (configMenu[i]+2), event);
+					configMenu[i]++;
 				}
 			}
 		}
@@ -850,13 +851,6 @@ void interface::keyConfig(int ID)
 				initialConfig(ID);
 				glEnable( GL_TEXTURE_2D );
 				configMenu[ID] = 7;
-				break;
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-				configMenu[ID]++;
 				break;
 			case 7:
 				configMenu[ID] = 0;
