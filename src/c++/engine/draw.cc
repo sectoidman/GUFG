@@ -111,10 +111,10 @@ void interface::drawConfigMenu(int ID)
 		sprintf(buffer, "Keyboard");
 		break;
 	case SDL_JOYBUTTONDOWN:
-		sprintf(buffer, "Joystick %i", p[ID]->input[0]->trigger.jaxis.which);
+		sprintf(buffer, "Joy %i", p[ID]->input[0]->trigger.jaxis.which);
 		break;
 	case SDL_JOYAXISMOTION:
-		sprintf(buffer, "Joystick %i", p[ID]->input[0]->trigger.jbutton.which);
+		sprintf(buffer, "Joy %i", p[ID]->input[0]->trigger.jbutton.which);
 		break;
 	}
 	glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == 1)*0.4);

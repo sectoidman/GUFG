@@ -784,7 +784,7 @@ void interface::mainMenu(int ID)
 	}
 	if(menu[ID] > 6) menu[ID] = 1;
 	else if(menu[ID] < 1) menu[ID] = 6;
-	for(int i = 0; i < 5; i++){
+	for(unsigned int i = 0; i < posEdge.size(); i++){
 		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(menu[ID]){
 			case 1:
@@ -836,7 +836,7 @@ void interface::keyConfig(int ID)
 	}
 	if(configMenu[ID] > 7) configMenu[ID] = 1;
 	else if(configMenu[ID] < 1) configMenu[ID] = 7;
-	for(int i = 0; i < 5; i++){
+	for(unsigned int i = 0; i < posEdge.size(); i++){
 		if(posEdge[ID][i] == 1 && !counter[ID]){
 			switch(configMenu[ID]){
 			case 1:
@@ -896,7 +896,7 @@ void interface::pauseMenu()
 		}
 		if(pMenu > 3) pMenu = 1;
 		else if(pMenu < 1) pMenu = 3;
-		for(int i = 0; i < 5; i++){
+		for(unsigned int i = 0; i < posEdge.size(); i++){
 			if(posEdge[j][i] == 1){
 				switch(pMenu){
 				case 1:
