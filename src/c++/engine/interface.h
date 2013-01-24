@@ -15,7 +15,15 @@
 #include "harness.h"
 #ifndef INTERFACE
 #define INTERFACE
-class gameInstance : public window, public harness{
+class arcadeHarness : public harness{
+public:
+	std::vector<bool *> sAxis;
+	std::vector<int *> posEdge;
+	std::vector<bool *> negEdge;
+//	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
+};
+
+class gameInstance : public window, public arcadeHarness{
 public:
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
@@ -26,9 +34,6 @@ public:
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
 	std::vector<player*> P;
-	bool * sAxis[2];
-	int * posEdge[2];
-	bool * negEdge[2];
 
 //Meta-interface stuff. Gameover state, screen size, etc.
 	int screenHeight, screenWidth, floor, wall;

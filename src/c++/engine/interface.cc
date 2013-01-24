@@ -15,7 +15,6 @@
 #include <fstream>
 #include <iostream>
 #include <math.h>
-
 interface::interface()
 {
 	numChars = 2;
@@ -56,10 +55,10 @@ interface::interface()
 	gameover = 0;
 	numRounds = 2;
 
-	for(int i = 0; i < 2; i++){
-		sAxis[i] = new bool[4];
-		posEdge[i] = new int[6]; 
-		negEdge[i] = new bool[6];
+	for(unsigned int i = 0; i < 2; i++){
+		sAxis.push_back(new bool[4]);
+		posEdge.push_back(new int[6]);
+		negEdge.push_back(new bool[6]);
 		counter[i] = 0;
 	}
 
