@@ -684,8 +684,14 @@ void interface::processInput(SDL_Event &event)
 				}
 			}
 		}
-		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
 	}
+	gameInstance::processInput(event);
+}
+
+void gameInstance::processInput(SDL_Event &event)
+{
+	for(unsigned int i = 0; i < p.size(); i++)
+		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
 	switch (event.type){
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {

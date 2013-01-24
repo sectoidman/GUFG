@@ -22,6 +22,7 @@ public:
 	virtual void loadMisc();
 	bool screenInit();
 	bool screenInit(int, int);
+	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
