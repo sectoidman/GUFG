@@ -120,7 +120,7 @@ void interface::drawConfigMenu(int ID)
 	glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == 1)*0.4);
 	drawGlyph(buffer, 20 + 1260*ID, 300, 310, 40, 2*ID);
 	for(i = 2; i < 7; i++){
-		sprintf(buffer, "%c", 'A'+i-2);
+		sprintf(buffer, "%s", p[ID]->inputName[i+2]);
 		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
 		drawGlyph(buffer, 20 + 1230*ID, 300, 310+40*(i-1), 40, 0);
 		for(unsigned int j = 0; j < p[ID]->input.size(); j++)
