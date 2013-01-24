@@ -25,6 +25,7 @@ public:
 	virtual void genInput();
 	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void initialConfig(int);
+	virtual void unitCollision(instance*, instance*);
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
@@ -73,7 +74,6 @@ public:
 	void dragBG(int);
 	void doSuperFreeze();
 	void resolveCollision();
-	void unitCollision(player*, player*);
 	void readMatchupChart();
 	void writeMatchupChart();
 	void resolveHits();

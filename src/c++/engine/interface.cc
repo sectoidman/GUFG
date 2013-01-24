@@ -972,9 +972,9 @@ interface::~interface()
 	SDL_Quit();
 }
 
-void interface::unitCollision(player *a, player *b)
+void gameInstance::unitCollision(instance *a, instance *b)
 {
-	player *right = b, *left = a;
+	instance *right = b, *left = a;
 	if(a->middle() > b->middle()){ right = a; left = b; }
 	else if(a->middle() < b->middle()){ right = b; left = a; }
 	else {

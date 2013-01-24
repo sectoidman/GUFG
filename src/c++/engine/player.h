@@ -62,6 +62,7 @@ public:
 	int particleType;
 	int blockType;
 	int counter;
+	bool rCorner, lCorner;
 protected:
 	avatar * v;
 };
@@ -95,7 +96,6 @@ public:
 	bool stick;
 	int hover;
 
-	bool rCorner, lCorner;
 
 	int particleLife;
 

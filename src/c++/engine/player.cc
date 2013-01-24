@@ -40,6 +40,8 @@ void instance::init()
 	momentum = NULL;
 	deltaX = 0;
 	deltaY = 0;
+	lCorner = 0;
+	rCorner = 0;
 	regComplexity = 0;
 	hitComplexity = 0;
 	currentFrame = 0;
@@ -90,8 +92,6 @@ void player::roundInit()
 	instance::init();
 	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
-	lCorner = 0;
-	rCorner = 0;
 	elasticX = 0;
 	elasticY = 0;
 	blockType = 0;
@@ -453,8 +453,6 @@ void player::checkCorners(int left, int right)
 	even though we're *checking* collision, we're still *moving* spr*/
 	int lOffset = posX - collision.x;
 	int rOffset = posX - (collision.x + collision.w);
-
-
 	if(collision.x <= left){
 		if(elasticX){
 			if(deltaX < 0) deltaX = -deltaX;
