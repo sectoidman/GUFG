@@ -9,12 +9,13 @@ frame::frame()
 	next = NULL;
 }
 
-frame::frame(bool a[], int p[], bool n[])
+frame::frame(std::vector<bool> ax, std::vector<int> pe, std::vector<bool> ne)
 {
-	for(int i = 0; i < 5; i++){
-		if(i < 4) axis[i] = a[i];
-		pos[i] = p[i];
-		neg[i] = n[i];
+	for(int i = 0; i < 4; i++)
+		axis.push_back(ax[i]);
+	for(unsigned int i = 0; i < pe.size(); i++){
+		neg.push_back(ne[i]);
+		pos.push_back(pe[i]);
 	}
 	next = NULL;
 }
@@ -74,6 +75,8 @@ void replay::append(frame * p1, frame * p2)
 void replay::load(const char* filename)
 {
 	std::ifstream read;
+	int tempInt;
+	bool tempBool;
 	read.open(filename);
 	frame * iterator[2];
 	for(int i = 0; i < 2; i++){
@@ -85,9 +88,14 @@ void replay::load(const char* filename)
 	for(int i = 0; i < fcounter; i++){
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 5; j++){
-				if(j < 4) read >> iterator[i]->axis[j];
-				read >> iterator[i]->pos[j];
-				read >> iterator[i]->neg[j];
+				if(j < 4){ 
+					read >> tempBool;
+					iterator[i]->axis.push_back(tempBool);
+				}
+				read >> tempBool;
+				iterator[i]->neg.push_back(tempBool);
+				read >> tempInt;
+				iterator[i]->pos.push_back(tempInt);
 			}
 			iterator[i]->next = new frame;
 			iterator[i] = iterator[i]->next;
@@ -111,7 +119,7 @@ void replay::write()
 	scribe << selection[0] << " " << selection[1] << " " << fcounter << " " << rcount << "\n";
 	do{
 		for(int i = 0; i < 2; i++){
-			for(int j = 0; j < 5; j++){
+			for(unsigned int j = 0; j < iterator[i]->pos.size(); j++){
 				if(j < 4) scribe << iterator[i]->axis[j] << " ";
 				scribe << iterator[i]->pos[j] << " ";
 				scribe << iterator[i]->neg[j] << " ";

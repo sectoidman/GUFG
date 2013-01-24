@@ -55,23 +55,8 @@ interface::interface()
 	gameover = 0;
 	numRounds = 2;
 
-	for(unsigned int i = 0; i < 2; i++){
-		sAxis.push_back(new bool[4]);
-		posEdge.push_back(new int[6]);
-		negEdge.push_back(new bool[6]);
-		counter[i] = 0;
-	}
+	initContainers(2, 6);
 
-	for(int i = 0; i < 6; i++){
-		posEdge[0][i] = 0;
-		posEdge[1][i] = 0;
-		negEdge[0][i] = 0;
-		negEdge[1][i] = 0;
-		if(i < 4){
-			sAxis[0][i] = 0;
-			sAxis[1][i] = 0;
-		}
-	}
 	currentMatch = NULL;
 }
 

@@ -589,7 +589,7 @@ int instance::passSignal(int sig)
 	}
 }
 
-void instance::pushInput(bool axis[4])
+void instance::pushInput(std::vector<bool> axis)
 {
 	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
 	inputBuffer[0] = temp;
@@ -599,7 +599,7 @@ void instance::pushInput(bool axis[4])
 	}
 }
 
-void instance::getMove(int down[5], bool up[5], SDL_Rect &p, bool dryrun)
+void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = cMove;
@@ -691,7 +691,7 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
-void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, bool *& negEdge)
+void controller::readEvent(SDL_Event & event, std::vector<bool>& sAxis, std::vector<int>& posEdge, std::vector<bool>& negEdge)
 {
 	int value = -1;
 	bool pos;
@@ -751,7 +751,7 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 		}
 	}
 	if(value > -1){
-		for(int i = 0; i < 6; i++){
+		for(int i = 0; i < 4; i++){
 			if(i < 4){
 				if(input[value]->effect & (1 << i)){ 
 					sAxis[i] = pos;
@@ -771,6 +771,8 @@ void controller::readEvent(SDL_Event & event, bool *& sAxis, int *& posEdge, boo
 					}
 				}
 			}
+		}
+		for(unsigned int i = 0; i < posEdge.size(); i++){
 			if(input[value]->effect & (1 << (i + 4))){
 				posEdge[i] = pos;
 				negEdge[i] = !pos;

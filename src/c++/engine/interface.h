@@ -15,14 +15,6 @@
 #include "harness.h"
 #ifndef INTERFACE
 #define INTERFACE
-class arcadeHarness : public harness{
-public:
-	std::vector<bool *> sAxis;
-	std::vector<int *> posEdge;
-	std::vector<bool *> negEdge;
-//	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
-};
-
 class gameInstance : public window, public arcadeHarness{
 public:
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
@@ -126,7 +118,6 @@ public:
 	int numChars;
 	GLuint selectScreen; 
 	SDL_Rect wheel;
-	int counter[2];
 
 	bool q;
 	int timer;

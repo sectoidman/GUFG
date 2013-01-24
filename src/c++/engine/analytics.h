@@ -2,10 +2,10 @@
 class frame {
 public:
 	frame();
-	frame(bool[], int[], bool[]);
-	bool axis[4];
-	bool neg[5];
-	int pos[5];
+	frame(std::vector<bool>, std::vector<int>, std::vector<bool>);
+	std::vector<bool> axis;
+	std::vector<bool> neg;
+	std::vector<int> pos;
 	frame * next;
 	virtual void cull();
 	virtual void append(frame*);

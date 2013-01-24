@@ -39,7 +39,7 @@ character::~character()
 	}
 }
 
-void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], int down[5], bool up[5], SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
+void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], std::vector<int> down, std::vector<bool> up, SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
 {
 	action * t = NULL;
 	if (cMove == NULL){
@@ -92,7 +92,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 	}
 }
 
-action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> down, std::vector<bool> up, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	return head->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
 }
@@ -102,7 +102,7 @@ action * avatar::moveSignal(int)
 	return NULL;
 }
 
-action * character::hook(int inputBuffer[30], int i, int f, int * meter, int down[5], bool up[5], action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * character::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> down, std::vector<bool> up, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
 	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag, aerial);

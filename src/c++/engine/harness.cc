@@ -47,3 +47,23 @@ void harness::readInput()
 		}
 	}
 }
+
+void arcadeHarness::initContainers(int players, int buttons)
+{
+	for(unsigned int i = 0; i < players; i++){
+		std::vector<int> pos;
+		std::vector<bool> neg;
+		std::vector<bool> axis;
+
+		for(int j = 0; j < buttons; j++){
+			pos.push_back(0);
+			neg.push_back(0);
+		}
+		for(int j = 0; j < 4; j++)
+			axis.push_back(0);
+		sAxis.push_back(axis);
+		posEdge.push_back(pos);
+		negEdge.push_back(neg);
+		counter.push_back(0);
+	}
+}

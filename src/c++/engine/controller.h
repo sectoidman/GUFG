@@ -11,8 +11,8 @@ struct keySetting{
 class controller{
 public:
 	virtual void setKey(int);
-	virtual void readEvent(SDL_Event &, bool *&, int *&, bool *&);
-	virtual void genEvent(bool *&, int *&, bool *&) {}
+	virtual void readEvent(SDL_Event &, std::vector<bool>&, std::vector<int>&, std::vector<bool>&);
+	virtual void genEvent(std::vector<bool>&, std::vector<int>&, std::vector<bool>&) {}
 	void writeConfig(int);
 	bool readConfig(int);
 	virtual bool setKey(int, SDL_Event);

@@ -15,9 +15,9 @@ negNormal::negNormal(const char * n)
 	build(n);
 }
 
-bool negNormal::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool negNormal::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
-	for(int i = 0; i < 5; i++){
+	for(unsigned int i = 0; i < pos.size(); i++){
 		if(pattern & (1 << i)){
 			if(!neg[i]) return 0;
 		}
@@ -27,9 +27,9 @@ bool negNormal::activate(int pos[5], bool neg[5], int pattern, int t, int f, int
 	return check(p, meter);
 }
 
-bool special::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool special::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
-	for(int i = 0; i < 5; i++){
+	for(unsigned int i = 0; i < pos.size(); i++){
 		if(pattern & (1 << i)){
 			if(pos[i] != 1 && !neg[i]) return 0;
 		}
@@ -44,11 +44,11 @@ super::super(const char * n)
 	build(n);
 }
 
-bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool mash::activate(std::vector <int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
 	int go = 0;
 	if(action::activate(pos, neg, pattern, t, f, meter, p)){
-		for(int i = 0; i < 5; i++){
+		for(unsigned int i = 0; i < pos.size(); i++){
 			if(pos[i] >= minHold){
 				if(pos[i] <= maxHold || !maxHold) go++;
 			}
@@ -58,9 +58,8 @@ bool mash::activate(int pos[5], bool neg[5], int pattern, int t, int f, int mete
 	return 0;
 }
 
-bool releaseCheck::activate(int pos[5], bool neg[5], int pattern, int t, int f, int meter[], SDL_Rect &p)
-{
-	for(int i = 0; i < 5; i++){
+bool releaseCheck::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p){
+	for(unsigned int i = 0; i < pos.size(); i++){
 		if(pos[i] > 0) return 0;
 	}
 	return check(p, meter);
