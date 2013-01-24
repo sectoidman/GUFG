@@ -142,7 +142,7 @@ chart::chart(int size)
 {
 	std::vector<int> row;
 	for(int i = 0; i < size + 1; i++){
-		for(int j = 0; j < size; j++){
+		for(int j = 0; j < size + 1; j++){
 			row.push_back(0);
 		}
 		wins.push_back(row);
@@ -151,9 +151,7 @@ chart::chart(int size)
 
 float chart::matchup(int a, int b)
 {
-	if(wins[a][b] == 0) return 0.0;
-	else if(wins[b][a] == 0) return 1.0;
-	else return (float)wins[a][b] / (float)wins[b][a];
+	return (float)wins[a][b] / ((float)wins[b][a] + (float)wins[a][b]);
 }
 
 void chart::recordWin(int a, int b)
@@ -180,7 +178,7 @@ void chart::init()
 		for(unsigned int j = 0; j < wins.size(); j++){
 			if(!fresh){
 				token = strtok(NULL, "\n, ");
-				if(i != j) wins[i][j] = atoi(token);
+				wins[i][j] = atoi(token);
 			}
 		}
 	}

@@ -310,11 +310,11 @@ void interface::runTimer()
 					printf("P2: %i wins\n", P[1]->wins);
 				}
 				if(P[0]->rounds == P[1]->rounds);
-				else if(selection[0] != selection[1]){
+				else{
 					if(P[0]->rounds == numRounds) stats->recordWin(selection[0], selection[1]);
 					else stats->recordWin(selection[1], selection[0]);
 					printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
-				} else printf("Mirror\n");
+				}
 				if(shortcut) rMenu = 1;
 				else{
 					if(!continuous){
