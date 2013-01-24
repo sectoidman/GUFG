@@ -3,7 +3,6 @@
 #include <fstream>
 #include <stdio.h>
 #include <ctime>
-
 frame::frame()
 {
 	next = NULL;
@@ -139,3 +138,78 @@ replay::~replay()
 	}
 }
 
+chart::chart(int size)
+{
+	std::vector<int> row;
+	for(int i = 0; i < size + 1; i++){
+		for(int j = 0; j < size; j++){
+			row.push_back(0);
+		}
+		wins.push_back(row);
+	}
+}
+
+float chart::matchup(int a, int b)
+{
+	if(wins[a][b] == 0) return 0.0;
+	else if(wins[b][a] == 0) return 1.0;
+	else return (float)wins[a][b] / (float)wins[b][a];
+}
+
+void chart::recordWin(int a, int b)
+{
+	wins[a][b]++;
+}
+
+void chart::init()
+{
+	std::ifstream read;
+	int check;
+	char buffer[500];
+	char* token;
+	bool fresh = false;
+	read.open(".data/.charts.csv");
+	if(read.fail()) fresh = true;
+	read >> check;
+	if(check != wins.size()) fresh = true;
+	for(unsigned int i = 0; i < wins.size(); i++){
+		if(!fresh){
+			read.get(buffer, 400, '\n'); read.ignore();
+			token = strtok(buffer, "\n,");
+		}
+		for(unsigned int j = 0; j < wins.size(); j++){
+			if(!fresh){
+				token = strtok(NULL, "\n, ");
+				if(i != j) wins[i][j] = atoi(token);
+			}
+		}
+	}
+	read.close();
+}
+
+void chart::write()
+{
+	std::ofstream wr;
+	wr.open(".data/.charts.csv");
+	wr << wins.size() << '\n' << " ";
+	for(unsigned int i = 0; i < wins.size(); i++){
+		wr << ",";
+		wr << i;
+	}
+	wr << "\n";
+	for(unsigned int i = 0; i < wins.size(); i++){
+		wr << i;
+		for(int j = 0; j < wins.size(); j++){
+			wr << ",";
+			if(i == j) wr << "-";
+			else wr << wins[i][j];
+		}
+		wr << "\n";
+	}
+	wr.close();
+}
+
+chart::~chart()
+{
+	write();
+}

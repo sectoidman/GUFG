@@ -45,7 +45,6 @@ int main(int argc, char* argv[])
 		do frameElapsed = std::chrono::duration_cast<frame_t>(std::chrono::high_resolution_clock::now() - frameStart);
 		while(frameElapsed.count() < 1);
 	}
-	game.writeMatchupChart();
 	return 0;
 }
 

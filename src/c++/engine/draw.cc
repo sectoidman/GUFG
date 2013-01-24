@@ -127,10 +127,10 @@ void interface::drawConfigMenu(int ID)
 			if(p[ID]->input[j]->effect == 1 << (i+2)){
 				switch(p[ID]->input[j]->trigger.type){
 				case SDL_KEYDOWN:
-					sprintf(buffer, "Key %s", SDL_GetKeyName(p[ID]->input[j]->trigger.key.keysym.sym));
+					sprintf(buffer, "%s", SDL_GetKeyName(p[ID]->input[j]->trigger.key.keysym.sym));
 					break;
 				case SDL_JOYBUTTONDOWN:
-					sprintf(buffer, "Button %i", p[ID]->input[j]->trigger.jbutton.button);
+					sprintf(buffer, "B%i", p[ID]->input[j]->trigger.jbutton.button);
 					break;
 				case SDL_JOYAXISMOTION:
 					sprintf(buffer, "Axis %i %i", p[ID]->input[j]->trigger.jaxis.axis,

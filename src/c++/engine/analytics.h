@@ -1,4 +1,15 @@
 #include "player.h"
+class chart{
+public:
+	chart(int);
+	std::vector<std::vector<int>> wins;
+	void recordWin(int, int);
+	float matchup(int, int);
+	void write();
+	void init();
+	~chart();
+};
+
 class frame {
 public:
 	frame();

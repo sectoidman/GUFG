@@ -18,8 +18,7 @@
 interface::interface()
 {
 	numChars = 2;
-	matchup = new int*[numChars+1];
-	for(int i = 0; i < numChars+1; i++) matchup[i] = new int[numChars+1];
+	stats = new chart(numChars);
 	shortcut = false;
 	continuous = false;
 	analytics = false;
@@ -161,7 +160,7 @@ void interface::loadMisc()
 	for(unsigned int i = 0; i < p.size(); i++){
 		if(!p[i]->readConfig(i+1)) initialConfig(i);
 	}
-	readMatchupChart();
+	stats->init();
 	announceRound[0] = Mix_LoadWAV("content/sound/announcer/Round1.ogg");
 	announceRound[1] = Mix_LoadWAV("content/sound/announcer/Round2.ogg");
 	announceRound[2] = Mix_LoadWAV("content/sound/announcer/RoundF.ogg");
@@ -170,53 +169,6 @@ void interface::loadMisc()
 	announceEnd[0] = Mix_LoadWAV("content/sound/announcer/Timeout.ogg");
 	announceEnd[1] = Mix_LoadWAV("content/sound/announcer/Down.ogg");
 	announceSelect = Mix_LoadWAV("content/sound/announcer/Select.ogg");
-}
-
-void interface::readMatchupChart()
-{
-	std::ifstream read;
-	char buffer[500];
-	char* token;
-	bool fresh = false;
-	read.open(".data/.matchups.csv");
-	if(read.fail()) fresh = true;
-	for(int i = 0; i < numChars + 1; i++){
-		if(!fresh){ 
-			read.get(buffer, 400, '\n'); read.ignore();
-			token = strtok(buffer, "\n,");
-		}
-		for(int j = 1; j < numChars + 1; j++){
-			if(fresh) matchup[i][j] = 0;
-			else{
-				token = strtok(NULL, "\n, ");
-				if(i == j) matchup[i][j] = 0;
-				else matchup[i][j] = atoi(token);
-			}
-		}
-	}
-	read.close();
-}
-
-void interface::writeMatchupChart()
-{
-	std::ofstream write;
-	write.open(".data/.matchups.csv");
-	write << " ";
-	for(int j = 1; j < numChars + 1; j++){
-		write << ",";
-		write << j;
-	}
-	write << "\n";
-	for(int i = 1; i < numChars + 1; i++){
-		write << i;
-		for(int j = 1; j < numChars + 1; j++){
-			write << ",";
-			if(i == j) write << "-";
-			else write << matchup[i][j];
-		}
-		write << "\n";
-	}
-	write.close();
 }
 
 /*Initialize SDL and openGL, creating a window, among other things*/
@@ -359,10 +311,9 @@ void interface::runTimer()
 				}
 				if(P[0]->rounds == P[1]->rounds);
 				else if(selection[0] != selection[1]){
-					if(P[0]->rounds == numRounds) matchup[selection[0]][selection[1]]++;
-					else matchup[selection[1]][selection[0]]++;
-					printf("Matchup: %f\n", (float)matchup[selection[0]][selection[1]] / 
-					       ((float)matchup[selection[0]][selection[1]] + (float)matchup[selection[1]][selection[0]]));
+					if(P[0]->rounds == numRounds) stats->recordWin(selection[0], selection[1]);
+					else stats->recordWin(selection[1], selection[0]);
+					printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
 				} else printf("Mirror\n");
 				if(shortcut) rMenu = 1;
 				else{
@@ -968,6 +919,7 @@ interface::~interface()
 	if(select[0]) delete P[0]->pick();
 	if(select[1]) delete P[1]->pick();
 	if(menuMusic != NULL) Mix_FreeMusic(menuMusic);
+	delete stats;
 	SDL_FreeSurface(screen);
 	SDL_Quit();
 }

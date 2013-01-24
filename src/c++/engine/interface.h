@@ -99,7 +99,7 @@ public:
 	int combo[2];
 	int damage[2];
 	bool illegit[2];
-	int ** matchup;
+	chart *stats;
 	int numRounds;
 	int grav;	//Gravitational constant. 
 
