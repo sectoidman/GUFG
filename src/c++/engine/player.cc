@@ -823,7 +823,10 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		freeze = 0;
 	} else {
 		particleLife = 8;
-		deltaX = 0; deltaY = 0; momentumComplexity = 0;
+		deltaX /= 10; 
+		if(deltaY < 0) deltaY /= 30; 
+		else deltaY /= 10;
+		momentumComplexity = 0;
 		if(aerial) v.y = s.lift;
 		else v.y = 0;
 		if(aerial) v.x = -(s.push/5 + s.blowback);
