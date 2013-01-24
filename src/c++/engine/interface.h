@@ -20,9 +20,11 @@ public:
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
 	int drawGlyph(const char *, int, int, int, int, int);
 	virtual void loadMisc();
-	bool screenInit();
-	bool screenInit(int, int);
+	virtual bool screenInit();
+	virtual bool screenInit(int, int);
+	virtual void genInput();
 	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
+	virtual void initialConfig(int);
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
@@ -50,7 +52,6 @@ public:
 /*Important interface functions that will remain interface functions*/
 
 /*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
-	void genInput();
 	void resolve();		/*The main loop of the game*/
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
 	void drawGame();
@@ -75,7 +76,6 @@ public:
 	void unitCollision(player*, player*);
 	void readMatchupChart();
 	void writeMatchupChart();
-	void initialConfig(int);
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
@@ -120,7 +120,6 @@ public:
 	GLuint selectScreen; 
 	SDL_Rect wheel;
 
-	bool q;
 	int timer;
 	bool roundEnd:1;
 	int endTimer;

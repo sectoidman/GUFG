@@ -17,9 +17,9 @@ public:
 	std::vector<std::vector<bool>> sAxis;
 	std::vector<std::vector<int>> posEdge;
 	std::vector<std::vector<bool>> negEdge;
-	std::vector<int> counter;
-	virtual void initContainers(int, int);
+	std::vector<int> counter; //Basically just a delay for menu interaction
+	virtual void initContainers(int, int); //Spawn the containers needed for input
+	virtual void initContainers();	//Reinitialize input containers to 0
 //	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 };
-
 #endif

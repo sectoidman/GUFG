@@ -244,13 +244,13 @@ bool gameInstance::screenInit()
 	return ret;
 }
 
-void interface::initialConfig(int ID)
+void gameInstance::initialConfig(int ID)
 {
 	char buffer[200];
 	char pident[30];
 	sprintf(pident, "Player %i", ID + 1);
 	for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
-	for(int i = 0; i < 10; i++){
+	for(unsigned int i = 0; i < posEdge[ID].size()+4; i++){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
@@ -273,17 +273,16 @@ void interface::matchInit()
 {
 	SDL_Event event;
 	rMenu = 0;
+	for(unsigned int i = 0; i < P.size(); i++){
+		P[i]->rounds = 0;
+		P[i]->secondInstance = 0;
+	}
 	pMenu = 0;
-	P[0]->rounds = 0;
-	P[1]->rounds = 0;
-	P[0]->secondInstance = 0;
-	P[1]->secondInstance = 0;
 	if(!select[0] || !select[1]){
 		Mix_VolumeMusic(100);
 		Mix_PlayMusic(menuMusic,-1);
 		printf("Please select a character:\n");
 	}
-	q = 0;
 	while (SDL_PollEvent(&event));
 }
 
@@ -303,12 +302,8 @@ void interface::roundInit()
 		P[i]->roundInit();
 	}
 	/*Initialize input containers*/
+	initContainers();
 	for(unsigned int i = 0; i < P.size(); i++){
-		for(int j = 0; j < 6; j++){
-			if(j < 4) sAxis[i][j] = 0;
-			posEdge[i][j] = 0;
-			negEdge[i][j] = 0;
-		}
 		combo[i] = 0;
 		damage[i] = 0;
 		illegit[i] = 0;
@@ -560,7 +555,7 @@ void interface::cleanup()
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		for(int j = 0; j < 6; j++){
+		for(unsigned int j = 0; j < posEdge[i].size(); j++){
 			if(posEdge[i][j] > 0) posEdge[i][j]++;
 			negEdge[i][j] = 0;
 		}
@@ -663,7 +658,7 @@ void interface::checkWin()
 	}
 }
 
-void interface::genInput()
+void gameInstance::genInput()
 {
 	for(unsigned int i = 0; i < p.size(); i++){
 		p[i]->genEvent(sAxis[i], posEdge[i], negEdge[i]);
