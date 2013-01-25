@@ -170,15 +170,11 @@ void chart::init()
 	if(read.fail()) fresh = true;
 	read >> check;
 	if(check != wins.size()) fresh = true;
-	for(unsigned int i = 0; i < wins.size(); i++){
-		if(!fresh){
-			read.get(buffer, 400, '\n'); read.ignore();
-			token = strtok(buffer, "\n,");
-		}
-		for(unsigned int j = 0; j < wins.size(); j++){
-			if(!fresh){
-				if(i != j) token = strtok(NULL, "\n, ");
-				wins[i][j] = atoi(token);
+	if(!fresh){
+		for(unsigned int i = 0; i < wins.size(); i++){
+			read.ignore(200, ','); 
+			for(unsigned int j = 0; j < wins.size(); j++){
+				read >> wins[i][j];
 			}
 		}
 	}
