@@ -340,17 +340,26 @@ void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 void instance::drawBoxen(int stageHeight, int x, int y, float scalingFactor)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision.x - x)*scalingFactor, (GLfloat)(-collision.y - collision.h + stageHeight + y)*scalingFactor, (GLfloat)(collision.x + collision.w - x)*scalingFactor, (GLfloat)(-collision.y + stageHeight + y)*scalingFactor);
+	glPushMatrix();
+	glTranslatef(collision.x*scalingFactor, -collision.y*scalingFactor, 0);
+	glRectf((GLfloat)(-x)*scalingFactor, (GLfloat)(-collision.h + stageHeight + y)*scalingFactor, (GLfloat)(collision.w - x)*scalingFactor, (GLfloat)(stageHeight + y)*scalingFactor);
+	glPopMatrix();
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glNormal3f(0.0f, 0.0f, 1.0f);
-		glRectf((GLfloat)(hitreg[i].x - x)*scalingFactor, (GLfloat)(-hitreg[i].y + stageHeight + y)*scalingFactor, (GLfloat)(hitreg[i].x + hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].y - hitreg[i].h + stageHeight + y)*scalingFactor);
+		glPushMatrix();
+		glTranslatef(hitreg[i].x*scalingFactor, -hitreg[i].y*scalingFactor, 0);
+		glRectf((GLfloat)(-x)*scalingFactor, (GLfloat)(stageHeight + y)*scalingFactor, (GLfloat)(hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].h + stageHeight + y)*scalingFactor);
+		glPopMatrix();
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[i].x - x)*scalingFactor, (GLfloat)(-hitbox[i].y + stageHeight + y)*scalingFactor, (GLfloat)(hitbox[i].x + hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].y - hitbox[i].h + stageHeight + y)*scalingFactor);
+		glPushMatrix();
+		glTranslatef(hitbox[i].x*scalingFactor, -hitbox[i].y*scalingFactor, 0);
+		glRectf((GLfloat)(-x)*scalingFactor, (GLfloat)(stageHeight + y)*scalingFactor, (GLfloat)(hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].h + stageHeight + y)*scalingFactor);
+		glPopMatrix();
 	}
 	glFlush();
 	glDisable( GL_TEXTURE_2D );
