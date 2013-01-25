@@ -177,7 +177,7 @@ void chart::init()
 		}
 		for(unsigned int j = 0; j < wins.size(); j++){
 			if(!fresh){
-				token = strtok(NULL, "\n, ");
+				if(i != j) token = strtok(NULL, "\n, ");
 				wins[i][j] = atoi(token);
 			}
 		}
