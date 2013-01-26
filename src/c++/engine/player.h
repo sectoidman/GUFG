@@ -45,8 +45,8 @@ public:
 	virtual void pullVolition();
 	virtual void setPosition(int, int);
 	virtual void updateRects();
-	virtual void draw(int, int, int, float);
-	virtual void drawBoxen(int, int, int, float);
+	virtual void draw(float);
+	virtual void drawBoxen(float);
 	virtual void combineDelta();
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);

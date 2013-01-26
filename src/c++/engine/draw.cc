@@ -239,11 +239,16 @@ void interface::drawGame()
 	}
 	glEnable( GL_TEXTURE_2D );
 	for(unsigned int i = 0; i < things.size(); i++){
-		if(things[i]->spriteCheck())
-			things[i]->draw(bg.h, bg.x, bg.y, scalingFactor);
-		glDisable(GL_TEXTURE_2D);
-		if(!things[i]->spriteCheck() || boxen)
-			things[i]->drawBoxen(bg.h, bg.x, bg.y, scalingFactor);
+		glPushMatrix();
+			glTranslatef(-bg.x*scalingFactor, (bg.y+bg.h)*scalingFactor, 0);
+			if(things[i]->spriteCheck()){
+				things[i]->draw(scalingFactor);
+			}
+			glDisable(GL_TEXTURE_2D);
+			if(!things[i]->spriteCheck() || boxen){
+				things[i]->drawBoxen(scalingFactor);
+			}
+		glPopMatrix();
 		if(i < 2)
 			P[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -337,35 +342,35 @@ void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 	glRectf((GLfloat)(m.x)*scalingFactor, (GLfloat)(m.y)*scalingFactor, (GLfloat)(m.x + m.w)*scalingFactor, (GLfloat)(m.y + m.h)*scalingFactor);
 }
 
-void instance::drawBoxen(int stageHeight, int x, int y, float scalingFactor)
+void instance::drawBoxen(float scalingFactor)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glPushMatrix();
-	glTranslatef(collision.x*scalingFactor, -collision.y*scalingFactor, 0);
-	glRectf((GLfloat)(-x)*scalingFactor, (GLfloat)(-collision.h + stageHeight + y)*scalingFactor, (GLfloat)(collision.w - x)*scalingFactor, (GLfloat)(stageHeight + y)*scalingFactor);
+		glTranslatef(collision.x*scalingFactor, -collision.y*scalingFactor, 0);
+		glRectf((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, (GLfloat)(collision.w)*scalingFactor, (GLfloat)(-collision.h)*scalingFactor);
 	glPopMatrix();
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glPushMatrix();
-		glTranslatef(hitreg[i].x*scalingFactor, -hitreg[i].y*scalingFactor, 0);
-		glRectf((GLfloat)(-x)*scalingFactor, (GLfloat)(stageHeight + y)*scalingFactor, (GLfloat)(hitreg[i].w - x)*scalingFactor, (GLfloat)(-hitreg[i].h + stageHeight + y)*scalingFactor);
+			glTranslatef(hitreg[i].x*scalingFactor, -hitreg[i].y*scalingFactor, 0);
+			glRectf((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, (GLfloat)(hitreg[i].w)*scalingFactor, (GLfloat)(-hitreg[i].h)*scalingFactor);
 		glPopMatrix();
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glPushMatrix();
-		glTranslatef(hitbox[i].x*scalingFactor, -hitbox[i].y*scalingFactor, 0);
-		glRectf((GLfloat)(-x)*scalingFactor, (GLfloat)(stageHeight + y)*scalingFactor, (GLfloat)(hitbox[i].w - x)*scalingFactor, (GLfloat)(-hitbox[i].h + stageHeight + y)*scalingFactor);
+			glTranslatef(hitbox[i].x*scalingFactor, -hitbox[i].y*scalingFactor, 0);
+			glRectf((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, (GLfloat)(hitbox[i].w)*scalingFactor, (GLfloat)(-hitbox[i].h)*scalingFactor);
 		glPopMatrix();
 	}
 	glFlush();
 	glDisable( GL_TEXTURE_2D );
 }
 
-void instance::draw(int stageHeight, int x, int y, float scalingFactor)
+void instance::draw(float scalingFactor)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
@@ -388,7 +393,7 @@ void instance::draw(int stageHeight, int x, int y, float scalingFactor)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(cMove, facing, realPosX - x, -realPosY + stageHeight + y, currentFrame, scalingFactor);
+	pick()->draw(cMove, facing, realPosX, -realPosY, currentFrame, scalingFactor);
 }
 
 void player::drawHitParticle(int x, int y, float scalingFactor)
