@@ -5,7 +5,6 @@
  *Mangled by H Forrest Alexander in the autumn of that same year.
  *I think there's a license somewhere.
  */
-
 #include "interface.h"
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
@@ -176,11 +175,7 @@ void interface::loadMisc()
 /*Initialize SDL and openGL, creating a window, among other things*/
 bool gameInstance::screenInit()
 {
-	if(scalingFactor == 1.0){ 
-		w = screenWidth; h = screenHeight;
-	} else {
-		h = 450; w = 800;
-	}
+	w = scalingFactor*screenWidth; h = scalingFactor*screenHeight;
 	if(screen){ 
 		SDL_FreeSurface(screen);
 		screen = NULL;
@@ -205,19 +200,22 @@ void gameInstance::initialConfig(int ID)
 	sprintf(pident, "Player %i", ID + 1);
 	for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
 	for(unsigned int i = 0; i < posEdge[ID].size()+4; i++){
-		glClear(GL_COLOR_BUFFER_BIT);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-		glEnable( GL_TEXTURE_2D );
-		glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-		drawGlyph(pident, 0, 1600, 300, 80, 1);
-		drawGlyph("Please enter a", 0, 1600, 400, 80, 1);
-		sprintf(buffer, "command for %s", p[ID]->inputName[i]);
-		drawGlyph(buffer, 0, 1600, 500, 80, 1);
-		SDL_GL_SwapBuffers();
-		glDisable( GL_TEXTURE_2D );
-		glClear(GL_COLOR_BUFFER_BIT);
-		p[ID]->setKey(1 << i);
+		glPushMatrix();
+			glScalef(scalingFactor, scalingFactor, 0.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
+			glEnable( GL_TEXTURE_2D );
+			glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+			drawGlyph(pident, 0, 1600, 300, 80, 1);
+			drawGlyph("Please enter a", 0, 1600, 400, 80, 1);
+			sprintf(buffer, "command for %s", p[ID]->inputName[i]);
+			drawGlyph(buffer, 0, 1600, 500, 80, 1);
+			SDL_GL_SwapBuffers();
+			glDisable( GL_TEXTURE_2D );
+			glClear(GL_COLOR_BUFFER_BIT);
+			p[ID]->setKey(1 << i);
+		glPopMatrix();
 	}
 	p[ID]->writeConfig(ID+1);
 }
@@ -702,13 +700,6 @@ void interface::cSelectMenu()
 			}
 		}
 	}
-
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(configMenu[i] > 0) keyConfig(i);
 		else if(menu[i] > 0) mainMenu(i);
