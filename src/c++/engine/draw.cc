@@ -19,10 +19,13 @@
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	if(!select[0] || !select[1]) drawCSelect();
-	else drawGame();
-	if(rMenu != 0) drawRematchMenu();
-	else if(pMenu != 0) drawPauseMenu();
+	glPushMatrix();
+		glScalef(scalingFactor, scalingFactor, 0.0f);
+		if(!select[0] || !select[1]) drawCSelect();
+		else drawGame();
+		if(rMenu != 0) drawRematchMenu();
+		else if(pMenu != 0) drawPauseMenu();
+	glPopMatrix();
 	SDL_GL_SwapBuffers();
 }
 
@@ -31,7 +34,7 @@ void interface::drawCSelect()
 	char buffer[20];
 	int x, y;
 	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	for(int i = 0; i < 2; i++){ 
@@ -43,16 +46,16 @@ void interface::drawCSelect()
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f(350.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+		glVertex3f(350.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f(1250.0f*scalingFactor, 0.0f*scalingFactor, 0.f*scalingFactor);
+		glVertex3f(1250.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f(1250.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+		glVertex3f(1250.0f, 900.0f, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f(350.0f*scalingFactor, 900.0f*scalingFactor, 0.f*scalingFactor);
+		glVertex3f(350.0f, 900.0f, 0.f);
 	glEnd();
 
 	for(int i = 0; i < 2; i++){
@@ -74,7 +77,7 @@ void interface::drawMainMenu(int ID)
 {
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 	char buffer[200];
-	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glRectf(0.0f + 800.0 * ID, 0.0, (screenWidth/2*ID) + (GLfloat)screenWidth/2.0, (GLfloat)screenHeight);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
 	if(analytics) sprintf(buffer, "Replay");
@@ -104,7 +107,7 @@ void interface::drawConfigMenu(int ID)
 	int macros;
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 	char buffer[200];
-	glRectf(0.0f * scalingFactor + 800.0 * scalingFactor * ID, 0.0 * scalingFactor, (screenWidth/2*ID*scalingFactor) + (GLfloat)screenWidth/2.0*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glRectf(0.0f + 800.0 * ID, 0.0, (screenWidth/2*ID) + (GLfloat)screenWidth/2.0, (GLfloat)screenHeight);
 	glEnable( GL_TEXTURE_2D );
 	switch(p[ID]->input[0]->trigger.type){
 	case SDL_KEYDOWN:
@@ -149,24 +152,53 @@ void interface::drawConfigMenu(int ID)
 
 void interface::drawGame()
 {
-	char buffer[200];
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glEnable( GL_TEXTURE_2D );
 	glBindTexture(GL_TEXTURE_2D, background);
-	glBegin(GL_QUADS);
+	glPushMatrix();
+		glTranslatef(-bg.x, bg.y, 0);
+		glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.y)*scalingFactor, 0.f);
+		glVertex3f(0.0f, 0.0f, 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(bg.w), 0.0f, 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(bg.w - bg.x)*scalingFactor, (GLfloat)(bg.h + bg.y)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(bg.w), (GLfloat)(bg.h), 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(-bg.x)*scalingFactor, (GLfloat)(bg.h + bg.y)*scalingFactor, 0.f);
-	glEnd();
+		glVertex3f(0.0f, (GLfloat)(bg.h), 0.f);
+		glEnd();
+	glPopMatrix();
+	drawHUD();
+	glDisable( GL_TEXTURE_2D );
+	for(unsigned int i = 0; i < P.size(); i++){
+		P[i]->drawMeters(numRounds);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+	glEnable( GL_TEXTURE_2D );
+	glPushMatrix();
+		glTranslatef(-bg.x, (bg.y+bg.h), 0);
+		for(unsigned int i = 0; i < things.size(); i++){
+			things[i]->draw();
+			if(i < 2)
+				P[i]->drawHitParticle();
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glEnable( GL_TEXTURE_2D );
+		}
+	glPopMatrix();
+	glDisable( GL_TEXTURE_2D );
+	if(freeze > 0){
+		glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+		glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
+		freeze--;
+	}
+}
 
+void interface::drawHUD()
+{
+	char buffer[200];
 	if(timer / 60 > 99) sprintf(buffer, "99");
 	else if(timer / 60 < 10) sprintf(buffer, "0%i", timer / 60);
 	else sprintf(buffer, "%i", timer / 60);
@@ -185,11 +217,11 @@ void interface::drawGame()
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
-		int l = P[0]->rounds + P[1]->rounds + 1;
-		sprintf(buffer, "Round %i", l);
-		if(timer == 100 * 60 + 30)
-			Mix_PlayChannel(3, announceRound[l - 1], 0);
-		drawGlyph(buffer, 0, 1600, 375, 150, 1);
+	int l = P[0]->rounds + P[1]->rounds + 1;
+	sprintf(buffer, "Round %i", l);
+	if(timer == 100 * 60 + 30)
+		Mix_PlayChannel(3, announceRound[l - 1], 0);
+	drawGlyph(buffer, 0, 1600, 375, 150, 1);
 	}
 	if(timer > 99 * 60 && timer < 99 * 60 + 31){ 
 		drawGlyph("FIGHT", 0, 1600, 375, 150, 1);
@@ -226,41 +258,18 @@ void interface::drawGame()
 			if(endTimer == 4 * 60 - 1)
 				Mix_PlayChannel(3, announceDraw[0], 0);
 		} else {
-			sprintf(buffer, "Draw");
-			drawGlyph(buffer, 0, 1600, 375, 150, 1);
-			if(endTimer == 4 * 60 - 1)
-				Mix_PlayChannel(3, announceDraw[1], 0);
+		sprintf(buffer, "Draw");
+		drawGlyph(buffer, 0, 1600, 375, 150, 1);
+		if(endTimer == 4 * 60 - 1)
+			Mix_PlayChannel(3, announceDraw[1], 0);
 		}
 	}
-	glDisable( GL_TEXTURE_2D );
-	for(int i = 0; i < 2; i++){
-		P[i]->drawMeters(numRounds, scalingFactor);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	}
-	glEnable( GL_TEXTURE_2D );
-	for(unsigned int i = 0; i < things.size(); i++){
-		glPushMatrix();
-			glTranslatef(-bg.x*scalingFactor, (bg.y+bg.h)*scalingFactor, 0);
-			things[i]->draw(scalingFactor);
-		glPopMatrix();
-		if(i < 2)
-			P[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glEnable( GL_TEXTURE_2D );
-	}
-	glDisable( GL_TEXTURE_2D );
-	if(freeze > 0){
-		glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-		glRectf(0.0f, 0.0f, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-		freeze--;
-	}
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void interface::drawPauseMenu()
 {
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glRectf(0.0, 0.0, (GLfloat)screenWidth, (GLfloat)screenHeight);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(pMenu == 1)*0.4);
 	drawGlyph("Unpause", 0, 1600, 360, 60, 1);
@@ -275,7 +284,7 @@ void interface::drawPauseMenu()
 void interface::drawRematchMenu()
 {
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
-	glRectf(0.0, 0.0, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glRectf(0.0, 0.0, (GLfloat)screenWidth, (GLfloat)screenHeight);
 	glEnable( GL_TEXTURE_2D );
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(rMenu == 1)*0.4);
 	drawGlyph("Rematch", 0, 1600, 360, 60, 1);
@@ -287,7 +296,7 @@ void interface::drawRematchMenu()
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
 
-void player::drawMeters(int n, float scalingFactor)
+void player::drawMeters(int n)
 {
 	std::vector<SDL_Rect> r (n);
 	for(int i = 0; i < n; i++){
@@ -298,18 +307,18 @@ void player::drawMeters(int n, float scalingFactor)
 	for(int i = 0; i < n; i++){
 		if(rounds > i) glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 		else glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-		glRectf((GLfloat)(r[i].x)*scalingFactor, (GLfloat)(r[i].y)*scalingFactor, (GLfloat)(r[i].x + r[i].w)*scalingFactor, (GLfloat)(r[i].y + r[i].h)*scalingFactor);
+		glRectf((GLfloat)(r[i].x), (GLfloat)(r[i].y), (GLfloat)(r[i].x + r[i].w), (GLfloat)(r[i].y + r[i].h));
 	}
 	glFlush();
 	int h = 0;
 	if(cMove){
 		if(cMove->hidesMeter) h = cMove->cost;
 	}
-	pick()->drawMeters(ID, scalingFactor, h, meter);
+	pick()->drawMeters(ID, h, meter);
 	glFlush();
 }
 
-void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
+void character::drawMeters(int ID, int hidden, int * meter)
 {
 	SDL_Rect m;
 	SDL_Rect h;
@@ -330,44 +339,45 @@ void character::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 	else if(m.w < 600) B = 255;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glRectf((GLfloat)(h.x)*scalingFactor, (GLfloat)(h.y)*scalingFactor, (GLfloat)(h.x + h.w)*scalingFactor, (GLfloat)(h.y + h.h)*scalingFactor);
+	glRectf((GLfloat)(h.x), (GLfloat)(h.y), (GLfloat)(h.x + h.w), (GLfloat)(h.y + h.h));
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f((float)R, (float)G, (float)B, 1.0f);
-	glRectf((GLfloat)(m.x)*scalingFactor, (GLfloat)(m.y)*scalingFactor, (GLfloat)(m.x + m.w)*scalingFactor, (GLfloat)(m.y + m.h)*scalingFactor);
+	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
 }
 
-void instance::drawBoxen(float scalingFactor)
+void instance::drawBoxen()
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glPushMatrix();
-		glTranslatef(collision.x*scalingFactor, -collision.y*scalingFactor, 0);
-		glRectf((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, (GLfloat)(collision.w)*scalingFactor, (GLfloat)(-collision.h)*scalingFactor);
+		glTranslatef(collision.x, -collision.y, 0);
+		glRectf(0.0f, 0.0f, (GLfloat)(collision.w), (GLfloat)(-collision.h));
 	glPopMatrix();
 	for(int i = 0; i < regComplexity; i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glNormal3f(0.0f, 0.0f, 1.0f);
 		glPushMatrix();
-			glTranslatef(hitreg[i].x*scalingFactor, -hitreg[i].y*scalingFactor, 0);
-			glRectf((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, (GLfloat)(hitreg[i].w)*scalingFactor, (GLfloat)(-hitreg[i].h)*scalingFactor);
+			glTranslatef(hitreg[i].x, -hitreg[i].y, 0);
+			glRectf(0.0f, 0.0f, (GLfloat)(hitreg[i].w), (GLfloat)(-hitreg[i].h));
 		glPopMatrix();
 	}
 	for(int i = 0; i < hitComplexity; i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glPushMatrix();
-			glTranslatef(hitbox[i].x*scalingFactor, -hitbox[i].y*scalingFactor, 0);
-			glRectf((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, (GLfloat)(hitbox[i].w)*scalingFactor, (GLfloat)(-hitbox[i].h)*scalingFactor);
+			glTranslatef(hitbox[i].x, -hitbox[i].y, 0);
+			glRectf(0.0f, 0.0f, (GLfloat)(hitbox[i].w), (GLfloat)(-hitbox[i].h));
 		glPopMatrix();
 	}
 	glFlush();
 	glDisable( GL_TEXTURE_2D );
 }
 
-void instance::draw(float scalingFactor)
+void instance::draw()
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
+	glEnable(GL_TEXTURE_2D);
 	if(spriteCheck()){
 		for(int i = 0; i < hitComplexity; i++){
 			if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
@@ -388,17 +398,17 @@ void instance::draw(float scalingFactor)
 		if(secondInstance)
 			glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
 		glPushMatrix();
-			glTranslatef(realPosX*scalingFactor, -realPosY*scalingFactor, 0);
-			pick()->draw(cMove, facing, currentFrame, scalingFactor);
+			glTranslatef(realPosX, -realPosY, 0);
+				pick()->draw(cMove, facing, currentFrame);
 		glPopMatrix();
 	}
 	glDisable(GL_TEXTURE_2D);
 	if(!spriteCheck() || boxen){
-		drawBoxen(scalingFactor);
+		drawBoxen();
 	}
 }
 
-void player::drawHitParticle(int x, int y, float scalingFactor)
+void player::drawHitParticle()
 {
 	/*Stand-in for now, just to indicate block type*/
 	if(particleLife > 0){
@@ -416,15 +426,18 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 			glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
 			break;
 		}
-		glRectf((GLfloat)(posX - 10*facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - y)*scalingFactor, (GLfloat)(posX - 50 * facing - x)*scalingFactor, (GLfloat)(-collision.y - collision.h - 40 - y)*scalingFactor);
+		glPushMatrix();
+			glTranslatef(posX, -collision.y, 0.0f);
+			glRectf((GLfloat)(-10*facing), (GLfloat)(-collision.h), (GLfloat)(50 * facing), (GLfloat)(-collision.h - 40));
+		glPopMatrix();
 		particleLife--;
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	} else blockType = 0;
 }
 
-void avatar::draw(action *& cMove, int facing, int f, float scalingFactor)
+void avatar::draw(action *& cMove, int facing, int f)
 {
-	cMove->draw(facing, f, scalingFactor);
+	cMove->draw(facing, f);
 }
 
 int gameInstance::drawGlyph(const char * string, int x, int space, int y, int height, int just)
@@ -436,7 +449,6 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 			else if(string[i] == '\0');
 			else{
 				glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
-
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 				sf = (float)height / (float)h;
@@ -459,16 +471,16 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 			width = w * sf;
 			glBegin(GL_QUADS);
 			glTexCoord2i(0, 0);
-			glVertex3f((x + padding) *scalingFactor, y * scalingFactor, 0.f);
+			glVertex3f((x + padding), y, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((x + padding) * scalingFactor + width * scalingFactor, y * scalingFactor, 0.f);
+			glVertex3f((x + padding) + width, y, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((x + padding) * scalingFactor + width * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
+			glVertex3f((x + padding) + width, y + height, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((x + padding) * scalingFactor, y * scalingFactor + height * scalingFactor, 0.f);
+			glVertex3f((x + padding), y + height, 0.f);
 			glEnd();
 			x += (float)width;
 		}
@@ -476,23 +488,23 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 	return x;
 }
 
-void action::draw(int facing, int f, float scalingFactor)
+void action::draw(int facing, int f)
 {
-	if(modifier && basis) basis->draw(facing, currentFrame, scalingFactor);
+	if(modifier && basis) basis->draw(facing, currentFrame);
 	if(sprite[f]){
 		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
-		glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
+		glVertex3f(0.0f, (GLfloat)(-height[f]), 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(facing*width[f])*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(facing*width[f]), (GLfloat)(-height[f]), 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(facing*width[f])*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
+		glVertex3f((GLfloat)(facing*width[f]), 0.0f, 0.f);
 
 		glTexCoord2i(0, 1);
-		glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
+		glVertex3f(0.0f, 0.0f, 0.f);
 		glEnd();
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);

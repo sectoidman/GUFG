@@ -17,7 +17,7 @@ public:
 	virtual void init(int*&) = 0;
 	virtual action * moveSignal(int);
 	bool spriteCheck(action *&, int);
-	virtual void draw(action *&, int, int, float);//Pass sprite information up.
+	virtual void draw(action *&, int, int);//Pass sprite information up.
 	virtual action * createMove(char*);
 	virtual action * hook(int[40], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 	virtual void build(const char*, const char*);
@@ -56,7 +56,7 @@ public:
 
 	virtual int comboState(action *);
 	virtual void neutralize(action *&, bool, int*&);
-	virtual void drawMeters(int, float, int, int*);
+	virtual void drawMeters(int, int, int*);
 	virtual void init(int *&);
 	virtual int checkBlocking(action *&, int[], int&, int&, bool);
 	virtual void resetAirOptions(int *&);

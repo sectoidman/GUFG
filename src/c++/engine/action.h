@@ -76,7 +76,7 @@ public:
 	virtual char* request(int, int);
 
 	bool CHState(int);
-	virtual void draw(int, int, float);
+	virtual void draw(int, int);
 	virtual void drawBoxen(int, int, int);
 
 	hStat *stats, *CHStats;

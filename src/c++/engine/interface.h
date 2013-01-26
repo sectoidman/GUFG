@@ -55,6 +55,7 @@ public:
 /*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
 	void resolve();		/*The main loop of the game*/
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
+	void drawHUD();
 	void drawGame();
 	void drawCSelect();
 	void drawMainMenu(int);

@@ -502,7 +502,7 @@ void interface::cleanup()
 			if(pauseEnabled && !roundEnd){
 				if(pMenu) pMenu = 0;
 				else pMenu = 1;
-			} else printf("%i %i %s\n", P[i]->currentFrame, P[i]->freeze, P[i]->cMove->name);
+			}
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){

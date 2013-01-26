@@ -45,8 +45,8 @@ public:
 	virtual void pullVolition();
 	virtual void setPosition(int, int);
 	virtual void updateRects();
-	virtual void draw(float);
-	virtual void drawBoxen(float);
+	virtual void draw();
+	virtual void drawBoxen();
 	virtual void combineDelta();
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
@@ -78,11 +78,11 @@ public:
 	int rounds;		//How many rounds has this player won this match?
 	int padding[400];	//More magic. Do not touch
 	virtual void characterSelect(int);
-	virtual void drawHitParticle(int, int, float);
+	virtual void drawHitParticle();
 
 	virtual void land();
 	virtual void enforceGravity(int, int);
-	virtual void drawMeters(int, float);
+	virtual void drawMeters(int);
 	virtual void roundInit();
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);

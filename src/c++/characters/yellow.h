@@ -7,7 +7,7 @@ public:
 	void resetAirOptions(int*&);
 	action * createMove(char*);
 	int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
-	void drawMeters(int, float, int, int*);
+	void drawMeters(int, int, int*);
 	void tick(int *&);
 	void init(int *&);
 	int * generateMeter();

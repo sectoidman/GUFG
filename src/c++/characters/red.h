@@ -6,7 +6,6 @@ public:
 	red();
 	void touch(void*);
 	action * createMove(char*);
-	void drawMeters(int, float, int, int*);
 	void tick(int *&);
 	int * generateMeter();
 	void step(action *&, int&, int&, int&, int&, int*&);

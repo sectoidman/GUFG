@@ -67,10 +67,10 @@ action * yellow::createMove(char * fullName)
 	return m;
 }
 
-void yellow::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
+void yellow::drawMeters(int ID, int hidden, int * meter)
 {
 	int color;
-	character::drawMeters(ID, scalingFactor, hidden, meter);
+	character::drawMeters(ID, hidden, meter);
 	SDL_Rect c1;
 	if(meter[4] >= 0){
 		c1.w = meter[4]/3*2; 
@@ -87,9 +87,7 @@ void yellow::drawMeters(int ID, float scalingFactor, int hidden, int * meter)
 	c1.h = 10;
 	c1.y = 876;
 	glColor4f(1.0f, (float)color, 0.0f, 1.0f);
-	glRectf((GLfloat)(c1.x)*scalingFactor, (GLfloat)(c1.y)*scalingFactor, (GLfloat)(c1.x + c1.w)*scalingFactor, (GLfloat)(c1.y + c1.h)*scalingFactor);
-//	SDL_FillRect(screen, &c1, SDL_MapRGB(screen->format, 0, 0, color1));
-//	SDL_FillRect(screen, &c2, SDL_MapRGB(screen->format, color2, 0, color2)); 
+	glRectf((GLfloat)(c1.x), (GLfloat)(c1.y), (GLfloat)(c1.x + c1.w), (GLfloat)(c1.y + c1.h));
 }
 
 int yellow::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
