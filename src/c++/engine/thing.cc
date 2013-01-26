@@ -4,12 +4,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include <cstring>
-bool thing::readModel()
+bool model::readModel()
 {
 	readModel("model.obj");
 }
 
-bool thing::readModel(const char * fname)
+bool model::readModel(const char * fname)
 {
 	char buffer[300];
 	char * token;

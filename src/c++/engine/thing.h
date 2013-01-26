@@ -7,6 +7,11 @@
 #define THING_INCLUDED
 class thing{
 public:
+	virtual void draw() = 0;
+};
+
+class model{
+public:
 	virtual void draw();
 	virtual bool readModel();
 	virtual bool readModel(const char*);
