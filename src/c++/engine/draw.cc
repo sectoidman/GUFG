@@ -656,7 +656,7 @@ bool gameInstance::screenInit(int w, int h)
 	return true;
 }
 
-void session::draw(thing & object)
+void session::draw(model & object)
 {
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -688,7 +688,7 @@ void session::draw(thing & object)
 	SDL_GL_SwapBuffers();
 }
 
-void thing::draw()
+void model::draw()
 {
 /* Load the identity matrix into modelmatrix. rotate the model, and move it back 5 */
 	vect v;

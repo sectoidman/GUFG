@@ -6,7 +6,7 @@
 class session : public window, public harness{
 public:
 	virtual void init();
-	virtual void draw(thing&);
+	virtual void draw(model&);
 	virtual void readInput();
 	virtual void processInput(SDL_Event&);
 	virtual void camInit();
