@@ -394,8 +394,8 @@ void instance::draw(float scalingFactor)
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
 	glPushMatrix();
-		glTranslatef(realPosX, -realPosY, 0);
-		pick()->draw(cMove, facing, 0, 0, currentFrame, scalingFactor);
+		glTranslatef(realPosX*scalingFactor, -realPosY*scalingFactor, 0);
+		pick()->draw(cMove, facing, currentFrame, scalingFactor);
 	glPopMatrix();
 }
 
@@ -423,9 +423,9 @@ void player::drawHitParticle(int x, int y, float scalingFactor)
 	} else blockType = 0;
 }
 
-void avatar::draw(action *& cMove, int facing, int x, int y, int f, float scalingFactor)
+void avatar::draw(action *& cMove, int facing, int f, float scalingFactor)
 {
-	cMove->draw(facing, x, y, f, scalingFactor);
+	cMove->draw(facing, f, scalingFactor);
 }
 
 int gameInstance::drawGlyph(const char * string, int x, int space, int y, int height, int just)
@@ -477,36 +477,36 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 	return x;
 }
 
-void action::draw(int facing, int x, int y, int f, float scalingFactor)
+void action::draw(int facing, int f, float scalingFactor)
 {
-	if(modifier && basis) basis->draw(facing, x, y, currentFrame, scalingFactor);
+	if(modifier && basis) basis->draw(facing, currentFrame, scalingFactor);
 	if(sprite[f]){
 		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
 		if(facing == 1){
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x + width[f])*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(width[f])*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x + width[f])*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(width[f])*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
 		} else {
 			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(x - width[f])*scalingFactor, (GLfloat)(y - height[f])*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(-width[f])*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
 
 			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(x - width[f])*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(-width[f])*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
 
 			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(x)*scalingFactor, (GLfloat)(y)*scalingFactor, 0.f);
+			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
 		}
 		glEnd();
 	}
