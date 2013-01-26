@@ -227,9 +227,9 @@ void interface::matchInit()
 {
 	SDL_Event event;
 	rMenu = 0;
-	for(unsigned int i = 0; i < P.size(); i++){
-		P[i]->rounds = 0;
-		P[i]->secondInstance = 0;
+	for(player* i:P){
+		i->rounds = 0;
+		i->secondInstance = 0;
 	}
 	pMenu = 0;
 	if(!select[0] || !select[1]){
@@ -251,9 +251,9 @@ void interface::roundInit()
 	bg.x = 800;
 	bg.y = -900;
 
-	for(unsigned int i = 0; i < P.size(); i++){
-		things[i]->posY = floor;
-		P[i]->roundInit();
+	for(player* i:P){
+		i->posY = floor;
+		i->roundInit();
 	}
 	/*Initialize input containers*/
 	initContainers();
