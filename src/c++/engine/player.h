@@ -62,6 +62,7 @@ public:
 	int particleType;
 	int blockType;
 	int counter;
+	bool boxen:1;
 	bool rCorner, lCorner;
 protected:
 	avatar * v;

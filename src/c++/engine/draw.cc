@@ -241,13 +241,7 @@ void interface::drawGame()
 	for(unsigned int i = 0; i < things.size(); i++){
 		glPushMatrix();
 			glTranslatef(-bg.x*scalingFactor, (bg.y+bg.h)*scalingFactor, 0);
-			if(things[i]->spriteCheck()){
-				things[i]->draw(scalingFactor);
-			}
-			glDisable(GL_TEXTURE_2D);
-			if(!things[i]->spriteCheck() || boxen){
-				things[i]->drawBoxen(scalingFactor);
-			}
+			things[i]->draw(scalingFactor);
 		glPopMatrix();
 		if(i < 2)
 			P[i]->drawHitParticle(bg.x, bg.y, scalingFactor);
@@ -374,29 +368,34 @@ void instance::draw(float scalingFactor)
 {
 	int realPosY = collision.y;
 	int realPosX = posX;
-
-	for(int i = 0; i < hitComplexity; i++){
-		if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-		if(facing == 1){
-			if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
-		} else {
-			if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+	if(spriteCheck()){
+		for(int i = 0; i < hitComplexity; i++){
+			if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
+			if(facing == 1){
+				if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+			} else {
+				if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+			}
 		}
-	}
-	for(int i = 0; i < regComplexity; i++){
-		if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
-		if(facing == 1){
-			if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
-		} else {
-			if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+		for(int i = 0; i < regComplexity; i++){
+			if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
+			if(facing == 1){
+				if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+			} else {
+				if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+			}
 		}
+		if(secondInstance)
+			glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
+		glPushMatrix();
+			glTranslatef(realPosX*scalingFactor, -realPosY*scalingFactor, 0);
+			pick()->draw(cMove, facing, currentFrame, scalingFactor);
+		glPopMatrix();
 	}
-	if(secondInstance)
-		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	glPushMatrix();
-		glTranslatef(realPosX*scalingFactor, -realPosY*scalingFactor, 0);
-		pick()->draw(cMove, facing, currentFrame, scalingFactor);
-	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+	if(!spriteCheck() || boxen){
+		drawBoxen(scalingFactor);
+	}
 }
 
 void player::drawHitParticle(int x, int y, float scalingFactor)
@@ -483,31 +482,17 @@ void action::draw(int facing, int f, float scalingFactor)
 	if(sprite[f]){
 		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
-		if(facing == 1){
-			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
+		glTexCoord2i(0, 0);
+		glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
 
-			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(width[f])*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
+		glTexCoord2i(1, 0);
+		glVertex3f((GLfloat)(facing*width[f])*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
 
-			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(width[f])*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
+		glTexCoord2i(1, 1);
+		glVertex3f((GLfloat)(facing*width[f])*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
 
-			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
-		} else {
-			glTexCoord2i(0, 0);
-			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
-
-			glTexCoord2i(1, 0);
-			glVertex3f((GLfloat)(-width[f])*scalingFactor, (GLfloat)(-height[f])*scalingFactor, 0.f);
-
-			glTexCoord2i(1, 1);
-			glVertex3f((GLfloat)(-width[f])*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
-
-			glTexCoord2i(0, 1);
-			glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
-		}
+		glTexCoord2i(0, 1);
+		glVertex3f((GLfloat)(0)*scalingFactor, (GLfloat)(0)*scalingFactor, 0.f);
 		glEnd();
 	}
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);

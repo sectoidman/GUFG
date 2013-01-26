@@ -24,7 +24,6 @@ interface::interface()
 	analytics = false;
 	pauseEnabled = false;
 	single = false;
-	boxen = false;
 	std::ifstream read;
 
 	/*Initialize some pseudo-constants*/
@@ -70,6 +69,7 @@ void interface::createPlayers()
 		menu[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
+		P[i]->boxen = false;
 	}
 }
 
@@ -86,6 +86,7 @@ void interface::createDemons()
 		menu[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
+		P[i]->boxen = false;
 	}
 	continuous = true;
 	analytics = true;
@@ -104,6 +105,7 @@ void interface::createDemons(replay * script)
 		menu[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
+		P[i]->boxen = false;
 	}
 	loadMatchBackground();
 	single = true;
