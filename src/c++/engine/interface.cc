@@ -431,9 +431,9 @@ void interface::resolve()
 			 */
 		}
 		dragBG(dx);
-		for(unsigned int i = 0; i < P.size(); i++){
-			P[i]->enforceFloor(floor);
-			P[i]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
+		for(player *i:P){
+			i->enforceFloor(floor);
+			i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 		}
 
 		resolveCollision();
@@ -768,7 +768,6 @@ void interface::mainMenu(int ID)
 				gameover = 1;
 				break;
 			}
-			
 			counter[ID] = 10;
 		}
 	}
@@ -873,7 +872,7 @@ void interface::pauseMenu()
 
 void interface::rematchMenu()
 {
-	for(int j = 0; j < P.size(); j++){
+	for(unsigned int j = 0; j < P.size(); j++){
 		if(sAxis[j][0] && !counter[j]){
 			rMenu--;
 			counter[j] = 10;
