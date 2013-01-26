@@ -112,18 +112,4 @@ public:
 private:
 	character * v;
 };
-
-class demon : public player{
-public:
-	demon();
-	demon(int);
-	demon(int, frame*);
-	frame * script;
-	virtual void genEvent(bool *&, int *&, bool *&);
-	virtual void roundInit();
-	virtual void characterSelect(int);
-	character * pick() { return v; }
-private:
-	character * v;
-};
 #endif

@@ -5,6 +5,7 @@
  *Mangled by H Forrest Alexander in the autumn of that same year.
  *I think there's a license somewhere.
  */
+
 #include "interface.h"
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
@@ -72,44 +73,6 @@ void interface::createPlayers()
 	}
 }
 
-void interface::createDemons()
-{
-	srand(time(NULL));
-	for(int i = 0; i < 2; i++){
-		P.push_back(new demon(i+1));
-		p.push_back(P[i]);
-		selection[i] = rand()%numChars + 1;
-		P[i]->characterSelect(selection[i]); 
-		printf("p%i selected %s\n", i+1, things[i]->pick()->name);
-		select[i] = 1;
-		menu[i] = 0;
-		configMenu[i] = 0;
-		things.push_back(P[i]);
-		P[i]->boxen = false;
-	}
-	continuous = true;
-	analytics = true;
-	numRounds = 1;
-}
-
-void interface::createDemons(replay * script)
-{
-	srand(time(NULL));
-	numRounds = script->rcount;
-	for(int i = 0; i < 2; i++){
-		P.push_back(new demon(i+1, script->start[i]));
-		selection[i] = script->selection[i];
-		P[i]->characterSelect(selection[i]);
-		select[i] = 1;
-		menu[i] = 0;
-		configMenu[i] = 0;
-		things.push_back(P[i]);
-		P[i]->boxen = false;
-	}
-	loadMatchBackground();
-	single = true;
-}
-
 void interface::loadMatchBackground()
 {
 	char buffer[100];
@@ -132,7 +95,7 @@ void interface::startGame()
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 	if(select[0] && select[1]){ 
-		if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
+//		if(analytics) currentMatch = new replay();
 		roundInit();
 	}
 }
@@ -175,7 +138,11 @@ void interface::loadMisc()
 /*Initialize SDL and openGL, creating a window, among other things*/
 bool gameInstance::screenInit()
 {
-	w = scalingFactor*screenWidth; h = scalingFactor*screenHeight;
+	if(scalingFactor == 1.0){ 
+		w = screenWidth; h = screenHeight;
+	} else {
+		h = 450; w = 800;
+	}
 	if(screen){ 
 		SDL_FreeSurface(screen);
 		screen = NULL;
@@ -197,11 +164,11 @@ void gameInstance::initialConfig(int ID)
 {
 	char buffer[200];
 	char pident[30];
-	sprintf(pident, "Player %i", ID + 1);
-	for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
-	for(unsigned int i = 0; i < posEdge[ID].size()+4; i++){
-		glPushMatrix();
-			glScalef(scalingFactor, scalingFactor, 0.0f);
+	glPushMatrix();
+		glScalef(scalingFactor, scalingFactor, 1.0f);
+		sprintf(pident, "Player %i", ID + 1);
+		for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
+		for(unsigned int i = 0; i < posEdge[ID].size()+4; i++){
 			glClear(GL_COLOR_BUFFER_BIT);
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
@@ -215,12 +182,12 @@ void gameInstance::initialConfig(int ID)
 			glDisable( GL_TEXTURE_2D );
 			glClear(GL_COLOR_BUFFER_BIT);
 			p[ID]->setKey(1 << i);
-		glPopMatrix();
-	}
-	p[ID]->writeConfig(ID+1);
+		}
+		p[ID]->writeConfig(ID+1);
+	glPopMatrix();
 }
 
-/*This functions sets things up for a new match. Initializes some things and draws the background*/
+	/*This functions sets things up for a new match. Initializes some things and draws the background*/
 void interface::matchInit()
 {
 	SDL_Event event;
@@ -336,7 +303,7 @@ void interface::runTimer()
 					else{
 						matchInit();
 						if(select[0] && select[1]){
-							if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
+//							if(analytics) currentMatch = new replay();
 							roundInit();
 						}
 					}
@@ -408,8 +375,7 @@ void interface::resolve()
 				}
 				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
-						if((i < P.size() && (globals[j]->effectCode & 1)) ||
-						   (i > P.size() && (globals[j]->effectCode & 2))){
+						if((i < P.size() && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
  							things[i]->enforceAttractor(globals[j]);
 						}
 					}
@@ -494,14 +460,14 @@ void interface::cleanup()
 			runTimer();
 		}
 	/*Reinitialize inputs*/
-		if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
+//		if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(posEdge[i][5] == 1 && counter[i] <= 0){
 			if(pauseEnabled && !roundEnd){
 				if(pMenu) pMenu = 0;
 				else pMenu = 1;
-			}
+			} else printf("%i %i %s\n", P[i]->currentFrame, P[i]->freeze, P[i]->cMove->name);
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
@@ -701,6 +667,13 @@ void interface::cSelectMenu()
 			}
 		}
 	}
+
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
+	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(configMenu[i] > 0) keyConfig(i);
 		else if(menu[i] > 0) mainMenu(i);
@@ -712,7 +685,7 @@ void interface::cSelectMenu()
 
 		loadMatchBackground();
 		Mix_HaltMusic();
-		if(analytics) if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
+//		if(analytics) if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
 
 		roundInit();
 	}
