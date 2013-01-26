@@ -369,7 +369,7 @@ void interface::resolve()
 					negEdge[i][j] = 0;
 				}
 			}
-		} else { 
+		} else {
 			for(unsigned int i = 0; i < things.size(); i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
 		}
 		things[1]->getMove(posEdge[1], negEdge[1], prox, 1);
@@ -393,14 +393,12 @@ void interface::resolve()
 		6. Initialize sprites.
 	*/
 
-		for(unsigned int i = 0; i < things.size(); i++)
-			things[i]->updateRects();
+		for(instance *i:things) i->updateRects();
 
 		resolveThrows();
 		doSuperFreeze();
 
-		for(unsigned int i = 0; i < things.size(); i++)
-			things[i]->updateRects();
+		for(instance *i:things) i->updateRects();
 
 		for(unsigned int i = 0; i < things.size(); i++){
 			if(!things[i]->freeze){
