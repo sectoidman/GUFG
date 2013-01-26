@@ -408,7 +408,8 @@ void interface::resolve()
 				}
 				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
-						if((i < P.size() && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
+						if((i < P.size() && (globals[j]->effectCode & 1)) ||
+						   (i > P.size() && (globals[j]->effectCode & 2))){
  							things[i]->enforceAttractor(globals[j]);
 						}
 					}
