@@ -3,7 +3,7 @@
 
 void hitstun::init(int n)
 {
-	if(n > 0) counter = n;
+	counter = n;
 }
 
 void hitstun::step(int *& meter, int &f, int &c, int &h)

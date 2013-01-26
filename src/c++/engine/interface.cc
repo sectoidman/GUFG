@@ -497,12 +497,12 @@ void interface::cleanup()
 	/*Reinitialize inputs*/
 		if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
 	}
-	if(pauseEnabled && !roundEnd){
-		for(unsigned int i = 0; i < P.size(); i++){
-			if(posEdge[i][5] == 1 && counter[i] <= 0){
+	for(unsigned int i = 0; i < P.size(); i++){
+		if(posEdge[i][5] == 1 && counter[i] <= 0){
+			if(pauseEnabled && !roundEnd){
 				if(pMenu) pMenu = 0;
 				else pMenu = 1;
-			}
+			} else printf("%i %i %s\n", P[i]->currentFrame, P[i]->freeze, P[i]->cMove->name);
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){

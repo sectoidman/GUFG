@@ -434,6 +434,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	bool success = false;
 	int ret = -1;
 	st = cMove->arbitraryPoll(1, 0);
+	if(st == 0) st = 1;
 	switch(input[0]){
 	case 3:
 	case 6:
