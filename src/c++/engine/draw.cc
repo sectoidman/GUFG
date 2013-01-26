@@ -393,7 +393,10 @@ void instance::draw(float scalingFactor)
 	}
 	if(secondInstance)
 		glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
-	pick()->draw(cMove, facing, realPosX, -realPosY, currentFrame, scalingFactor);
+	glPushMatrix();
+		glTranslatef(realPosX, -realPosY, 0);
+		pick()->draw(cMove, facing, 0, 0, currentFrame, scalingFactor);
+	glPopMatrix();
 }
 
 void player::drawHitParticle(int x, int y, float scalingFactor)
