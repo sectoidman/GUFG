@@ -13,7 +13,6 @@
 #define ACTION
 class avatar;
 class instance;
-
 struct hStat{
 	hStat() : damage(0), chip(0), stun(0), pause(-1), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile(0), turnsProjectile(0), killsProjectile(0), noConnect(0) {}
 	int damage;	/*How much damage the hit does*/
@@ -44,6 +43,7 @@ public:
 	action();
 	action(const char*);
 	virtual ~action();
+	bool spriteCheck(int);
 	virtual void build(const char *);
 	virtual void loadMisc(const char *);
 
@@ -70,7 +70,6 @@ public:
 	virtual action * connect(int *&, int&, int);
 	virtual instance * spawn() { return NULL; }
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
-	bool spriteCheck(int);
 
 	virtual void feed(action *, int, int);
 	virtual char* request(int, int);
@@ -101,10 +100,6 @@ public:
 
 	cancelField *state, allowed;
 	int xRequisite, yRequisite;
-
-	//Hooks for touching other things in more upper layers, like interface or player
-
-	virtual void touch(void*) {}
 
 	int frames;	//Number of frames.
 	int hits;
@@ -157,7 +152,6 @@ public:
 	SDL_Rect ** hitbox;     //Same but for hitboxes
 	SDL_Rect ** hitreg;     //Same but for hitreg boxes
 	SDL_Rect ** delta;       //Same but for position on the screen.
-	SDL_Rect *spritebox, fSpritebox;
 	int * hitComplexity;
 	int * regComplexity;
 	int * deltaComplexity;

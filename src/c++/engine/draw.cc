@@ -37,7 +37,7 @@ void interface::drawCSelect()
 	glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	for(int i = 0; i < 2; i++){ 
+	for(int i = 0; i < 2; i++){
 		if(configMenu[i]) drawConfigMenu(i);
 		else if (menu[i]) drawMainMenu(i);
 	}
