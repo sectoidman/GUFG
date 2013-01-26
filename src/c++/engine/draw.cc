@@ -172,12 +172,6 @@ void interface::drawGame()
 		glEnd();
 	glPopMatrix();
 	drawHUD();
-	glDisable( GL_TEXTURE_2D );
-	for(unsigned int i = 0; i < P.size(); i++){
-		P[i]->drawMeters(numRounds);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	}
-	glEnable( GL_TEXTURE_2D );
 	glPushMatrix();
 		glTranslatef(-bg.x, (bg.y+bg.h), 0);
 		for(unsigned int i = 0; i < things.size(); i++){
@@ -264,6 +258,12 @@ void interface::drawHUD()
 			Mix_PlayChannel(3, announceDraw[1], 0);
 		}
 	}
+	glDisable( GL_TEXTURE_2D );
+	for(unsigned int i = 0; i < P.size(); i++){
+		P[i]->drawMeters(numRounds);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+	glEnable( GL_TEXTURE_2D );
 }
 
 void interface::drawPauseMenu()
@@ -399,7 +399,10 @@ void instance::draw()
 			glColor4f(0.75f, 0.5f, 0.85f, 1.0f);
 		glPushMatrix();
 			glTranslatef(realPosX, -realPosY, 0);
-				pick()->draw(cMove, facing, currentFrame);
+			glPushMatrix();
+				glScalef(facing, 1.0, 1.0);
+				pick()->draw(cMove, currentFrame);
+			glPopMatrix();
 		glPopMatrix();
 	}
 	glDisable(GL_TEXTURE_2D);
@@ -431,13 +434,12 @@ void player::drawHitParticle()
 			glRectf((GLfloat)(-10*facing), (GLfloat)(-collision.h), (GLfloat)(50 * facing), (GLfloat)(-collision.h - 40));
 		glPopMatrix();
 		particleLife--;
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	} else blockType = 0;
 }
 
-void avatar::draw(action *& cMove, int facing, int f)
+void avatar::draw(action *& cMove, int f)
 {
-	cMove->draw(facing, f);
+	cMove->draw(f);
 }
 
 int gameInstance::drawGlyph(const char * string, int x, int space, int y, int height, int just)
@@ -488,9 +490,9 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 	return x;
 }
 
-void action::draw(int facing, int f)
+void action::draw(int f)
 {
-	if(modifier && basis) basis->draw(facing, currentFrame);
+	if(modifier && basis) basis->draw(currentFrame);
 	if(sprite[f]){
 		glBindTexture(GL_TEXTURE_2D, sprite[f]);
 		glBegin(GL_QUADS);
@@ -498,16 +500,15 @@ void action::draw(int facing, int f)
 		glVertex3f(0.0f, (GLfloat)(-height[f]), 0.f);
 
 		glTexCoord2i(1, 0);
-		glVertex3f((GLfloat)(facing*width[f]), (GLfloat)(-height[f]), 0.f);
+		glVertex3f((GLfloat)(width[f]), (GLfloat)(-height[f]), 0.f);
 
 		glTexCoord2i(1, 1);
-		glVertex3f((GLfloat)(facing*width[f]), 0.0f, 0.f);
+		glVertex3f((GLfloat)(width[f]), 0.0f, 0.f);
 
 		glTexCoord2i(0, 1);
 		glVertex3f(0.0f, 0.0f, 0.f);
 		glEnd();
 	}
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 bool instance::spriteCheck()
