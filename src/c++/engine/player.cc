@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include "player.h"
+#include "analytics.h"
 player::player()
 {
 	meter = NULL;
@@ -689,7 +690,7 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
-void controller::readEvent(SDL_Event & event, std::vector<bool>& sAxis, std::vector<int>& posEdge, std::vector<bool>& negEdge)
+void controller::readEvent(SDL_Event & event, frame &t)
 {
 	int value = -1;
 	bool pos;
@@ -752,28 +753,28 @@ void controller::readEvent(SDL_Event & event, std::vector<bool>& sAxis, std::vec
 		for(int i = 0; i < 4; i++){
 			if(i < 4){
 				if(input[value]->effect & (1 << i)){ 
-					sAxis[i] = pos;
+					t.axis[i] = pos;
 					if(!pos){
 						switch(i){
 						case 0:
-							sAxis[1] = 0;
+							t.axis[1] = 0;
 						case 1:
-							sAxis[0] = 0;
+							t.axis[0] = 0;
 							break;
 						case 2:
-							sAxis[3] = 0;
+							t.axis[3] = 0;
 						case 3:
-							sAxis[2] = 0;
+							t.axis[2] = 0;
 							break;
 						}
 					}
 				}
 			}
 		}
-		for(unsigned int i = 0; i < posEdge.size(); i++){
+		for(unsigned int i = 0; i < t.pos.size(); i++){
 			if(input[value]->effect & (1 << (i + 4))){
-				posEdge[i] = pos;
-				negEdge[i] = !pos;
+				t.pos[i] = pos;
+				t.neg[i] = !pos;
 			}
 		}
 	}

@@ -3,55 +3,95 @@
 #include <fstream>
 #include <stdio.h>
 #include <ctime>
-frame::frame(std::vector<bool> ax, std::vector<int> pe, std::vector<bool> ne)
+void script::init(int players, int buttons)
 {
-	for(int i = 0; i < 4; i++)
-		axis.push_back(ax[i]);
-	for(unsigned int i = 0; i < pe.size(); i++){
-		neg.push_back(ne[i]);
-		pos.push_back(pe[i]);
+	std::vector<frame> tvec;
+	for(int i = 0; i < players; i++){
+		frame temp;
+		for(int i = 0; i < buttons; i++)
+			temp.axis.push_back(0);
+		for(int i = 0; i < buttons; i++){
+			temp.pos.push_back(0);
+			temp.neg.push_back(0);
+		}
+		tvec.push_back(temp);
 	}
+	command.push_back(tvec);
 }
 
-replay::replay(const char* filename)
+script::script(int players, int buttons)
+{
+	name = NULL;
+	init(players, buttons);
+	for(int i = 0; i < players; i++) selection.push_back(-1);
+}
+
+script::script(std::vector<int> s, int buttons)
+{
+	name = NULL;
+	init(s.size(), buttons);
+	for(unsigned int i = 0; i < s.size(); i++) selection.push_back(s[i]);
+}
+
+script::script(const char* filename)
 {
 	load(filename);
 }
 
-void replay::load(const char* filename)
+void script::load(const char* filename)
 {
 	std::ifstream read;
 	read.open(filename);
-	for(int i = 0; i < 2; i++){
-		read >> selection[i];
+	int players, buttons, s;
+	read >> players; read >> buttons;
+	for(int i = 0; i < players; i++){
+		read >> s;
+		selection.push_back(s);
 	}
 	while(!read.eof()){
-		for(int i = 0; i < 2; i++){
-			std::vector<int> pe; int po;
-			std::vector<bool> ne; int n;
-			std::vector<bool> ax; int a;
-			for(int j = 0; j < 4; j++){ read >> a; ax.push_back(a); }
-			for(int j = 0; j < 6; j++){ read >> po; pe.push_back(po); }
-			for(int j = 0; j < 6; j++){ read >> n; ne.push_back(n); }
-			p[i].push_back(new frame(ax,pe,ne));
+		std::vector<frame> tempv;
+		for(int i = 0; i < players; i++){
+			frame temp;
+			int a;
+			for(int j = 0; j < 4; j++){
+				read >> a;
+				temp.axis.push_back(a);
+			}
+			int p;
+			for(int j = 0; j < buttons; j++){
+				read >> p;
+				temp.pos.push_back(p);
+			}
+			int n;
+			for(int j = 0; j < buttons; j++){
+				read >> n;
+				temp.neg.push_back(n);
+			}
+			tempv.push_back(temp);
 		}
+		command.push_back(tempv);
 	}
 }
 
-replay::~replay()
-{
-	write();
-}
-
-void replay::write()
+void script::write()
 {
 	std::ofstream scribe;
-	scribe << selection[0] << " " << selection[1] << '\n';
-	for(unsigned int i = 0; i < p[0].size(); i++){
-		for(int j = 0; j < 2; j++){
-			for(unsigned int k = 0; k < p[j][i]->axis.size(); k++) scribe << p[j][i]->axis[k] << " ";
-			for(unsigned int k = 0; k < p[j][i]->pos.size(); k++) scribe << p[j][i]->pos[k] << " ";
-			for(unsigned int k = 0; k < p[j][i]->neg.size(); k++) scribe << p[j][i]->neg[k] << " ";
+	if(name) scribe.open(name);
+	else{
+		char buffer [200];
+		time_t now = time(0);
+		tm* localTime = localtime(&now);
+		sprintf(buffer, ".data/replays/%s", asctime(localTime));
+		scribe.open(buffer);
+	}
+	scribe << selection.size(); scribe << command[0][0].pos.size();
+	for(unsigned int i = 0; i < selection.size(); i++) 
+		scribe << selection[i] << '\n';
+	for(unsigned int i = 0; i < command[0].size(); i++){
+		for(int j = 0; j < command.size(); j++){
+			for(unsigned int k = 0; k < command[j][i].axis.size(); k++) scribe << command[j][i].axis[k] << " ";
+			for(unsigned int k = 0; k < command[j][i].pos.size(); k++) scribe << command[j][i].pos[k] << " ";
+			for(unsigned int k = 0; k < command[j][i].neg.size(); k++) scribe << command[j][i].neg[k] << " ";
 			scribe << '\n';
 		}
 	}

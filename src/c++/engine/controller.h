@@ -2,6 +2,7 @@
 #include <vector>
 #ifndef CONTROLLER
 #define CONTROLLER
+class frame;
 struct keySetting{
 	keySetting();
 	SDL_Event trigger;
@@ -11,7 +12,7 @@ struct keySetting{
 class controller{
 public:
 	virtual void setKey(int);
-	virtual void readEvent(SDL_Event &, std::vector<bool>&, std::vector<int>&, std::vector<bool>&);
+	virtual void readEvent(SDL_Event &, frame&);
 	virtual void genEvent(std::vector<bool>&, std::vector<int>&, std::vector<bool>&) {}
 	void writeConfig(int);
 	bool readConfig(int);

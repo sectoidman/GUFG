@@ -1,5 +1,6 @@
 #include <SDL/SDL.h>
 #include "controller.h"
+#include "analytics.h"
 #ifndef HARNESS_INCLUDED
 #define HARNESS_INCLUDED
 class harness{
@@ -14,9 +15,7 @@ public:
 
 class arcadeHarness : public harness{
 public:
-	std::vector<std::vector<bool>> sAxis;
-	std::vector<std::vector<int>> posEdge;
-	std::vector<std::vector<bool>> negEdge;
+	std::vector<frame> currentFrame;
 	std::vector<int> counter; //Basically just a delay for menu interaction
 	virtual void initContainers(int, int); //Spawn the containers needed for input
 	virtual void initContainers();	//Reinitialize input containers to 0

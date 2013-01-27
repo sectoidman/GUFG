@@ -22,7 +22,6 @@ public:
 	virtual void loadMisc();
 	virtual bool screenInit();
 	virtual bool screenInit(int, int);
-	virtual void genInput();
 	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void initialConfig(int);
 	virtual void unitCollision(instance*, instance*);
@@ -46,8 +45,6 @@ public:
 	void loadMisc();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
-	void createDemons();
-	void createDemons(replay*);
 	void startGame();
 	void loadMatchBackground();
 /*Important interface functions that will remain interface functions*/
@@ -123,6 +120,5 @@ public:
 	int timer;
 	bool roundEnd:1;
 	int endTimer;
-	replay * currentMatch;
 };
 #endif

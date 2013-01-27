@@ -54,8 +54,6 @@ interface::interface()
 	numRounds = 2;
 
 	initContainers(2, 6);
-
-	currentMatch = NULL;
 }
 
 void interface::createPlayers()
@@ -96,7 +94,7 @@ void interface::startGame()
 	matchInit();
 	if(select[0] && select[1]){ 
 		if(analytics)
-			currentMatch = new replay;
+			//currentMatch = new replay;
 		roundInit();
 	}
 }
@@ -168,17 +166,17 @@ void gameInstance::initialConfig(int ID)
 	glPushMatrix();
 		glScalef(scalingFactor, scalingFactor, 1.0f);
 		sprintf(pident, "Player %i", ID + 1);
-		for(unsigned int i = 0; i < p[ID]->input.size(); i++) p[ID]->input.pop_back();
-		for(unsigned int i = 0; i < posEdge[ID].size()+4; i++){
+		p[ID]->input.clear();
+		for(unsigned int i = 0; i < p[ID]->inputName.size(); i++){
 			glClear(GL_COLOR_BUFFER_BIT);
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
 			glEnable( GL_TEXTURE_2D );
 			glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-			drawGlyph(pident, 0, 1600, 300, 80, 1);
-			drawGlyph("Please enter a", 0, 1600, 400, 80, 1);
+			drawGlyph(pident, 0, screenWidth, 300, 80, 1);
+			drawGlyph("Please enter a", 0, screenWidth, 400, 80, 1);
 			sprintf(buffer, "command for %s", p[ID]->inputName[i]);
-			drawGlyph(buffer, 0, 1600, 500, 80, 1);
+			drawGlyph(buffer, 0, screenWidth, 500, 80, 1);
 			SDL_GL_SwapBuffers();
 			glDisable( GL_TEXTURE_2D );
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -295,14 +293,14 @@ void interface::runTimer()
 						Mix_HaltMusic();
 						Mix_FreeMusic(matchMusic);
 					}
-					if(analytics && currentMatch){
-						delete currentMatch;
-					}
+//					if(analytics && currentMatch){
+//						delete currentMatch;
+//					}
 					if(single) gameover = true;
 					else{
 						matchInit();
 						if(select[0] && select[1]){
-							if(analytics) currentMatch = new replay;
+//							if(analytics) currentMatch = new replay;
 							roundInit();
 						}
 					}
@@ -328,22 +326,20 @@ void interface::resolve()
 				if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
 				if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
 				else(things[i]->inputBuffer[0] = 5);
-				for(int j = 0; j < 6; j++){
-					posEdge[i][j] = 0;
-					negEdge[i][j] = 0;
-				}
+				for(int j:currentFrame[i].pos) j = 0;
+				for(int j:currentFrame[i].neg) j = 0;
 			}
 		} else {
-			for(unsigned int i = 0; i < things.size(); i++) things[i]->pushInput(sAxis[things[i]->ID - 1]);
+			for(unsigned int i = 0; i < things.size(); i++) things[i]->pushInput(currentFrame[things[i]->ID - 1].axis);
 		}
-		things[1]->getMove(posEdge[1], negEdge[1], prox, 1);
+		things[1]->getMove(currentFrame[1].pos, currentFrame[1].neg, prox, 1);
 		for(unsigned int i = 0; i < things.size(); i++){
 			if(i < P.size()){
 				if(things[(i+1)%2]->aerial) prox.y = 1;
 				else prox.y = 0;
 				prox.x = things[(i+1)%2]->throwInvuln;
 			}
-			things[i]->getMove(posEdge[things[i]->ID - 1], negEdge[things[i]->ID - 1], prox, 0);
+			things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, 0);
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -375,7 +371,7 @@ void interface::resolve()
 				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
 						if((i < P.size() && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
- 							things[i]->enforceAttractor(globals[j]);
+							things[i]->enforceAttractor(globals[j]);
 						}
 					}
 				}
@@ -459,13 +455,13 @@ void interface::cleanup()
 			runTimer();
 		}
 	/*Reinitialize inputs*/
-		if(analytics && currentMatch){
-			for(int i = 0; i < 2; i++)
-				currentMatch->p[i].push_back(new frame(sAxis[i], posEdge[i], negEdge[i]));
-		}
+//		if(analytics && currentMatch){
+//			for(int i = 0; i < 2; i++)
+//				currentMatch->p[i].push_back(new frame(currentFrame[i].axis, currentFrame[i].pos, currentFrame[i].neg));
+//		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		if(posEdge[i][5] == 1 && counter[i] <= 0){
+		if(currentFrame[i].pos[5] == 1 && counter[i] <= 0){
 			if(pauseEnabled && !roundEnd){
 				if(pMenu) pMenu = 0;
 				else pMenu = 1;
@@ -473,9 +469,9 @@ void interface::cleanup()
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		for(unsigned int j = 0; j < posEdge[i].size(); j++){
-			if(posEdge[i][j] > 0) posEdge[i][j]++;
-			negEdge[i][j] = 0;
+		for(unsigned int j = 0; j < currentFrame[i].pos.size(); j++){
+			if(currentFrame[i].pos[j] > 0) currentFrame[i].pos[j]++;
+			currentFrame[i].neg[j] = 0;
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++) if(counter[i] > 0) counter[i]--;
@@ -576,13 +572,6 @@ void interface::checkWin()
 	}
 }
 
-void gameInstance::genInput()
-{
-	for(unsigned int i = 0; i < p.size(); i++){
-		p[i]->genEvent(sAxis[i], posEdge[i], negEdge[i]);
-	}
-}
-
 /*Read the input that's happened this frame*/
 void interface::processInput(SDL_Event &event)
 {
@@ -605,7 +594,7 @@ void interface::processInput(SDL_Event &event)
 void gameInstance::processInput(SDL_Event &event)
 {
 	for(unsigned int i = 0; i < p.size(); i++)
-		p[i]->readEvent(event, sAxis[i], posEdge[i], negEdge[i]);
+		p[i]->readEvent(event, currentFrame[i]);
 	switch (event.type){
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {
@@ -646,22 +635,22 @@ void interface::cSelectMenu()
 			selection[i] = 1;
 		} else {
 			if(!menu[i]){
-				if(sAxis[i][2] && !select[i] && counter[i] == 0){
+				if(currentFrame[i].axis[2] && !select[i] && counter[i] == 0){
 					selection[i]--;
 					if(selection[i] < 1) selection[i] = numChars;
 					counter[i] = 10;
 				}
-				if(sAxis[i][3] && !select[i] && counter[i] == 0){
+				if(currentFrame[i].axis[3] && !select[i] && counter[i] == 0){
 					selection[i]++;
 					if(selection[i] > numChars) selection[i] = 1;
 					counter[i] = 10;
 				}
 				for(int j = 0; j < 5; j++){
-					if(posEdge[i][j] == 1 && !select[i]){
+					if(currentFrame[i].pos[j] == 1 && !select[i]){
 						select[i] = 1;
 					}
 				}
-				if(posEdge[i][5] == 1){
+				if(currentFrame[i].pos[5] == 1){
 					if(!select[i]) menu[i] = 3;
 					else select[i] = 0;
 					counter[i] = 10;
@@ -687,7 +676,7 @@ void interface::cSelectMenu()
 
 		loadMatchBackground();
 		Mix_HaltMusic();
-		if(analytics) currentMatch = new replay;
+//		if(analytics) currentMatch = new replay;
 
 		roundInit();
 	}
@@ -695,17 +684,17 @@ void interface::cSelectMenu()
 
 void interface::mainMenu(int ID)
 {
-	if(sAxis[ID][0] && !counter[ID]){
+	if(currentFrame[ID].axis[0] && !counter[ID]){
 		menu[ID]--;
 		counter[ID] = 10;
-	} else if(sAxis[ID][1] && !counter[ID]){
+	} else if(currentFrame[ID].axis[1] && !counter[ID]){
 		menu[ID]++;
 		counter[ID] = 10;
 	}
 	if(menu[ID] > 6) menu[ID] = 1;
 	else if(menu[ID] < 1) menu[ID] = 6;
-	for(unsigned int i = 0; i < posEdge.size(); i++){
-		if(posEdge[ID][i] == 1 && !counter[ID]){
+	for(unsigned int i = 0; i < currentFrame[ID].pos.size(); i++){
+		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
 			switch(menu[ID]){
 			case 1:
 				if(analytics)
@@ -738,7 +727,7 @@ void interface::mainMenu(int ID)
 			counter[ID] = 10;
 		}
 	}
-	if(posEdge[ID][5] == 1 && !counter[ID]){ 
+	if(currentFrame[ID].pos[5] == 1 && !counter[ID]){ 
 		counter[ID] = 10;
 		menu[ID] = 0;
 	}
@@ -746,17 +735,17 @@ void interface::mainMenu(int ID)
 
 void interface::keyConfig(int ID)
 {
-	if(sAxis[ID][0] && !counter[ID]){
+	if(currentFrame[ID].axis[0] && !counter[ID]){
 		configMenu[ID]--;
 		counter[ID] = 10;
-	} else if(sAxis[ID][1] && !counter[ID]){
+	} else if(currentFrame[ID].axis[1] && !counter[ID]){
 		configMenu[ID]++;
 		counter[ID] = 10;
 	}
 	if(configMenu[ID] > 7) configMenu[ID] = 1;
 	else if(configMenu[ID] < 1) configMenu[ID] = 7;
-	for(unsigned int i = 0; i < posEdge.size(); i++){
-		if(posEdge[ID][i] == 1 && !counter[ID]){
+	for(unsigned int i = 0; i < currentFrame[ID].pos.size(); i++){
+		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
 			switch(configMenu[ID]){
 			case 1:
 				glDisable( GL_TEXTURE_2D );
@@ -773,7 +762,7 @@ void interface::keyConfig(int ID)
 			counter[ID] = 10;
 		}
 	}
-	if(posEdge[ID][5] == 1 && !counter[ID]){ 
+	if(currentFrame[ID].pos[5] == 1 && !counter[ID]){ 
 		counter[ID] = 10;
 		configMenu[ID] = 0;
 		menu[ID] = 0;
@@ -799,17 +788,17 @@ void interface::dragBG(int deltaX)
 void interface::pauseMenu()
 {
 	for(int j = 0; j < p.size(); j++){
-		if(sAxis[j][0] && !counter[j]){
+		if(currentFrame[j].axis[0] && !counter[j]){
 			pMenu--;
 			counter[j] = 10;
-		} else if(sAxis[j][1] && !counter[j]){ 
+		} else if(currentFrame[j].axis[1] && !counter[j]){ 
 			pMenu++;
 			counter[j] = 10;
 		}
 		if(pMenu > 3) pMenu = 1;
 		else if(pMenu < 1) pMenu = 3;
-		for(unsigned int i = 0; i < posEdge.size(); i++){
-			if(posEdge[j][i] == 1){
+		for(unsigned int i = 0; i < currentFrame[j].pos.size(); i++){
+			if(currentFrame[j].pos[i] == 1){
 				switch(pMenu){
 				case 1:
 					pMenu = 0;
@@ -840,17 +829,17 @@ void interface::pauseMenu()
 void interface::rematchMenu()
 {
 	for(unsigned int j = 0; j < P.size(); j++){
-		if(sAxis[j][0] && !counter[j]){
+		if(currentFrame[j].axis[0] && !counter[j]){
 			rMenu--;
 			counter[j] = 10;
-		} else if(sAxis[j][1] && !counter[j]){ 
+		} else if(currentFrame[j].axis[1] && !counter[j]){ 
 			rMenu++;
 			counter[j] = 10;
 		}
 		if(rMenu > 3) rMenu = 1;
 		else if(rMenu < 1) rMenu = 3;
 		for(int i = 0; i < 6; i++){
-			if(posEdge[j][i] == 1){
+			if(currentFrame[j].pos[i] == 1){
 				switch(rMenu){
 				case 1:
 					Mix_HaltMusic();

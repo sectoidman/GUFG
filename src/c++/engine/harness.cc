@@ -50,32 +50,25 @@ void harness::readInput()
 
 void arcadeHarness::initContainers()
 {
-	for(unsigned int i = 0; i < posEdge.size(); i++){
-		for(int j = 0; j < 4; j++)
-			sAxis[i][j] = 0;
-		for(unsigned int j = 0; j < posEdge[i].size(); j++){
-			posEdge[i][j] = 0;
-			negEdge[i][j] = 0;
-		}
+	for(frame i:currentFrame){
+		for(bool j:i.axis) j = 0;
+		for(int j:i.pos) j = 0;
+		for(bool j:i.neg) j = 0;
 	}
+	for(int i:counter) i = 0;
 }
 
 void arcadeHarness::initContainers(int players, int buttons)
 {
-	for(unsigned int i = 0; i < players; i++){
-		std::vector<int> pos;
-		std::vector<bool> neg;
-		std::vector<bool> axis;
-
+	for(int i = 0; i < players; i++){
+		frame temp;
 		for(int j = 0; j < buttons; j++){
-			pos.push_back(0);
-			neg.push_back(0);
+			temp.pos.push_back(0);
+			temp.neg.push_back(0);
 		}
 		for(int j = 0; j < 4; j++)
-			axis.push_back(0);
-		sAxis.push_back(axis);
-		posEdge.push_back(pos);
-		negEdge.push_back(neg);
+			temp.axis.push_back(0);
 		counter.push_back(0);
+		currentFrame.push_back(temp);
 	}
 }

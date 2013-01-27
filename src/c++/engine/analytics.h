@@ -1,4 +1,6 @@
 #include "player.h"
+#ifndef ANALYTICS
+#define ANALYTICS
 class chart{
 public:
 	chart(int);
@@ -10,23 +12,22 @@ public:
 	~chart();
 };
 
-class frame {
-public:
-	frame(std::vector<bool>, std::vector<int>, std::vector<bool>);
+struct frame {
 	std::vector<bool> axis;
 	std::vector<bool> neg;
 	std::vector<int> pos;
 };
 
-typedef std::vector<frame*> script;
-
-class replay {
+class script {
 public:
-	replay() {}
-	replay(const char*);
-	int selection[2];
-	script p[2];
+	const char *name;
+	script(int players, int buttons);
+	script(std::vector<int> s, int buttons);
+	script(const char*);
+	void init(int players, int buttons);
+	std::vector<std::vector<frame>> command;
+	std::vector<int> selection;
 	virtual void load(const char*);
 	virtual void write();
-	~replay();
 };
+#endif
