@@ -23,10 +23,11 @@ public:
 	const char *name;
 	script();
 	script(const char*);
-	void init(int players);
-	void init(std::vector<int> s);
+	void init(int);
+	void init(std::vector<int>);
 	std::vector<std::vector<frame>> command;
 	std::vector<int> selection;
+	void genEvent(int, int, frame&);
 	virtual void load(const char*);
 	virtual void write();
 };

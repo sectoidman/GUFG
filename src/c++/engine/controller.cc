@@ -9,7 +9,6 @@ void controller::setKey(int effect)
 {
 	SDL_Event temp;
 	bool configFlag = 0;
-
 	while(SDL_PollEvent(&temp));
 	while (!configFlag){
 		if (SDL_PollEvent(&temp)) {

@@ -54,6 +54,9 @@ interface::interface()
 	numRounds = 2;
 
 	initContainers(2, 6);
+	oldReplay = NULL;
+	iterator = 0;
+	replay = NULL;
 }
 
 void interface::createPlayers()
@@ -294,6 +297,7 @@ void interface::runTimer()
 					if(analytics && replay){
 						replay->write();
 						delete replay;
+						replay = NULL;
 					}
 					if(single) gameover = true;
 					else{
@@ -589,7 +593,12 @@ void interface::processInput(SDL_Event &event)
 			}
 		}
 	}
-	gameInstance::processInput(event);
+	if(oldReplay){
+		for(unsigned int i = 0; i < p.size(); i++)
+			oldReplay->genEvent(iterator, i, currentFrame[i]);
+		iterator++;
+		harness::processInput(event);
+	} else gameInstance::processInput(event);
 }
 
 void gameInstance::processInput(SDL_Event &event)

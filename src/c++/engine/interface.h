@@ -113,8 +113,8 @@ public:
 	std::vector<attractor *> globals;
 
 	script *replay;
-	std::vector<bool> record;
-	std::vector<int> mStart;
+	script *oldReplay;
+	int iterator;
 
 //Variables for cSelectMenu 
 	int numChars;

@@ -3,6 +3,7 @@
 #ifndef CONTROLLER
 #define CONTROLLER
 class frame;
+class script;
 struct keySetting{
 	keySetting();
 	SDL_Event trigger;
@@ -13,7 +14,6 @@ class controller{
 public:
 	virtual void setKey(int);
 	virtual void readEvent(SDL_Event &, frame&);
-	virtual void genEvent(std::vector<bool>&, std::vector<int>&, std::vector<bool>&) {}
 	void writeConfig(int);
 	bool readConfig(int);
 	virtual bool setKey(int, SDL_Event);
@@ -22,5 +22,7 @@ public:
 	virtual void swapKey(int, SDL_Event);
 	std::vector<keySetting*> input;
 	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
+	script *macro;
+	int iterator;
 };
 #endif

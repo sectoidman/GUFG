@@ -3,7 +3,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <ctime>
-script::script() 
+script::script()
 {
 	name = NULL;
 }
@@ -23,6 +23,25 @@ void script::init(std::vector<int> s)
 		selection.push_back(s[i]);
 		std::vector<frame> tvec;
 		command.push_back(tvec);
+	}
+}
+
+void script::genEvent(int p, int f, frame &t)
+{
+	for(int i = 0; i < 4; i += 2){
+		if( (command[p][f].axis[i] && t.axis[i+1])
+		  || (command[p][f].axis[i+1] && t.axis[i])){
+			t.axis[i] = 0; t.axis[i+1] = 0;
+		} else {
+			t.axis[i] = command[p][f].axis[i];
+			t.axis[i+1] = command[p][f].axis[i+1];
+		}
+	}
+	for(int i = 0; i < command[p][f].pos.size(); i++){
+		t.neg[i] = command[p][f].neg[i];
+		if(command[p][f].pos[i] > t.pos[i] + 1) t.pos[i] = 0;
+		else if(t.neg[i]) t.pos[i] = 0;
+		else t.pos[i] = command[p][f].pos[i];
 	}
 }
 
