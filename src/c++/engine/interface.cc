@@ -295,6 +295,7 @@ void interface::runTimer()
 						Mix_FreeMusic(matchMusic);
 					}
 					if(analytics && replay){
+						replay->write();
 						delete replay;
 					}
 					if(single) gameover = true;
