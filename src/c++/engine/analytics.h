@@ -23,8 +23,8 @@ public:
 	const char *name;
 	script();
 	script(const char*);
-	void init(int players, int buttons);
-	void init(std::vector<int> s, int buttons);
+	void init(int players);
+	void init(std::vector<int> s);
 	std::vector<std::vector<frame>> command;
 	std::vector<int> selection;
 	virtual void load(const char*);

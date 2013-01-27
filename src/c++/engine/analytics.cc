@@ -8,26 +8,22 @@ script::script()
 	name = NULL;
 }
 
-void script::init(int players, int buttons)
+void script::init(int players)
 {
-	std::vector<frame> tvec;
-	for(int i = 0; i < players; i++){
-		frame temp;
-		for(int i = 0; i < buttons; i++)
-			temp.axis.push_back(0);
-		for(int i = 0; i < buttons; i++){
-			temp.pos.push_back(0);
-			temp.neg.push_back(0);
-		}
-		tvec.push_back(temp);
+	for(unsigned int i = 0; i < players; i++){
+		selection.push_back(-1);
+		std::vector<frame> tvec;
+		command.push_back(tvec);
 	}
-	command.push_back(tvec);
 }
 
-void script::init(std::vector<int> s, int buttons)
+void script::init(std::vector<int> s)
 {
-	init(s.size(), buttons);
-	for(unsigned int i = 0; i < s.size(); i++) selection.push_back(s[i]);
+	for(unsigned int i = 0; i < s.size(); i++){
+		selection.push_back(s[i]);
+		std::vector<frame> tvec;
+		command.push_back(tvec);
+	}
 }
 
 script::script(const char* filename)
@@ -82,11 +78,12 @@ void script::write()
 		sprintf(buffer, ".data/replays/%s", asctime(localTime));
 		scribe.open(buffer);
 	}
-	scribe << selection.size(); scribe << command[0][0].pos.size();
+	scribe << selection.size() << " " << command[0][0].pos.size() << '\n';
 	for(unsigned int i = 0; i < selection.size(); i++) 
-		scribe << selection[i] << '\n';
+		scribe << selection[i] << " ";
+	scribe << '\n';
 	for(unsigned int i = 0; i < command[0].size(); i++){
-		for(int j = 0; j < command.size(); j++){
+		for(unsigned int j = 0; j < command.size(); j++){
 			for(unsigned int k = 0; k < command[j][i].axis.size(); k++) scribe << command[j][i].axis[k] << " ";
 			for(unsigned int k = 0; k < command[j][i].pos.size(); k++) scribe << command[j][i].pos[k] << " ";
 			for(unsigned int k = 0; k < command[j][i].neg.size(); k++) scribe << command[j][i].neg[k] << " ";
