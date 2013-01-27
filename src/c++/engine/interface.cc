@@ -95,7 +95,8 @@ void interface::startGame()
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 	if(select[0] && select[1]){ 
-//		if(analytics) currentMatch = new replay();
+		if(analytics)
+			currentMatch = new replay;
 		roundInit();
 	}
 }
@@ -295,15 +296,13 @@ void interface::runTimer()
 						Mix_FreeMusic(matchMusic);
 					}
 					if(analytics && currentMatch){
-						currentMatch->write();
 						delete currentMatch;
-						currentMatch = NULL;
 					}
 					if(single) gameover = true;
 					else{
 						matchInit();
 						if(select[0] && select[1]){
-//							if(analytics) currentMatch = new replay();
+							if(analytics) currentMatch = new replay;
 							roundInit();
 						}
 					}
@@ -460,7 +459,10 @@ void interface::cleanup()
 			runTimer();
 		}
 	/*Reinitialize inputs*/
-//		if(analytics && currentMatch) currentMatch->append(new frame(sAxis[0], posEdge[0], negEdge[0]), new frame(sAxis[1], posEdge[1], negEdge[1]));
+		if(analytics && currentMatch){
+			for(int i = 0; i < 2; i++)
+				currentMatch->p[i].push_back(new frame(sAxis[i], posEdge[i], negEdge[i]));
+		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(posEdge[i][5] == 1 && counter[i] <= 0){
@@ -685,7 +687,7 @@ void interface::cSelectMenu()
 
 		loadMatchBackground();
 		Mix_HaltMusic();
-//		if(analytics) if(analytics) currentMatch = new replay(selection[0], selection[1], numRounds);
+		if(analytics) currentMatch = new replay;
 
 		roundInit();
 	}

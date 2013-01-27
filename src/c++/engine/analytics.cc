@@ -27,26 +27,31 @@ void replay::load(const char* filename)
 	}
 	while(!read.eof()){
 		for(int i = 0; i < 2; i++){
-			std::vector<int> pe; int p;
+			std::vector<int> pe; int po;
 			std::vector<bool> ne; int n;
 			std::vector<bool> ax; int a;
 			for(int j = 0; j < 4; j++){ read >> a; ax.push_back(a); }
-			for(int j = 0; j < 6; j++){ read >> p; pe.push_back(p); }
+			for(int j = 0; j < 6; j++){ read >> po; pe.push_back(po); }
 			for(int j = 0; j < 6; j++){ read >> n; ne.push_back(n); }
-			script[i].push_back(new frame(ax,pe,ne));
+			p[i].push_back(new frame(ax,pe,ne));
 		}
 	}
+}
+
+replay::~replay()
+{
+	write();
 }
 
 void replay::write()
 {
 	std::ofstream scribe;
 	scribe << selection[0] << " " << selection[1] << '\n';
-	for(unsigned int i = 0; i < script[0].size(); i++){
+	for(unsigned int i = 0; i < p[0].size(); i++){
 		for(int j = 0; j < 2; j++){
-			for(unsigned int k = 0; k < script[j][i]->axis.size(); k++) scribe << script[j][i]->axis[k] << " ";
-			for(unsigned int k = 0; k < script[j][i]->pos.size(); k++) scribe << script[j][i]->pos[j] << " ";
-			for(unsigned int k = 0; k < script[j][i]->neg.size(); k++) scribe << script[j][i]->neg[j] << " ";
+			for(unsigned int k = 0; k < p[j][i]->axis.size(); k++) scribe << p[j][i]->axis[k] << " ";
+			for(unsigned int k = 0; k < p[j][i]->pos.size(); k++) scribe << p[j][i]->pos[k] << " ";
+			for(unsigned int k = 0; k < p[j][i]->neg.size(); k++) scribe << p[j][i]->neg[k] << " ";
 			scribe << '\n';
 		}
 	}
