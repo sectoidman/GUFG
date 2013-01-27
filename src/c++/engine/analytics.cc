@@ -3,6 +3,11 @@
 #include <fstream>
 #include <stdio.h>
 #include <ctime>
+script::script() 
+{
+	name = NULL;
+}
+
 void script::init(int players, int buttons)
 {
 	std::vector<frame> tvec;
@@ -19,23 +24,16 @@ void script::init(int players, int buttons)
 	command.push_back(tvec);
 }
 
-script::script(int players, int buttons)
+void script::init(std::vector<int> s, int buttons)
 {
-	name = NULL;
-	init(players, buttons);
-	for(int i = 0; i < players; i++) selection.push_back(-1);
-}
-
-script::script(std::vector<int> s, int buttons)
-{
-	name = NULL;
 	init(s.size(), buttons);
 	for(unsigned int i = 0; i < s.size(); i++) selection.push_back(s[i]);
 }
 
 script::script(const char* filename)
 {
-	load(filename);
+	name = filename;
+	load(name);
 }
 
 void script::load(const char* filename)

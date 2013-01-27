@@ -63,7 +63,7 @@ void interface::createPlayers()
 		P.push_back(new player(i+1));
 		p.push_back(P[i]);
 		select[i] = 0;
-		selection[i] = 1+i;
+		selection.push_back(1+i);
 		menu[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
@@ -93,8 +93,9 @@ void interface::startGame()
 	//Mix_PlayChannel(3, announceSelect, 0);
 	matchInit();
 	if(select[0] && select[1]){ 
-		if(analytics)
-			//currentMatch = new replay;
+		if(analytics){
+			replay->init(selection, 6);
+		}
 		roundInit();
 	}
 }
@@ -293,14 +294,14 @@ void interface::runTimer()
 						Mix_HaltMusic();
 						Mix_FreeMusic(matchMusic);
 					}
-//					if(analytics && currentMatch){
-//						delete currentMatch;
-//					}
+					if(analytics && replay){
+						delete replay;
+					}
 					if(single) gameover = true;
 					else{
 						matchInit();
 						if(select[0] && select[1]){
-//							if(analytics) currentMatch = new replay;
+							if(analytics) replay = new script;
 							roundInit();
 						}
 					}
@@ -454,11 +455,6 @@ void interface::cleanup()
 			if(!roundEnd) checkWin();
 			runTimer();
 		}
-	/*Reinitialize inputs*/
-//		if(analytics && currentMatch){
-//			for(int i = 0; i < 2; i++)
-//				currentMatch->p[i].push_back(new frame(currentFrame[i].axis, currentFrame[i].pos, currentFrame[i].neg));
-//		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(currentFrame[i].pos[5] == 1 && counter[i] <= 0){
@@ -676,7 +672,7 @@ void interface::cSelectMenu()
 
 		loadMatchBackground();
 		Mix_HaltMusic();
-//		if(analytics) currentMatch = new replay;
+		if(analytics) replay = new script;
 
 		roundInit();
 	}

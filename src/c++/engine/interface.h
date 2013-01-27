@@ -80,7 +80,7 @@ public:
 	void writeImage(const char*, int, action*);
 
 	bool select[2];
-	int selection[2];
+	std::vector<int> selection;
 	int menu[2];
 	int configMenu[2];
 	int rMenu;
@@ -111,6 +111,10 @@ public:
 	Mix_Chunk *announceSelect;
 
 	std::vector<attractor *> globals;
+
+	script *replay;
+	std::vector<bool> record;
+	std::vector<int> mStart;
 
 //Variables for cSelectMenu 
 	int numChars;
