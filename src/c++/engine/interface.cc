@@ -608,6 +608,11 @@ void gameInstance::genInput()
 	for(unsigned int i = 0; i < p.size(); i++)
 		oldReplay->genEvent(i, replayIterator, currentFrame[i]);
 	replayIterator++;
+	if(replayIterator > oldReplay->command[0].size()){
+		delete oldReplay;
+		oldReplay = NULL;
+		replayIterator = 0;
+	}
 }
 
 /*Read the input that's happened this frame*/
