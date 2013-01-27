@@ -25,6 +25,9 @@ public:
 	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void initialConfig(int);
 	virtual void unitCollision(instance*, instance*);
+	virtual void genInput();
+	script *oldReplay;
+	int replayIterator;
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
@@ -45,6 +48,7 @@ public:
 	void loadMisc();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
+	void createPlayers(const char*);
 	void startGame();
 	void loadMatchBackground();
 /*Important interface functions that will remain interface functions*/
@@ -113,8 +117,6 @@ public:
 	std::vector<attractor *> globals;
 
 	script *replay;
-	script *oldReplay;
-	int iterator;
 
 //Variables for cSelectMenu 
 	int numChars;

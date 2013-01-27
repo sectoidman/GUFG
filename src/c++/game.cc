@@ -22,16 +22,16 @@ int main(int argc, char* argv[])
         std::chrono::high_resolution_clock::time_point frameStart;
 	interface game;
 	assert(game.screenInit() != false);
-	game.createPlayers();
+	if(argc > 1) game.createPlayers(argv[1]);
+	else game.createPlayers();
 	game.loadMisc();
 	game.startGame();
-	int rounds = 2;
-	if(argc > 1) rounds = atoi(argv[1]);
-	if(rounds > 0 && rounds < 10) game.numRounds = rounds;
+	game.numRounds = 2;
 
 	/*As long as the game doesn't detect a request to quit, it loops over a few basic resolutions of game events*/
 	while (!game.gameover){
 		frameStart = std::chrono::high_resolution_clock::now();
+		if(game.oldReplay != NULL) game.genInput();
 		game.readInput();
 		game.resolve();
 		game.draw();

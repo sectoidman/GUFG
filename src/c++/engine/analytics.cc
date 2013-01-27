@@ -28,20 +28,10 @@ void script::init(std::vector<int> s)
 
 void script::genEvent(int p, int f, frame &t)
 {
-	for(int i = 0; i < 4; i += 2){
-		if( (command[p][f].axis[i] && t.axis[i+1])
-		  || (command[p][f].axis[i+1] && t.axis[i])){
-			t.axis[i] = 0; t.axis[i+1] = 0;
-		} else {
-			t.axis[i] = command[p][f].axis[i];
-			t.axis[i+1] = command[p][f].axis[i+1];
-		}
-	}
+	for(int i = 0; i < 4; i++) t.axis[i] = command[p][f].axis[i];
 	for(int i = 0; i < command[p][f].pos.size(); i++){
+		t.pos[i] = command[p][f].pos[i];
 		t.neg[i] = command[p][f].neg[i];
-		if(command[p][f].pos[i] > t.pos[i] + 1) t.pos[i] = 0;
-		else if(t.neg[i]) t.pos[i] = 0;
-		else t.pos[i] = command[p][f].pos[i];
 	}
 }
 
@@ -61,11 +51,14 @@ void script::load(const char* filename)
 		read >> s;
 		selection.push_back(s);
 	}
+	for(int i = 0; i < players; i++){
+		std::vector<frame> t;
+		command.push_back(t);
+	}
 	while(!read.eof()){
-		std::vector<frame> tempv;
 		for(int i = 0; i < players; i++){
 			frame temp;
-			int a;
+			bool a;
 			for(int j = 0; j < 4; j++){
 				read >> a;
 				temp.axis.push_back(a);
@@ -75,14 +68,13 @@ void script::load(const char* filename)
 				read >> p;
 				temp.pos.push_back(p);
 			}
-			int n;
+			bool n;
 			for(int j = 0; j < buttons; j++){
 				read >> n;
 				temp.neg.push_back(n);
 			}
-			tempv.push_back(temp);
+			command[i].push_back(temp);
 		}
-		command.push_back(tempv);
 	}
 }
 
@@ -109,6 +101,7 @@ void script::write()
 			scribe << '\n';
 		}
 	}
+	scribe << '\n';
 	scribe.close();
 }
 

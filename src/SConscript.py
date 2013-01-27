@@ -7,7 +7,6 @@ char_src = Glob("c++/characters/*.cc")
 backend_src = engine_src + char_src
 swig_src = Glob("c++/engine/*.i")
 bmpout_src = [File("c++/bmp.cc")]
-replay_src = [File("c++/replay.cc")]
 gufg_exec_src = [File("c++/game.cc")]
 
 ##ENVIRONMENT
@@ -30,11 +29,10 @@ wrappy = "c++/engine/engine.py"
 #TARGETS
 engine = env.SharedLibrary('engine', backend_src + swig_src,)
 bmpout = env.Program('bmpout', backend_src + bmpout_src)
-replay = env.Program('replay', backend_src + replay_src)
 gufg_exec = env.Program('gufg',backend_src + gufg_exec_src)
 
 pyTargets=[wrappy, engine, Glob("../src/python/*.py")]
-binTargets=[replay, bmpout, gufg_exec]
+binTargets=[bmpout, gufg_exec]
 distTargets=["../content", "../src/scripts", Glob("../info/*"), miscdirs, binTargets]
 
 #INSTALL TARGETS

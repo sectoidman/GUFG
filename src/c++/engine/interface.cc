@@ -55,8 +55,28 @@ interface::interface()
 
 	initContainers(2, 6);
 	oldReplay = NULL;
-	iterator = 0;
+	replayIterator = 0;
 	replay = NULL;
+}
+
+void interface::createPlayers(const char* rep)
+{
+	oldReplay = new script(rep);
+	createPlayers();
+	if(oldReplay->selection.size() != 2){
+		printf("Invalid Replay\n");
+		delete oldReplay;
+		oldReplay = NULL;
+	} else {
+		single = true;
+		analytics = false;
+		for(int i = 0; i < 2; i++){
+			selection[i] = oldReplay->selection[i];
+			select[i] = 1;
+			P[i]->characterSelect(selection[i]);
+		}
+		loadMatchBackground();
+	}
 }
 
 void interface::createPlayers()
@@ -268,20 +288,22 @@ void interface::runTimer()
 			things[0]->momentumComplexity = 0;
 			things[1]->momentumComplexity = 0;
 			if(P[0]->rounds == numRounds || P[1]->rounds == numRounds){
-				if(P[0]->rounds == P[1]->rounds);
-				else if(P[0]->rounds == numRounds){ 
-					P[0]->wins++;
-					printf("P1: %i wins\n", P[0]->wins);
-				} else {
-					P[1]->wins++;
-					printf("P2: %i wins\n", P[1]->wins);
+				if(!oldReplay){
+					if(P[0]->rounds == P[1]->rounds);
+					else if(P[0]->rounds == numRounds){ 
+						P[0]->wins++;
+						printf("P1: %i wins\n", P[0]->wins);
+					} else {
+						P[1]->wins++;
+						printf("P2: %i wins\n", P[1]->wins);
+					}
+					if(P[0]->rounds == P[1]->rounds);
+					else{
+						if(P[0]->rounds == numRounds) stats->recordWin(selection[0], selection[1]);
+						else stats->recordWin(selection[1], selection[0]);
+					}
 				}
-				if(P[0]->rounds == P[1]->rounds);
-				else{
-					if(P[0]->rounds == numRounds) stats->recordWin(selection[0], selection[1]);
-					else stats->recordWin(selection[1], selection[0]);
-					printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
-				}
+				printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
 				if(shortcut) rMenu = 1;
 				else{
 					if(!continuous){
@@ -298,6 +320,10 @@ void interface::runTimer()
 						replay->write();
 						delete replay;
 						replay = NULL;
+					}
+					if(oldReplay){
+						delete oldReplay;
+						oldReplay= NULL;
 					}
 					if(single) gameover = true;
 					else{
@@ -577,6 +603,13 @@ void interface::checkWin()
 	}
 }
 
+void gameInstance::genInput()
+{
+	for(unsigned int i = 0; i < p.size(); i++)
+		oldReplay->genEvent(i, replayIterator, currentFrame[i]);
+	replayIterator++;
+}
+
 /*Read the input that's happened this frame*/
 void interface::processInput(SDL_Event &event)
 {
@@ -593,18 +626,15 @@ void interface::processInput(SDL_Event &event)
 			}
 		}
 	}
-	if(oldReplay){
-		for(unsigned int i = 0; i < p.size(); i++)
-			oldReplay->genEvent(iterator, i, currentFrame[i]);
-		iterator++;
-		harness::processInput(event);
-	} else gameInstance::processInput(event);
+	gameInstance::processInput(event);
 }
 
 void gameInstance::processInput(SDL_Event &event)
 {
-	for(unsigned int i = 0; i < p.size(); i++){
-		p[i]->readEvent(event, currentFrame[i]);
+	if(!oldReplay){
+		for(unsigned int i = 0; i < p.size(); i++){
+			p[i]->readEvent(event, currentFrame[i]);
+		}
 	}
 	switch (event.type){
 	case SDL_KEYDOWN:
@@ -670,12 +700,6 @@ void interface::cSelectMenu()
 		}
 	}
 
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-	glRectf(0.0f*scalingFactor, 0.0f*scalingFactor, (GLfloat)screenWidth*scalingFactor, (GLfloat)screenHeight*scalingFactor);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(configMenu[i] > 0) keyConfig(i);
 		else if(menu[i] > 0) mainMenu(i);
@@ -684,7 +708,7 @@ void interface::cSelectMenu()
 	if(select[0] && select[1]){
 		P[0]->characterSelect(selection[0]);
 		P[1]->characterSelect(selection[1]);
-		if(analytics){ 
+		if(analytics){
 			replay = new script;
 			replay->init(selection);
 		}
