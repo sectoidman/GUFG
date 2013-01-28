@@ -302,8 +302,8 @@ void interface::runTimer()
 						if(P[0]->rounds == numRounds) stats->recordWin(selection[0], selection[1]);
 						else stats->recordWin(selection[1], selection[0]);
 					}
+					printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
 				}
-				printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
 				if(shortcut) rMenu = 1;
 				else{
 					if(!continuous){
@@ -353,29 +353,30 @@ void interface::resolve()
 		if(timer > 99 * 60){
 			for(unsigned int i = 0; i < P.size(); i++){
 				if(timer == 106 * 60) things[i]->inputBuffer[0] = 0;
-				if(timer == 106 * 60 - 1) things[i]->inputBuffer[0] = i;
-				if(timer == 106 * 60 - 2) things[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
-				if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
-				if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
+				else if(timer == 106 * 60 - 1) things[i]->inputBuffer[0] = i;
+				else if(timer == 106 * 60 - 2) things[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
+				else if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
+				else if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
 				else(things[i]->inputBuffer[0] = 5);
 				for(int j:currentFrame[i].pos) j = 0;
 				for(int j:currentFrame[i].neg) j = 0;
 			}
 		} else {
-			for(unsigned int i = 0; i < things.size(); i++) things[i]->pushInput(currentFrame[things[i]->ID - 1].axis);
+			for(unsigned int i = 0; i < things.size(); i++) 
+				things[i]->pushInput(currentFrame[things[i]->ID - 1].axis);
+			things[1]->getMove(currentFrame[1].pos, currentFrame[1].neg, prox, 1);
+			for(unsigned int i = 0; i < things.size(); i++){
+				if(i < P.size()){
+					if(things[(i+1)%2]->aerial) prox.y = 1;
+					else prox.y = 0;
+					prox.x = things[(i+1)%2]->throwInvuln;
+				}
+				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, 0);
+			}
 		}
 		if(analytics){
 			for(unsigned int i = 0; i < replay->command.size(); i++)
 				replay->command[i].push_back(currentFrame[i]);
-		}
-		things[1]->getMove(currentFrame[1].pos, currentFrame[1].neg, prox, 1);
-		for(unsigned int i = 0; i < things.size(); i++){
-			if(i < P.size()){
-				if(things[(i+1)%2]->aerial) prox.y = 1;
-				else prox.y = 0;
-				prox.x = things[(i+1)%2]->throwInvuln;
-			}
-			things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, 0);
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
