@@ -5,6 +5,20 @@ keySetting::keySetting()
 	effect = 0;
 }
 
+script * controller::patternMatch(std::vector<int> pos)
+{
+	for(unsigned int j = 0; j < macro.size(); j++){
+		bool fail = false;
+		for(int i = 0; i < 5; i++){
+			if(((pos[i] == 1) << i) & pattern[j]){
+				fail = true;
+			}
+		}
+		if(!fail) return macro[j];
+	}
+	return NULL;
+}
+
 void controller::setKey(int effect)
 {
 	SDL_Event temp;

@@ -690,6 +690,31 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
+void player::genInput(frame &t)
+{
+	for(int i:t.pos){
+		if(i == 1){
+			if(m){ 
+				delete m; m = NULL;
+			}
+		}
+	}
+	for(bool i:t.axis){
+		if(i == 1){
+			if(m){ 
+				delete m; m = NULL;
+			}
+		}
+	}
+	if(t.pos.size() > 6){
+		if(t.pos[6] > 0){
+			m = patternMatch(t.pos);
+			if(m) iterator = 0;
+		}
+	}
+	if(m) m->genEvent(0, iterator++, t);
+}
+
 void controller::readEvent(SDL_Event & event, frame &t)
 {
 	int value = -1;

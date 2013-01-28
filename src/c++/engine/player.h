@@ -84,6 +84,7 @@ public:
 	virtual void enforceGravity(int, int);
 	virtual void drawMeters(int);
 	virtual void roundInit();
+	virtual void genInput(frame &);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
 	virtual bool CHState();

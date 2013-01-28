@@ -22,7 +22,10 @@ public:
 	virtual void swapKey(int, SDL_Event);
 	std::vector<keySetting*> input;
 	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
-	script *macro;
+	std::vector<script*> macro;
+	std::vector<int> pattern;
+	script * patternMatch(std::vector<int>);
+	script * m;
 	int iterator;
 };
 #endif

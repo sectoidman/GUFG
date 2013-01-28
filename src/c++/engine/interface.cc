@@ -641,6 +641,9 @@ void gameInstance::processInput(SDL_Event &event)
 		for(unsigned int i = 0; i < p.size(); i++){
 			p[i]->readEvent(event, currentFrame[i]);
 		}
+		for(unsigned int i = 0; i < P.size(); i++){
+			P[i]->genInput(currentFrame[i]);
+		}
 	}
 	switch (event.type){
 	case SDL_KEYDOWN:
