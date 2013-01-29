@@ -717,89 +717,17 @@ void player::genInput(frame &t)
 
 void controller::readEvent(SDL_Event & event, frame &t)
 {
-	int value = -1;
-	bool pos;
-	for(unsigned int i = 0; i < input.size(); i++){
-		switch(event.type){
-		case SDL_JOYAXISMOTION:
-			if(input[i]->trigger.type == SDL_JOYAXISMOTION){
-				if(event.jaxis.which == input[i]->trigger.jaxis.which && event.jaxis.axis == input[i]->trigger.jaxis.axis){
-					if(event.jaxis.value == input[i]->trigger.jaxis.value){
-						value = i;
-						pos = 1;
-						i = input.size();
-					} else if(event.jaxis.value == 0) {
-						value = i;
-						pos = 0;
-						i = input.size();
-					}
-				}
-			}
-			break;
-		case SDL_JOYBUTTONDOWN:
-			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
-				if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button){
-					value = i;
-					pos = 1;
-					i = input.size();
-				}
-			}
-			break;
-		case SDL_JOYBUTTONUP:
-			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
-				if(event.jbutton.which == input[i]->trigger.jbutton.which && event.jbutton.button == input[i]->trigger.jbutton.button){
-					value = i;
-					pos = 0;
-					i = input.size();
-				}
-			}
-			break;
-		case SDL_KEYDOWN:
-			if(input[i]->trigger.type == SDL_KEYDOWN){
-				if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym){
-					value = i;
-					pos = 1;
-					i = input.size();
-				}
-			}
-			break;
-		case SDL_KEYUP:
-			if(input[i]->trigger.type == SDL_KEYDOWN){
-				if(event.key.keysym.sym == input[i]->trigger.key.keysym.sym){
-					value = i;
-					pos = 0;
-					i = input.size();
-				}
-			}
-		break;
-		}
-	}
-	if(value > -1){
+	int effect = tap(event);
+	if(effect != 0){
 		for(int i = 0; i < 4; i++){
-			if(i < 4){
-				if(input[value]->effect & (1 << i)){ 
-					t.axis[i] = pos;
-					if(!pos){
-						switch(i){
-						case 0:
-							t.axis[1] = 0;
-						case 1:
-							t.axis[0] = 0;
-							break;
-						case 2:
-							t.axis[3] = 0;
-						case 3:
-							t.axis[2] = 0;
-							break;
-						}
-					}
-				}
+			if(abs(effect) & (1 << i)){ 
+				t.axis[i] = (effect > 0);
 			}
 		}
 		for(unsigned int i = 0; i < t.pos.size(); i++){
-			if(input[value]->effect & (1 << (i + 4))){
-				t.pos[i] = pos;
-				t.neg[i] = !pos;
+			if(abs(effect) & (1 << (i + 4))){
+				t.pos[i] = (effect > 0);
+				t.neg[i] = (effect < 0);
 			}
 		}
 	}
