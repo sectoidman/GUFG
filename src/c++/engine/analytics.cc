@@ -3,11 +3,6 @@
 #include <fstream>
 #include <stdio.h>
 #include <ctime>
-script::script()
-{
-	name = NULL;
-}
-
 void script::init(int players)
 {
 	for(unsigned int i = 0; i < players; i++){
@@ -35,13 +30,12 @@ void script::genEvent(int p, int f, frame &t)
 	}
 }
 
-script::script(const char* filename)
+script::script(char* filename)
 {
-	name = filename;
-	load(name);
+	load(filename);
 }
 
-void script::load(const char* filename)
+void script::load(char* filename)
 {
 	std::ifstream read;
 	read.open(filename);
@@ -83,6 +77,11 @@ void script::load(const char* filename)
 
 void script::write()
 {
+	write(NULL);
+}
+
+void script::write(char * name)
+{
 	std::ofstream scribe;
 	if(name) scribe.open(name);
 	else{
@@ -91,6 +90,10 @@ void script::write()
 		tm* localTime = localtime(&now);
 		sprintf(buffer, ".data/replays/%s", asctime(localTime));
 		scribe.open(buffer);
+	}
+	if(command[0].size() == 0){
+		scribe.close();
+		return;
 	}
 	scribe << selection.size() << " " << command[0][0].pos.size() << '\n';
 	for(unsigned int i = 0; i < selection.size(); i++) 

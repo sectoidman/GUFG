@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	/*As long as the game doesn't detect a request to quit, it loops over a few basic resolutions of game events*/
 	while (!game.gameover){
 		frameStart = std::chrono::high_resolution_clock::now();
-		if(game.oldReplay != NULL) game.genInput();
+		game.genInput();
 		game.readInput();
 		game.resolve();
 		game.draw();

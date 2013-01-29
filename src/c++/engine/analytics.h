@@ -20,15 +20,15 @@ struct frame {
 
 class script {
 public:
-	const char *name;
-	script();
-	script(const char*);
+	script() {}
+	script(char*);
 	void init(int);
 	void init(std::vector<int>);
 	std::vector<std::vector<frame>> command;
 	std::vector<int> selection;
 	void genEvent(int, int, frame&);
-	virtual void load(const char*);
+	virtual void load(char*);
+	virtual void write(char*);
 	virtual void write();
 };
 #endif

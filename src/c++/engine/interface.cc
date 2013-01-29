@@ -59,7 +59,7 @@ interface::interface()
 	replay = NULL;
 }
 
-void interface::createPlayers(const char* rep)
+void interface::createPlayers(char* rep)
 {
 	oldReplay = new script(rep);
 	createPlayers();
@@ -606,13 +606,22 @@ void interface::checkWin()
 
 void gameInstance::genInput()
 {
-	for(unsigned int i = 0; i < p.size(); i++)
-		oldReplay->genEvent(i, replayIterator, currentFrame[i]);
-	replayIterator++;
-	if(replayIterator > oldReplay->command[0].size()){
-		delete oldReplay;
-		oldReplay = NULL;
-		replayIterator = 0;
+	if(oldReplay){
+		for(unsigned int i = 0; i < p.size(); i++)
+			oldReplay->genEvent(i, replayIterator, currentFrame[i]);
+		replayIterator++;
+		if(replayIterator > oldReplay->command[0].size()){
+			delete oldReplay;
+			oldReplay = NULL;
+			replayIterator = 0;
+		}
+	} else {
+		for(unsigned int i = 0; i < P.size(); i++){
+			if(P[i]->m){ 
+				P[i]->m->genEvent(0, P[i]->iterator, currentFrame[i]);
+				P[i]->iterator++;
+			}
+		}
 	}
 }
 

@@ -48,7 +48,7 @@ public:
 	void loadMisc();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
-	void createPlayers(const char*);
+	void createPlayers(char*);
 	void startGame();
 	void loadMatchBackground();
 /*Important interface functions that will remain interface functions*/
