@@ -45,6 +45,9 @@ void script::load(const char* filename)
 {
 	std::ifstream read;
 	read.open(filename);
+	if(read.fail()){
+		init(1); return;
+	}
 	int players, buttons, s;
 	read >> players; read >> buttons;
 	for(int i = 0; i < players; i++){

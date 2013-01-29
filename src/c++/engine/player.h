@@ -110,6 +110,7 @@ public:
 
 	virtual void init();
 	int wins;
+	script * record;
 private:
 	character * v;
 };

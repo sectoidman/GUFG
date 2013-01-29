@@ -83,6 +83,8 @@ void player::init()
 	inputName.push_back("E");
 	inputName.push_back("Start");
 
+	m = NULL;
+	record = NULL;
 	v = NULL;
 	rounds = 0;
 	instance::init();
@@ -96,6 +98,7 @@ void player::roundInit()
 	elasticX = 0;
 	elasticY = 0;
 	blockType = 0;
+	iterator = 0;
 	slide = 0;
 	stick = 0;
 	hover = 0;
