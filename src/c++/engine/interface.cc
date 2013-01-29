@@ -321,6 +321,13 @@ void interface::runTimer()
 						delete replay;
 						replay = NULL;
 					}
+					for(unsigned int i = 0; i < P.size(); i++){
+						if(P[i]->record){
+							P[i]->record->write(P[i]->pick()->name);
+							delete P[i]->record;
+							P[i]->record = NULL;
+						}
+					}
 					if(oldReplay){
 						delete oldReplay;
 						oldReplay= NULL;
@@ -377,6 +384,10 @@ void interface::resolve()
 		if(analytics){
 			for(unsigned int i = 0; i < replay->command.size(); i++)
 				replay->command[i].push_back(currentFrame[i]);
+		}
+		for(unsigned int i = 0; i < P.size(); i++){
+			if(P[i]->record)
+				P[i]->record->command[0].push_back(currentFrame[i]);
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
