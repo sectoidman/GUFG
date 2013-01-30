@@ -1,10 +1,10 @@
 ##SOURCES
 engine_src = File(filter(lambda s: not("wrap" in s),
-                         Glob("c++/engine/*.cc", strings=True)))
-char_src = Glob("c++/characters/*.cc")
+                         Glob("engine/*.cc", strings=True)))
+char_src = Glob("characters/*.cc")
 backend_src = engine_src + char_src
-bmpout_src = [File("c++/bmp.cc")]
-gufg_exec_src = [File("c++/game.cc")]
+bmpout_src = [File("bmp.cc")]
+gufg_exec_src = [File("game.cc")]
 
 ##ENVIRONMENT
 env = Environment(CXXFLAGS="-O2 -g\
