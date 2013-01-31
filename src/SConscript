@@ -13,31 +13,27 @@ flags = ["-O2", "-g", "-std=c++11", "-Wno-overloaded-virtual",
 libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'glut']
 
 #Linux-specific environment, code objects, and programs
-linux = Environment(LIBS=libs+['GL', 'GLU'],
-                    CXXFLAGS=flags)
+linux = Environment(LIBS=libs+['GL', 'GLU'], CXXFLAGS=flags)
 linux_backend = [linux.Object(name) for name in backend_src]
-linux_bmpout = linux.Object(bmpout_src)
-linux_gufg = linux.Object(gufg_src)
-linux.Program('../bmpout', linux_backend + linux_bmpout)
-linux.Program('../gufg', linux_backend + linux_gufg)
+linux.Program('../bmpout', linux_backend + [bmpout_src])
+linux.Program('../gufg', linux_backend + [gufg_src])
 
 #Windows-specific environment, code objects, and programs
+w = '.wo'
 wpath = '/usr/x86_64-w64-mingw32/sys-root/mingw/'
 wcpppath = wpath+'include/'
 wlibpath = wpath+'lib/'
+wflags = flags+['-mwindows']
 windows = Environment(ENV=os.environ,
                       CPPPATH=wcpppath,
                       CXX="x86_64-w64-mingw32-gcc",
                       LD="/usr/x86_64-w64-mingw32/bin/ld",
                       LIBS=libs+['mingw32', 'opengl32', 'glu32', 'stdc++'],
                       LIBPATH=wlibpath)
-w = '-windows.o'
-windows_backend = [windows.Object(name+w, name, CXXFLAGS=flags)\
+windows_backend = [windows.Object(name+w, name, CXXFLAGS=wflags)\
                    for name in backend_src]
-windows_bmpout = windows.Object(bmpout_src+w, bmpout_src, CXXFLAGS=flags)
-windows_gufg = windows.Object(gufg_src+w, gufg_src, CXXFLAGS=flags)
-windows.Program('../bmpout-win', windows_backend + windows_bmpout)
-windows.Program('../gufg-win', windows_backend + windows_gufg)
+windows_gufg = windows.Object(gufg_src+w, gufg_src, CXXFLAGS=wflags)
+windows.Program('../gufg-win', windows_backend + windows_gufg, CXXFLAGS=wflags)
 
 #Build only linux version by default
 Default("../gufg")
