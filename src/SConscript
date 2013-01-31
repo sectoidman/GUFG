@@ -10,8 +10,7 @@ gufg_src = "game.cc"
 #Common flags and libraries
 flags = ["-O2", "-g", "-std=c++11", "-Wno-overloaded-virtual",
          "-Wno-format", "-Wno-format-contains-null", "-Wctor-dtor-privacy"]
-libs = ['SDL','SDLmain','SDL_image','SDL_mixer',
-        'GL', 'GLU', 'glut']
+libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'GL', 'GLU', 'glut']
 
 #Linux-specific environment, code objects, and programs
 linux = Environment(LIBS=libs,
@@ -24,12 +23,16 @@ linux.Program('../bmpout', linux_backend + linux_bmpout)
 linux.Program('../gufg', linux_backend + linux_gufg)
 
 #Windows-specific environment, code objects, and programs
-wlibpath = ['/usr/x86_64-w64-mingw32/sys-root/mingw/lib/']
+wpath = '/usr/x86_64-w64-mingw32/sys-root/mingw/'
+wcpppath = wpath+'include/'
+wlibpath = wpath+'lib/'
 windows = Environment(ENV=os.environ,
+                      CPPPATH=wcpppath,
+                      CXX="x86_64-w64-mingw32-gcc",
+                      LD="/usr/x86_64-w64-mingw32/bin/ld",
                       LIBS=libs+['mingw32'],
                       LIBPATH=wlibpath)
 w = '-windows.o'
-Tool('mingw')(windows)
 windows_backend = [windows.Object(name+w, name, CXXFLAGS=flags)\
                    for name in backend_src]
 windows_bmpout = windows.Object(bmpout_src+w, bmpout_src, CXXFLAGS=flags)
