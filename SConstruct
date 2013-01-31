@@ -1,5 +1,2 @@
-Execute(Delete("dist"))
-Mkdir(".config")
-Mkdir(".data")
 VariantDir('.build', 'src')
-SConscript('src/SConscript.py', variant_dir='.build')
+SConscript('src/SConscript', variant_dir='.build')
