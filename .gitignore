@@ -3,6 +3,7 @@
 .build/
 dist/
 gufg
+gufg-win
 bmpout
 replay
 .data/
