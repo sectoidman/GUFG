@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <assert.h>
 
+#undef main
 int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
