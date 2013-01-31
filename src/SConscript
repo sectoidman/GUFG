@@ -30,7 +30,7 @@ windows = Environment(ENV=os.environ,
                       CPPPATH=wcpppath,
                       CXX="x86_64-w64-mingw32-gcc",
                       LD="/usr/x86_64-w64-mingw32/bin/ld",
-                      LIBS=libs+['mingw32', 'opengl32', 'glu32'],
+                      LIBS=libs+['mingw32', 'opengl32', 'glu32', 'stdc++'],
                       LIBPATH=wlibpath)
 w = '-windows.o'
 windows_backend = [windows.Object(name+w, name, CXXFLAGS=flags)\
