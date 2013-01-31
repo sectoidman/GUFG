@@ -10,10 +10,10 @@ gufg_src = "game.cc"
 #Common flags and libraries
 flags = ["-O2", "-g", "-std=c++11", "-Wno-overloaded-virtual",
          "-Wno-format", "-Wno-format-contains-null", "-Wctor-dtor-privacy"]
-libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'GL', 'GLU', 'glut']
+libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'glut']
 
 #Linux-specific environment, code objects, and programs
-linux = Environment(LIBS=libs,
+linux = Environment(LIBS=libs+['GL', 'GLU'],
                     CXXFLAGS=flags)
 l = '-linux.o'
 linux_backend = [linux.Object(name+l, name) for name in backend_src]
@@ -30,7 +30,7 @@ windows = Environment(ENV=os.environ,
                       CPPPATH=wcpppath,
                       CXX="x86_64-w64-mingw32-gcc",
                       LD="/usr/x86_64-w64-mingw32/bin/ld",
-                      LIBS=libs+['mingw32'],
+                      LIBS=libs+['mingw32', 'opengl32', 'glu32'],
                       LIBPATH=wlibpath)
 w = '-windows.o'
 windows_backend = [windows.Object(name+w, name, CXXFLAGS=flags)\
