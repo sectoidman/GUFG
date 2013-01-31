@@ -6,9 +6,9 @@
 #include "session.h"
 #include "thing.h"
 #include "auxil.h"
-#define _USE_MATH_DEFINES
+#define  M_PI 3.14159265358979323846 //FUCK YOU MINGW
 #include "interface.h"
-#include <math.h>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <string>
