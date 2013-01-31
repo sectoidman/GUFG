@@ -4,7 +4,7 @@
 class chart{
 public:
 	chart(int);
-	std::vector<std::vector<int>> wins;
+	std::vector<std::vector<int> > wins;
 	void recordWin(int, int);
 	float matchup(int, int);
 	void write();
@@ -24,7 +24,7 @@ public:
 	script(char*);
 	void init(int);
 	void init(std::vector<int>);
-	std::vector<std::vector<frame>> command;
+	std::vector<std::vector<frame> > command;
 	std::vector<int> selection;
 	void genEvent(int, int, frame&);
 	virtual void load(char*);
