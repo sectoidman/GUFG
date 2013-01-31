@@ -15,10 +15,9 @@ libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'glut']
 #Linux-specific environment, code objects, and programs
 linux = Environment(LIBS=libs+['GL', 'GLU'],
                     CXXFLAGS=flags)
-l = '-linux.o'
-linux_backend = [linux.Object(name+l, name) for name in backend_src]
-linux_bmpout = linux.Object(bmpout_src+l, bmpout_src)
-linux_gufg = linux.Object(gufg_src+l, gufg_src)
+linux_backend = [linux.Object(name) for name in backend_src]
+linux_bmpout = linux.Object(bmpout_src)
+linux_gufg = linux.Object(gufg_src)
 linux.Program('../bmpout', linux_backend + linux_bmpout)
 linux.Program('../gufg', linux_backend + linux_gufg)
 
