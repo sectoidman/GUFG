@@ -9,13 +9,19 @@ The current version of GUFG is currently only known to successfully build and ru
 
 1. Install the dependencies, which are available in most Linux distribution
     package repositories, or can be compiled manually from source.
-  * Build time:
+  * To build the native Linux client:
       * [SDL](http://www.libsdl.org/download-1.2.php)
       * [SDL\_image](http://www.libsdl.org/projects/SDL_image/)
       * [SDL\_mixer](http://www.libsdl.org/projects/SDL_mixer/)
       * [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux)
       * [Glut](http://freeglut.sourceforge.net/)
       * [SCons](http://www.scons.org/)
+  * To cross compile for Windows (valid Fedora package names given):
+      * mingw64-gcc-c++
+      * mingw64-SDL
+      * mingw64-SDL_image
+      * mingw64-SDL_mixer
+      * mingw64-freeglut
 
 2. Clone this repository
   (`git clone git@github.com:Advael/GUFG.git`) 
