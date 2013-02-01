@@ -30,19 +30,16 @@ bool script::test()
 		l.pos.push_back(0);
 		l.neg.push_back(0);
 	}
-	bool ret;
-	ret = genEvent(0, 0, l);
-	if(!ret) printf("Fail\n");
-	return ret;
+	return genEvent(0, 0, l);
 }
 
 bool script::genEvent(int p, int f, frame &t)
 {
-	if(p >= command.size()){ 
+	if(command.size() == 0 || p >= command.size()-1){ 
 		printf("Too little p\n");
 		return 0;
 	}
-	if(f >= command[p].size()){
+	if(command[p].size() == 0 || f >= command[p].size()-1){
 		printf("Too little f\n");
 		return 0;
 	}
