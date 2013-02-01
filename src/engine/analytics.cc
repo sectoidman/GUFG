@@ -35,14 +35,8 @@ bool script::test()
 
 bool script::genEvent(int p, int f, frame &t)
 {
-	if(command.empty() || p >= command.size()){ 
-		printf("Too little p\n");
-		return 0;
-	}
-	if(command[p].empty() || f >= command[p].size()){
-		printf("Too little f\n");
-		return 0;
-	}
+	if(command.empty() || p >= command.size()) return 0;
+	if(command[p].empty() || f >= command[p].size()) return 0;
 	for(int i = 0; i < 4; i++) t.axis[i] = command[p][f].axis[i];
 	printf("%i", 5-3*t.axis[0]+3*t.axis[1]-t.axis[2]+t.axis[3]);
 	for(int i = 0; i < command[p][f].pos.size(); i++){

@@ -699,19 +699,15 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
-void player::macroCheck(SDL_Event &event)
+bool player::macroCheck(SDL_Event &event)
 {
 	char buffer[200];
 	int effect = tap(event);
 	if(effect > 0){
-		if(abs(effect) & 512){
-			m = patternMatch(effect);
-			if(m) iterator = 0;
-		}
-		else m = NULL;
+		m = NULL;
+		if(effect & 512) return true;
 	} else if (effect < 0) {
 		if(!m && (abs(effect) & 512)){
-			printf("%i\n", effect);
 			if(!record){
 				record = new script();
 				record->init(1);
@@ -723,6 +719,7 @@ void player::macroCheck(SDL_Event &event)
 			}
 		}
 	}
+	return false;
 }
 
 void controller::readEvent(SDL_Event & event, frame &t)

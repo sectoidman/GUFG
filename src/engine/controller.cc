@@ -7,8 +7,8 @@ keySetting::keySetting()
 
 script * controller::patternMatch(int effect)
 {
-	for(unsigned int j = 0; j < macro.size(); j++){
-		if(effect & pattern[j]) return macro[j];
+	for(unsigned int i = 0; i < pattern.size(); i++){
+		if(effect & pattern[i]) return macro[i];
 	}
 	return NULL;
 }
@@ -154,36 +154,38 @@ void controller::swapKey(int effect, SDL_Event temp)
 
 int controller::tap(SDL_Event temp)
 {
+	int ret = 0;
 	for(unsigned int i = 0; i < input.size(); i++){
 		switch(temp.type){
 		case SDL_KEYUP:
-			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) {
-				//printf("%i\n", -input[i]->effect);
-				return -input[i]->effect;
-			}
+			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
+				ret = -(input[i]->effect);
+			break;
 		case SDL_KEYDOWN:
-			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) {
-				//printf("%i\n", input[i]->effect);
-				return input[i]->effect;
-			}
+			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
+				ret = input[i]->effect;
+			break;
 		case SDL_JOYBUTTONUP:
 			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 			   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-				return -input[i]->effect;
+				ret = -(input[i]->effect);
+			break;
 		case SDL_JOYBUTTONDOWN:
 			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 			   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-				return input[i]->effect;
+				ret = input[i]->effect;
+			break;
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
 			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
 			   input[i]->trigger.jaxis.value == temp.jaxis.value)
-				return input[i]->effect;
+				ret = input[i]->effect;
 			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
 			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
 			   input[i]->trigger.jaxis.value == 0)
-				return -input[i]->effect;
+				ret = -input[i]->effect;
+			break;
 		}
 	}
-	return 0;
+	return ret;
 }

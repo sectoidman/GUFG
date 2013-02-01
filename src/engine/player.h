@@ -84,7 +84,7 @@ public:
 	virtual void enforceGravity(int, int);
 	virtual void drawMeters(int);
 	virtual void roundInit();
-	virtual void macroCheck(SDL_Event&);
+	virtual bool macroCheck(SDL_Event&);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
 	virtual bool CHState();

@@ -667,16 +667,27 @@ void gameInstance::readInput()
 	std::vector<SDL_Event> events;
 	SDL_Event event;
 	for(int i = 0; i < 20; i++){
-		if(SDL_PollEvent(&event))
+		if(SDL_PollEvent(&event)){
 			events.push_back(event);
+			processInput(event);
+		}
 	}
-	for(unsigned int i = 0; i < events.size(); i++){
-		if(!oldReplay){
-			for(unsigned int i = 0; i < P.size(); i++){
-				P[i]->macroCheck(events[i]);
+	for(player* i:P){
+		bool search = false;
+		for(unsigned int j = 0; j < events.size(); j++){
+			if(!oldReplay){
+				bool r = false;
+				if(i->record) r = true;
+				if(i->macroCheck(events[j])) search = true;
+				if(i->record && !r) j = events.size();
 			}
 		}
-		processInput(events[i]);
+		if(search){
+			for(unsigned int j = 0; j < events.size(); j++){
+				if(i->m = i->patternMatch(abs(i->tap(events[j]))))
+					j = events.size();
+			}
+		}
 	}
 	genInput();
 	for(SDL_Event i:events){
