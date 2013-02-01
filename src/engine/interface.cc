@@ -665,16 +665,18 @@ void interface::processInput(SDL_Event &event)
 void gameInstance::readInput()
 {
 	std::vector<SDL_Event> events;
+	SDL_Event event;
 	for(int i = 0; i < 20; i++){
-		SDL_Event event;
-		SDL_PollEvent(&event);
+		if(SDL_PollEvent(&event))
+			events.push_back(event);
+	}
+	for(unsigned int i = 0; i < events.size(); i++)
 		if(!oldReplay){
 			for(unsigned int i = 0; i < P.size(); i++){
-				P[i]->macroCheck(event);
+				P[i]->macroCheck(events[i]);
 			}
 		}
-		events.push_back(event);
-		processInput(event);
+		processInput(events[i]);
 	}
 	genInput();
 	for(SDL_Event i:events){

@@ -35,11 +35,11 @@ bool script::test()
 
 bool script::genEvent(int p, int f, frame &t)
 {
-	if(command.size() == 0 || p >= command.size()-1){ 
+	if(command.empty() || p >= command.size()){ 
 		printf("Too little p\n");
 		return 0;
 	}
-	if(command[p].size() == 0 || f >= command[p].size()-1){
+	if(command[p].empty() || f >= command[p].size()){
 		printf("Too little f\n");
 		return 0;
 	}

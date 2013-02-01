@@ -711,16 +711,15 @@ void player::macroCheck(SDL_Event &event)
 		else m = NULL;
 	} else if (effect < 0) {
 		if(!m && (abs(effect) & 512)){
+			printf("%i\n", effect);
 			if(!record){
 				record = new script();
 				record->init(1);
 			} else {
-				if(record->test()){
-					sprintf(buffer, "%s.sh", v->name);
-					record->write(buffer);
-					delete record;
-					record = NULL;
-				}
+				sprintf(buffer, "%s.sh", v->name);
+				record->write(buffer);
+				delete record;
+				record = NULL;
 			}
 		}
 	}
