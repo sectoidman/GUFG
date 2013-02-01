@@ -670,7 +670,7 @@ void gameInstance::readInput()
 		if(SDL_PollEvent(&event))
 			events.push_back(event);
 	}
-	for(unsigned int i = 0; i < events.size(); i++)
+	for(unsigned int i = 0; i < events.size(); i++){
 		if(!oldReplay){
 			for(unsigned int i = 0; i < P.size(); i++){
 				P[i]->macroCheck(events[i]);
