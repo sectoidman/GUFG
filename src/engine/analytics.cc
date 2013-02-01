@@ -21,13 +21,41 @@ void script::init(std::vector<int> s)
 	}
 }
 
-void script::genEvent(int p, int f, frame &t)
+bool script::test()
 {
-	for(int i = 0; i < 4; i++) t.axis[i] = command[p][f].axis[i];
-	for(int i = 0; i < command[p][f].pos.size(); i++){
-		t.pos[i] = command[p][f].pos[i];
-		t.neg[i] = command[p][f].neg[i];
+	frame l;
+	for(int i = 0; i < 4; i++)
+		l.axis.push_back(0);
+	for(int i = 4; i < 6; i++){
+		l.pos.push_back(0);
+		l.neg.push_back(0);
 	}
+	bool ret;
+	ret = genEvent(0, 0, l);
+	if(!ret) printf("Fail\n");
+	return ret;
+}
+
+bool script::genEvent(int p, int f, frame &t)
+{
+	if(p >= command.size()){ 
+		printf("Too little p\n");
+		return 0;
+	}
+	if(f >= command[p].size()){
+		printf("Too little f\n");
+		return 0;
+	}
+	for(int i = 0; i < 4; i++) t.axis[i] = command[p][f].axis[i];
+	printf("%i", 5-3*t.axis[0]+3*t.axis[1]-t.axis[2]+t.axis[3]);
+	for(int i = 0; i < command[p][f].pos.size(); i++){
+		t.pos[i] = !(!(command[p][f].pos[i]));
+		t.neg[i] = command[p][f].neg[i];
+		if(t.pos[i]) printf("%c", 'A'+i);
+		else if(t.neg[i]) printf("]%c[", 'A'+i);
+	}
+	printf("\n");
+	return 1;
 }
 
 script::script(char* filename)
@@ -39,6 +67,7 @@ void script::load(char* filename)
 {
 	std::ifstream read;
 	read.open(filename);
+	printf("%s\n", filename);
 	if(read.fail()){
 		init(1); return;
 	}

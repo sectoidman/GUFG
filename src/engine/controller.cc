@@ -5,14 +5,12 @@ keySetting::keySetting()
 	effect = 0;
 }
 
-script * controller::patternMatch(std::vector<int> pos)
+script * controller::patternMatch(int effect)
 {
 	for(unsigned int j = 0; j < macro.size(); j++){
 		bool fail = false;
-		for(int i = 0; i < 5; i++){
-			if(((pos[i] == 1) << i) & pattern[j]){
-				fail = true;
-			}
+		if(!(effect & pattern[j])){
+			fail = true;
 		}
 		if(!fail) return macro[j];
 	}
@@ -163,11 +161,15 @@ int controller::tap(SDL_Event temp)
 	for(unsigned int i = 0; i < input.size(); i++){
 		switch(temp.type){
 		case SDL_KEYUP:
-			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
+			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) {
+				//printf("%i\n", -input[i]->effect);
 				return -input[i]->effect;
+			}
 		case SDL_KEYDOWN:
-			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
+			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) {
+				//printf("%i\n", input[i]->effect);
 				return input[i]->effect;
+			}
 		case SDL_JOYBUTTONUP:
 			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 			   input[i]->trigger.jbutton.button == temp.jbutton.button) 

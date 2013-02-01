@@ -24,7 +24,7 @@ public:
 	std::vector<const char*> inputName;//Input names. This is really just for housekeeping.
 	std::vector<script*> macro;
 	std::vector<int> pattern;
-	script * patternMatch(std::vector<int>);
+	script * patternMatch(int);
 	script * m;
 	int iterator;
 };

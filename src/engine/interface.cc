@@ -382,12 +382,16 @@ void interface::resolve()
 			}
 		}
 		if(analytics){
-			for(unsigned int i = 0; i < replay->command.size(); i++)
+			for(unsigned int i = 0; i < replay->command.size(); i++){
 				replay->command[i].push_back(currentFrame[i]);
+			}
 		}
 		for(unsigned int i = 0; i < P.size(); i++){
-			if(P[i]->record)
+			if(P[i]->record){
+				currentFrame[i].pos[5] = 0;
+				currentFrame[i].neg[5] = 0;
 				P[i]->record->command[0].push_back(currentFrame[i]);
+			}
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -627,10 +631,13 @@ void gameInstance::genInput()
 			replayIterator = 0;
 		}
 	} else {
-		for(unsigned int i = 0; i < P.size(); i++){
-			if(P[i]->m){ 
-				P[i]->m->genEvent(0, P[i]->iterator, currentFrame[i]);
-				P[i]->iterator++;
+		if(!pauseEnabled){
+			for(unsigned int i = 0; i < P.size(); i++){
+				if(P[i]->m){ 
+					if(!P[i]->m->genEvent(0, P[i]->iterator, currentFrame[i])){
+						P[i]->m = NULL;
+					} else P[i]->iterator++;
+				}
 			}
 		}
 	}
@@ -655,16 +662,30 @@ void interface::processInput(SDL_Event &event)
 	gameInstance::processInput(event);
 }
 
-void gameInstance::processInput(SDL_Event &event)
+void gameInstance::readInput()
 {
-	if(!oldReplay){
-		for(unsigned int i = 0; i < p.size(); i++){
-			p[i]->readEvent(event, currentFrame[i]);
+	std::vector<SDL_Event> events;
+	for(int i = 0; i < 20; i++){
+		SDL_Event event;
+		SDL_PollEvent(&event);
+		if(!oldReplay){
+			for(unsigned int i = 0; i < P.size(); i++){
+				P[i]->macroCheck(event);
+			}
 		}
-		for(unsigned int i = 0; i < P.size(); i++){
-			P[i]->genInput(currentFrame[i]);
+		events.push_back(event);
+		processInput(event);
+	}
+	genInput();
+	for(SDL_Event i:events){
+		for(unsigned int j = 0; j < p.size(); j++){
+			p[j]->readEvent(i, currentFrame[j]);
 		}
 	}
+}
+
+void gameInstance::processInput(SDL_Event &event)
+{
 	switch (event.type){
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {

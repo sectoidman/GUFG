@@ -287,6 +287,12 @@ void player::characterSelect(int i)
 		v = new character("White");
 		break;
 	}
+	char buffer[200];
+	sprintf(buffer, "%s.sh", v->name);
+	macro.push_back(new script(buffer));
+	if(!macro[0]->test()) macro.clear();
+	else pattern.push_back(16);
+	iterator = 0;
 	meter = pick()->generateMeter();
 }
 
@@ -693,32 +699,29 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
-void player::genInput(frame t)
+void player::macroCheck(SDL_Event &event)
 {
 	char buffer[200];
-	for(int i:t.pos){
-		if(i == 1){
-			if(m) m = NULL;
+	int effect = tap(event);
+	if(effect > 0){
+		if(abs(effect) & 512){
+			m = patternMatch(effect);
+			if(m) iterator = 0;
 		}
-	}
-	for(bool i:t.axis){
-		if(i == 1){
-			if(m) m = NULL;
-		}
-	}
-	if(t.pos[5] > 0){
-		m = patternMatch(t.pos);
-		if(m) iterator = 0;
-	}
-	if(!m && t.neg[5]){
-		if(!record){
-			record = new script();
-			record->init(1);
-		} else {
-			sprintf(buffer, "%s.sh", v->name);
-			record->write(buffer);
-			delete record;
-			record = NULL;
+		else m = NULL;
+	} else if (effect < 0) {
+		if(!m && (abs(effect) & 512)){
+			if(!record){
+				record = new script();
+				record->init(1);
+			} else {
+				if(record->test()){
+					sprintf(buffer, "%s.sh", v->name);
+					record->write(buffer);
+					delete record;
+					record = NULL;
+				}
+			}
 		}
 	}
 }
@@ -880,3 +883,4 @@ instance::~instance()
 }
 
 player::~player(){}
+

@@ -22,6 +22,7 @@ public:
 	virtual void loadMisc();
 	virtual bool screenInit();
 	virtual bool screenInit(int, int);
+	void readInput();
 	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void initialConfig(int);
 	virtual void unitCollision(instance*, instance*);
@@ -36,6 +37,7 @@ public:
 //Meta-interface stuff. Gameover state, screen size, etc.
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
+	bool pauseEnabled:1;
 	float scalingFactor, sf;
 	bool initd:1;
 	GLuint glyph[91];
@@ -96,7 +98,6 @@ public:
 	bool continuous:1;
 	bool single:1;
 	bool analytics:1;
-	bool pauseEnabled:1;
 	int combo[2];
 	int damage[2];
 	bool illegit[2];

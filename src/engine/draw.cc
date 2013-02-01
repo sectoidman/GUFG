@@ -200,6 +200,11 @@ void interface::drawHUD()
 	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	for(int i = 0; i < 2; i++){
 		drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
+		if(P[i]->record){
+			glColor4f(0.5, 1.0, 1.0, 0.7);
+			drawGlyph("Recording", 100+800*i, 600, 200, 55, 0+2*i);
+			glColor4f(1.0, 1.0, 1.0, 1.0);
+		}
 		if(combo[i] > 1){
 			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0);
 			sprintf(buffer, "%i hits", combo[i]);
@@ -211,11 +216,11 @@ void interface::drawHUD()
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
-	int l = P[0]->rounds + P[1]->rounds + 1;
-	sprintf(buffer, "Round %i", l);
-	if(timer == 100 * 60 + 30)
-		Mix_PlayChannel(3, announceRound[l - 1], 0);
-	drawGlyph(buffer, 0, 1600, 375, 150, 1);
+		int l = P[0]->rounds + P[1]->rounds + 1;
+		sprintf(buffer, "Round %i", l);
+		if(timer == 100 * 60 + 30)
+			Mix_PlayChannel(3, announceRound[l - 1], 0);
+		drawGlyph(buffer, 0, 1600, 375, 150, 1);
 	}
 	if(timer > 99 * 60 && timer < 99 * 60 + 31){ 
 		drawGlyph("FIGHT", 0, 1600, 375, 150, 1);
