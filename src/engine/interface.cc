@@ -388,9 +388,20 @@ void interface::resolve()
 		}
 		for(unsigned int i = 0; i < P.size(); i++){
 			if(P[i]->record){
+				int temp;
+				if(P[i]->facing == -1){
+					temp = currentFrame[i].axis[3];
+					currentFrame[i].axis[3] = currentFrame[i].axis[2];
+					currentFrame[i].axis[2] = temp;
+				}
 				currentFrame[i].pos[5] = 0;
 				currentFrame[i].neg[5] = 0;
 				P[i]->record->command[0].push_back(currentFrame[i]);
+				if(P[i]->facing == -1){
+					temp = currentFrame[i].axis[3];
+					currentFrame[i].axis[3] = currentFrame[i].axis[2];
+					currentFrame[i].axis[2] = temp;
+				}
 			}
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
