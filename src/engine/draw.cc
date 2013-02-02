@@ -21,6 +21,7 @@ void interface::draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPushMatrix();
 		glScalef(scalingFactor, scalingFactor, 0.0f);
+		glViewport(0, 0, screenWidth*scalingFactor, screenHeight*scalingFactor);
 		if(!select[0] || !select[1]) drawCSelect();
 		else drawGame();
 		if(rMenu != 0) drawRematchMenu();
@@ -476,19 +477,22 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 			sf = (float)height / (float)h;
 			width = w * sf;
-			glBegin(GL_QUADS);
-			glTexCoord2i(0, 0);
-			glVertex3f((x + padding), y, 0.f);
+			glPushMatrix();
+				glTranslatef(x + padding, y, 0.f);
+				glBegin(GL_QUADS);
+				glTexCoord2i(0, 0);
+				glVertex3f(0, 0, 0.f);
 
-			glTexCoord2i(1, 0);
-			glVertex3f((x + padding) + width, y, 0.f);
+				glTexCoord2i(1, 0);
+				glVertex3f(width, 0, 0.f);
 
-			glTexCoord2i(1, 1);
-			glVertex3f((x + padding) + width, y + height, 0.f);
+				glTexCoord2i(1, 1);
+				glVertex3f(width, height, 0.f);
 
-			glTexCoord2i(0, 1);
-			glVertex3f((x + padding), y + height, 0.f);
-			glEnd();
+				glTexCoord2i(0, 1);
+				glVertex3f(0, height, 0.f);
+				glEnd();
+			glPopMatrix();
 			x += (float)width;
 		}
 	}
