@@ -616,13 +616,6 @@ void interface::checkWin()
 			if(P[0]->rounds < numRounds - 1 || continuous) P[0]->rounds++;
 			if(P[1]->rounds < numRounds - 1 || continuous) P[1]->rounds++;
 		}
-		for(player *i:P){
-			if(i->record){
-				i->record->write(i->pick()->name);
-				delete i->record;
-				i->record = NULL;
-			}
-		}
 	}
 }
 
@@ -640,9 +633,9 @@ void gameInstance::genInput()
 	} else {
 		if(!pauseEnabled){
 			for(unsigned int i = 0; i < P.size(); i++){
-				if(P[i]->m){
-					if(!P[i]->m->genEvent(0, P[i]->iterator, currentFrame[i])){
-						P[i]->m = NULL;
+				if(P[i]->currentMacro){
+					if(!P[i]->currentMacro->genEvent(0, P[i]->iterator, currentFrame[i])){
+						P[i]->currentMacro = NULL;
 					} else {
 						if(P[i]->facing == -1){
 							bool s = currentFrame[i].axis[2];
@@ -679,6 +672,7 @@ void interface::processInput(SDL_Event &event)
 void interface::readInput()
 {
 	std::vector<SDL_Event> events;
+	int eatenEvent[P.size()];
 	SDL_Event event;
 	for(int i = 0; i < 20; i++){
 		if(SDL_PollEvent(&event)){
@@ -701,7 +695,7 @@ void interface::readInput()
 			}
 			if(i->search){
 				for(unsigned int j = 0; j < events.size(); j++){
-					if(i->m = i->patternMatch(abs(i->tap(events[j])))){
+					if(i->currentMacro = i->patternMatch(abs(i->tap(events[j])))){
 						j = events.size();
 						i->search = false;
 						i->iterator = 0;
@@ -716,7 +710,7 @@ void interface::readInput()
 	genInput();
 	for(SDL_Event i:events){
 		for(unsigned int j = 0; j < p.size(); j++){
-			p[j]->readEvent(i, currentFrame[j]);
+			if(!p[j]->currentMacro) p[j]->readEvent(i, currentFrame[j]);
 		}
 	}
 }

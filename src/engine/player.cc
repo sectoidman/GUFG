@@ -83,7 +83,7 @@ void player::init()
 	inputName.push_back("E");
 	inputName.push_back("Start");
 
-	m = NULL;
+	currentMacro = NULL;
 	record = NULL;
 	v = NULL;
 	rounds = 0;
@@ -92,9 +92,16 @@ void player::init()
 
 void player::roundInit()
 {
+	char buffer[200];
 	instance::init();
 	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
+	if(record){
+		sprintf(buffer, "%s.sh", pick()->name);
+		record->write(buffer);
+		delete record;
+		record = NULL;
+	}
 	elasticX = 0;
 	elasticY = 0;
 	blockType = 0;
@@ -277,6 +284,7 @@ void controller::writeConfig(int ID)
 void player::characterSelect(int i)
 {
 	v = NULL;
+	macro.clear();
 	switch(i){
 	case 1:
 		v = new red;
@@ -705,12 +713,12 @@ void player::macroCheck(SDL_Event &event)
 	char buffer[200];
 	int effect = tap(event);
 	if(effect > 0){
-		m = NULL;
+		currentMacro = NULL;
 		if(effect & 512) search = true;
 	} else if (effect < 0) {
 		if(abs(effect) & 512){
 			search = false;
-			if(!m){
+			if(!currentMacro){
 				if(!record){
 					record = new script();
 					record->init(1);

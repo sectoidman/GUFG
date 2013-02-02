@@ -25,7 +25,7 @@ public:
 	std::vector<script*> macro;
 	std::vector<int> pattern;
 	script * patternMatch(int);
-	script * m;
+	script * currentMacro;
 	int iterator;
 };
 #endif
