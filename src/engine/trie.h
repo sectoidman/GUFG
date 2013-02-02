@@ -29,6 +29,7 @@ public:
 	actionTrie * insert(int);
 	actionTrie * insert(int, action*);
 	void insert(action *, int);
+	void insert(action *, char*);
 	unsigned int patternMatch(int[], bool[]);
 	void patternSet(char*);
 private:

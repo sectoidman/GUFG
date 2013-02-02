@@ -4,16 +4,13 @@
  *Under the MIT OSI license
  *For detailed licensing information, see the COPYING file in this directory.
  *This file runs a loop of everything that takes place in the GUFG engine. 
- 
  **/
-
 #include <chrono>
 #include "engine/interface.h"
 #include <SDL/SDL_opengl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <assert.h>
-
 int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
