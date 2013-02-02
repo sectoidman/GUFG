@@ -22,7 +22,6 @@ public:
 	virtual void loadMisc();
 	virtual bool screenInit();
 	virtual bool screenInit(int, int);
-	void readInput();
 	virtual void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	virtual void initialConfig(int);
 	virtual void unitCollision(instance*, instance*);
@@ -47,6 +46,7 @@ class interface : public gameInstance{
 public:
 	interface();
 	~interface();
+	void readInput();
 	void loadMisc();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();

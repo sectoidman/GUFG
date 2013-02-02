@@ -616,6 +616,13 @@ void interface::checkWin()
 			if(P[0]->rounds < numRounds - 1 || continuous) P[0]->rounds++;
 			if(P[1]->rounds < numRounds - 1 || continuous) P[1]->rounds++;
 		}
+		for(player *i:P){
+			if(i->record){
+				i->record->write(i->pick()->name);
+				delete i->record;
+				i->record = NULL;
+			}
+		}
 	}
 }
 
@@ -633,10 +640,17 @@ void gameInstance::genInput()
 	} else {
 		if(!pauseEnabled){
 			for(unsigned int i = 0; i < P.size(); i++){
-				if(P[i]->m){ 
+				if(P[i]->m){
 					if(!P[i]->m->genEvent(0, P[i]->iterator, currentFrame[i])){
 						P[i]->m = NULL;
-					} else P[i]->iterator++;
+					} else {
+						if(P[i]->facing == -1){
+							bool s = currentFrame[i].axis[2];
+							currentFrame[i].axis[2] = currentFrame[i].axis[3];
+							currentFrame[i].axis[3] = s;
+						}
+						P[i]->iterator++;
+					}
 				}
 			}
 		}
@@ -662,7 +676,7 @@ void interface::processInput(SDL_Event &event)
 	gameInstance::processInput(event);
 }
 
-void gameInstance::readInput()
+void interface::readInput()
 {
 	std::vector<SDL_Event> events;
 	SDL_Event event;
@@ -672,21 +686,31 @@ void gameInstance::readInput()
 			processInput(event);
 		}
 	}
-	for(player* i:P){
-		bool search = false;
-		for(unsigned int j = 0; j < events.size(); j++){
-			if(!oldReplay){
-				bool r = false;
-				if(i->record) r = true;
-				if(i->macroCheck(events[j])) search = true;
-				if(i->record && !r) j = events.size();
+	if(select[0] && select[1]){
+		for(player* i:P){
+			for(unsigned int j = 0; j < events.size(); j++){
+				if(!oldReplay){
+					bool r = false;
+					if(i->record) r = true;
+					i->macroCheck(events[j]);
+					if(i->record){
+						if(!r) j = events.size();
+						i->search = false;
+					}
+				}
+			}
+			if(i->search){
+				for(unsigned int j = 0; j < events.size(); j++){
+					if(i->m = i->patternMatch(abs(i->tap(events[j])))){
+						j = events.size();
+						i->search = false;
+						i->iterator = 0;
+					}
+				}
 			}
 		}
-		if(search){
-			for(unsigned int j = 0; j < events.size(); j++){
-				if(i->m = i->patternMatch(abs(i->tap(events[j]))))
-					j = events.size();
-			}
+		for(int i = 0; i < P.size(); i++){
+			for(int j:currentFrame[i].axis) j = 0;
 		}
 	}
 	genInput();

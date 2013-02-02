@@ -105,6 +105,7 @@ void player::roundInit()
 	throwInvuln = 0;
 	particleLife = 0;
 	particleType = 0;
+	search = 0;
 	if(ID == 1){ 
 		facing = 1;
 		posX = 1400;
@@ -699,27 +700,29 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
-bool player::macroCheck(SDL_Event &event)
+void player::macroCheck(SDL_Event &event)
 {
 	char buffer[200];
 	int effect = tap(event);
 	if(effect > 0){
 		m = NULL;
-		if(effect & 512) return true;
+		if(effect & 512) search = true;
 	} else if (effect < 0) {
-		if(!m && (abs(effect) & 512)){
-			if(!record){
-				record = new script();
-				record->init(1);
-			} else {
-				sprintf(buffer, "%s.sh", v->name);
-				record->write(buffer);
-				delete record;
-				record = NULL;
+		if(abs(effect) & 512){
+			search = false;
+			if(!m){
+				if(!record){
+					record = new script();
+					record->init(1);
+				} else {
+					sprintf(buffer, "%s.sh", v->name);
+					record->write(buffer);
+					delete record;
+					record = NULL;
+				}
 			}
 		}
 	}
-	return false;
 }
 
 void controller::readEvent(SDL_Event & event, frame &t)

@@ -8,7 +8,7 @@ keySetting::keySetting()
 script * controller::patternMatch(int effect)
 {
 	for(unsigned int i = 0; i < pattern.size(); i++){
-		if(effect & pattern[i]) return macro[i];
+		if(abs(effect) & pattern[i]) return macro[i];
 	}
 	return NULL;
 }
