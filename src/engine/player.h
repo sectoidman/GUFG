@@ -81,6 +81,7 @@ public:
 	virtual void drawHitParticle();
 
 	virtual void land();
+	virtual void readScripts();
 	virtual void enforceGravity(int, int);
 	virtual void drawMeters(int);
 	virtual void roundInit();

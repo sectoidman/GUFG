@@ -97,7 +97,7 @@ void player::roundInit()
 	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
 	if(record){
-		sprintf(buffer, "%s.sh", pick()->name);
+		sprintf(buffer, "%i-%s.sh", ID, pick()->name);
 		record->write(buffer);
 		delete record;
 		record = NULL;
@@ -284,7 +284,6 @@ void controller::writeConfig(int ID)
 void player::characterSelect(int i)
 {
 	v = NULL;
-	macro.clear();
 	switch(i){
 	case 1:
 		v = new red;
@@ -296,13 +295,37 @@ void player::characterSelect(int i)
 		v = new character("White");
 		break;
 	}
-	char buffer[200];
-	sprintf(buffer, "%s.sh", v->name);
-	macro.push_back(new script(buffer));
-	if(!macro[0]->test()) macro.clear();
-	else pattern.push_back(16);
+	readScripts();
 	iterator = 0;
 	meter = pick()->generateMeter();
+}
+
+void player::readScripts()
+{
+	char buffer[200];
+	char *token;
+	int tempIterator;
+	sprintf(buffer, ".config/%src", v->name);
+	macro.clear();
+	std::ifstream read;
+	read.open(buffer);
+	if(read.fail()) return;
+	while(!read.eof()){
+		tempIterator = 0;
+		read.get(buffer, 200, '\n');
+		token = strtok(buffer, " \n");
+		if(!token) return;
+		macro.push_back(new script(token));
+		if(token = strtok(NULL, " \n")){
+			for(int i = 0; i < strlen(token); i++){
+				if(token[i] >= 'A' && token[i] <= 'E'){
+					tempIterator += 16 << (token[i] - 'A');
+				}
+			}
+		}
+		if(!macro[macro.size()-1]->test()) macro.pop_back();
+		else pattern.push_back(tempIterator);
+	}
 }
 
 void instance::updateRects()
@@ -723,7 +746,7 @@ void player::macroCheck(SDL_Event &event)
 					record = new script();
 					record->init(1);
 				} else {
-					sprintf(buffer, "%s.sh", v->name);
+					sprintf(buffer, "%i-%s.sh", ID, v->name);
 					record->write(buffer);
 					delete record;
 					record = NULL;

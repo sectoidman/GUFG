@@ -54,7 +54,6 @@ void script::load(char* filename)
 {
 	std::ifstream read;
 	read.open(filename);
-	printf("%s\n", filename);
 	if(read.fail()){
 		init(1); return;
 	}

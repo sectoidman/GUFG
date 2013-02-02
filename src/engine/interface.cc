@@ -321,11 +321,13 @@ void interface::runTimer()
 						delete replay;
 						replay = NULL;
 					}
-					for(unsigned int i = 0; i < P.size(); i++){
-						if(P[i]->record){
-							P[i]->record->write(P[i]->pick()->name);
-							delete P[i]->record;
-							P[i]->record = NULL;
+					for(player *i:P){
+						if(i->record){
+							char buffer[200];
+							sprintf(buffer, "%i-%s.sh", i->ID, i->pick()->name);
+							i->record->write(buffer);
+							delete i->record;
+							i->record = NULL;
 						}
 					}
 					if(oldReplay){
