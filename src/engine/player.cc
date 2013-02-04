@@ -295,7 +295,6 @@ void player::characterSelect(int i)
 		v = new character("White");
 		break;
 	}
-	readScripts();
 	iterator = 0;
 	meter = pick()->generateMeter();
 }
