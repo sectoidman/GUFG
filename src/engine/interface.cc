@@ -75,6 +75,7 @@ void interface::createPlayers(char* rep)
 			selection[i] = oldReplay->selection[i];
 			select[i] = 1;
 			P[i]->characterSelect(selection[i]);
+			if(scripting) P[i]->readScripts();
 		}
 		loadMatchBackground();
 	}
@@ -220,7 +221,7 @@ void interface::matchInit()
 	pMenu = 0;
 	if(!select[0] || !select[1]){
 		Mix_VolumeMusic(100);
-		Mix_PlayMusic(menuMusic,-1);
+		Mix_PlayMusic(menuMusic, -1);
 		printf("Please select a character:\n");
 	}
 	while (SDL_PollEvent(&event));
@@ -267,10 +268,9 @@ void interface::runTimer()
 	int plus;
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(select[i] == true){
-			if(things[i]->cMove != NULL)
-			{
+			if(things[i]->cMove != NULL){
 				plus = (things[i]->cMove->arbitraryPoll(31, things[i]->currentFrame));
-				if(plus != 0){ 
+				if(plus != 0){
 					timer += plus;
 					if(timer > 60*99) timer = 60*99 + 1;
 				}
@@ -436,8 +436,14 @@ void interface::resolve()
 				}
 				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
-						if((i < P.size() && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
-							things[i]->enforceAttractor(globals[j]);
+						if(i < P.size()){
+							if(globals[j]->effectCode & 1){
+								things[i]->enforceAttractor(globals[j]);
+							}
+						} else {
+							if(globals[j]->effectCode & 2){
+								things[i]->enforceAttractor(globals[j]);
+							}
 						}
 					}
 				}
@@ -1098,8 +1104,8 @@ void interface::resolveHits()
 	std::vector<int> hit(things.size());
 	std::vector<bool> connect(things.size());
 	std::vector<bool> taken(things.size());
-	std::vector<unsigned int> hitBy(things.size());
-	unsigned int h;
+	std::vector<int> hitBy(things.size());
+	int h;
 	int push[2];
 	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
@@ -1109,7 +1115,7 @@ void interface::resolveHits()
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(h = (int)things.size()-1; h >= 0; h--){
+		for(int h = (int)things.size()-1; h >= 0; h--){
 			if(h != i && !taken[h] && !connect[i]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
@@ -1142,7 +1148,7 @@ void interface::resolveHits()
 		if(taken[i]){
 			h = things[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
-			if(i < P.size() & hitBy[i] < P.size()){
+			if(i < P.size() && hitBy[i] < (int)P.size()){
 				if(things[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
