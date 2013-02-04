@@ -4,7 +4,6 @@
 #include "action.h"
 #include <assert.h>
 using namespace std;
-
 action::action() : frames(0), hits(0), name(NULL)
 {
 	name = NULL;
@@ -56,6 +55,7 @@ void action::zero()
 	armorStart = 0; armorLength = 0;
 	armorHits = 0;
 	guardStart = 0; guardLength = 0;
+	freezeFrame = -1; freezeLength = 0;
 	blockState.i = 0;
 	isProjectile = 0;
 	stats = NULL;
@@ -81,6 +81,12 @@ void action::zero()
 	onHold = NULL;
 	hittable = 0;
 	modifier = 0;
+}
+
+int action::arbitraryPoll(int q, int f)
+{
+	if(q == 2 && f == freezeFrame) return freezeLength;
+	else return 0;
 }
 
 void negNormal::zero()
@@ -456,6 +462,14 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n-");
 		guardLength = atoi(token); 
 		guardLength = guardLength - guardStart;
+		return 1;
+	}else if(!strcmp("SuperFreeze", token)){
+		token = strtok(NULL, "\t: \n-");
+		freezeFrame = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		freezeLength = atoi(token); 
+		freezeLength = freezeLength - freezeFrame;
 		return 1;
 	} else if (!strcmp("Armor", token)) {
 		token = strtok(NULL, "\t: \n-");

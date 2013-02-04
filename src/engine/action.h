@@ -57,7 +57,7 @@ public:
 	virtual void generate(const char*, const char*) {}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
-	virtual int arbitraryPoll(int q, int f) {return 0;}
+	virtual int arbitraryPoll(int q, int f);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
 	virtual void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
@@ -89,6 +89,7 @@ public:
 	int armorHits;
 	int armorCounter;
 	int guardStart; int guardLength;
+	int freezeFrame; int freezeLength;
 
 	//Properties of a hit. These will only exist for actions that hit.
 	
@@ -255,23 +256,6 @@ class airLooping : public airMove, public looping {
 public:
 	airLooping() {}
 	airLooping(const char*);
-};
-
-class super : public special {
-public:
-	super() {}
-	super(const char*);
-	virtual int arbitraryPoll(int, int);
-	virtual bool setParameter(char*);
-	int freezeFrame;
-	int freezeLength;
-};
-
-class airSuper : public airMove, public super {
-public:
-	airSuper() {}
-	airSuper(const char* n) {build(n); }
-	virtual bool setParameter(char*);
 };
 
 class mash : virtual public action {

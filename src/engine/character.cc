@@ -340,12 +340,6 @@ action * avatar::createMove(char * fullName)
 		if(type[1] == 'j') m = new airLooping(actionName);
 		else m = new looping(actionName);
 		break;
-	case '!':
-//		if(type[1] == 'j') m = new airSuper(actionName);
-//		else 
-		if(type[1] == 'j') m = new airSuper(actionName);
-		else m = new super(actionName);
-		break;
 	case '^':
 		m = new releaseCheck(actionName);
 		break;

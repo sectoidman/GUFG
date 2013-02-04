@@ -83,7 +83,7 @@ void redCancel::execute(action * last, int *& meter, int &f, int &c, int &h)
 int redSuper::arbitraryPoll(int q, int f)
 {
 	if(q == 31) return 11;
-	else return super::arbitraryPoll(q, f);
+	else return action::arbitraryPoll(q, f);
 }
 
 redCancel::~redCancel() {}
