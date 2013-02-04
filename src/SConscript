@@ -8,8 +8,8 @@ bmpout_src = "bmp.cc"
 gufg_src = "game.cc"
 
 #Common flags and libraries
-flags = ["-O2", "-g", "-std=c++11", "-Wno-overloaded-virtual",
-         "-Wno-format", "-Wno-format-contains-nul", "-Wctor-dtor-privacy"]
+flags = ["-O2", "-g", "-std=c++11",
+         "-Wall", "-Wno-parentheses", "-Wno-unused-but-set-variable"]
 libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'glut']
 
 #Linux-specific environment, code objects, and programs
