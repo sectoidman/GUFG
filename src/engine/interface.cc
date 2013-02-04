@@ -75,6 +75,7 @@ void interface::createPlayers(char* rep)
 			selection[i] = oldReplay->selection[i];
 			select[i] = 1;
 			P[i]->characterSelect(selection[i]);
+			if(scripting) P[i]->readScripts();
 		}
 		loadMatchBackground();
 	}
