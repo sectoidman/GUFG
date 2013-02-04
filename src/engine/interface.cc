@@ -22,6 +22,7 @@ interface::interface()
 	shortcut = false;
 	continuous = false;
 	analytics = false;
+	scripting = false;
 	pauseEnabled = false;
 	single = false;
 	std::ifstream read;
@@ -694,24 +695,26 @@ void interface::readInput()
 		}
 	}
 	if(select[0] && select[1]){
-		for(player* i:P){
-			for(unsigned int j = 0; j < events.size(); j++){
-				if(!oldReplay){
-					bool r = false;
-					if(i->record) r = true;
-					i->macroCheck(events[j]);
-					if(i->record){
-						if(!r) j = events.size();
-						i->search = false;
+		if(scripting){
+			for(player* i:P){
+				for(unsigned int j = 0; j < events.size(); j++){
+					if(!oldReplay){
+						bool r = false;
+						if(i->record) r = true;
+						i->macroCheck(events[j]);
+						if(i->record){
+							if(!r) j = events.size();
+							i->search = false;
+						}
 					}
 				}
-			}
-			if(i->search){
-				for(unsigned int j = 0; j < events.size(); j++){
-					if(i->currentMacro = i->patternMatch(abs(i->tap(events[j])))){
-						j = events.size();
-						i->search = false;
-						i->iterator = 0;
+				if(i->search){
+					for(unsigned int j = 0; j < events.size(); j++){
+						if(i->currentMacro = i->patternMatch(abs(i->tap(events[j])))){
+							j = events.size();
+							i->search = false;
+							i->iterator = 0;
+						}
 					}
 				}
 			}
@@ -720,7 +723,7 @@ void interface::readInput()
 			for(int j:currentFrame[i].axis) j = 0;
 		}
 	}
-	genInput();
+	if(scripting || oldReplay) genInput();
 	for(SDL_Event i:events){
 		for(unsigned int j = 0; j < p.size(); j++){
 			if(!p[j]->currentMacro) p[j]->readEvent(i, currentFrame[j]);
@@ -823,8 +826,8 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 6) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 6;
+	if(menu[ID] > 7) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 7;
 	for(unsigned int i = 0; i < currentFrame[ID].pos.size()-1; i++){
 		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
 			switch(menu[ID]){
@@ -841,18 +844,28 @@ void interface::mainMenu(int ID)
 				menu[ID] = 0;
 				break;
 			case 4:
-				if(shortcut) 
+				if(shortcut)
 					shortcut = false;
-				else 
+				else
 					shortcut = true;
 				break;
 			case 5:
-				if(pauseEnabled)
+				if(scripting)
+					scripting = false;
+				else{
 					pauseEnabled = false;
-				else
-					pauseEnabled = true;
+					scripting = true;
+				}
 				break;
 			case 6:
+				if(pauseEnabled)
+					pauseEnabled = false;
+				else{
+					scripting = false;
+					pauseEnabled = true;
+				}
+				break;
+			case 7:
 				gameover = 1;
 				break;
 			}
