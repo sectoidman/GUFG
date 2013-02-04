@@ -463,7 +463,7 @@ void player::enforceFloor(int floor)
 			elasticY = false;
 		} else if (slide) {
 			deltaY = 0;
-			if(cMove == pick()->untech){ 
+			if(cMove == pick()->untech || cMove == pick()->die){ 
 				if(deltaX < 0) deltaX++;
 				else if(deltaX > 0) deltaX--;
 				aerial = 1;
@@ -497,13 +497,14 @@ void player::checkCorners(int left, int right)
 	int rOffset = posX - (collision.x + collision.w);
 	if(collision.x <= left){
 		if(elasticX){
+			lCorner = 0;
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
 		}
 		if(collision.x <= 50){
 			if(facing == 1) lCorner = 1;
 			if (stick) {
-				if(cMove == pick()->untech){
+				if(cMove == pick()->untech || cMove == pick()->die){
 					deltaX = 0;
 					deltaY = 0;
 					momentumComplexity = 0;
@@ -515,13 +516,14 @@ void player::checkCorners(int left, int right)
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(elasticX){
+			rCorner = 0;
 			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
 		}
 		if(collision.x + collision.w >= 3150){ 
 			if(facing == -1) rCorner = 1;
 			if (stick) {
-				if(cMove == pick()->untech){
+				if(cMove == pick()->untech || cMove == pick()->die){
 					deltaX = 0;
 					deltaY = 0;
 					momentumComplexity = 0;

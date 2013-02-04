@@ -51,6 +51,7 @@ public:
 	//the action we're cancelling out of in the usual case, and, well
 	//Do other stuff sometimes.
 	virtual void execute(action *, int *&, int&, int&, int&);
+	virtual void init(int) {}
 	virtual void playSound(int);
 	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*) {}
@@ -156,8 +157,8 @@ public:
 	int * regComplexity;
 	int * deltaComplexity;
 
-	int *width, *height;
-	GLuint *sprite;
+	std::vector<int> width, height;
+	std::vector<GLuint> sprite;
 
 	bool isProjectile:1;
 	bool modifier:1;
