@@ -4,9 +4,7 @@
  *Under the MIT OSI license
  *For detailed licensing information, see the COPYING file in this directory.
  *This file runs a loop of everything that takes place in the GUFG engine. 
- 
  **/
-
 #include <chrono>
 #include "engine/interface.h"
 #include <SDL/SDL_opengl.h>
@@ -14,7 +12,7 @@
 #include <unistd.h>
 #include <assert.h>
 
-#undef main
+#undef main //Stupid windows. This may not actually fix anything.
 int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
@@ -32,7 +30,6 @@ int main(int argc, char* argv[])
 	/*As long as the game doesn't detect a request to quit, it loops over a few basic resolutions of game events*/
 	while (!game.gameover){
 		frameStart = std::chrono::high_resolution_clock::now();
-		game.genInput();
 		game.readInput();
 		game.resolve();
 		game.draw();

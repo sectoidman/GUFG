@@ -83,7 +83,7 @@ void player::init()
 	inputName.push_back("E");
 	inputName.push_back("Start");
 
-	m = NULL;
+	currentMacro = NULL;
 	record = NULL;
 	v = NULL;
 	rounds = 0;
@@ -92,9 +92,16 @@ void player::init()
 
 void player::roundInit()
 {
+	char buffer[200];
 	instance::init();
 	pick()->neutralize(cMove, aerial, meter);
 	if(v) pick()->init(meter);
+	if(record){
+		sprintf(buffer, "%i-%s.sh", ID, pick()->name);
+		record->write(buffer);
+		delete record;
+		record = NULL;
+	}
 	elasticX = 0;
 	elasticY = 0;
 	blockType = 0;
@@ -105,6 +112,7 @@ void player::roundInit()
 	throwInvuln = 0;
 	particleLife = 0;
 	particleType = 0;
+	search = 0;
 	if(ID == 1){ 
 		facing = 1;
 		posX = 1400;
@@ -287,7 +295,36 @@ void player::characterSelect(int i)
 		v = new character("White");
 		break;
 	}
+	iterator = 0;
 	meter = pick()->generateMeter();
+}
+
+void player::readScripts()
+{
+	char buffer[200];
+	char *token;
+	int tempIterator;
+	sprintf(buffer, ".config/%src", v->name);
+	macro.clear();
+	std::ifstream read;
+	read.open(buffer);
+	if(read.fail()) return;
+	while(!read.eof()){
+		tempIterator = 0;
+		read.get(buffer, 200, '\n');
+		token = strtok(buffer, " \n");
+		if(!token) return;
+		macro.push_back(new script(token));
+		if(token = strtok(NULL, " \n")){
+			for(unsigned int i = 0; i < strlen(token); i++){
+				if(token[i] >= 'A' && token[i] <= 'E'){
+					tempIterator += 16 << (token[i] - 'A');
+				}
+			}
+		}
+		if(!macro[macro.size()-1]->test()) macro.pop_back();
+		else pattern.push_back(tempIterator);
+	}
 }
 
 void instance::updateRects()
@@ -425,7 +462,7 @@ void player::enforceFloor(int floor)
 			elasticY = false;
 		} else if (slide) {
 			deltaY = 0;
-			if(cMove == pick()->untech){ 
+			if(cMove == pick()->untech || cMove == pick()->die){ 
 				if(deltaX < 0) deltaX++;
 				else if(deltaX > 0) deltaX--;
 				aerial = 1;
@@ -459,13 +496,14 @@ void player::checkCorners(int left, int right)
 	int rOffset = posX - (collision.x + collision.w);
 	if(collision.x <= left){
 		if(elasticX){
+			lCorner = 0;
 			if(deltaX < 0) deltaX = -deltaX;
 			elasticX = false;
 		}
 		if(collision.x <= 50){
 			if(facing == 1) lCorner = 1;
 			if (stick) {
-				if(cMove == pick()->untech){
+				if(cMove == pick()->untech || cMove == pick()->die){
 					deltaX = 0;
 					deltaY = 0;
 					momentumComplexity = 0;
@@ -477,13 +515,14 @@ void player::checkCorners(int left, int right)
 	} else lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(elasticX){
+			rCorner = 0;
 			if(deltaX > 0) deltaX = -deltaX; 
 			elasticX = false;
 		}
 		if(collision.x + collision.w >= 3150){ 
 			if(facing == -1) rCorner = 1;
 			if (stick) {
-				if(cMove == pick()->untech){
+				if(cMove == pick()->untech || cMove == pick()->die){
 					deltaX = 0;
 					deltaY = 0;
 					momentumComplexity = 0;
@@ -693,32 +732,27 @@ int instance::middle()
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
-void player::genInput(frame t)
+void player::macroCheck(SDL_Event &event)
 {
 	char buffer[200];
-	for(int i:t.pos){
-		if(i == 1){
-			if(m) m = NULL;
-		}
-	}
-	for(bool i:t.axis){
-		if(i == 1){
-			if(m) m = NULL;
-		}
-	}
-	if(t.pos[5] > 0){
-		m = patternMatch(t.pos);
-		if(m) iterator = 0;
-	}
-	if(!m && t.neg[5]){
-		if(!record){
-			record = new script();
-			record->init(1);
-		} else {
-			sprintf(buffer, "%s.sh", v->name);
-			record->write(buffer);
-			delete record;
-			record = NULL;
+	int effect = tap(event);
+	if(effect > 0){
+		currentMacro = NULL;
+		if(effect & 512) search = true;
+	} else if (effect < 0) {
+		if(abs(effect) & 512){
+			search = false;
+			if(!currentMacro){
+				if(!record){
+					record = new script();
+					record->init(1);
+				} else {
+					sprintf(buffer, "%i-%s.sh", ID, v->name);
+					record->write(buffer);
+					delete record;
+					record = NULL;
+				}
+			}
 		}
 	}
 }
@@ -880,3 +914,4 @@ instance::~instance()
 }
 
 player::~player(){}
+

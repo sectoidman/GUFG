@@ -27,7 +27,7 @@ public:
 	virtual void unitCollision(instance*, instance*);
 	virtual void genInput();
 	script *oldReplay;
-	int replayIterator;
+	unsigned int replayIterator;
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;
@@ -36,6 +36,8 @@ public:
 //Meta-interface stuff. Gameover state, screen size, etc.
 	int screenHeight, screenWidth, floor, wall;
 	int freeze;
+	bool pauseEnabled:1;
+	bool scripting:1;
 	float scalingFactor, sf;
 	bool initd:1;
 	GLuint glyph[91];
@@ -45,6 +47,7 @@ class interface : public gameInstance{
 public:
 	interface();
 	~interface();
+	void readInput();
 	void loadMisc();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
@@ -96,7 +99,6 @@ public:
 	bool continuous:1;
 	bool single:1;
 	bool analytics:1;
-	bool pauseEnabled:1;
 	int combo[2];
 	int damage[2];
 	bool illegit[2];

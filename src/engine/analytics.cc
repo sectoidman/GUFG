@@ -5,7 +5,7 @@
 #include <ctime>
 void script::init(int players)
 {
-	for(unsigned int i = 0; i < players; i++){
+	for(int i = 0; i < players; i++){
 		selection.push_back(-1);
 		std::vector<frame> tvec;
 		command.push_back(tvec);
@@ -21,13 +21,28 @@ void script::init(std::vector<int> s)
 	}
 }
 
-void script::genEvent(int p, int f, frame &t)
+bool script::test()
 {
+	frame l;
+	for(int i = 0; i < 4; i++)
+		l.axis.push_back(0);
+	for(int i = 4; i < 6; i++){
+		l.pos.push_back(0);
+		l.neg.push_back(0);
+	}
+	return genEvent(0, 0, l);
+}
+
+bool script::genEvent(int p, int f, frame &t)
+{
+	if(command.empty() || (unsigned int)p >= command.size()) return 0;
+	if(command[p].empty() || (unsigned int)f >= command[p].size()) return 0;
 	for(int i = 0; i < 4; i++) t.axis[i] = command[p][f].axis[i];
-	for(int i = 0; i < command[p][f].pos.size(); i++){
-		t.pos[i] = command[p][f].pos[i];
+	for(unsigned int i = 0; i < command[p][f].pos.size(); i++){
+		t.pos[i] = !(!(command[p][f].pos[i]));
 		t.neg[i] = command[p][f].neg[i];
 	}
+	return 1;
 }
 
 script::script(char* filename)
@@ -111,6 +126,8 @@ void script::write(char * name)
 	scribe.close();
 }
 
+script::~script(){}
+
 chart::chart(int size)
 {
 	std::vector<int> row;
@@ -135,9 +152,7 @@ void chart::recordWin(int a, int b)
 void chart::init()
 {
 	std::ifstream read;
-	int check;
-	char buffer[500];
-	char* token;
+	unsigned int check;
 	bool fresh = false;
 	read.open(".data/.charts.csv");
 	if(read.fail()) fresh = true;
@@ -166,7 +181,7 @@ void chart::write()
 	wr << "\n";
 	for(unsigned int i = 0; i < wins.size(); i++){
 		wr << i;
-		for(int j = 0; j < wins.size(); j++){
+		for(unsigned int j = 0; j < wins.size(); j++){
 			wr << ",";
 			if(i == j) wr << "-";
 			else wr << wins[i][j];

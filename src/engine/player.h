@@ -81,10 +81,11 @@ public:
 	virtual void drawHitParticle();
 
 	virtual void land();
+	virtual void readScripts();
 	virtual void enforceGravity(int, int);
 	virtual void drawMeters(int);
 	virtual void roundInit();
-	virtual void genInput(frame);
+	virtual void macroCheck(SDL_Event&);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 //	virtual void connect(int, hStat&);
 	virtual bool CHState();
@@ -110,6 +111,7 @@ public:
 
 	virtual void init();
 	int wins;
+	bool search:1;
 	script * record;
 private:
 	character * v;

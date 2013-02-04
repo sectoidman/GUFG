@@ -156,20 +156,17 @@ void action::loadMisc(const char *n)
 {
 	char fname[40];
 	SDL_Surface *temp;
-	width = new int[frames];
-	height = new int[frames];
-	sprite = new GLuint[frames];
 	for(int i = 0; i < frames; i++){
 		sprintf(fname, "content/characters/%s#%i.png", n, i);
 		temp = aux::load_image(fname);
 		if(!temp){
-			width[i] = 0;
-			height[i] = 0;
-			sprite[i] = 0;
+			width.push_back(0);
+			height.push_back(0);
+			sprite.push_back(0);
 		} else {
-			width[i] = temp->w;
-			height[i] = temp->h;
-			sprite[i] = aux::surface_to_texture(temp);
+			width.push_back(temp->w);
+			height.push_back(temp->h);
+			sprite.push_back(aux::surface_to_texture(temp));
 		}
 	}
 	sprintf(fname, "content/characters/%s.ogg", n);

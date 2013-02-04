@@ -21,6 +21,7 @@ void interface::draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPushMatrix();
 		glScalef(scalingFactor, scalingFactor, 0.0f);
+		glViewport(0, 0, screenWidth*scalingFactor, screenHeight*scalingFactor);
 		if(!select[0] || !select[1]) drawCSelect();
 		else drawGame();
 		if(rMenu != 0) drawRematchMenu();
@@ -82,21 +83,25 @@ void interface::drawMainMenu(int ID)
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
 	if(analytics) sprintf(buffer, "Replay");
 	else sprintf(buffer, "No Replay");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 330, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 310, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Key Config", 20 + 1260*ID, 300, 370, 40, 2*ID);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 350, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 410, 40, 2*ID);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 390, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
 	if(shortcut) sprintf(buffer, "Rematch");
 	else sprintf(buffer, "Reselect");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 430, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 5)*0.4);
+	if(scripting) sprintf(buffer, "Scripts on");
+	else sprintf(buffer, "Scripts off");
+	drawGlyph(buffer, 20 + 1260*ID, 300, 470, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 6)*0.4);
 	if(pauseEnabled) sprintf(buffer, "Pause on");
 	else sprintf(buffer, "Pause off");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 490, 40, 2*ID);
-	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 6)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 530, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 510, 40, 2*ID);
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 7)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 550, 40, 2*ID);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
@@ -104,7 +109,6 @@ void interface::drawMainMenu(int ID)
 void interface::drawConfigMenu(int ID)
 {
 	int i;
-	int macros;
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 	char buffer[200];
 	glRectf(0.0f + 800.0 * ID, 0.0, (screenWidth/2*ID) + (GLfloat)screenWidth/2.0, (GLfloat)screenHeight);
@@ -200,6 +204,11 @@ void interface::drawHUD()
 	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	for(int i = 0; i < 2; i++){
 		drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
+		if(P[i]->record){
+			glColor4f(0.5, 1.0, 1.0, 0.7);
+			drawGlyph("Recording", 100+800*i, 600, 200, 55, 0+2*i);
+			glColor4f(1.0, 1.0, 1.0, 1.0);
+		}
 		if(combo[i] > 1){
 			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0);
 			sprintf(buffer, "%i hits", combo[i]);
@@ -211,11 +220,11 @@ void interface::drawHUD()
 	}
 
 	if(timer > 100 * 60 && timer < 100 * 60 + 31){ 
-	int l = P[0]->rounds + P[1]->rounds + 1;
-	sprintf(buffer, "Round %i", l);
-	if(timer == 100 * 60 + 30)
-		Mix_PlayChannel(3, announceRound[l - 1], 0);
-	drawGlyph(buffer, 0, 1600, 375, 150, 1);
+		int l = P[0]->rounds + P[1]->rounds + 1;
+		sprintf(buffer, "Round %i", l);
+		if(timer == 100 * 60 + 30)
+			Mix_PlayChannel(3, announceRound[l - 1], 0);
+		drawGlyph(buffer, 0, 1600, 375, 150, 1);
 	}
 	if(timer > 99 * 60 && timer < 99 * 60 + 31){ 
 		drawGlyph("FIGHT", 0, 1600, 375, 150, 1);
@@ -471,19 +480,22 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 			sf = (float)height / (float)h;
 			width = w * sf;
-			glBegin(GL_QUADS);
-			glTexCoord2i(0, 0);
-			glVertex3f((x + padding), y, 0.f);
+			glPushMatrix();
+				glTranslatef(x + padding, y, 0.f);
+				glBegin(GL_QUADS);
+				glTexCoord2i(0, 0);
+				glVertex3f(0, 0, 0.f);
 
-			glTexCoord2i(1, 0);
-			glVertex3f((x + padding) + width, y, 0.f);
+				glTexCoord2i(1, 0);
+				glVertex3f(width, 0, 0.f);
 
-			glTexCoord2i(1, 1);
-			glVertex3f((x + padding) + width, y + height, 0.f);
+				glTexCoord2i(1, 1);
+				glVertex3f(width, height, 0.f);
 
-			glTexCoord2i(0, 1);
-			glVertex3f((x + padding), y + height, 0.f);
-			glEnd();
+				glTexCoord2i(0, 1);
+				glVertex3f(0, height, 0.f);
+				glEnd();
+			glPopMatrix();
 			x += (float)width;
 		}
 	}

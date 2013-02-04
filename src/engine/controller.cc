@@ -5,16 +5,10 @@ keySetting::keySetting()
 	effect = 0;
 }
 
-script * controller::patternMatch(std::vector<int> pos)
+script * controller::patternMatch(int effect)
 {
-	for(unsigned int j = 0; j < macro.size(); j++){
-		bool fail = false;
-		for(int i = 0; i < 5; i++){
-			if(((pos[i] == 1) << i) & pattern[j]){
-				fail = true;
-			}
-		}
-		if(!fail) return macro[j];
+	for(unsigned int i = 0; i < pattern.size(); i++){
+		if(abs(effect) & pattern[i]) return macro[i];
 	}
 	return NULL;
 }
@@ -26,7 +20,7 @@ void controller::setKey(int effect)
 	while(SDL_PollEvent(&temp));
 	while (!configFlag){
 		if (SDL_PollEvent(&temp)) {
-			for(int i = 0; i < input.size(); i++){
+			for(unsigned int i = 0; i < input.size(); i++){
 				if(input[i]->effect == effect) input.erase(input.begin()+i);
 			}
 			configFlag = setKey(effect, temp);
@@ -160,32 +154,38 @@ void controller::swapKey(int effect, SDL_Event temp)
 
 int controller::tap(SDL_Event temp)
 {
+	int ret = 0;
 	for(unsigned int i = 0; i < input.size(); i++){
 		switch(temp.type){
 		case SDL_KEYUP:
 			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
-				return -input[i]->effect;
+				ret = -(input[i]->effect);
+			break;
 		case SDL_KEYDOWN:
 			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
-				return input[i]->effect;
+				ret = input[i]->effect;
+			break;
 		case SDL_JOYBUTTONUP:
 			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 			   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-				return -input[i]->effect;
+				ret = -(input[i]->effect);
+			break;
 		case SDL_JOYBUTTONDOWN:
 			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 			   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-				return input[i]->effect;
+				ret = input[i]->effect;
+			break;
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
 			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
 			   input[i]->trigger.jaxis.value == temp.jaxis.value)
-				return input[i]->effect;
+				ret = input[i]->effect;
 			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
 			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
 			   input[i]->trigger.jaxis.value == 0)
-				return -input[i]->effect;
+				ret = -input[i]->effect;
+			break;
 		}
 	}
-	return 0;
+	return ret;
 }

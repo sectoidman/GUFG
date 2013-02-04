@@ -21,6 +21,31 @@ actionTrie::actionTrie(action * a)
 	fish.push_back(a);
 }
 
+void actionTrie::insert(action * b, char * p)
+{
+	char component[2];
+	actionTrie * t = this;
+	int q, pattern = 0;
+	for(int i = strlen(p)-1; i > 0; i--){
+		switch(p[i]){
+		case 'A':
+		case 'B':
+		case 'C':
+		case 'D':
+		case 'E':
+			pattern += 1 << (p[i] - 'A');
+			break;
+		default:
+			sprintf(component, "%c", p[i]);
+			q = atoi(component);
+			if(q > 10) q = q % 10;
+			t = t->insert(q);
+			break;
+		}
+	}
+	t->insert(b, pattern);
+}
+
 void actionTrie::insert(action * b, int p)
 {
 	fish.push_back(b);
@@ -61,8 +86,7 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, 
 	actionTrie * test = NULL;
 	action * result = NULL;
 	int j;
-	for(j = i; j < 30; j++){
-		if(inputBuffer[j] < 10) test = child[inputBuffer[j]];
+	for(j = i; j < 30; j++){		if(inputBuffer[j] < 10) test = child[inputBuffer[j]];
 		if(test != NULL){
 			if (first < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, prox, cFlag, hFlag);
 			else result = test->actionHook(inputBuffer, j, first, r, pos, neg, c, prox, cFlag, hFlag);

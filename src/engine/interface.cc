@@ -22,6 +22,7 @@ interface::interface()
 	shortcut = false;
 	continuous = false;
 	analytics = false;
+	scripting = false;
 	pauseEnabled = false;
 	single = false;
 	std::ifstream read;
@@ -74,6 +75,7 @@ void interface::createPlayers(char* rep)
 			selection[i] = oldReplay->selection[i];
 			select[i] = 1;
 			P[i]->characterSelect(selection[i]);
+			if(scripting) P[i]->readScripts();
 		}
 		loadMatchBackground();
 	}
@@ -219,7 +221,7 @@ void interface::matchInit()
 	pMenu = 0;
 	if(!select[0] || !select[1]){
 		Mix_VolumeMusic(100);
-		Mix_PlayMusic(menuMusic,-1);
+		Mix_PlayMusic(menuMusic, -1);
 		printf("Please select a character:\n");
 	}
 	while (SDL_PollEvent(&event));
@@ -264,12 +266,11 @@ void interface::runTimer()
 		Mix_PlayMusic(matchMusic,-1);
 	}
 	int plus;
-	for(int i = 0; i < P.size(); i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		if(select[i] == true){
-			if(things[i]->cMove != NULL)
-			{
+			if(things[i]->cMove != NULL){
 				plus = (things[i]->cMove->arbitraryPoll(31, things[i]->currentFrame));
-				if(plus != 0){ 
+				if(plus != 0){
 					timer += plus;
 					if(timer > 60*99) timer = 60*99 + 1;
 				}
@@ -321,11 +322,13 @@ void interface::runTimer()
 						delete replay;
 						replay = NULL;
 					}
-					for(unsigned int i = 0; i < P.size(); i++){
-						if(P[i]->record){
-							P[i]->record->write(P[i]->pick()->name);
-							delete P[i]->record;
-							P[i]->record = NULL;
+					for(player *i:P){
+						if(i->record){
+							char buffer[200];
+							sprintf(buffer, "%i-%s.sh", i->ID, i->pick()->name);
+							i->record->write(buffer);
+							delete i->record;
+							i->record = NULL;
 						}
 					}
 					if(oldReplay){
@@ -382,12 +385,27 @@ void interface::resolve()
 			}
 		}
 		if(analytics){
-			for(unsigned int i = 0; i < replay->command.size(); i++)
+			for(unsigned int i = 0; i < replay->command.size(); i++){
 				replay->command[i].push_back(currentFrame[i]);
+			}
 		}
 		for(unsigned int i = 0; i < P.size(); i++){
-			if(P[i]->record)
+			if(P[i]->record){
+				int temp;
+				if(P[i]->facing == -1){
+					temp = currentFrame[i].axis[3];
+					currentFrame[i].axis[3] = currentFrame[i].axis[2];
+					currentFrame[i].axis[2] = temp;
+				}
+				currentFrame[i].pos[5] = 0;
+				currentFrame[i].neg[5] = 0;
 				P[i]->record->command[0].push_back(currentFrame[i]);
+				if(P[i]->facing == -1){
+					temp = currentFrame[i].axis[3];
+					currentFrame[i].axis[3] = currentFrame[i].axis[2];
+					currentFrame[i].axis[2] = temp;
+				}
+			}
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
 	the idea is to do the procedure as follows:
@@ -418,8 +436,14 @@ void interface::resolve()
 				}
 				for(unsigned int j = 0; j < globals.size(); j++){
 					if(globals[j]->ID != things[i]->ID){
-						if((i < P.size() && (globals[j]->effectCode & 1)) || (i > 2 && (globals[j]->effectCode & 2))){
-							things[i]->enforceAttractor(globals[j]);
+						if(i < P.size()){
+							if(globals[j]->effectCode & 1){
+								things[i]->enforceAttractor(globals[j]);
+							}
+						} else {
+							if(globals[j]->effectCode & 2){
+								things[i]->enforceAttractor(globals[j]);
+							}
 						}
 					}
 				}
@@ -451,7 +475,7 @@ void interface::resolve()
 		if(things[1]->cMove->state[things[1]->connectFlag].i & 1 && things[1]->cMove != P[1]->pick()->airNeutral) 
 			P[1]->checkFacing(P[0]);
 
-		for(int i = 0; i < P.size(); i++){
+		for(unsigned int i = 0; i < P.size(); i++){
 			if(!things[i]->aerial) { things[i]->deltaX = 0; things[i]->deltaY = 0; }
 
 			if(!roundEnd){
@@ -627,10 +651,20 @@ void gameInstance::genInput()
 			replayIterator = 0;
 		}
 	} else {
-		for(unsigned int i = 0; i < P.size(); i++){
-			if(P[i]->m){ 
-				P[i]->m->genEvent(0, P[i]->iterator, currentFrame[i]);
-				P[i]->iterator++;
+		if(!pauseEnabled){
+			for(unsigned int i = 0; i < P.size(); i++){
+				if(P[i]->currentMacro){
+					if(!P[i]->currentMacro->genEvent(0, P[i]->iterator, currentFrame[i])){
+						P[i]->currentMacro = NULL;
+					} else {
+						if(P[i]->facing == -1){
+							bool s = currentFrame[i].axis[2];
+							currentFrame[i].axis[2] = currentFrame[i].axis[3];
+							currentFrame[i].axis[3] = s;
+						}
+						P[i]->iterator++;
+					}
+				}
 			}
 		}
 	}
@@ -655,16 +689,55 @@ void interface::processInput(SDL_Event &event)
 	gameInstance::processInput(event);
 }
 
-void gameInstance::processInput(SDL_Event &event)
+void interface::readInput()
 {
-	if(!oldReplay){
-		for(unsigned int i = 0; i < p.size(); i++){
-			p[i]->readEvent(event, currentFrame[i]);
-		}
-		for(unsigned int i = 0; i < P.size(); i++){
-			P[i]->genInput(currentFrame[i]);
+	std::vector<SDL_Event> events;
+	SDL_Event event;
+	for(int i = 0; i < 20; i++){
+		if(SDL_PollEvent(&event)){
+			events.push_back(event);
+			processInput(event);
 		}
 	}
+	if(select[0] && select[1]){
+		if(scripting){
+			for(player* i:P){
+				for(unsigned int j = 0; j < events.size(); j++){
+					if(!oldReplay){
+						bool r = false;
+						if(i->record) r = true;
+						i->macroCheck(events[j]);
+						if(i->record){
+							if(!r) j = events.size();
+							i->search = false;
+						}
+					}
+				}
+				if(i->search){
+					for(unsigned int j = 0; j < events.size(); j++){
+						if(i->currentMacro = i->patternMatch(abs(i->tap(events[j])))){
+							j = events.size();
+							i->search = false;
+							i->iterator = 0;
+						}
+					}
+				}
+			}
+		}
+		for(unsigned int i = 0; i < P.size(); i++){
+			for(int j:currentFrame[i].axis) j = 0;
+		}
+	}
+	if(scripting || oldReplay) genInput();
+	for(SDL_Event i:events){
+		for(unsigned int j = 0; j < p.size(); j++){
+			if(!p[j]->currentMacro) p[j]->readEvent(i, currentFrame[j]);
+		}
+	}
+}
+
+void gameInstance::processInput(SDL_Event &event)
+{
 	switch (event.type){
 	case SDL_KEYDOWN:
 		switch (event.key.keysym.sym) {
@@ -758,8 +831,8 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 6) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 6;
+	if(menu[ID] > 7) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 7;
 	for(unsigned int i = 0; i < currentFrame[ID].pos.size()-1; i++){
 		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
 			switch(menu[ID]){
@@ -776,18 +849,28 @@ void interface::mainMenu(int ID)
 				menu[ID] = 0;
 				break;
 			case 4:
-				if(shortcut) 
+				if(shortcut)
 					shortcut = false;
-				else 
+				else
 					shortcut = true;
 				break;
 			case 5:
-				if(pauseEnabled)
+				if(scripting)
+					scripting = false;
+				else{
 					pauseEnabled = false;
-				else
-					pauseEnabled = true;
+					scripting = true;
+				}
 				break;
 			case 6:
+				if(pauseEnabled)
+					pauseEnabled = false;
+				else{
+					scripting = false;
+					pauseEnabled = true;
+				}
+				break;
+			case 7:
 				gameover = 1;
 				break;
 			}
@@ -854,7 +937,7 @@ void interface::dragBG(int deltaX)
 
 void interface::pauseMenu()
 {
-	for(int j = 0; j < p.size(); j++){
+	for(unsigned int j = 0; j < p.size(); j++){
 		if(currentFrame[j].axis[0] && !counter[j]){
 			pMenu--;
 			counter[j] = 10;
@@ -906,7 +989,7 @@ void interface::rematchMenu()
 		}
 		if(rMenu > 3) rMenu = 1;
 		else if(rMenu < 1) rMenu = 3;
-		for(int i = 0; i < currentFrame[j].pos.size(); i++){
+		for(unsigned int i = 0; i < currentFrame[j].pos.size(); i++){
 			if(currentFrame[j].pos[i] == 1){
 				switch(rMenu){
 				case 1:
@@ -1065,7 +1148,7 @@ void interface::resolveHits()
 		if(taken[i]){
 			h = things[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
-			if(i < P.size() && hitBy[i] < P.size()){
+			if(i < P.size() && hitBy[i] < (int)P.size()){
 				if(things[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;

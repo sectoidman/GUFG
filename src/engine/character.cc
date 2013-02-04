@@ -178,11 +178,7 @@ void avatar::build(const char* directory, const char* file)
 
 void avatar::sortMove(action * m, char* buffer)
 {
-	char component[2];
 	char * token;
-	int pattern;
-	int q;
-	actionTrie * t = NULL;
 	token = strtok(buffer, " \t=~>-&?@%$_!\n");
 	while (token){
 		token = NULL;
@@ -190,41 +186,18 @@ void avatar::sortMove(action * m, char* buffer)
 		if(token) {
 			switch (token[0]){
 			case 'h':
-				t = head;
+				head->insert(m, token);
 				break;
 			default:
 				break;
 			}
-			pattern = 0;
-			for(int i = strlen(token)-1; i > 0; i--){
-				switch(token[i]){
-				case 'A':
-				case 'B':
-				case 'C':
-				case 'D':
-				case 'E':
-					pattern += 1 << (token[i] - 'A');
-					break;
-				default:
-					sprintf(component, "%c\0", token[i]);
-					q = atoi(component);
-					if(q > 10) q = q % 10;
-					t = t->insert(q);
-					break;
-				}
-			}
-			t->insert(m, pattern);
 		}
 	}
 }
 
 void character::sortMove(action * m, char* buffer)
 {
-	char component[2];
 	char * token;
-	int q;
-	int pattern;
-	actionTrie * t = NULL;
 	token = strtok(buffer, " \t=>-&?@%$_!\n");
 	while (token){
 		token = NULL;
@@ -232,33 +205,14 @@ void character::sortMove(action * m, char* buffer)
 		if(token) {
 			switch (token[0]){
 			case 'h':
-				t = head;
+				head->insert(m, token);
 				break;
 			case 'a':
-				t = airHead;
+				airHead->insert(m, token);
 				break;
 			default:
 				break;
 			}
-			pattern = 0;
-			for(int i = strlen(token)-1; i > 0; i--){
-				switch(token[i]){
-				case 'A':
-				case 'B':
-				case 'C':
-				case 'D':
-				case 'E':
-					pattern += 1 << (token[i] - 'A');
-					break;
-				default:
-					sprintf(component, "%c\0", token[i]);
-					q = atoi(component);
-					if(q > 10) q = q % 10;
-					t = t->insert(q);
-					break;
-				}
-			}
-			t->insert(m, pattern);
 		}
 	}
 }
@@ -276,10 +230,11 @@ void character::build(const char *directory, const char *file)
 	avatar::build(directory, file);
 
 	sprintf(buffer, "%s/die", name);
-	die = new airLooping(buffer);
+	die = new untechState(buffer);
 
 	sprintf(buffer, "%s/dead", name);
 	dead = new looping(buffer);
+	die->feed(dead, 0, 0);
 	die->feed(dead, 1, 0);
 
 	sprintf(buffer, "%s/NL", name);
@@ -524,6 +479,7 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 		dead = true;
 	}
 	if(dead == true){
+		die->init(s.stun+s.untech);
 		cMove = die;
 		aerial = true;
 	} else if (hitType == 1){
