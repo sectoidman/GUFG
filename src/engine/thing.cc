@@ -6,7 +6,7 @@
 #include <cstring>
 bool model::readModel()
 {
-	readModel("model.obj");
+	return readModel("model.obj");
 }
 
 bool model::readModel(const char * fname)

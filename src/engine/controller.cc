@@ -20,7 +20,7 @@ void controller::setKey(int effect)
 	while(SDL_PollEvent(&temp));
 	while (!configFlag){
 		if (SDL_PollEvent(&temp)) {
-			for(int i = 0; i < input.size(); i++){
+			for(unsigned int i = 0; i < input.size(); i++){
 				if(input[i]->effect == effect) input.erase(input.begin()+i);
 			}
 			configFlag = setKey(effect, temp);

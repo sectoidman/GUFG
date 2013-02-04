@@ -317,7 +317,7 @@ void player::readScripts()
 		if(!token) return;
 		macro.push_back(new script(token));
 		if(token = strtok(NULL, " \n")){
-			for(int i = 0; i < strlen(token); i++){
+			for(unsigned int i = 0; i < strlen(token); i++){
 				if(token[i] >= 'A' && token[i] <= 'E'){
 					tempIterator += 16 << (token[i] - 'A');
 				}

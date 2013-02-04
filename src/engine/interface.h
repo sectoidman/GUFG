@@ -27,7 +27,7 @@ public:
 	virtual void unitCollision(instance*, instance*);
 	virtual void genInput();
 	script *oldReplay;
-	int replayIterator;
+	unsigned int replayIterator;
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;

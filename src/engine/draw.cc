@@ -109,7 +109,6 @@ void interface::drawMainMenu(int ID)
 void interface::drawConfigMenu(int ID)
 {
 	int i;
-	int macros;
 	glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 	char buffer[200];
 	glRectf(0.0f + 800.0 * ID, 0.0, (screenWidth/2*ID) + (GLfloat)screenWidth/2.0, (GLfloat)screenHeight);

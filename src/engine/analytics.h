@@ -31,5 +31,6 @@ public:
 	virtual void load(char*);
 	virtual void write(char*);
 	virtual void write();
+	virtual ~script();
 };
 #endif

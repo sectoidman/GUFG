@@ -36,7 +36,7 @@ void actionTrie::insert(action * b, char * p)
 			pattern += 1 << (p[i] - 'A');
 			break;
 		default:
-			sprintf(component, "%c\0", p[i]);
+			sprintf(component, "%c", p[i]);
 			q = atoi(component);
 			if(q > 10) q = q % 10;
 			t = t->insert(q);

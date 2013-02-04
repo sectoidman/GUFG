@@ -265,7 +265,7 @@ void interface::runTimer()
 		Mix_PlayMusic(matchMusic,-1);
 	}
 	int plus;
-	for(int i = 0; i < P.size(); i++){
+	for(unsigned int i = 0; i < P.size(); i++){
 		if(select[i] == true){
 			if(things[i]->cMove != NULL)
 			{
@@ -469,7 +469,7 @@ void interface::resolve()
 		if(things[1]->cMove->state[things[1]->connectFlag].i & 1 && things[1]->cMove != P[1]->pick()->airNeutral) 
 			P[1]->checkFacing(P[0]);
 
-		for(int i = 0; i < P.size(); i++){
+		for(unsigned int i = 0; i < P.size(); i++){
 			if(!things[i]->aerial) { things[i]->deltaX = 0; things[i]->deltaY = 0; }
 
 			if(!roundEnd){
@@ -686,7 +686,6 @@ void interface::processInput(SDL_Event &event)
 void interface::readInput()
 {
 	std::vector<SDL_Event> events;
-	int eatenEvent[P.size()];
 	SDL_Event event;
 	for(int i = 0; i < 20; i++){
 		if(SDL_PollEvent(&event)){
@@ -719,7 +718,7 @@ void interface::readInput()
 				}
 			}
 		}
-		for(int i = 0; i < P.size(); i++){
+		for(unsigned int i = 0; i < P.size(); i++){
 			for(int j:currentFrame[i].axis) j = 0;
 		}
 	}
@@ -932,7 +931,7 @@ void interface::dragBG(int deltaX)
 
 void interface::pauseMenu()
 {
-	for(int j = 0; j < p.size(); j++){
+	for(unsigned int j = 0; j < p.size(); j++){
 		if(currentFrame[j].axis[0] && !counter[j]){
 			pMenu--;
 			counter[j] = 10;
@@ -984,7 +983,7 @@ void interface::rematchMenu()
 		}
 		if(rMenu > 3) rMenu = 1;
 		else if(rMenu < 1) rMenu = 3;
-		for(int i = 0; i < currentFrame[j].pos.size(); i++){
+		for(unsigned int i = 0; i < currentFrame[j].pos.size(); i++){
 			if(currentFrame[j].pos[i] == 1){
 				switch(rMenu){
 				case 1:
@@ -1099,8 +1098,8 @@ void interface::resolveHits()
 	std::vector<int> hit(things.size());
 	std::vector<bool> connect(things.size());
 	std::vector<bool> taken(things.size());
-	std::vector<int> hitBy(things.size());
-	int h;
+	std::vector<unsigned int> hitBy(things.size());
+	unsigned int h;
 	int push[2];
 	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
@@ -1110,7 +1109,7 @@ void interface::resolveHits()
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(int h = (int)things.size()-1; h >= 0; h--){
+		for(h = (int)things.size()-1; h >= 0; h--){
 			if(h != i && !taken[h] && !connect[i]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[h]->regComplexity; k++){
@@ -1143,7 +1142,7 @@ void interface::resolveHits()
 		if(taken[i]){
 			h = things[things[i]->ID-1]->meter[0];
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
-			if(i < P.size() && hitBy[i] < P.size()){
+			if(i < P.size() & hitBy[i] < P.size()){
 				if(things[i]->particleType == -2){
 					hStat ths;
 					ths.damage = s[hitBy[i]].chip;
