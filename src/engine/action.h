@@ -54,7 +54,7 @@ public:
 	virtual void init(int) {}
 	virtual void playSound(int);
 	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
-	virtual void generate(const char*, const char*) {}
+	virtual void generate(const char*, const char*);
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
 	virtual int arbitraryPoll(int q, int f);
@@ -69,7 +69,7 @@ public:
 	virtual void step(int *&, int&, int&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
-	virtual instance * spawn() { return NULL; }
+	virtual instance * spawn();
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
 
 	virtual void feed(action *, int, int);
@@ -298,25 +298,6 @@ public:
 	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
-};
-
-class summon : virtual public action {
-public:
-	summon() {}
-	summon(const char*);
-	virtual int arbitraryPoll(int, int);
-	virtual bool setParameter(char*);
-	virtual void generate(const char*, const char*);
-	virtual char* request(int, int);
-	instance * spawn();
-};
-
-class airSummon : virtual public airMove, virtual public summon {
-public:
-	airSummon() {}
-	airSummon(const char*);
-	virtual bool setParameter(char*);
-	virtual char* request(int, int);
 };
 
 class releaseCheck : virtual public action {

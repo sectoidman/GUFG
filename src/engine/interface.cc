@@ -555,36 +555,38 @@ void interface::resolveSummons()
 			temp = things[i]->cMove;
 			if(temp->arbitraryPoll(50, things[i]->currentFrame)){
 				larva = things[i]->pick()->spawn(temp);
-				switch (temp->arbitraryPoll(56, things[i]->currentFrame)){
-				case 0:
-					larva->ID = 0;
-					break;
-				case 1:
-					larva->ID = things[i]->ID;
-					break;
-				case 2:
+				if(larva){
+					switch (temp->arbitraryPoll(56, things[i]->currentFrame)){
+					case 0:
+						larva->ID = 0;
+						break;
+					case 1:
+						larva->ID = things[i]->ID;
+						break;
+					case 2:
 					larva->ID = (things[i]->ID)%2+1;
-					break;
+						break;
+					}
+					if(temp->arbitraryPoll(51, things[i]->currentFrame)){
+						x = things[(things[i]->ID)%2]->posX;
+						f = things[(things[i]->ID)%2]->facing;
+					} else {
+						x = things[(things[i]->ID)-1]->posX;
+						f = things[(things[i]->ID)-1]->facing;
+					}
+					if(temp->arbitraryPoll(52, things[i]->currentFrame))
+						y = things[(things[i]->ID)%2]->posY;
+					else if(temp->arbitraryPoll(53, things[i]->currentFrame))
+						y = 0;
+					else
+						y = things[(things[i]->ID)-1]->posY;
+					x += temp->arbitraryPoll(54, things[i]->currentFrame)*f;
+					y += temp->arbitraryPoll(55, things[i]->currentFrame);
+					larva->facing = f;
+					larva->setPosition(x, y);
+					things.push_back(larva);
+					larva->init();
 				}
-				if(temp->arbitraryPoll(51, things[i]->currentFrame)){
-					x = things[(things[i]->ID)%2]->posX;
-					f = things[(things[i]->ID)%2]->facing;
-				} else {
-					x = things[(things[i]->ID)-1]->posX;
-					f = things[(things[i]->ID)-1]->facing;
-				}
-				if(temp->arbitraryPoll(52, things[i]->currentFrame))
-					y = things[(things[i]->ID)%2]->posY;
-				else if(temp->arbitraryPoll(53, things[i]->currentFrame))
-					y = 0;
-				else
-					y = things[(things[i]->ID)-1]->posY;
-				x += temp->arbitraryPoll(54, things[i]->currentFrame)*f;
-				y += temp->arbitraryPoll(55, things[i]->currentFrame);
-				larva->facing = f;
-				larva->setPosition(x, y);
-				things.push_back(larva);
-				larva->init();
 			}
 		}
 	}

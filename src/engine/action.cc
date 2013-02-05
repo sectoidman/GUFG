@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "action.h"
+#include "player.h"
 #include <assert.h>
 using namespace std;
 action::action() : frames(0), hits(0), name(NULL)
@@ -69,6 +70,7 @@ void action::zero()
 	tempAttempt = NULL;
 	tempRiposte = NULL;
 	tempOnHold = NULL;
+	tempPayload = NULL;
 	displaceFrame = -1;
 	displaceX = 0;
 	displaceY = 0;
@@ -81,6 +83,7 @@ void action::zero()
 	onHold = NULL;
 	hittable = 0;
 	modifier = 0;
+	payload = NULL;
 	spawnFrame = 0;
 	spawnTrackY = 0;
 	spawnTrackX = 0;
@@ -91,10 +94,47 @@ void action::zero()
 	allegiance = 1;
 }
 
+void action::generate(const char* directory, const char* name)
+{
+	payload = new projectile(directory, name);
+	if(lifespan) payload->lifespan = lifespan;
+	if(tempPayload) delete [] tempPayload;
+	tempPayload = NULL;
+}
+
+instance * action::spawn()
+{
+	instance * ret = NULL;
+	if(payload) ret = new instance(payload);
+	return ret;
+}
+
 int action::arbitraryPoll(int q, int f)
 {
-	if(q == 2 && f == freezeFrame) return freezeLength;
-	else return 0;
+	switch(q){
+	case 2:
+		if(f == freezeFrame) return freezeLength;
+		else break;
+	case 50:
+		if(f == spawnFrame) return 1;
+		else break;
+	case 51:
+		if(spawnTrackX) return 1;
+		else break;
+	case 52:
+		if(spawnTrackY) return 1;
+		else break;
+	case 53:
+		if(spawnTrackFloor) return 1;
+		else break;
+	case 54:
+		return spawnPosX;
+	case 55:
+		return spawnPosY;
+	case 56:
+		return allegiance;
+	}
+	return 0;
 }
 
 void negNormal::zero()
@@ -491,6 +531,46 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n-");
 		armorHits = atoi(token); 
 		return 1;
+	} else if(!strcmp("SpawnPosition", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnPosX = atoi(token);
+
+		token = strtok(NULL, "\t: \n");
+		spawnPosY = atoi(token);
+		return 1;
+	} else if(!strcmp("Track", token)){
+		token = strtok(NULL, "\t: \n");
+		for(unsigned int i = 0; i < strlen(token) + 1; i++){
+			switch(token[i]){
+			case 'x': 
+				spawnTrackX = true;
+				break;
+			case 'y':
+				spawnTrackY = true;
+				break;
+			case 'f':
+				spawnTrackFloor = true;
+				break;
+			}
+		}
+		return 1;
+	} else if(!strcmp("SpawnsOn", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnFrame = atoi(token);
+		return 1;
+	} else if(!strcmp("Lifespan", token)){
+		token = strtok(NULL, "\t: \n");
+		lifespan = atoi(token);
+		return 1;
+	} else if(!strcmp("Allegiance", token)){
+		token = strtok(NULL, "\t: \n");
+		allegiance = atoi(token);
+		return 1;
+	} else if(!strcmp("Payload", token)){
+		token = strtok(NULL, "\t: \n");
+		tempPayload = new char[strlen(token)+1];
+		strcpy(tempPayload, token);
+		return 1;
 	} else return 0;
 }
 
@@ -843,6 +923,8 @@ char * action::request(int code, int i)
 		return tempOnConnect[i];
 	case 3:
 		return tempAttempt;
+	case 4:
+		return tempPayload;
 	case 5:
 		return tempRiposte;
 	case 6:

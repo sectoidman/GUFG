@@ -350,10 +350,6 @@ action * avatar::createMove(char * fullName)
 		if(type[1] == 'j') m = new luftigeWerf(actionName);
 		else m = new werf(actionName);
 		break;
-	case '>':
-		if(type[1] == 'j') m = new airSummon(actionName);
-		else m = new summon(actionName);
-		break;
 	case 'j':
 		m = new airMove(actionName);
 		break;
