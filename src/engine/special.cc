@@ -93,7 +93,7 @@ int werf::arbitraryPoll(int n, int f)
 	default:
 		break;
 	}
-	return 0;
+	return action::arbitraryPoll(n, f);
 }
 
 bool werf::check(SDL_Rect &p, int meter[])
