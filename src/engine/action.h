@@ -166,6 +166,18 @@ public:
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*, bool);
 	virtual void zero();
+
+	//Projectile stuff;
+	avatar * payload;
+	char * tempPayload;
+	int spawnFrame;
+	int spawnPosX;
+	int spawnPosY;
+	int lifespan;
+	int allegiance;
+	bool spawnTrackX:1;
+	bool spawnTrackY:1;
+	bool spawnTrackFloor:1;
 };
 
 class hitstun : virtual public action {
@@ -297,25 +309,12 @@ public:
 	virtual void generate(const char*, const char*);
 	virtual char* request(int, int);
 	instance * spawn();
-	virtual void zero();
-
-	avatar * payload;
-	char * tempPayload;
-	int spawnFrame;
-	int spawnPosX;
-	int spawnPosY;
-	int lifespan;
-	int allegiance;
-	bool spawnTrackX:1;
-	bool spawnTrackY:1;
-	bool spawnTrackFloor:1;
 };
 
 class airSummon : virtual public airMove, virtual public summon {
 public:
 	airSummon() {}
 	airSummon(const char*);
-	virtual void zero();
 	virtual bool setParameter(char*);
 	virtual char* request(int, int);
 };

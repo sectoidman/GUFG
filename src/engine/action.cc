@@ -81,6 +81,14 @@ void action::zero()
 	onHold = NULL;
 	hittable = 0;
 	modifier = 0;
+	spawnFrame = 0;
+	spawnTrackY = 0;
+	spawnTrackX = 0;
+	spawnTrackFloor = 0;
+	spawnPosY = 0;
+	spawnPosX = 0;
+	lifespan = -1;
+	allegiance = 1;
 }
 
 int action::arbitraryPoll(int q, int f)

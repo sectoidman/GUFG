@@ -62,19 +62,6 @@ instance * summon::spawn()
 	return ret;
 }
 
-void summon::zero()
-{
-	spawnFrame = 0;
-	spawnTrackY = 0;
-	spawnTrackX = 0;
-	spawnTrackFloor = 0;
-	spawnPosY = 0;
-	spawnPosX = 0;
-	lifespan = -1;
-	allegiance = 1;
-	action::zero();
-}
-
 bool projectile::turn(int &ID)
 {
 	ID = ID % 2 + 1;
@@ -180,12 +167,6 @@ int summon::arbitraryPoll(int q, int f)
 		break;
 	}
 	return action::arbitraryPoll(q, f);
-}
-
-void airSummon::zero()
-{
-	summon::zero();
-	airMove::zero();
 }
 
 bool airSummon::setParameter(char * buffer)
