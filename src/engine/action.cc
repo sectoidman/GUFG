@@ -7,7 +7,6 @@
 using namespace std;
 action::action() : frames(0), hits(0), name(NULL)
 {
-	name = NULL;
 }
 
 action::action(const char * n) : frames(0), hits(0)

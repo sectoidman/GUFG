@@ -565,7 +565,8 @@ void instance::step()
 			hitFlag = cMove->hitFlag;
 			cMove = cMove->basis;
 		} else {
-			cMove = cMove->next;
+			if(cMove->next) cMove = cMove->next;
+			else pick()->neutralize(cMove, aerial, meter);
 			currentFrame = 0;
 			connectFlag = 0;
 			hitFlag = 0;

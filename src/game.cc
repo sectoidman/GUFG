@@ -30,8 +30,8 @@ int main(int argc, char* argv[])
 		frameStart = std::chrono::high_resolution_clock::now();
 		game.readInput();
 		game.resolve();
-		game.draw();
 		game.cleanup();
+		game.draw();
 		frame_t frameElapsed;
 		/*Now eat up the rest of the frame: 
 		 *Check the time elapsed thus far in a loop
