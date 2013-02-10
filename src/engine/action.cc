@@ -522,10 +522,10 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n-");
 		followEnd = atoi(token); 
 
-		token = strtok(NULL, "\t: \n-");
+		token = strtok(NULL, "\t: \n");
 		followXRate = atoi(token);
 
-		token = strtok(NULL, "\t: \n-");
+		token = strtok(NULL, "\t: \n");
 		followYRate = atoi(token);
 		return 1;
 	} else if (!strcmp("SuperFreeze", token)){
