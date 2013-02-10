@@ -42,8 +42,6 @@ public:
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
 	virtual void invertVectors(int);
-	virtual void addVector(SDL_Rect&);
-	virtual void removeVector(int);
 	virtual void pullVolition();
 	virtual void setPosition(int, int);
 	virtual void updateRects();

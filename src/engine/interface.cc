@@ -1204,7 +1204,7 @@ void interface::resolveHits()
 				}
 				residual.x *= things[i]->facing;
 			}
-			things[i]->addVector(residual);
+			things[i]->momentum.push_back(residual);
 		}
 	}
 

@@ -352,7 +352,7 @@ void instance::combineDelta()
 		deltaY += momentum[i].y;
 
 		if(momentum[i].w <= 0) {
-			removeVector(i);
+			momentum.erase(momentum.begin()+i);
 			i--;
 		}
 		else momentum[i].w--;
@@ -414,7 +414,7 @@ void instance::enforceAttractor(attractor* p)
 			return;
 		}
 	}
-	addVector(resultant);
+	momentum.push_back(resultant);
 }
 
 void instance::enforceGravity(int grav, int floor)
@@ -426,7 +426,7 @@ void instance::enforceGravity(int grav, int floor)
 		sMove = NULL;
 	}
 	else if(aerial && !freeze){ 
-		addVector(g);
+		momentum.push_back(g);
 	}
 }
 
@@ -440,7 +440,7 @@ void player::enforceGravity(int grav, int floor)
 	}
 	else if(aerial && !freeze){ 
 		if(hover > 0 && deltaY - 6 < 0) g.y = -deltaY;
-		addVector(g);
+		momentum.push_back(g);
 	}
 }
 
@@ -537,7 +537,7 @@ void player::checkCorners(int left, int right)
 void player::land()
 {
 	for(unsigned int i = 0; i < momentum.size(); i++){
-		if(momentum[i].y > 0) removeVector(i);
+		if(momentum[i].y > 0) momentum.erase(momentum.begin()+i);
 	}
 	pick()->land(cMove, currentFrame, connectFlag, hitFlag, meter);
 	sMove = NULL;
@@ -697,23 +697,13 @@ void instance::pullVolition()
 				temp[i].x *= facing;
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
-						addVector(temp[i]);
+						momentum.push_back(temp[i]);
 					}
 				}
 			}
 			delete [] temp;
 		}
 	}
-}
-
-void instance::addVector(SDL_Rect &v)
-{
-	momentum.push_back(v);
-}
-
-void instance::removeVector(int n)
-{
-	momentum.erase(momentum.begin()+n);
 }
 
 int instance::middle()
@@ -818,7 +808,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
 		v.x *= facing;
-		addVector(v);
+		momentum.push_back(v);
 		if(particleType == -1){ 
 			v.x /= 5;
 			v.y /= 5;
