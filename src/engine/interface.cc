@@ -1110,7 +1110,7 @@ void interface::resolveHits()
 	std::vector<bool> connect(things.size());
 	std::vector<bool> taken(things.size());
 	std::vector<int> hitBy(things.size());
-	int hiterator;
+	int m;
 	int push[2];
 	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
@@ -1120,19 +1120,19 @@ void interface::resolveHits()
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(hiterator = (int)things.size()-1; hiterator >= 0; hiterator--){
-			if(hiterator != i && !taken[hiterator] && !connect[i]){
+		for(m = (int)things.size()-1; m >= 0; m--){
+			if(m != i && !taken[m] && !connect[i]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
-					for(int k = 0; k < things[hiterator]->regComplexity; k++){
-						if(aux::checkCollision(things[i]->hitbox[j], things[hiterator]->hitreg[k])){
-							if(things[i]->acceptTarget(things[hiterator])){
+					for(int k = 0; k < things[m]->regComplexity; k++){
+						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
+							if(things[i]->acceptTarget(things[m])){
 								connect[i] = 1;
-								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[hiterator]->CHState());
+								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[m]->CHState());
 								if(i < P.size()) push[i] = s[i].push;
-								k = things[hiterator]->regComplexity;
+								k = things[m]->regComplexity;
 								j = things[i]->hitComplexity;
-								taken[hiterator] = 1;
-								hitBy[hiterator] = i;
+								taken[m] = 1;
+								hitBy[m] = i;
 								break;
 							}
 						}
@@ -1151,7 +1151,7 @@ void interface::resolveHits()
 
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
-			hiterator = things[things[i]->ID-1]->meter[0];
+			int health = things[things[i]->ID-1]->meter[0];
 			s[hitBy[i]].damage *= prorate[things[hitBy[i]]->ID-1];
 			if(s[hitBy[i]].damage < 1) s[hitBy[i]].damage = 1;
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
@@ -1174,7 +1174,7 @@ void interface::resolveHits()
 			P[(i+1)%2]->enforceFloor(floor);
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 			if(things[i]->facing * things[(i+1)%2]->facing == 1) things[i]->invertVectors(1);
-			if(i < P.size()) damage[(i+1)%2] += hiterator - P[i]->meter[0];
+			if(i < P.size()) damage[(i+1)%2] += health - P[i]->meter[0];
 		}
 	}
 
