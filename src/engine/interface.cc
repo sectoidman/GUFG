@@ -1110,7 +1110,6 @@ void interface::resolveHits()
 	std::vector<bool> connect(things.size());
 	std::vector<bool> taken(things.size());
 	std::vector<int> hitBy(things.size());
-	int m;
 	int push[2];
 	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
@@ -1120,8 +1119,8 @@ void interface::resolveHits()
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(m = (int)things.size()-1; m >= 0; m--){
-			if(m != i && !taken[m] && !connect[i]){
+		for(int m = (int)things.size()-1; m >= 0; m--){
+			if(m != (int)i && !taken[m] && !connect[i]){
 				for(int j = 0; j < things[i]->hitComplexity; j++){
 					for(int k = 0; k < things[m]->regComplexity; k++){
 						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
@@ -1209,9 +1208,9 @@ void interface::resolveHits()
 		}
 	}
 
-	if(connect[0] || connect[1]){
+/*	if(connect[0] || connect[1]){
 		resolveCollision();
-	}
+	}*/
 
 	for(unsigned int i = 0; i < P.size(); i++) {
 		things[i]->throwInvuln--;
