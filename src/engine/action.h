@@ -91,7 +91,7 @@ public:
 	int armorCounter;
 	int guardStart; int guardLength;
 	int freezeFrame; int freezeLength;
-	int followStart; int followLength;
+	int followStart; int followEnd;
 	int followXRate; int followYRate;
 
 	//Properties of a hit. These will only exist for actions that hit.

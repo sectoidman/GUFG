@@ -548,16 +548,14 @@ void player::land()
 
 void instance::follow(instance *other){
 	if(currentFrame >= cMove->followStart && currentFrame <= cMove->followEnd){
-		SDL_Rect v = {0, 0, 0, 0};
 		if(abs(other->posX - posX) > cMove->followXRate){ 
-			if(other->posX > posX) v.x = followXRate;
-			else if(other->posX < posX) v.x = -followXRate;
-		} else v.x = other->posX - posX;
+			if(other->posX > posX) posX += cMove->followXRate;
+			else if(other->posX < posX) posX -= cMove->followXRate;
+		} else posX += other->posX - posX;
 		if(abs(other->posY - posY) > cMove->followYRate){ 
-			if(other->posY > posY) v.y = followYRate;
-			else if(other->posX < posX) v.y = -followYRate;
-		} else v.y = other->posY - posY;
-		addVector(v);
+			if(other->posY > posY) posY += cMove->followYRate;
+			else if(other->posY < posY) posY -= cMove->followYRate;
+		} else posY += other->posY - posY;
 	}
 }
 
