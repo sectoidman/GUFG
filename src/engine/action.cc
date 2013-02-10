@@ -431,6 +431,14 @@ bool action::setParameter(char * buffer)
 			stats[i].chip = atoi(token);
 		}
 		return 1;
+	} else if (!strcmp("Prorate", token)) {
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			if(savedBuffer[0] == '+')
+				CHStats[i].prorate = atof(token);
+			else stats[i].prorate = atof(token);
+		}
+		return 1;
 	} else if (!strcmp("Push", token)) {
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
@@ -793,6 +801,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.stick = CHStats[c].stick;
 			s.ghostHit = CHStats[c].ghostHit;
 			s.noConnect = stats[c].noConnect || CHStats[c].noConnect;
+			s.prorate = CHStats[c].prorate;
 		} else {
 			s.launch = stats[c].launch;
 			s.hover = stats[c].hover;
@@ -802,6 +811,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.stick = stats[c].stick;
 			s.ghostHit = stats[c].ghostHit;
 			s.noConnect = stats[c].noConnect;
+			s.prorate = stats[c].prorate;
 		}
 		s.hitsProjectile = stats[c].hitsProjectile;
 		s.turnsProjectile = stats[c].turnsProjectile;

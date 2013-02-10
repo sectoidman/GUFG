@@ -246,6 +246,7 @@ void interface::roundInit()
 	initContainers();
 	for(unsigned int i = 0; i < P.size(); i++){
 		combo[i] = 0;
+		prorate[i] = 1.0;
 		damage[i] = 0;
 		illegit[i] = 0;
 	}
@@ -487,6 +488,7 @@ void interface::resolve()
 				case 0:
 					combo[(i+1)%2] = 0;
 					damage[(i+1)%2] = 0;
+					prorate[(i+1)%2] = 1.0;
 					P[i]->elasticX = 0;
 					P[i]->elasticY = 0;
 					illegit[(i+1)%2] = 0;
@@ -1150,6 +1152,8 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
 			h = things[things[i]->ID-1]->meter[0];
+			s[hitBy[i]].damage *= prorate[things[hitBy[i]]->ID-1];
+			if(s[hitBy[i]].damage < 1) s[hitBy[i]].damage = 1;
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
 			if(i < P.size() && hitBy[i] < (int)P.size()){
 				if(things[i]->particleType == -2){
@@ -1163,7 +1167,10 @@ void interface::resolveHits()
 				}
 			}
 			if(i < P.size() && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
-			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
+			if(hit[hitBy[i]] == 1){ 
+				things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
+				prorate[things[hitBy[i]]->ID-1] *= s[hitBy[i]].prorate;
+			}
 			P[(i+1)%2]->enforceFloor(floor);
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 			if(things[i]->facing * things[(i+1)%2]->facing == 1) things[i]->invertVectors(1);
