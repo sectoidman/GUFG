@@ -37,8 +37,6 @@ instance::instance(avatar * f)
 
 void instance::init()
 {
-	momentumComplexity = 0;
-	momentum = NULL;
 	deltaX = 0;
 	deltaY = 0;
 	lCorner = 0;
@@ -349,7 +347,7 @@ void instance::updateRects()
 
 void instance::combineDelta()
 {
-	for(int i = 0; i < momentumComplexity; i++){
+	for(unsigned int i = 0; i < momentum.size(); i++){
 		deltaX += momentum[i].x;
 		deltaY += momentum[i].y;
 
@@ -385,7 +383,7 @@ void instance::enforceAttractor(attractor* p)
 		resultant.x = 0;
 		resultant.y = 0;
 		deltaX = 0; deltaY = 0;
-		momentumComplexity = 0;
+		momentum.clear();
 	} else {
 		switch(p->type){
 		case 0:
@@ -506,7 +504,7 @@ void player::checkCorners(int left, int right)
 				if(cMove == pick()->untech || cMove == pick()->die){
 					deltaX = 0;
 					deltaY = 0;
-					momentumComplexity = 0;
+					momentum.clear();
 				} else stick = 0;
 			}
 		}
@@ -525,7 +523,7 @@ void player::checkCorners(int left, int right)
 				if(cMove == pick()->untech || cMove == pick()->die){
 					deltaX = 0;
 					deltaY = 0;
-					momentumComplexity = 0;
+					momentum.clear();
 				} else stick = 0;
 			}
 		}
@@ -538,7 +536,7 @@ void player::checkCorners(int left, int right)
 
 void player::land()
 {
-	for(int i = 0; i < momentumComplexity; i++){
+	for(unsigned int i = 0; i < momentum.size(); i++){
 		if(momentum[i].y > 0) removeVector(i);
 	}
 	pick()->land(cMove, currentFrame, connectFlag, hitFlag, meter);
@@ -675,7 +673,7 @@ void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p,
 void instance::pullVolition()
 {
 	int top = 0;
-	for(int i = 0; i < momentumComplexity; i++)
+	for(unsigned int i = 0; i < momentum.size(); i++)
 		if(momentum[i].h > 0 && momentum[i].h > top){ 
 			top = (short)momentum[i].h;
 		}
@@ -685,7 +683,7 @@ void instance::pullVolition()
 				deltaX = 0; deltaY = 0;
 			}
 			if(cMove->stop & 2)
-				momentumComplexity = 0;
+				momentum.clear();
 		}
 	}
 	int dx = cMove->displace(posX, posY, currentFrame);
@@ -710,34 +708,12 @@ void instance::pullVolition()
 
 void instance::addVector(SDL_Rect &v)
 {
-	int i;
-	SDL_Rect * temp;
-	temp = new SDL_Rect[momentumComplexity+1];
-	for(i = 0; i < momentumComplexity; i++){
-		temp[i].x = momentum[i].x;
-		temp[i].y = momentum[i].y;
-		temp[i].w = momentum[i].w;
-		temp[i].h = momentum[i].h;
-	}
-	temp[i].x = v.x;
-	temp[i].y = v.y;
-	temp[i].w = v.w;
-	temp[i].h = v.h;
-	if(momentumComplexity > 0) delete [] momentum;
-	momentum = temp;
-	momentumComplexity++;
+	momentum.push_back(v);
 }
 
 void instance::removeVector(int n)
 {
-	if(momentumComplexity < 0 || !momentum) return;
-	for(int i = n; i < momentumComplexity-1; i++){
-		momentum[i].x = momentum[i+1].x;
-		momentum[i].y = momentum[i+1].y;
-		momentum[i].w = momentum[i+1].w;
-		momentum[i].h = momentum[i+1].h;
-	}
-	momentumComplexity--;
+	momentum.erase(momentum.begin()+n);
 }
 
 int instance::middle()
@@ -836,7 +812,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		deltaX /= 6;
 		if(deltaY < 0) deltaY /= 60; 
 		else deltaY /= 6;
-		momentumComplexity = 0;
+		momentum.clear();
 		if(aerial) v.y = s.lift;
 		else v.y = 0;
 		if(aerial) v.x = -(s.push/5 + s.blowback);
@@ -878,15 +854,15 @@ void instance::invertVectors(int operation)
 {
 	switch (operation){
 	case 1:
-		for(int i = 0; i < momentumComplexity; i++)
+		for(unsigned int i = 0; i < momentum.size(); i++)
 			momentum[i].x = -momentum[i].x;
 		break;
 	case 2:
-		for(int i = 0; i < momentumComplexity; i++)
+		for(unsigned int i = 0; i < momentum.size(); i++)
 			momentum[i].y = -momentum[i].y;
 		break;
 	case 3:
-		for(int i = 0; i < momentumComplexity; i++){
+		for(unsigned int i = 0; i < momentum.size(); i++){
 			momentum[i].x = -momentum[i].x;
 			momentum[i].y = -momentum[i].y;
 		}

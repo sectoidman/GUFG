@@ -287,8 +287,8 @@ void interface::runTimer()
 		 */
 		if(endTimer > 0) endTimer--;
 		else{
-			things[0]->momentumComplexity = 0;
-			things[1]->momentumComplexity = 0;
+			things[0]->momentum.clear();
+			things[1]->momentum.clear();
 			if(P[0]->rounds == numRounds || P[1]->rounds == numRounds){
 				if(!oldReplay){
 					if(P[0]->rounds == P[1]->rounds);
