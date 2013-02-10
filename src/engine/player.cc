@@ -546,6 +546,21 @@ void player::land()
 	aerial = false;
 }
 
+void instance::follow(instance *other){
+	if(currentFrame >= cMove->followStart && currentFrame <= cMove->followEnd){
+		SDL_Rect v = {0, 0, 0, 0};
+		if(abs(other->posX - posX) > cMove->followXRate){ 
+			if(other->posX > posX) v.x = followXRate;
+			else if(other->posX < posX) v.x = -followXRate;
+		} else v.x = other->posX - posX;
+		if(abs(other->posY - posY) > cMove->followYRate){ 
+			if(other->posY > posY) v.y = followYRate;
+			else if(other->posX < posX) v.y = -followYRate;
+		} else v.y = other->posY - posY;
+		addVector(v);
+	}
+}
+
 void instance::step()
 {
 	action * m = cMove;
@@ -585,7 +600,7 @@ void instance::flip()
 		}
 }
 
-void player::checkFacing(player * other){
+void instance::checkFacing(instance * other){
 	int comparison, midpoint;
 	midpoint = collision.x + collision.w/2;
 	comparison = other->collision.x + other->collision.w/2;

@@ -431,6 +431,7 @@ void interface::resolve()
 				if(things[i]->cMove->stop & 4);
 				else { 
 					things[i]->pullVolition();
+					if(things[i]->ID) things[i]->follow(things[(things[i]->ID)%2]);
 					things[i]->combineDelta();
 					things[i]->enforceGravity(grav, floor);
 				}
@@ -470,10 +471,10 @@ void interface::resolve()
 
 		resolveCollision();
 
-		if(things[0]->cMove->state[things[0]->connectFlag].i & 1 && things[0]->cMove != P[0]->pick()->airNeutral)
-			P[0]->checkFacing(P[1]);
-		if(things[1]->cMove->state[things[1]->connectFlag].i & 1 && things[1]->cMove != P[1]->pick()->airNeutral) 
-			P[1]->checkFacing(P[0]);
+		for(unsigned int i = 0; i < things.size(); i++){
+			if((things[i]->cMove->state[things[i]->connectFlag].i & 1 && things[i]->cMove != P[i]->pick()->airNeutral) || things[i]->cMove->track)
+				things[i]->checkFacing(P[(things[i]->ID)%2]);
+		}
 
 		for(unsigned int i = 0; i < P.size(); i++){
 			if(!things[i]->aerial) { things[i]->deltaX = 0; things[i]->deltaY = 0; }

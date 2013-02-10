@@ -85,11 +85,14 @@ public:
 	bool crouch:1;
 	bool hittable:1;
 	bool hidesMeter:1;
+	bool track:1;
 	int armorStart; int armorLength;
 	int armorHits;
 	int armorCounter;
 	int guardStart; int guardLength;
 	int freezeFrame; int freezeLength;
+	int followStart; int followLength;
+	int followXRate; int followYRate;
 
 	//Properties of a hit. These will only exist for actions that hit.
 	

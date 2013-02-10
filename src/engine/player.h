@@ -25,6 +25,7 @@ public:
 	int inputBuffer[30];
 	int currentFrame;
 	int freeze;
+	void checkFacing(instance*);
 	action * cMove;
 	action * bMove;
 	action * sMove;
@@ -53,6 +54,7 @@ public:
 	virtual void pushInput(std::vector<bool>);
 	virtual int passSignal(int);
 	virtual int dragBG(int, int);
+	virtual void follow(instance*);
 	void enforceAttractor(attractor*);
 	int middle();
 	void flip();
@@ -104,7 +106,6 @@ public:
 
 	/*Helper functions for "resolve" tick*/
 	virtual void checkBlocking();
-	virtual void checkFacing(player*);
 	virtual void checkCorners(int, int);
 	virtual void enforceFloor(int);
 	virtual void getThrown(action*, int, int);

@@ -62,6 +62,7 @@ void action::zero()
 	cost = 0;
 	dies = 0;
 	fch = 0;
+	track = false;
 	armorCounter = 0;
 	distortSpawn = -1;
 	distortion = NULL;
@@ -91,6 +92,10 @@ void action::zero()
 	spawnPosX = 0;
 	lifespan = -1;
 	allegiance = 1;
+	followStart = -1;
+	followEnd = -1;
+	followXRate = 0;
+	followYRate = 0;
 }
 
 void action::generate(const char* directory, const char* name)
@@ -510,7 +515,20 @@ bool action::setParameter(char * buffer)
 		guardLength = atoi(token); 
 		guardLength = guardLength - guardStart;
 		return 1;
-	}else if(!strcmp("SuperFreeze", token)){
+	} else if (!strcmp("Follow", token)) {
+		token = strtok(NULL, "\t: \n-");
+		followStart = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		followEnd = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		followXRate = atoi(token);
+
+		token = strtok(NULL, "\t: \n-");
+		followYRate = atoi(token);
+		return 1;
+	} else if (!strcmp("SuperFreeze", token)){
 		token = strtok(NULL, "\t: \n-");
 		freezeFrame = atoi(token); 
 
@@ -652,6 +670,9 @@ void action::parseProperties(char * buffer, bool counter)
 			break;
 		case 'm':
 			if(!counter) modifier = 1;
+			break;
+		case 'f':
+			if(!counter) track = 1;
 			break;
 		default:
 			break;
