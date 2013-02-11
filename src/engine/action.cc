@@ -707,7 +707,7 @@ bool action::check(SDL_Rect &p, int meter[])
 
 void action::pollRects(int f, int cFlag, SDL_Rect &c, std::vector<SDL_Rect> &r, std::vector<SDL_Rect> &b)
 {
-	if(modifier && basis) basis->pollRects(f, cFlag, c, r, b);
+	if(modifier && basis) basis->pollRects(currentFrame, connectFlag, c, r, b);
 	else {
 		if(f >= frames) f = frames-1;
 
