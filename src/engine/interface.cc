@@ -474,8 +474,13 @@ void interface::resolve()
 		resolveCollision();
 
 		for(unsigned int i = 0; i < things.size(); i++){
-			if((things[i]->cMove->state[things[i]->connectFlag].i & 1 && things[i]->cMove != P[i]->pick()->airNeutral) || things[i]->cMove->track)
+			if(things[i]->cMove->track) 
 				things[i]->checkFacing(P[(things[i]->ID)%2]);
+			else if (i < 2){
+				if(things[i]->cMove->state[things[i]->connectFlag].i & 1 && P[i]->cMove != P[i]->pick()->airNeutral){
+					things[i]->checkFacing(P[(things[i]->ID)%2]);
+				}
+			}
 		}
 
 		for(unsigned int i = 0; i < P.size(); i++){

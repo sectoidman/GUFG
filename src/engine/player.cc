@@ -594,7 +594,8 @@ void instance::flip()
 		}
 }
 
-void instance::checkFacing(instance * other){
+void instance::checkFacing(instance * other)
+{
 	int comparison, midpoint;
 	midpoint = collision.x + collision.w/2;
 	comparison = other->collision.x + other->collision.w/2;
@@ -609,7 +610,6 @@ void instance::checkFacing(instance * other){
 	} else if (midpoint > comparison){
 		if(facing == 1) flip();
 	}
-
 	updateRects();
 }
 
