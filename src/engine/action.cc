@@ -181,11 +181,11 @@ void action::build(const char * n)
 				hitbox.push_back(aux::defineRectArray(buffer));
 				if(i == totalStartup[currHit]+active[currHit]) currHit++;
 			} else {
-				std::vector<SDL_Rect> hi(1);
+				std::vector<SDL_Rect> hi;
 				hitbox.push_back(hi);
 			}
 		} else {
-			std::vector<SDL_Rect> hi(1);
+			std::vector<SDL_Rect> hi;
 			hitbox.push_back(hi);
 		}
 	}
