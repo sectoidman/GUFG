@@ -1121,15 +1121,15 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		for(int m = (int)things.size()-1; m >= 0; m--){
 			if(m != (int)i && !taken[m] && !connect[i]){
-				for(int j = 0; j < things[i]->hitComplexity; j++){
-					for(int k = 0; k < things[m]->regComplexity; k++){
+				for(unsigned int j = 0; j < things[i]->hitbox.size(); j++){
+					for(unsigned int k = 0; k < things[m]->hitreg.size(); k++){
 						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
 							if(things[i]->acceptTarget(things[m])){
 								connect[i] = 1;
 								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[m]->CHState());
 								if(i < P.size()) push[i] = s[i].push;
-								k = things[m]->regComplexity;
-								j = things[i]->hitComplexity;
+								k = things[m]->hitreg.size();
+								j = things[i]->hitbox.size();
 								taken[m] = 1;
 								hitBy[m] = i;
 								break;

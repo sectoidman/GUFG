@@ -5,6 +5,7 @@
 
 #include <SDL/SDL.h>
 #include <string>
+#include <vector>
 #include <SDL/SDL_opengl.h>
 #include <stdio.h>
 #ifndef AUXIL
@@ -23,7 +24,7 @@ class aux{
 		static SDL_Surface* load_image(std::string filename);
 		static void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination);
 		static bool checkCollision(SDL_Rect, SDL_Rect);
-		static int defineRectArray(char*, SDL_Rect*&); 
+		static std::vector<SDL_Rect> defineRectArray(char*); 
 };
 
 struct attractor{

@@ -21,13 +21,6 @@ action::~action()
 		if(sprite[i] != NULL) SDL_FreeSurface(sprite[i]);
 		if(fSprite[i] != NULL) SDL_FreeSurface(fSprite[i]);
 	}*/
-	if(collision) delete [] collision;
-	if(hitbox) delete [] hitbox;
-	if(hitreg) delete [] hitreg;
-	if(hitComplexity) delete [] hitComplexity;
-	if(regComplexity) delete [] regComplexity;
-	if(deltaComplexity) delete [] deltaComplexity;
-	if(delta) delete [] delta;
 	if(state) delete [] state;
 	if(gain) delete [] gain;
 	if(distortion) delete distortion;
@@ -168,40 +161,32 @@ void action::build(const char * n)
 
 	parseProperties(savedBuffer, 0);
 
-	collision = new SDL_Rect[frames];
-	hitbox = new SDL_Rect*[frames];
-	hitComplexity = new int[frames];
-	hitreg = new SDL_Rect*[frames];
-	regComplexity = new int[frames];
-	delta = new SDL_Rect*[frames];
-	deltaComplexity = new int[frames];
-
 	int currHit = 0;
 
 	for(int i = 0; i < frames; i++){
 		while(read.get() != '$'); read.ignore(2);
-		read >> collision[i].x >> collision[i].y >> collision[i].w >> collision[i].h;
+		SDL_Rect co;
+		read >> co.x >> co.y >> co.w >> co.h;
+		collision.push_back(co);
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
-		regComplexity[i] = aux::defineRectArray(buffer, hitreg[i]);
+		hitreg.push_back(aux::defineRectArray(buffer));
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
-		deltaComplexity[i] = aux::defineRectArray(buffer, delta[i]);
+		delta.push_back(aux::defineRectArray(buffer));
 		if(hits > 0 && currHit < hits){
 			if(i > totalStartup[currHit] && i <= totalStartup[currHit]+active[currHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
-				hitComplexity[i] = aux::defineRectArray(buffer, hitbox[i]);
+				hitbox.push_back(aux::defineRectArray(buffer));
 				if(i == totalStartup[currHit]+active[currHit]) currHit++;
 			} else {
-				hitComplexity[i] = 1;
-				hitbox[i] = new SDL_Rect[1];
-				hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
+				std::vector<SDL_Rect> hi(1);
+				hitbox.push_back(hi);
 			}
 		} else {
-			hitComplexity[i] = 1;
-			hitbox[i] = new SDL_Rect[1];
-			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
+			std::vector<SDL_Rect> hi(1);
+			hitbox.push_back(hi);
 		}
 	}
 	read.close();
@@ -720,52 +705,45 @@ bool action::check(SDL_Rect &p, int meter[])
 	return 1;
 }
 
-void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)
+void action::pollRects(int f, int cFlag, SDL_Rect &c, std::vector<SDL_Rect> &r, std::vector<SDL_Rect> &b)
 {
-	if(modifier && basis) basis->pollRects(c, r, rc, b, hc, currentFrame, connectFlag);
+	if(modifier && basis) basis->pollRects(f, cFlag, c, r, b);
 	else {
 		if(f >= frames) f = frames-1;
-		if(rc > 0 && r) delete [] r;
-		if(hc > 0 && b) delete [] b;
-		rc = regComplexity[f];
-		hc = hitComplexity[f];
-		r = new SDL_Rect[rc];
-		b = new SDL_Rect[hc];
 
 		c.x = collision[f].x; c.w = collision[f].w;
 		c.y = collision[f].y; c.h = collision[f].h;
 
-		SDL_Rect * tempreg = hitreg[f];
-		for(int i = 0; i < rc; i++){
-			r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
-			r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
+		r.clear();
+		for(unsigned int i = 0; i < hitreg[f].size(); i++){
+			SDL_Rect reg;
+			reg.x = hitreg[f][i].x; reg.w = hitreg[f][i].w;
+			reg.y = hitreg[f][i].y; reg.h = hitreg[f][i].h;
+			r.push_back(reg);
 		}
-		SDL_Rect * temphit = hitbox[f];
-		for(int i = 0; i < hc; i++){
+		b.clear();
+		for(unsigned int i = 0; i < hitbox[f].size(); i++){
+			SDL_Rect hit;
 			if(cFlag > calcCurrentHit(f)) {
-				b[i].x = 0; b[i].w = 0;
-				b[i].y = 0; b[i].h = 0;
+				hit.x = 0; hit.w = 0;
+				hit.y = 0; hit.h = 0;
+				i = hitbox[f].size();
 			} else {
-				b[i].x = temphit[i].x; b[i].w = temphit[i].w;
-				b[i].y = temphit[i].y; b[i].h = temphit[i].h;
+				hit.x = hitbox[f][i].x; hit.w = hitbox[f][i].w;
+				hit.y = hitbox[f][i].y; hit.h = hitbox[f][i].h;
 			}
+			b.push_back(hit);
 		}
 	}
 }
 
-void action::pollDelta(SDL_Rect *& d, int & dc, int f)
+std::vector<SDL_Rect> action::pollDelta(int f)
 {
-	if(modifier && basis) basis->pollDelta(d, dc, currentFrame);
-	else{
-		if(f >= frames) f = frames-1;
-		dc = deltaComplexity[f];
-		d = new SDL_Rect[dc];
-		SDL_Rect * tempdelta = delta[f];
-		for(int i = 0; i < dc; i++){
-			d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
-			d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
-		}
-	}
+	if(modifier && basis){ 
+		std::vector<SDL_Rect> ret = basis->pollDelta(currentFrame);
+		for(SDL_Rect i:delta[f]) ret.push_back(i);
+		return ret;
+	} else return delta[f];
 }
 
 int action::displace(int x, int &y, int f)

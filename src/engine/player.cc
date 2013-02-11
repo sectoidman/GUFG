@@ -41,8 +41,6 @@ void instance::init()
 	deltaY = 0;
 	lCorner = 0;
 	rCorner = 0;
-	regComplexity = 0;
-	hitComplexity = 0;
 	currentFrame = 0;
 	connectFlag = 0;
 	hitFlag = 0;
@@ -328,13 +326,13 @@ void player::readScripts()
 void instance::updateRects()
 {
 	if(cMove != NULL) {
-		cMove->pollRects(collision, hitreg, regComplexity, hitbox, hitComplexity, currentFrame, connectFlag);
-		for(int i = 0; i < hitComplexity; i++){
+		cMove->pollRects(currentFrame, connectFlag, collision, hitreg, hitbox);
+		for(unsigned int i = 0; i < hitbox.size(); i++){
 			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
 			else hitbox[i].x += posX;
 			hitbox[i].y += posY;
 		}
-		for(int i = 0; i < regComplexity; i++){
+		for(unsigned int i = 0; i < hitreg.size(); i++){
 			if(facing == -1) hitreg[i].x = posX - hitreg[i].x - hitreg[i].w;
 			else hitreg[i].x += posX;
 			hitreg[i].y += posY;
@@ -691,9 +689,8 @@ void instance::pullVolition()
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
 			int complexity;
-			SDL_Rect * temp;
-			cMove->pollDelta(temp, complexity, currentFrame);
-			for(int i = 0; i < complexity; i++){
+			std::vector<SDL_Rect> temp = cMove->pollDelta(currentFrame);
+			for(int i = 0; i < temp.size(); i++){
 				temp[i].x *= facing;
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
@@ -701,7 +698,6 @@ void instance::pullVolition()
 					}
 				}
 			}
-			delete [] temp;
 		}
 	}
 }

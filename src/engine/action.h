@@ -61,8 +61,8 @@ public:
 	virtual int arbitraryPoll(int q, int f);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
-	virtual void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
-	virtual void pollDelta(SDL_Rect *&, int&, int);
+	virtual void pollRects(int, int, SDL_Rect&, std::vector<SDL_Rect>&, std::vector<SDL_Rect>&);
+	virtual std::vector<SDL_Rect> pollDelta(int);
 	virtual int displace(int, int&, int);
 	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
@@ -154,13 +154,8 @@ public:
 	char * tempRiposte;
 	char * tempOnHold;
 
-	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
-	SDL_Rect ** hitbox;     //Same but for hitboxes
-	SDL_Rect ** hitreg;     //Same but for hitreg boxes
-	SDL_Rect ** delta;       //Same but for position on the screen.
-	int * hitComplexity;
-	int * regComplexity;
-	int * deltaComplexity;
+	std::vector<SDL_Rect> collision;   //This will be an array of rects that are the collision boxes for the action per frame
+	std::vector<std::vector<SDL_Rect> > hitreg, hitbox, delta;       //Same but for position on the screen.
 
 	std::vector<int> width, height;
 	std::vector<GLuint> sprite;

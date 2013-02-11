@@ -15,9 +15,8 @@ public:
 	virtual ~instance();
 	virtual avatar * pick() { return v; }
 
-	SDL_Rect *hitbox, *hitreg, collision;
-	int hitComplexity, regComplexity;
-	std::vector<SDL_Rect> momentum;
+	SDL_Rect collision;
+	std::vector<SDL_Rect> hitbox, hitreg, momentum;
 	bool secondInstance;
 	int posX, posY;
 	int facing;
