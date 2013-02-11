@@ -498,7 +498,7 @@ void interface::resolve()
 		}
 
 		for(unsigned int i = 0; i < things.size(); i++){
-			if(things[i]->hitbox[0].w > 0){
+			if(!things[i]->hitbox.empty()){
 				if(!freeze) P[(things[i]->ID)%2]->checkBlocking();
 			}
 		}

@@ -723,16 +723,14 @@ void action::pollRects(int f, int cFlag, SDL_Rect &c, std::vector<SDL_Rect> &r, 
 		}
 		b.clear();
 		for(unsigned int i = 0; i < hitbox[f].size(); i++){
-			SDL_Rect hit;
 			if(cFlag > calcCurrentHit(f)) {
-				hit.x = 0; hit.w = 0;
-				hit.y = 0; hit.h = 0;
 				i = hitbox[f].size();
 			} else {
+				SDL_Rect hit;
 				hit.x = hitbox[f][i].x; hit.w = hitbox[f][i].w;
 				hit.y = hitbox[f][i].y; hit.h = hitbox[f][i].h;
+				b.push_back(hit);
 			}
-			b.push_back(hit);
 		}
 	}
 }
