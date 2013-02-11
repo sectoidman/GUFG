@@ -583,6 +583,11 @@ void instance::step()
 	}
 }
 
+void instance::neutralize()
+{
+	pick()->neutralize(cMove, aerial, meter);
+}
+
 void instance::flip()
 {
 		if(facing == -1){

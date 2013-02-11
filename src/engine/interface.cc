@@ -511,8 +511,6 @@ void interface::resolve()
 
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
-
-		/*Draw the sprites*/
 	}
 }
 

@@ -32,6 +32,7 @@ public:
 	int connectFlag, hitFlag;
 	bool dead:1;
 	int throwInvuln;
+	virtual void neutralize();
 	virtual bool acceptTarget(instance*);
 	virtual bool CHState() { return 0; }
 	virtual void init();
