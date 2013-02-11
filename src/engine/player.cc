@@ -688,9 +688,8 @@ void instance::pullVolition()
 	setPosition(posX + facing*dx, posY);
 	if(freeze < 1){
 		if(currentFrame < cMove->frames){
-			int complexity;
 			std::vector<SDL_Rect> temp = cMove->pollDelta(currentFrame);
-			for(int i = 0; i < temp.size(); i++){
+			for(unsigned int i = 0; i < temp.size(); i++){
 				temp[i].x *= facing;
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
@@ -861,7 +860,7 @@ void instance::invertVectors(int operation)
 
 bool player::CHState()
 {
-	if(hitbox[0].w > 0) return true;
+	if(!hitbox.empty()) return true;
 	else return cMove->CHState(currentFrame);
 }
 
