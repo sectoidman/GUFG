@@ -19,6 +19,7 @@ interface::interface()
 {
 	numChars = 2;
 	stats = new chart(numChars);
+	killTimer = false;
 	shortcut = false;
 	continuous = false;
 	analytics = false;
@@ -351,7 +352,7 @@ void interface::runTimer()
 			}
 			else roundInit();
 		}
-	} else timer--;
+	} else if(!killTimer || timer > 99 * 60)timer--;
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/

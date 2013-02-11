@@ -128,6 +128,7 @@ public:
 
 	int timer;
 	bool roundEnd:1;
+	bool killTimer:1;
 	int endTimer;
 };
 #endif
