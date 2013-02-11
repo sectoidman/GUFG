@@ -1155,8 +1155,9 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
 			int health = things[things[i]->ID-1]->meter[0];
+			bool actuallyDoesDamage = (s[hitBy[i]].damage != 0);
 			s[hitBy[i]].damage *= prorate[things[hitBy[i]]->ID-1];
-			if(s[hitBy[i]].damage < 1) s[hitBy[i]].damage = 1;
+			if(actuallyDoesDamage && s[hitBy[i]].damage == 0) s[hitBy[i]].damage = 1;
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
 			if(i < P.size() && hitBy[i] < (int)P.size()){
 				if(things[i]->particleType == -2){
