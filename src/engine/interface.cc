@@ -1212,10 +1212,9 @@ void interface::resolveHits()
 			things[i]->momentum.push_back(residual);
 		}
 	}
-
-/*	if(connect[0] || connect[1]){
+	if(connect[0] || connect[1]){
 		resolveCollision();
-	}*/
+	}
 
 	for(unsigned int i = 0; i < P.size(); i++) {
 		things[i]->throwInvuln--;
