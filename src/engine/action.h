@@ -80,7 +80,7 @@ public:
 	virtual void draw(int);
 	virtual void drawBoxen(int, int, int);
 
-	hStat *stats, *CHStats;
+	std::vector<hStat> stats, CHStats;
 	int stop;
 	int throwinvuln;
 	bool crouch:1;

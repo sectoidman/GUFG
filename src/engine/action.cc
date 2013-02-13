@@ -17,16 +17,11 @@ action::action(const char * n) : frames(0), hits(0)
 action::~action()
 {
 	if(!this) return;
-/*	for(int i = 0; i < frames; i++){
-		if(sprite[i] != NULL) SDL_FreeSurface(sprite[i]);
-		if(fSprite[i] != NULL) SDL_FreeSurface(fSprite[i]);
-	}*/
 	if(state) delete [] state;
 	if(gain) delete [] gain;
 	if(distortion) delete distortion;
 	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
-	if(stats) delete [] stats;
 	if(next) delete next;
 	if(onConnect) delete [] onConnect;
 }
@@ -51,7 +46,6 @@ void action::zero()
 	freezeFrame = -1; freezeLength = 0;
 	blockState.i = 0;
 	isProjectile = 0;
-	stats = NULL;
 	cost = 0;
 	dies = 0;
 	fch = 0;
@@ -261,8 +255,8 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		hits = atoi(token);
 		if(hits > 0){
-			stats = new hStat[hits];
-			CHStats = new hStat[hits];
+			stats = std::vector<hStat> (hits);
+			CHStats = std::vector<hStat> (hits);
 			onConnect = new action*[hits];
 			tempOnConnect = new char*[hits];
 			for (int i = 0; i < hits; i++){
@@ -271,7 +265,6 @@ bool action::setParameter(char * buffer)
 				stats[i].hitState.i = 0;
 			}
 		} else {
-			stats = NULL;
 			onConnect = NULL;
 		}
 		state = new cancelField[hits+1];
