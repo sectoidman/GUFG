@@ -232,7 +232,6 @@ bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 
 std::vector<SDL_Rect> aux::defineRectArray(char * definition)
 {
-	unsigned int d = strlen(definition);
 	std::vector<SDL_Rect> ret;
 	std::vector<char *> coordinate;
 	char * token;

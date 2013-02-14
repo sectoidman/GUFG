@@ -51,11 +51,11 @@ void harness::readInput()
 void arcadeHarness::initContainers()
 {
 	for(frame i:currentFrame){
-		for(bool j:i.axis) j = 0;
+		for(bool j:i.axis) j = false;
 		for(int j:i.pos) j = 0;
-		for(bool j:i.neg) j = 0;
+		for(bool j:i.neg) j = false;
 	}
-	for(int i:counter) i = 0;
+	for(int& i:counter) i = 0;
 }
 
 void arcadeHarness::initContainers(int players, int buttons)

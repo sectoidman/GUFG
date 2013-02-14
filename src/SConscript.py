@@ -9,8 +9,8 @@ gufg_exec_src = [File("game.cc")]
 ##ENVIRONMENT
 env = Environment(CXXFLAGS="-O2 -g\
                             -Wall\
-                            -Wno-parentheses\
                             -Wno-unused-but-set-variable\
+                            -Wno-parentheses\
                             -std=c++11",
                   LIBS=['SDL','SDLmain','SDL_image','SDL_mixer','GL', 'GLU', 'glut'])
 

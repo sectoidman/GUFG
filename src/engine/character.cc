@@ -42,7 +42,7 @@ character::~character()
 void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], std::vector<int> down, std::vector<bool> up, SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
 {
 	action * t = NULL;
-	if (cMove == NULL){
+	if (cMove == NULL || cMove->state[cFlag].i & 1){
 		if(sMove){
 			if(sMove->check(p, meter)){
 				if(!dryrun) sMove->execute(neutral, meter, f, cFlag, hFlag);
@@ -73,7 +73,7 @@ void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& s
 		} else {
 			action * r;
 			neutralize(r, aerial, meter);
-			if (!sMove && f + 4 > cMove->frames && cMove->frames > 10 && cMove != r) {
+			if (!sMove && f + 6 > cMove->frames && cMove->frames > 10 && cMove != r) {
 				int l = 0, m = 0;
 				sMove = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, aerial);
 				if(r == sMove || cMove == sMove) sMove = NULL;
@@ -365,11 +365,11 @@ instance * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(action *& cMove, action *& bMove, action *& sMove, hStat & s, int & connectFlag, int frame, int *& meter)
+void avatar::connect(status &current, int *& meter)
 {
-	action * t = cMove->connect(meter, connectFlag, frame);
+	action * t = current.move->connect(meter, current.connect, current.frame);
 	if(t != NULL){
-		bMove = t;
+		current.bufferedMove = t;
 	}
 }
 
@@ -448,7 +448,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	return ret;
 }
 
-int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
+int character::takeHit(status &current, hStat & s, int blockType, int &hitType, int *& meter)
 {
 	bool dead = false;
 	int freeze = 0;
@@ -456,7 +456,7 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 		freeze = s.stun/4 + 10;
 		if(s.ghostHit) freeze = 0;
 	} else freeze = s.pause;
-	hitType = cMove->takeHit(s, blockType, frame, connectFlag, hitFlag);
+	hitType = current.move->takeHit(s, blockType, current.frame, current.connect, current.hit);
 	if(hitType == 1) meter[0] -= s.damage;
 	else if(hitType > -2) { 
 		meter[0] -= s.chip;
@@ -470,22 +470,22 @@ int character::takeHit(action *& cMove, hStat & s, int blockType, int &frame, in
 	}
 	if(dead == true){
 		die->init(s.stun+s.untech);
-		cMove = die;
-		aerial = true;
+		current.move = die;
+		current.aerial = true;
 	} else if (hitType == 1){
-		if(s.launch) aerial = true;
+		if(s.launch) current.aerial = true;
 		if(s.stun != 0){
-			frame = 0;
-			if(aerial){
+			current.frame = 0;
+			if(current.aerial){
 				untech->init(s.stun+s.untech);
-				cMove = untech;
+				current.move = untech;
 				resetAirOptions(meter);
-			} else if(cMove->crouch){
+			} else if(current.move->crouch){
 				crouchReel->init(s.stun + s.stun/5);
-				cMove = crouchReel;
+				current.move = crouchReel;
 			} else {
 				reel->init(s.stun);
-				cMove = reel;
+				current.move = reel;
 			}
 		}
 	} else if (hitType == -1) {
@@ -535,13 +535,13 @@ void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag
 	resetAirOptions(meter);
 }
 
-void avatar::step(action *& cMove, int &currentFrame, int &freeze, int &connectFlag, int &hitFlag, int *& meter)
+void avatar::step(status &current, int *& meter)
 {
-	if(freeze <= 0) {
-		cMove->step(meter, currentFrame, connectFlag, hitFlag);
-		if(cMove->hits > 0 && cMove->stats[connectFlag-1].noConnect) connectFlag--;
+	if(current.freeze <= 0) {
+		current.move->step(meter, current.frame, current.connect, current.hit);
+		if(current.move->hits > 0 && current.move->stats[current.connect-1].noConnect) current.connect--;
 		tick(meter);
 	} else {
-		freeze--;
+		current.freeze--;
 	}
 }
