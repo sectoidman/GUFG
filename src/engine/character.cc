@@ -42,7 +42,7 @@ character::~character()
 void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], std::vector<int> down, std::vector<bool> up, SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
 {
 	action * t = NULL;
-	if (cMove == NULL || cMove->state[cFlag].i & 1){
+	if (cMove == NULL){
 		if(sMove){
 			if(sMove->check(p, meter)){
 				if(!dryrun) sMove->execute(neutral, meter, f, cFlag, hFlag);
