@@ -661,7 +661,7 @@ void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p,
 	dummyMove = current.move;
 	save = current.move;
 	int n = current.frame;
-	pick()->prepHooks(current.freeze, dummyMove, current.bufferedMove, current.reversal, inputBuffer, down, up, p, current.frame, current.connect, current.hit, dryrun, current.aerial, meter);
+	pick()->prepHooks(current, dummyMove, inputBuffer, down, up, p, dryrun, meter);
 	if(dummyMove){
 		if(dummyMove->throwinvuln == 1 && current.throwInvuln <= 0) current.throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;

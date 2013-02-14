@@ -39,54 +39,54 @@ character::~character()
 	}
 }
 
-void avatar::prepHooks(int freeze, action *& cMove, action *& bMove, action *& sMove, int inputBuffer[30], std::vector<int> down, std::vector<bool> up, SDL_Rect &p, int &f, int &cFlag, int &hFlag, bool dryrun, bool aerial, int *& meter)
+void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun, int *& meter)
 {
 	action * t = NULL;
 	if (cMove == NULL){
-		if(sMove){
-			if(sMove->check(p, meter)){
-				if(!dryrun) sMove->execute(neutral, meter, f, cFlag, hFlag);
-				cMove = sMove;
-				if(!dryrun) sMove = NULL;
+		if(current.reversal){
+			if(current.reversal->check(p, meter)){
+				if(!dryrun) current.reversal->execute(neutral, meter, current.frame, current.connect, current.hit);
+				cMove = current.reversal;
+				if(!dryrun) current.reversal = NULL;
 			}
 		}
-		else neutralize(cMove, aerial, meter);
+		else neutralize(cMove, current.aerial, meter);
 	}
-	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, cFlag, hFlag, aerial);
+	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, current.connect, current.hit, current.aerial);
 	if(t == NULL){
-		if(cMove->window(f)){
+		if(cMove->window(current.frame)){
 			if(cMove->attempt->check(p, meter)){
 				t = cMove->attempt;
 			}
 		}
-		else if(cMove->holdFrame == f){
+		else if(cMove->holdFrame == current.frame){
 			if(cMove->onHold->activate(down, up, cMove->holdCheck, 0, 0, meter, p)){
 				t = cMove->onHold;
 			}
 		}
-		if (bMove != NULL && freeze <= 0) {
+		if (current.bufferedMove != NULL && current.freeze <= 0) {
 			if(!dryrun){ 
-				bMove->execute(cMove, meter, f, cFlag, hFlag);
+				current.bufferedMove->execute(cMove, meter, current.frame, current.connect, current.hit);
 			}
-			cMove = bMove;
-			if(!dryrun) bMove = NULL;
+			cMove = current.bufferedMove;
+			if(!dryrun) current.bufferedMove = NULL;
 		} else {
 			action * r;
-			neutralize(r, aerial, meter);
-			if (!sMove && f + 6 > cMove->frames && cMove->frames > 10 && cMove != r) {
+			neutralize(r, current.aerial, meter);
+			if (!current.reversal && current.frame + 6 > cMove->frames && cMove->frames > 10 && cMove != r) {
 				int l = 0, m = 0;
-				sMove = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, aerial);
-				if(r == sMove || cMove == sMove) sMove = NULL;
+				current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
+				if(r == current.reversal || cMove == current.reversal) current.reversal = NULL;
 			}
 		}
 	}
 	if(t != NULL) {
-		if(freeze > 0){
-			if(bMove == NULL){ 
-				if(!dryrun) bMove = t;
+		if(current.freeze > 0){
+			if(current.bufferedMove == NULL){ 
+				if(!dryrun) current.bufferedMove = t;
 			}
 		} else {
-			if(!dryrun) t->execute(cMove, meter, f, cFlag, hFlag);
+			if(!dryrun) t->execute(cMove, meter, current.frame, current.connect, current.hit);
 			cMove = t;
 		}
 	}

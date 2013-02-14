@@ -19,12 +19,12 @@ public:
 	bool spriteCheck(action *&, int);
 	virtual void draw(action *&, int);//Pass sprite information up.
 	virtual action * createMove(char*);
-	virtual action * hook(int[40], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 	virtual void build(const char*, const char*);
 	virtual void processMove(action * m);
 	virtual void sortMove(action *, char*);
-	virtual void prepHooks(int, action *&, action *&, action *&, int[], std::vector<int>, std::vector<bool>, SDL_Rect &, int&, int&, int&, bool, bool, int*&);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(status&, action *&, int[], std::vector<int>, std::vector<bool>, SDL_Rect &, bool, int*&);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
+	virtual action * hook(int[], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 	virtual bool death(action *&, int, int) { return 0; }
 	virtual int takeHit(status&, hStat&, int, int&, int*&) { return 0; }
 	virtual void getName(const char*, const char*);
@@ -63,7 +63,7 @@ public:
 	virtual void land(action *&, int &, int &, int &, int *&);
 	virtual void sortMove(action *, char*);
 	virtual int takeHit(status&, hStat&, int, int&, int*&);
-	virtual action * hook(int[40], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
+	virtual action * hook(int[], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 
 	looping * dead;
 	action * airNeutral;
