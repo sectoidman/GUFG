@@ -787,7 +787,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	}
 	s.untech -= combo;
 	int f;
-	if(slide) s.lift += 7 - s.lift/5;
+	if(slide) s.lift += 15 - abs(s.lift)/4;
 	f = instance::takeHit(combo, s, p);
 	current.freeze = f;
 	if(particleType != 1){
