@@ -1220,6 +1220,7 @@ void interface::resolveHits()
 		things[i]->throwInvuln--;
 		P[i]->hover--;
 	}
+
 	for(unsigned int i = 0; i < P.size(); i++) {
 		if(things[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
