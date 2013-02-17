@@ -320,8 +320,8 @@ void player::drawMeters(int n)
 	}
 	glFlush();
 	int h = 0;
-	if(cMove){
-		if(cMove->hidesMeter) h = cMove->cost;
+	if(current.move){
+		if(current.move->hidesMeter) h = current.move->cost;
 	}
 	pick()->drawMeters(ID, h, meter);
 	glFlush();
@@ -385,12 +385,12 @@ void instance::drawBoxen()
 void instance::draw()
 {
 	int realPosY = collision.y;
-	int realPosX = posX;
+	int realPosX = current.posX;
 	glEnable(GL_TEXTURE_2D);
 	if(spriteCheck()){
 		for(unsigned int i = 0; i < hitreg.size(); i++){
 			if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
-			if(facing == 1){
+			if(current.facing == 1){
 				if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
 			} else {
 				if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
@@ -398,7 +398,7 @@ void instance::draw()
 		}
 		for(unsigned int i = 0; i < hitbox.size(); i++){
 			if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-			if(facing == 1){
+			if(current.facing == 1){
 				if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
 			} else {
 				if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
@@ -409,8 +409,8 @@ void instance::draw()
 		glPushMatrix();
 			glTranslatef(realPosX, -realPosY, 0);
 			glPushMatrix();
-				glScalef(facing, 1.0, 1.0);
-				pick()->draw(cMove, currentFrame);
+				glScalef(current.facing, 1.0, 1.0);
+				pick()->draw(current.move, current.frame);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -439,8 +439,8 @@ void player::drawHitParticle()
 			break;
 		}
 		glPushMatrix();
-			glTranslatef(posX, -collision.y, 0.0f);
-			glRectf((GLfloat)(-10*facing), (GLfloat)(-collision.h), (GLfloat)(50 * facing), (GLfloat)(-collision.h - 40));
+			glTranslatef(current.posX, -collision.y, 0.0f);
+			glRectf((GLfloat)(-10*current.facing), (GLfloat)(-collision.h), (GLfloat)(50 * current.facing), (GLfloat)(-collision.h - 40));
 		glPopMatrix();
 		particleLife--;
 	} else blockType = 0;
@@ -525,7 +525,7 @@ void action::draw(int f)
 
 bool instance::spriteCheck()
 {
-	if(cMove) return cMove->spriteCheck(currentFrame);
+	if(current.move) return current.move->spriteCheck(current.frame);
 	else return 0;
 }
 bool avatar::spriteCheck(action *& cMove, int f)

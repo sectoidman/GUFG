@@ -52,11 +52,11 @@ bool projectile::turn(int &ID)
 	return 1;
 }
 
-int projectile::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
+int projectile::takeHit(status &current, hStat &s, int blockType, int &hitType, int *& meter)
 {
-	if(s.killsProjectile || cMove->hittable){ 
-		die->execute(cMove, meter, frame, connectFlag, hitFlag);
-		cMove = die;
+	if(s.killsProjectile || current.move->hittable){ 
+		die->execute(current.move, meter, current.frame, current.connect, current.hit);
+		current.move = die;
 		return 1;
 	} else return 0;
 }

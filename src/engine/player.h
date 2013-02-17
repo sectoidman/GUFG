@@ -18,20 +18,9 @@ public:
 	SDL_Rect collision;
 	std::vector<SDL_Rect> hitbox, hitreg, momentum;
 	bool secondInstance;
-	int posX, posY;
-	int facing;
-	int deltaX, deltaY; 
 	int ID;
 	int inputBuffer[30];
-	int currentFrame;
-	int freeze;
 	void checkFacing(instance*);
-	action * cMove;
-	action * bMove;
-	action * sMove;
-	int connectFlag, hitFlag;
-	bool dead:1;
-	int throwInvuln;
 	virtual void neutralize();
 	virtual bool acceptTarget(instance*);
 	virtual bool CHState() { return 0; }
@@ -58,13 +47,13 @@ public:
 	int middle();
 	void flip();
 
-	bool aerial;
+	status current;
+
 	int * meter;
 	int particleType;
 	int blockType;
 	int counter;
 	bool boxen:1;
-	bool rCorner, lCorner;
 protected:
 	avatar * v;
 };

@@ -37,28 +37,28 @@ instance::instance(avatar * f)
 
 void instance::init()
 {
-	deltaX = 0;
-	deltaY = 0;
-	lCorner = 0;
-	rCorner = 0;
-	currentFrame = 0;
-	connectFlag = 0;
-	hitFlag = 0;
+	current.deltaX = 0;
+	current.deltaY = 0;
+	current.lCorner = 0;
+	current.rCorner = 0;
+	current.frame = 0;
+	current.connect = 0;
+	current.hit = 0;
 	counter = 0;
-	cMove = NULL;
-	bMove = NULL;
-	sMove = NULL;
-	freeze = 0;
-	aerial = false;
-	dead = false;
+	current.move = NULL;
+	current.bufferedMove = NULL;
+	current.reversal = NULL;
+	current.freeze = 0;
+	current.aerial = false;
+	current.dead = false;
 	for(int i = 0; i < 30; i++) inputBuffer[i] = 5;
 }
 
 bool instance::acceptTarget(instance * m)
 {
 	if(m->ID == ID) return 0;
-	else if(m->cMove->hittable) return 1;
-	else return m->pick()->acceptTarget(cMove, currentFrame);
+	else if(m->current.move->hittable) return 1;
+	else return m->pick()->acceptTarget(current.move, current.frame);
 }
 
 void player::init()
@@ -90,7 +90,7 @@ void player::roundInit()
 {
 	char buffer[200];
 	instance::init();
-	pick()->neutralize(cMove, aerial, meter);
+	pick()->neutralize(current.move, current.aerial, meter);
 	if(v) pick()->init(meter);
 	if(record){
 		sprintf(buffer, "%i-%s.sh", ID, pick()->name);
@@ -105,16 +105,16 @@ void player::roundInit()
 	slide = 0;
 	stick = 0;
 	hover = 0;
-	throwInvuln = 0;
+	current.throwInvuln = 0;
 	particleLife = 0;
 	particleType = 0;
 	search = 0;
 	if(ID == 1){ 
-		facing = 1;
-		posX = 1400;
+		current.facing = 1;
+		current.posX = 1400;
 	} else {
-		facing = -1;
-		posX = 1800;
+		current.facing = -1;
+		current.posX = 1800;
 	}
 	updateRects();
 }
@@ -325,29 +325,29 @@ void player::readScripts()
 
 void instance::updateRects()
 {
-	if(cMove != NULL) {
-		cMove->pollRects(currentFrame, connectFlag, collision, hitreg, hitbox);
+	if(current.move != NULL) {
+		current.move->pollRects(current.frame, current.connect, collision, hitreg, hitbox);
 		for(unsigned int i = 0; i < hitbox.size(); i++){
-			if(facing == -1) hitbox[i].x = posX - hitbox[i].x - hitbox[i].w;
-			else hitbox[i].x += posX;
-			hitbox[i].y += posY;
+			if(current.facing == -1) hitbox[i].x = current.posX - hitbox[i].x - hitbox[i].w;
+			else hitbox[i].x += current.posX;
+			hitbox[i].y += current.posY;
 		}
 		for(unsigned int i = 0; i < hitreg.size(); i++){
-			if(facing == -1) hitreg[i].x = posX - hitreg[i].x - hitreg[i].w;
-			else hitreg[i].x += posX;
-			hitreg[i].y += posY;
+			if(current.facing == -1) hitreg[i].x = current.posX - hitreg[i].x - hitreg[i].w;
+			else hitreg[i].x += current.posX;
+			hitreg[i].y += current.posY;
 		}
-		if(facing == -1) collision.x = posX - collision.x - collision.w;
-		else collision.x += posX;
-		collision.y += posY;
+		if(current.facing == -1) collision.x = current.posX - collision.x - collision.w;
+		else collision.x += current.posX;
+		collision.y += current.posY;
 	}
 }
 
 void instance::combineDelta()
 {
 	for(unsigned int i = 0; i < momentum.size(); i++){
-		deltaX += momentum[i].x;
-		deltaY += momentum[i].y;
+		current.deltaX += momentum[i].x;
+		current.deltaY += momentum[i].y;
 
 		if(momentum[i].w <= 0) {
 			momentum.erase(momentum.begin()+i);
@@ -355,8 +355,8 @@ void instance::combineDelta()
 		}
 		else momentum[i].w--;
 	}
-	posX += deltaX;
-	posY += deltaY;
+	current.posX += current.deltaX;
+	current.posY += current.deltaY;
 
 	updateRects();
 }
@@ -365,10 +365,10 @@ void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;
 	int midpoint, xDist, yDist;
-	if(facing == 1) midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2;
-	else midpoint = posX + facing*cMove->collision[currentFrame].x + facing*collision.w/2 + collision.w%2;
+	if(current.facing == 1) midpoint = current.posX + current.facing*current.move->collision[current.frame].x + current.facing*collision.w/2;
+	else midpoint = current.posX + current.facing*current.move->collision[current.frame].x + current.facing*collision.w/2 + collision.w%2;
 	resultant.x = p->x; resultant.y = p->y; resultant.w = 0; resultant.h = 0;
-	if(!aerial) resultant.y = 0;
+	if(!current.aerial) resultant.y = 0;
 	int directionX = 0, directionY = 0;
 	if(midpoint > p->posX) directionX = 1;
 	else if(midpoint < p->posX) directionX = -1;
@@ -380,7 +380,7 @@ void instance::enforceAttractor(attractor* p)
 	if(totalDist < p->eventHorizon && p->eventHorizon > 0){
 		resultant.x = 0;
 		resultant.y = 0;
-		deltaX = 0; deltaY = 0;
+		current.deltaX = 0; current.deltaY = 0;
 		momentum.clear();
 	} else {
 		switch(p->type){
@@ -419,11 +419,11 @@ void instance::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y > floor && aerial == 0){
-		aerial = 1;
-		sMove = NULL;
+	if(collision.y > floor && current.aerial == 0){
+		current.aerial = 1;
+		current.reversal = NULL;
 	}
-	else if(aerial && !freeze){ 
+	else if(current.aerial && !current.freeze){ 
 		momentum.push_back(g);
 	}
 }
@@ -432,19 +432,19 @@ void player::enforceGravity(int grav, int floor)
 {
 	SDL_Rect g; g.x = 0; g.y = grav; g.w = 0; g.h = 0;
 
-	if(collision.y > floor && aerial == 0){
-		aerial = 1;
-		sMove = NULL;
+	if(collision.y > floor && current.aerial == 0){
+		current.aerial = 1;
+		current.reversal = NULL;
 	}
-	else if(aerial && !freeze){ 
-		if(hover > 0 && deltaY - 6 < 0) g.y = -deltaY;
+	else if(current.aerial && !current.freeze){ 
+		if(hover > 0 && current.deltaY - 6 < 0) g.y = -current.deltaY;
 		momentum.push_back(g);
 	}
 }
 
 void player::checkBlocking()
 {
-	blockType = -pick()->checkBlocking(cMove, inputBuffer, connectFlag, hitFlag, aerial);
+	blockType = -pick()->checkBlocking(current.move, inputBuffer, current.connect, current.hit, current.aerial);
 	updateRects();
 }
 
@@ -454,27 +454,27 @@ void player::enforceFloor(int floor)
 
 	if (collision.y < floor){
 		if(elasticY){
-			deltaY = -deltaY;
+			current.deltaY = -current.deltaY;
 			elasticY = false;
 		} else if (slide) {
-			deltaY = 0;
-			if(cMove == pick()->untech || cMove == pick()->die){ 
-				if(deltaX < 0) deltaX++;
-				else if(deltaX > 0) deltaX--;
-				aerial = 1;
+			current.deltaY = 0;
+			if(current.move == pick()->untech || current.move == pick()->die){ 
+				if(current.deltaX < 0) current.deltaX++;
+				else if(current.deltaX > 0) current.deltaX--;
+				current.aerial = 1;
 			} else {
-				deltaX = 0;
+				current.deltaX = 0;
 				slide = 0;
 			}
 		} else {
-			if(aerial == 1){
+			if(current.aerial == 1){
 				land();
 				updateRects();
-				deltaX = 0;
+				current.deltaX = 0;
 			}
-			deltaY = 0;
+			current.deltaY = 0;
 		}
-		posY = floor - cMove->collision[currentFrame].y;
+		current.posY = floor - current.move->collision[current.frame].y;
 	}
 	updateRects();
 }
@@ -488,47 +488,47 @@ void player::checkCorners(int left, int right)
 	/*Offset variables. I could do these calculations on the fly, but it's easier this way.
 	Essentially, this represents the offset between the sprite and the collision box, since
 	even though we're *checking* collision, we're still *moving* spr*/
-	int lOffset = posX - collision.x;
-	int rOffset = posX - (collision.x + collision.w);
+	int lOffset = current.posX - collision.x;
+	int rOffset = current.posX - (collision.x + collision.w);
 	if(collision.x <= left){
 		if(elasticX){
-			lCorner = 0;
-			if(deltaX < 0) deltaX = -deltaX;
+			current.lCorner = 0;
+			if(current.deltaX < 0) current.deltaX = -current.deltaX;
 			elasticX = false;
 		}
 		if(collision.x <= 50){
-			if(facing == 1) lCorner = 1;
+			if(current.facing == 1) current.lCorner = 1;
 			if (stick) {
-				if(cMove == pick()->untech || cMove == pick()->die){
-					deltaX = 0;
-					deltaY = 0;
+				if(current.move == pick()->untech || current.move == pick()->die){
+					current.deltaX = 0;
+					current.deltaY = 0;
 					momentum.clear();
 				} else stick = 0;
 			}
 		}
 		if(collision.x < left)
-			posX = left + lOffset;
-	} else lCorner = 0;
+			current.posX = left + lOffset;
+	} else current.lCorner = 0;
 	if(collision.x + collision.w >= right){
 		if(elasticX){
-			rCorner = 0;
-			if(deltaX > 0) deltaX = -deltaX; 
+			current.rCorner = 0;
+			if(current.deltaX > 0) current.deltaX = -current.deltaX; 
 			elasticX = false;
 		}
 		if(collision.x + collision.w >= 3150){ 
-			if(facing == -1) rCorner = 1;
+			if(current.facing == -1) current.rCorner = 1;
 			if (stick) {
-				if(cMove == pick()->untech || cMove == pick()->die){
-					deltaX = 0;
-					deltaY = 0;
+				if(current.move == pick()->untech || current.move == pick()->die){
+					current.deltaX = 0;
+					current.deltaY = 0;
 					momentum.clear();
 				} else stick = 0;
 			}
 		}
 		if(collision.x + collision.w > right){
-			posX = right + rOffset;
+			current.posX = right + rOffset;
 		}
-	} else rCorner = 0;
+	} else current.rCorner = 0;
 	updateRects(); //Update rectangles or the next collision check will be wrong.
 }
 
@@ -537,65 +537,65 @@ void player::land()
 	for(unsigned int i = 0; i < momentum.size(); i++){
 		if(momentum[i].y > 0) momentum.erase(momentum.begin()+i);
 	}
-	pick()->land(cMove, currentFrame, connectFlag, hitFlag, meter);
-	sMove = NULL;
-	aerial = false;
+	pick()->land(current.move, current.frame, current.connect, current.hit, meter);
+	current.reversal = NULL;
+	current.aerial = false;
 }
 
 void instance::follow(instance *other){
-	if(currentFrame >= cMove->followStart && currentFrame <= cMove->followEnd){
-		if(abs(other->posX - posX) > cMove->followXRate){ 
-			if(other->posX > posX) posX += cMove->followXRate;
-			else if(other->posX < posX) posX -= cMove->followXRate;
-		} else posX += other->posX - posX;
-		if(abs(other->posY - posY) > cMove->followYRate){ 
-			if(other->posY > posY) posY += cMove->followYRate;
-			else if(other->posY < posY) posY -= cMove->followYRate;
-		} else posY += other->posY - posY;
+	if(current.frame >= current.move->followStart && current.frame <= current.move->followEnd){
+		if(abs(other->current.posX - current.posX) > current.move->followXRate){ 
+			if(other->current.posX > current.posX) current.posX += current.move->followXRate;
+			else if(other->current.posX < current.posX) current.posX -= current.move->followXRate;
+		} else current.posX += other->current.posX - current.posX;
+		if(abs(other->current.posY - current.posY) > current.move->followYRate){ 
+			if(other->current.posY > current.posY) current.posY += current.move->followYRate;
+			else if(other->current.posY < current.posY) current.posY -= current.move->followYRate;
+		} else current.posY += other->current.posY - current.posY;
 	}
 }
 
 void instance::step()
 {
-	action * m = cMove;
-	if(pick()->death(cMove, currentFrame, counter)) dead = true;
-	if(m != cMove){
-		currentFrame = 0;
-		connectFlag = 0;
-		hitFlag = 0;
+	action * m = current.move;
+	if(pick()->death(current.move, current.frame, counter)) current.dead = true;
+	if(m != current.move){
+		current.frame = 0;
+		current.connect = 0;
+		current.hit = 0;
 	}
-	if(posX > 3300 || posX < -100) dead = true;
-	if(!freeze) counter++;
-	pick()->step(cMove, currentFrame, freeze, connectFlag, hitFlag, meter);
-	if(cMove && currentFrame >= cMove->frames){
-		if(cMove->modifier && cMove->basis){ 
-			currentFrame = cMove->currentFrame;
-			connectFlag = cMove->connectFlag;
-			hitFlag = cMove->hitFlag;
-			cMove = cMove->basis;
+	if(current.posX > 3300 || current.posX < -100) current.dead = true;
+	if(!current.freeze) counter++;
+	pick()->step(current, meter);
+	if(current.move && current.frame >= current.move->frames){
+		if(current.move->modifier && current.move->basis){ 
+			current.frame = current.move->currentFrame;
+			current.connect = current.move->connectFlag;
+			current.hit = current.move->hitFlag;
+			current.move = current.move->basis;
 		} else {
-			if(cMove->next) cMove = cMove->next;
-			else pick()->neutralize(cMove, aerial, meter);
-			currentFrame = 0;
-			connectFlag = 0;
-			hitFlag = 0;
+			if(current.move->next) current.move = current.move->next;
+			else pick()->neutralize(current.move, current.aerial, meter);
+			current.frame = 0;
+			current.connect = 0;
+			current.hit = 0;
 		}
 	}
 }
 
 void instance::neutralize()
 {
-	pick()->neutralize(cMove, aerial, meter);
+	pick()->neutralize(current.move, current.aerial, meter);
 }
 
 void instance::flip()
 {
-		if(facing == -1){
-			posX += collision.x - (posX + (posX - collision.x - collision.w));
-			facing = 1;
+		if(current.facing == -1){
+			current.posX += collision.x - (current.posX + (current.posX - collision.x - collision.w));
+			current.facing = 1;
 		} else { 
-			posX += (collision.w + collision.x) - posX*2 + collision.x;
-			facing = -1;
+			current.posX += (collision.w + collision.x) - current.posX*2 + collision.x;
+			current.facing = -1;
 		}
 }
 
@@ -605,15 +605,15 @@ void instance::checkFacing(instance * other)
 	midpoint = collision.x + collision.w/2;
 	comparison = other->collision.x + other->collision.w/2;
 
-	if(other->posX < posX) comparison += collision.w % 2; 
+	if(other->current.posX < current.posX) comparison += collision.w % 2; 
 	else midpoint += collision.w % 2;
 
-	if (lCorner) facing = 1;
-	else if (rCorner) facing = -1;
+	if (current.lCorner) current.facing = 1;
+	else if (current.rCorner) current.facing = -1;
 	else if (midpoint < comparison){
-		if(facing == -1) flip();
+		if(current.facing == -1) flip();
 	} else if (midpoint > comparison){
-		if(facing == 1) flip();
+		if(current.facing == 1) flip();
 	}
 	updateRects();
 }
@@ -632,10 +632,10 @@ int instance::passSignal(int sig)
 		action * a; 
 		a = pick()->moveSignal(counter);
 		if(a != NULL){
-			cMove = a;
-			currentFrame = 0;
-			connectFlag = 0;
-			hitFlag = 0;
+			current.move = a;
+			current.frame = 0;
+			current.connect = 0;
+			current.hit = 0;
 			return 1;
 		} else return 0;
 		break;
@@ -647,7 +647,7 @@ int instance::passSignal(int sig)
 
 void instance::pushInput(std::vector<bool> axis)
 {
-	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*facing + axis[3]*facing;
+	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*current.facing + axis[3]*current.facing;
 	inputBuffer[0] = temp;
 
 	for(int i = 29; i > 0; i--){
@@ -658,19 +658,19 @@ void instance::pushInput(std::vector<bool> axis)
 void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun)
 {
 	action * dummyMove, *save;
-	dummyMove = cMove;
-	save = cMove;
-	int n = currentFrame;
-	pick()->prepHooks(freeze, dummyMove, bMove, sMove, inputBuffer, down, up, p, currentFrame, connectFlag, hitFlag, dryrun, aerial, meter);
+	dummyMove = current.move;
+	save = current.move;
+	int n = current.frame;
+	pick()->prepHooks(current, dummyMove, inputBuffer, down, up, p, dryrun, meter);
 	if(dummyMove){
-		if(dummyMove->throwinvuln == 1 && throwInvuln <= 0) throwInvuln = 1;
-		if(dummyMove->throwinvuln == 2) throwInvuln = 6;
+		if(dummyMove->throwinvuln == 1 && current.throwInvuln <= 0) current.throwInvuln = 1;
+		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;
 	}
 	if(!dryrun){ 
-		cMove = dummyMove;
-		if(currentFrame != n || cMove != save) cMove->playSound(ID);
+		current.move = dummyMove;
+		if(current.frame != n || current.move != save) current.move->playSound(ID);
 	}
-	else cMove = save;
+	else current.move = save;
 }
 
 void instance::pullVolition()
@@ -680,22 +680,22 @@ void instance::pullVolition()
 		if(momentum[i].h > 0 && momentum[i].h > top){ 
 			top = (short)momentum[i].h;
 		}
-	if(cMove->stop){
-		if(currentFrame == 0){
-			if(cMove->stop & 1){ 
-				deltaX = 0; deltaY = 0;
+	if(current.move->stop){
+		if(current.frame == 0){
+			if(current.move->stop & 1){ 
+				current.deltaX = 0; current.deltaY = 0;
 			}
-			if(cMove->stop & 2)
+			if(current.move->stop & 2)
 				momentum.clear();
 		}
 	}
-	int dx = cMove->displace(posX, posY, currentFrame);
-	setPosition(posX + facing*dx, posY);
-	if(freeze < 1){
-		if(currentFrame < cMove->frames){
-			std::vector<SDL_Rect> temp = cMove->pollDelta(currentFrame);
+	int dx = current.move->displace(current.posX, current.posY, current.frame);
+	setPosition(current.posX + current.facing*dx, current.posY);
+	if(current.freeze < 1){
+		if(current.frame < current.move->frames){
+			std::vector<SDL_Rect> temp = current.move->pollDelta(current.frame);
 			for(unsigned int i = 0; i < temp.size(); i++){
-				temp[i].x *= facing;
+				temp[i].x *= current.facing;
 				if(temp[i].x || temp[i].y || temp[i].h){
 					if(abs((short)temp[i].h) >= top || top == 0){
 						momentum.push_back(temp[i]);
@@ -708,7 +708,7 @@ void instance::pullVolition()
 
 int instance::middle()
 {
-	if(facing == 1) return collision.x + collision.w / 2;
+	if(current.facing == 1) return collision.x + collision.w / 2;
 	else return collision.x + collision.w / 2 + collision.w % 2;
 }
 
@@ -758,10 +758,10 @@ void controller::readEvent(SDL_Event & event, frame &t)
 void instance::connect(int combo, hStat & s)
 {
 	if(s.pause < 0){
-		if(!s.ghostHit) freeze = s.stun/4+10;
-	} else freeze = s.pause;
-	pick()->connect(cMove, bMove, sMove, s, connectFlag, currentFrame, meter);
-	if(bMove == cMove) bMove = NULL;
+		if(!s.ghostHit) current.freeze = s.stun/4+10;
+	} else current.freeze = s.pause;
+	pick()->connect(current, meter);
+	if(current.bufferedMove == current.move) current.bufferedMove = NULL;
 }
 
 int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
@@ -770,11 +770,11 @@ int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(pick()->turn(ID)){ 
 			flip();
 			invertVectors(1);
-			deltaX = -deltaX;
-			freeze = 0;
+			current.deltaX = -current.deltaX;
+			current.freeze = 0;
 		}
 	}
-	return pick()->takeHit(cMove, s, blockType, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);
+	return pick()->takeHit(current, s, blockType, particleType, meter);
 }
 
 int player::takeHit(int combo, hStat & s, SDL_Rect &p)
@@ -787,27 +787,27 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	}
 	s.untech -= combo;
 	int f;
-	if(slide) s.lift += 7 - s.lift/5;
+	if(slide) s.lift += 15 - abs(s.lift)/4;
 	f = instance::takeHit(combo, s, p);
-	freeze = f;
+	current.freeze = f;
 	if(particleType != 1){
-		temp = cMove->blockSuccess();
+		temp = current.move->blockSuccess();
 	}
-	if(temp && temp != cMove && temp->check(p, meter)){
+	if(temp && temp != current.move && temp->check(p, meter)){
 		combo = 0;
-		bMove = temp;
-		freeze = 0;
+		current.bufferedMove = temp;
+		current.freeze = 0;
 	} else {
 		particleLife = 8;
-		deltaX /= 6;
-		if(deltaY < 0) deltaY /= 60; 
-		else deltaY /= 6;
+		current.deltaX /= 6;
+		if(current.deltaY < 0) current.deltaY /= 60; 
+		else current.deltaY /= 6;
 		momentum.clear();
-		if(aerial) v.y = s.lift;
+		if(current.aerial) v.y = s.lift;
 		else v.y = 0;
-		if(aerial) v.x = -(s.push/5 + s.blowback);
+		if(current.aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
-		v.x *= facing;
+		v.x *= current.facing;
 		momentum.push_back(v);
 		if(particleType == -1){ 
 			v.x /= 5;
@@ -817,22 +817,22 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 			v.x = 0;
 			v.y = 0;
 		}
-		if(aerial && s.hover) hover = s.hover;
+		if(current.aerial && s.hover) hover = s.hover;
 		else hover = 0;
-		if(aerial && s.wallBounce) elasticX = true;
+		if(current.aerial && s.wallBounce) elasticX = true;
 		else elasticX = false;
-		if(aerial && s.floorBounce) elasticY = true;
+		if(current.aerial && s.floorBounce) elasticY = true;
 		else elasticY = false;
-		if(aerial && s.slide) slide = true;
+		if(current.aerial && s.slide) slide = true;
 		else slide = false;
-		if(aerial && s.stick) stick = true;
+		if(current.aerial && s.stick) stick = true;
 		else stick = false;
 	}
-	if(cMove == pick()->die){ 
-		bMove = NULL;
-		currentFrame = 0;
-		connectFlag = 0;
-		hitFlag = 0;
+	if(current.move == pick()->die){ 
+		current.bufferedMove = NULL;
+		current.frame = 0;
+		current.connect = 0;
+		current.hit = 0;
 	}
 	updateRects();
 	if(s.ghostHit) return 0;
@@ -866,13 +866,13 @@ void instance::invertVectors(int operation)
 bool player::CHState()
 {
 	if(!hitbox.empty()) return true;
-	else return cMove->CHState(currentFrame);
+	else return current.move->CHState(current.frame);
 }
 
 void instance::setPosition(int x, int y)
 {
-	posX = x;
-	posY = y;
+	current.posX = x;
+	current.posY = y;
 	updateRects();
 }
 
@@ -882,9 +882,9 @@ void player::getThrown(action *toss, int x, int y)
 	hStat dummy;
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
-	setPosition(toss->arbitraryPoll(27, currentFrame)*xSign + abs(x), toss->arbitraryPoll(26, currentFrame) + y);
-	pick()->neutralize(cMove, aerial, meter);
-	pick()->takeHit(cMove, dummy, 0, currentFrame, connectFlag, hitFlag, particleType, aerial, meter);
+	setPosition(toss->arbitraryPoll(27, current.frame)*xSign + abs(x), toss->arbitraryPoll(26, current.frame) + y);
+	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->takeHit(current, dummy, 0, particleType, meter);
 	updateRects();
 }
 

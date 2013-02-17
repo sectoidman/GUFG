@@ -10,6 +10,7 @@
 #include <stdio.h>
 #ifndef AUXIL
 #define AUXIL
+class action;
 class aux{
 	private:
 		static void scale  (SDL_Surface* source, SDL_Surface* destination);
@@ -41,10 +42,23 @@ struct attractor{
 	int effectCode;
 };
 
-class vect
-{
+class vect{
 public:
 	float x, y, z;
 	void unitNormal(float, float, float, float, float, float, float, float, float);
+};
+
+struct status{
+	int posX, posY;
+	int facing;
+	int deltaX, deltaY; 
+	int frame;
+	int freeze;
+	bool aerial;
+	bool rCorner, lCorner;
+	action *move, *bufferedMove, *reversal;
+	int connect, hit;
+	bool dead:1;
+	int throwInvuln;
 };
 #endif
