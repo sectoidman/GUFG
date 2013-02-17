@@ -19,6 +19,7 @@ interface::interface()
 {
 	numChars = 2;
 	stats = new chart(numChars);
+	killTimer = false;
 	shortcut = false;
 	continuous = false;
 	analytics = false;
@@ -239,13 +240,14 @@ void interface::roundInit()
 	bg.y = -900;
 
 	for(player* i:P){
-		i->posY = floor;
+		i->current.posY = floor;
 		i->roundInit();
 	}
 	/*Initialize input containers*/
 	initContainers();
 	for(unsigned int i = 0; i < P.size(); i++){
 		combo[i] = 0;
+		prorate[i] = 1.0;
 		damage[i] = 0;
 		illegit[i] = 0;
 	}
@@ -268,8 +270,8 @@ void interface::runTimer()
 	int plus;
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(select[i] == true){
-			if(things[i]->cMove != NULL){
-				plus = (things[i]->cMove->arbitraryPoll(31, things[i]->currentFrame));
+			if(things[i]->current.move != NULL){
+				plus = (things[i]->current.move->arbitraryPoll(31, things[i]->current.frame));
 				if(plus != 0){
 					timer += plus;
 					if(timer > 60*99) timer = 60*99 + 1;
@@ -286,8 +288,8 @@ void interface::runTimer()
 		 */
 		if(endTimer > 0) endTimer--;
 		else{
-			things[0]->momentumComplexity = 0;
-			things[1]->momentumComplexity = 0;
+			things[0]->momentum.clear();
+			things[1]->momentum.clear();
 			if(P[0]->rounds == numRounds || P[1]->rounds == numRounds){
 				if(!oldReplay){
 					if(P[0]->rounds == P[1]->rounds);
@@ -350,7 +352,7 @@ void interface::runTimer()
 			}
 			else roundInit();
 		}
-	} else timer--;
+	} else if(!killTimer || timer > 99 * 60)timer--;
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
@@ -377,9 +379,9 @@ void interface::resolve()
 			things[1]->getMove(currentFrame[1].pos, currentFrame[1].neg, prox, 1);
 			for(unsigned int i = 0; i < things.size(); i++){
 				if(i < P.size()){
-					if(things[(i+1)%2]->aerial) prox.y = 1;
+					if(things[(i+1)%2]->current.aerial) prox.y = 1;
 					else prox.y = 0;
-					prox.x = things[(i+1)%2]->throwInvuln;
+					prox.x = things[(i+1)%2]->current.throwInvuln;
 				}
 				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, 0);
 			}
@@ -392,7 +394,7 @@ void interface::resolve()
 		for(unsigned int i = 0; i < P.size(); i++){
 			if(P[i]->record){
 				int temp;
-				if(P[i]->facing == -1){
+				if(P[i]->current.facing == -1){
 					temp = currentFrame[i].axis[3];
 					currentFrame[i].axis[3] = currentFrame[i].axis[2];
 					currentFrame[i].axis[2] = temp;
@@ -400,7 +402,7 @@ void interface::resolve()
 				currentFrame[i].pos[5] = 0;
 				currentFrame[i].neg[5] = 0;
 				P[i]->record->command[0].push_back(currentFrame[i]);
-				if(P[i]->facing == -1){
+				if(P[i]->current.facing == -1){
 					temp = currentFrame[i].axis[3];
 					currentFrame[i].axis[3] = currentFrame[i].axis[2];
 					currentFrame[i].axis[2] = temp;
@@ -427,10 +429,11 @@ void interface::resolve()
 		for(instance *i:things) i->updateRects();
 
 		for(unsigned int i = 0; i < things.size(); i++){
-			if(!things[i]->freeze){
-				if(things[i]->cMove->stop & 4);
+			if(!things[i]->current.freeze){
+				if(things[i]->current.move->stop & 4);
 				else { 
 					things[i]->pullVolition();
+					if(things[i]->ID) things[i]->follow(things[(things[i]->ID)%2]);
 					things[i]->combineDelta();
 					things[i]->enforceGravity(grav, floor);
 				}
@@ -456,7 +459,7 @@ void interface::resolve()
 		int dx = things[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + things[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
 		/*If a character leaves the camera boundaries, follow them immediately*/
 		if(!dx){
-			dx = -(((bg.x + screenWidth/2) - things[0]->posX) + ((bg.x + screenWidth/2) - things[1]->posX));
+			dx = -(((bg.x + screenWidth/2) - things[0]->current.posX) + ((bg.x + screenWidth/2) - things[1]->current.posX));
 			dx /= 10;
 			/*Otherwise follow the middle at a rate of (disparity from middle view)/10.
 			 *Chosen by trial and error, this rate feels most natural
@@ -470,22 +473,28 @@ void interface::resolve()
 
 		resolveCollision();
 
-		if(things[0]->cMove->state[things[0]->connectFlag].i & 1 && things[0]->cMove != P[0]->pick()->airNeutral)
-			P[0]->checkFacing(P[1]);
-		if(things[1]->cMove->state[things[1]->connectFlag].i & 1 && things[1]->cMove != P[1]->pick()->airNeutral) 
-			P[1]->checkFacing(P[0]);
+		for(unsigned int i = 0; i < things.size(); i++){
+			if(things[i]->current.move->track) 
+				things[i]->checkFacing(P[(things[i]->ID)%2]);
+			else if (i < 2){
+				if(things[i]->current.move->state[things[i]->current.connect].i & 1 && P[i]->current.move != P[i]->pick()->airNeutral){
+					things[i]->checkFacing(P[(things[i]->ID)%2]);
+				}
+			}
+		}
 
 		for(unsigned int i = 0; i < P.size(); i++){
-			if(!things[i]->aerial) { things[i]->deltaX = 0; things[i]->deltaY = 0; }
+			if(!things[i]->current.aerial) { things[i]->current.deltaX = 0; things[i]->current.deltaY = 0; }
 
 			if(!roundEnd){
-				switch (P[i]->pick()->comboState(things[i]->cMove)){ 
+				switch (P[i]->pick()->comboState(things[i]->current.move)){ 
 				case -2: 
 					illegit[(i+1)%2] = 1;
 					break;
 				case 0:
 					combo[(i+1)%2] = 0;
 					damage[(i+1)%2] = 0;
+					prorate[(i+1)%2] = 1.0;
 					P[i]->elasticX = 0;
 					P[i]->elasticY = 0;
 					illegit[(i+1)%2] = 0;
@@ -495,15 +504,13 @@ void interface::resolve()
 		}
 
 		for(unsigned int i = 0; i < things.size(); i++){
-			if(things[i]->hitbox[0].w > 0){
+			if(!things[i]->hitbox.empty()){
 				if(!freeze) P[(things[i]->ID)%2]->checkBlocking();
 			}
 		}
 
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
-
-		/*Draw the sprites*/
 	}
 }
 
@@ -513,7 +520,7 @@ void interface::cleanup()
 		if(!rMenu && select[0] && select[1]){
 			for(unsigned int i = 0; i < things.size(); i++){
 				things[i]->step();
-				if(i > 1 && things[i]->dead){ 
+				if(i > 1 && things[i]->current.dead){ 
 					things.erase(things.begin()+i);
 					i--;
 				}
@@ -551,45 +558,47 @@ void interface::resolveSummons()
 	instance * larva;
 	int x, y, f;
 	for(unsigned int i = 0; i < things.size(); i++){
-		if(things[i]->cMove){
-			temp = things[i]->cMove;
-			if(temp->arbitraryPoll(50, things[i]->currentFrame)){
+		if(things[i]->current.move){
+			temp = things[i]->current.move;
+			if(temp->arbitraryPoll(50, things[i]->current.frame)){
 				larva = things[i]->pick()->spawn(temp);
-				switch (temp->arbitraryPoll(56, things[i]->currentFrame)){
-				case 0:
-					larva->ID = 0;
-					break;
-				case 1:
-					larva->ID = things[i]->ID;
-					break;
-				case 2:
+				if(larva){
+					switch (temp->arbitraryPoll(56, things[i]->current.frame)){
+					case 0:
+						larva->ID = 0;
+						break;
+					case 1:
+						larva->ID = things[i]->ID;
+						break;
+					case 2:
 					larva->ID = (things[i]->ID)%2+1;
-					break;
+						break;
+					}
+					if(temp->arbitraryPoll(51, things[i]->current.frame)){
+						x = things[(things[i]->ID)%2]->current.posX;
+						f = things[(things[i]->ID)%2]->current.facing;
+					} else {
+						x = things[(things[i]->ID)-1]->current.posX;
+						f = things[(things[i]->ID)-1]->current.facing;
+					}
+					if(temp->arbitraryPoll(52, things[i]->current.frame))
+						y = things[(things[i]->ID)%2]->current.posY;
+					else if(temp->arbitraryPoll(53, things[i]->current.frame))
+						y = 0;
+					else
+						y = things[(things[i]->ID)-1]->current.posY;
+					x += temp->arbitraryPoll(54, things[i]->current.frame)*f;
+					y += temp->arbitraryPoll(55, things[i]->current.frame);
+					larva->current.facing = f;
+					larva->setPosition(x, y);
+					things.push_back(larva);
+					larva->init();
 				}
-				if(temp->arbitraryPoll(51, things[i]->currentFrame)){
-					x = things[(things[i]->ID)%2]->posX;
-					f = things[(things[i]->ID)%2]->facing;
-				} else {
-					x = things[(things[i]->ID)-1]->posX;
-					f = things[(things[i]->ID)-1]->facing;
-				}
-				if(temp->arbitraryPoll(52, things[i]->currentFrame))
-					y = things[(things[i]->ID)%2]->posY;
-				else if(temp->arbitraryPoll(53, things[i]->currentFrame))
-					y = 0;
-				else
-					y = things[(things[i]->ID)-1]->posY;
-				x += temp->arbitraryPoll(54, things[i]->currentFrame)*f;
-				y += temp->arbitraryPoll(55, things[i]->currentFrame);
-				larva->facing = f;
-				larva->setPosition(x, y);
-				things.push_back(larva);
-				larva->init();
 			}
 		}
 	}
 	for(unsigned int i = 0; i < things.size(); i++){
-		if(things[i]->cMove && things[i]->currentFrame == things[i]->cMove->distortSpawn) tvec = things[i]->cMove->distortion;
+		if(things[i]->current.move && things[i]->current.frame == things[i]->current.move->distortSpawn) tvec = things[i]->current.move->distortion;
 		if(tvec != NULL){ 
 			avec = new attractor;
 			avec->x = tvec->x;
@@ -599,10 +608,10 @@ void interface::resolveSummons()
 			avec->radius = tvec->radius;
 			avec->effectCode = tvec->effectCode;
 			avec->eventHorizon = tvec->eventHorizon;
-			if(things[i]->facing == 1) avec->posX = things[i]->collision.x + things[i]->collision.w / 2;
+			if(things[i]->current.facing == 1) avec->posX = things[i]->collision.x + things[i]->collision.w / 2;
 			else avec->posX = things[i]->collision.x + things[i]->collision.w / 2 + things[i]->collision.w % 2;
 			avec->posY = things[i]->collision.y + things[i]->collision.h/2;
-			if(avec->type == 0) avec->x *= things[i]->facing;
+			if(avec->type == 0) avec->x *= things[i]->current.facing;
 			switch(tvec->ID){
 			case 1:
 				avec->ID = things[i]->ID;
@@ -657,7 +666,7 @@ void gameInstance::genInput()
 					if(!P[i]->currentMacro->genEvent(0, P[i]->iterator, currentFrame[i])){
 						P[i]->currentMacro = NULL;
 					} else {
-						if(P[i]->facing == -1){
+						if(P[i]->current.facing == -1){
 							bool s = currentFrame[i].axis[2];
 							currentFrame[i].axis[2] = currentFrame[i].axis[3];
 							currentFrame[i].axis[3] = s;
@@ -920,15 +929,15 @@ void interface::keyConfig(int ID)
 	}
 }
 
-void interface::dragBG(int deltaX)
+void interface::dragBG(int dx)
 {
 	int dy = 900;
-	bg.x += deltaX;
+	bg.x += dx;
 	if(bg.x < 0) bg.x = 0;
 	else if(bg.x > bg.w - screenWidth) bg.x = bg.w - screenWidth;
 	for(unsigned int i = 0; i < P.size(); i++){
-		if(dy < things[i]->posY + things[i]->collision.h){
-			dy = things[i]->posY + things[i]->collision.h;
+		if(dy < things[i]->current.posY + things[i]->collision.h){
+			dy = things[i]->current.posY + things[i]->collision.h;
 			if(dy > bg.h) dy = bg.h;
 		}
 	}
@@ -1036,34 +1045,34 @@ void gameInstance::unitCollision(instance *a, instance *b)
 	if(a->middle() > b->middle()){ right = a; left = b; }
 	else if(a->middle() < b->middle()){ right = b; left = a; }
 	else {
-		if(a->facing == 1 && b->facing == -1){ left = a; right = b; }
-		else if(b->facing == 1 && a->facing == -1){ left = b; right = a; }
+		if(a->current.facing == 1 && b->current.facing == -1){ left = a; right = b; }
+		else if(b->current.facing == 1 && a->current.facing == -1){ left = b; right = a; }
 	}
 
 	/*Collision between players. Unfortunately a lot of specialcasing necessary here.*/
 
-	int rLOffset = right->posX - right->collision.x;
-	int rROffset = right->posX - (right->collision.x + right->collision.w);
-	int lLOffset = left->posX - left->collision.x;
-	int lROffset = left->posX - (left->collision.x + left->collision.w);
-	int dOffset = (left->deltaX - right->deltaX) % 2;
+	int rLOffset = right->current.posX - right->collision.x;
+	int rROffset = right->current.posX - (right->collision.x + right->collision.w);
+	int lLOffset = left->current.posX - left->collision.x;
+	int lROffset = left->current.posX - (left->collision.x + left->collision.w);
+	int dOffset = (left->current.deltaX - right->current.deltaX) % 2;
 	int totalMiddle = (right->collision.x + left->collision.x + left->collision.w)/2;
-	if(abs(left->deltaX) > abs(right->deltaX)) totalMiddle += dOffset;
+	if(abs(left->current.deltaX) > abs(right->current.deltaX)) totalMiddle += dOffset;
 
-	if(left->lCorner){ 
-		right->posX = left->collision.x + left->collision.w + rLOffset;
+	if(left->current.lCorner){ 
+		right->current.posX = left->collision.x + left->collision.w + rLOffset;
 	}
-	else if(right->rCorner) left->posX = right->collision.x + lROffset;
+	else if(right->current.rCorner) left->current.posX = right->collision.x + lROffset;
 	else {
-		right->posX = totalMiddle + right->collision.w + rROffset;
-		left->posX = totalMiddle - left->collision.w + lLOffset;
+		right->current.posX = totalMiddle + right->collision.w + rROffset;
+		left->current.posX = totalMiddle - left->collision.w + lLOffset;
 	}
 	if(left->collision.x < 50) {
 		left->updateRects();
-		right->posX = left->collision.x + left->collision.w + rLOffset;
+		right->current.posX = left->collision.x + left->collision.w + rLOffset;
 	} else if (right->collision.x + right->collision.w > 3150) {
 		right->updateRects();
-		left->posX = right->collision.x + lROffset;
+		left->current.posX = right->collision.x + lROffset;
 	}
 	right->updateRects();
 	left->updateRects();
@@ -1073,25 +1082,25 @@ void interface::resolveCollision()
 {
 	if (aux::checkCollision(P[0]->collision, P[1]->collision))
 		unitCollision(P[0], P[1]);
-	prox.w = abs(things[0]->posX - things[1]->posX);
-	prox.h = abs(things[0]->posY - things[1]->posY);
+	prox.w = abs(things[0]->current.posX - things[1]->current.posX);
+	prox.h = abs(things[0]->current.posY - things[1]->current.posY);
 }
 
 void interface::resolveThrows()
 {
 	bool isThrown[2] = {false, false};
 	for(unsigned int i = 0; i < P.size(); i++){
-		if(things[i]->cMove->arbitraryPoll(28, things[i]->currentFrame)){ 
+		if(things[i]->current.move->arbitraryPoll(28, things[i]->current.frame)){ 
 			isThrown[(i+1)%2] = true;
 		}
 	}
 	if(isThrown[0] && isThrown[1]){
-		things[0]->cMove = P[0]->pick()->throwBreak;
-		things[1]->cMove = P[1]->pick()->throwBreak;
+		things[0]->current.move = P[0]->pick()->throwBreak;
+		things[1]->current.move = P[1]->pick()->throwBreak;
 	} else {
 		for(unsigned int i = 0; i < P.size(); i++){
 			if(isThrown[i]){
-				P[i]->getThrown(things[(i+1)%2]->cMove, things[(i+1)%2]->posX*things[(i+1)%2]->facing, things[(i+1)%2]->posY);
+				P[i]->getThrown(things[(i+1)%2]->current.move, things[(i+1)%2]->current.posX*things[(i+1)%2]->current.facing, things[(i+1)%2]->current.posY);
 				P[i]->checkFacing(P[(i+1)%2]);
 			}
 		}
@@ -1105,7 +1114,6 @@ void interface::resolveHits()
 	std::vector<bool> connect(things.size());
 	std::vector<bool> taken(things.size());
 	std::vector<int> hitBy(things.size());
-	int h;
 	int push[2];
 	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
@@ -1115,19 +1123,19 @@ void interface::resolveHits()
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(int h = (int)things.size()-1; h >= 0; h--){
-			if(h != i && !taken[h] && !connect[i]){
-				for(int j = 0; j < things[i]->hitComplexity; j++){
-					for(int k = 0; k < things[h]->regComplexity; k++){
-						if(aux::checkCollision(things[i]->hitbox[j], things[h]->hitreg[k])){
-							if(things[i]->acceptTarget(things[h])){
+		for(int m = (int)things.size()-1; m >= 0; m--){
+			if(m != (int)i && !taken[m] && !connect[i]){
+				for(unsigned int j = 0; j < things[i]->hitbox.size(); j++){
+					for(unsigned int k = 0; k < things[m]->hitreg.size(); k++){
+						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
+							if(things[i]->acceptTarget(things[m])){
 								connect[i] = 1;
-								things[i]->cMove->pollStats(s[i], things[i]->currentFrame, things[h]->CHState());
+								things[i]->current.move->pollStats(s[i], things[i]->current.frame, things[m]->CHState());
 								if(i < P.size()) push[i] = s[i].push;
-								k = things[h]->regComplexity;
-								j = things[i]->hitComplexity;
-								taken[h] = 1;
-								hitBy[h] = i;
+								k = things[m]->hitreg.size();
+								j = things[i]->hitbox.size();
+								taken[m] = 1;
+								hitBy[m] = i;
 								break;
 							}
 						}
@@ -1140,13 +1148,16 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(i < P.size() && things[i]->cMove->allowed.i < 128 && !things[i]->aerial) P[i]->checkFacing(P[(i+1)%2]);
+			if(i < P.size() && things[i]->current.move->allowed.i < 128 && !things[i]->current.aerial) P[i]->checkFacing(P[(i+1)%2]);
 		}
 	}
 
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
-			h = things[things[i]->ID-1]->meter[0];
+			int health = things[things[i]->ID-1]->meter[0];
+			bool actuallyDoesDamage = (s[hitBy[i]].damage != 0);
+			s[hitBy[i]].damage *= prorate[things[hitBy[i]]->ID-1];
+			if(actuallyDoesDamage && s[hitBy[i]].damage == 0) s[hitBy[i]].damage = 1;
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
 			if(i < P.size() && hitBy[i] < (int)P.size()){
 				if(things[i]->particleType == -2){
@@ -1155,22 +1166,25 @@ void interface::resolveHits()
 					ths.ghostHit = true;
 					ths.stun = 0;
 					ths.push = s[hitBy[i]].push;
-					if(things[i]->aerial) ths.push += s[hitBy[i]].blowback;
+					if(things[i]->current.aerial) ths.push += s[hitBy[i]].blowback;
 					things[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
 			if(i < P.size() && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
-			if(hit[hitBy[i]] == 1) things[hitBy[i]]->hitFlag = things[hitBy[i]]->connectFlag;
+			if(hit[hitBy[i]] == 1){ 
+				things[hitBy[i]]->current.hit = things[hitBy[i]]->current.connect;
+				prorate[things[hitBy[i]]->ID-1] *= s[hitBy[i]].prorate;
+			}
 			P[(i+1)%2]->enforceFloor(floor);
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
-			if(things[i]->facing * things[(i+1)%2]->facing == 1) things[i]->invertVectors(1);
-			if(i < P.size()) damage[(i+1)%2] += h - P[i]->meter[0];
+			if(things[i]->current.facing * things[(i+1)%2]->current.facing == 1) things[i]->invertVectors(1);
+			if(i < P.size()) damage[(i+1)%2] += health - P[i]->meter[0];
 		}
 	}
 
 	for(unsigned int i = 0; i < P.size(); i++){ 
 		if(connect[i]){
-			if(P[i]->aerial){ 
+			if(P[i]->current.aerial){ 
 				switch(s[i].pause){
 				case -1:
 					residual.y = 6 + (s[i].stun/4+9)/4;
@@ -1183,35 +1197,34 @@ void interface::resolveHits()
 					break;
 				}
 			} else { 
-				if(things[(i+1)%2]->aerial) residual.x = -2;
+				if(things[(i+1)%2]->current.aerial) residual.x = -2;
 				else {
 					if(combo[i] > 1) residual.x = -3*(abs(combo[i]-1));
 					if(things[(i+1)%2]->particleType == -2) residual.x -= push[i];
-					else if(P[(i+1)%2]->rCorner || P[(i+1)%2]->lCorner){
+					else if(P[(i+1)%2]->current.rCorner || P[(i+1)%2]->current.lCorner){
 						residual.x -= 2;
 						residual.x -= s[i].push/2;
 						residual.x -= abs(combo[i]);
 					}
 				}
-				residual.x *= things[i]->facing;
+				residual.x *= things[i]->current.facing;
 			}
-			things[i]->addVector(residual);
+			things[i]->momentum.push_back(residual);
 		}
 	}
-
 	if(connect[0] || connect[1]){
 		resolveCollision();
 	}
 
 	for(unsigned int i = 0; i < P.size(); i++) {
-		things[i]->throwInvuln--;
+		things[i]->current.throwInvuln--;
 		P[i]->hover--;
 	}
 	for(unsigned int i = 0; i < P.size(); i++) {
 		if(things[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
 			for(unsigned int j = 0; j < things.size(); j++)
-				things[j]->freeze = 30;
+				things[j]->current.freeze = 30;
 		}
 	}
 }
@@ -1220,10 +1233,10 @@ void interface::doSuperFreeze()
 {
 	int go[2] = {0, 0};
 	for(unsigned int i = 0; i < P.size(); i++){
-		go[i] = things[i]->cMove->arbitraryPoll(2, things[i]->currentFrame);
+		go[i] = things[i]->current.move->arbitraryPoll(2, things[i]->current.frame);
 		if(go[i] > 0){ 
 			P[(i+1)%2]->checkBlocking();
-			things[(i+1)%2]->freeze += go[i];
+			things[(i+1)%2]->current.freeze += go[i];
 		}
 	}
 	if(go[0] > 0 || go[1] > 0)

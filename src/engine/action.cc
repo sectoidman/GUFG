@@ -2,12 +2,11 @@
 #include <iostream>
 #include <fstream>
 #include "action.h"
+#include "player.h"
 #include <assert.h>
 using namespace std;
-
 action::action() : frames(0), hits(0), name(NULL)
 {
-	name = NULL;
 }
 
 action::action(const char * n) : frames(0), hits(0)
@@ -18,23 +17,11 @@ action::action(const char * n) : frames(0), hits(0)
 action::~action()
 {
 	if(!this) return;
-/*	for(int i = 0; i < frames; i++){
-		if(sprite[i] != NULL) SDL_FreeSurface(sprite[i]);
-		if(fSprite[i] != NULL) SDL_FreeSurface(fSprite[i]);
-	}*/
-	if(collision) delete [] collision;
-	if(hitbox) delete [] hitbox;
-	if(hitreg) delete [] hitreg;
-	if(hitComplexity) delete [] hitComplexity;
-	if(regComplexity) delete [] regComplexity;
-	if(deltaComplexity) delete [] deltaComplexity;
-	if(delta) delete [] delta;
 	if(state) delete [] state;
 	if(gain) delete [] gain;
 	if(distortion) delete distortion;
 	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
-	if(stats) delete [] stats;
 	if(next) delete next;
 	if(onConnect) delete [] onConnect;
 }
@@ -56,12 +43,13 @@ void action::zero()
 	armorStart = 0; armorLength = 0;
 	armorHits = 0;
 	guardStart = 0; guardLength = 0;
+	freezeFrame = -1; freezeLength = 0;
 	blockState.i = 0;
 	isProjectile = 0;
-	stats = NULL;
 	cost = 0;
 	dies = 0;
 	fch = 0;
+	track = false;
 	armorCounter = 0;
 	distortSpawn = -1;
 	distortion = NULL;
@@ -69,6 +57,7 @@ void action::zero()
 	tempAttempt = NULL;
 	tempRiposte = NULL;
 	tempOnHold = NULL;
+	tempPayload = NULL;
 	displaceFrame = -1;
 	displaceX = 0;
 	displaceY = 0;
@@ -81,6 +70,62 @@ void action::zero()
 	onHold = NULL;
 	hittable = 0;
 	modifier = 0;
+	payload = NULL;
+	spawnFrame = 0;
+	spawnTrackY = 0;
+	spawnTrackX = 0;
+	spawnTrackFloor = 0;
+	spawnPosY = 0;
+	spawnPosX = 0;
+	lifespan = -1;
+	allegiance = 1;
+	followStart = -1;
+	followEnd = -1;
+	followXRate = 0;
+	followYRate = 0;
+}
+
+void action::generate(const char* directory, const char* name)
+{
+	payload = new projectile(directory, name);
+	if(lifespan) payload->lifespan = lifespan;
+	if(tempPayload) delete [] tempPayload;
+	tempPayload = NULL;
+}
+
+instance * action::spawn()
+{
+	instance * ret = NULL;
+	if(payload) ret = new instance(payload);
+	return ret;
+}
+
+int action::arbitraryPoll(int q, int f)
+{
+	switch(q){
+	case 2:
+		if(f == freezeFrame) return freezeLength;
+		else break;
+	case 50:
+		if(f == spawnFrame) return 1;
+		else break;
+	case 51:
+		if(spawnTrackX) return 1;
+		else break;
+	case 52:
+		if(spawnTrackY) return 1;
+		else break;
+	case 53:
+		if(spawnTrackFloor) return 1;
+		else break;
+	case 54:
+		return spawnPosX;
+	case 55:
+		return spawnPosY;
+	case 56:
+		return allegiance;
+	}
+	return 0;
 }
 
 void negNormal::zero()
@@ -110,40 +155,32 @@ void action::build(const char * n)
 
 	parseProperties(savedBuffer, 0);
 
-	collision = new SDL_Rect[frames];
-	hitbox = new SDL_Rect*[frames];
-	hitComplexity = new int[frames];
-	hitreg = new SDL_Rect*[frames];
-	regComplexity = new int[frames];
-	delta = new SDL_Rect*[frames];
-	deltaComplexity = new int[frames];
-
 	int currHit = 0;
 
 	for(int i = 0; i < frames; i++){
 		while(read.get() != '$'); read.ignore(2);
-		read >> collision[i].x >> collision[i].y >> collision[i].w >> collision[i].h;
+		SDL_Rect co;
+		read >> co.x >> co.y >> co.w >> co.h;
+		collision.push_back(co);
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
-		regComplexity[i] = aux::defineRectArray(buffer, hitreg[i]);
+		hitreg.push_back(aux::defineRectArray(buffer));
 		while(read.get() != '$'); read.ignore(2);
 		read.get(buffer, 100, '\n');
-		deltaComplexity[i] = aux::defineRectArray(buffer, delta[i]);
+		delta.push_back(aux::defineRectArray(buffer));
 		if(hits > 0 && currHit < hits){
 			if(i > totalStartup[currHit] && i <= totalStartup[currHit]+active[currHit]){
 				while(read.get() != '$'); read.ignore(2);
 				read.get(buffer, 100, '\n');
-				hitComplexity[i] = aux::defineRectArray(buffer, hitbox[i]);
+				hitbox.push_back(aux::defineRectArray(buffer));
 				if(i == totalStartup[currHit]+active[currHit]) currHit++;
 			} else {
-				hitComplexity[i] = 1;
-				hitbox[i] = new SDL_Rect[1];
-				hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
+				std::vector<SDL_Rect> hi;
+				hitbox.push_back(hi);
 			}
 		} else {
-			hitComplexity[i] = 1;
-			hitbox[i] = new SDL_Rect[1];
-			hitbox[i][0].x = 0; hitbox[i][0].y = 0; hitbox[i][0].w = 0; hitbox[i][0].h = 0;
+			std::vector<SDL_Rect> hi;
+			hitbox.push_back(hi);
 		}
 	}
 	read.close();
@@ -218,8 +255,8 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n");
 		hits = atoi(token);
 		if(hits > 0){
-			stats = new hStat[hits];
-			CHStats = new hStat[hits];
+			stats = std::vector<hStat> (hits);
+			CHStats = std::vector<hStat> (hits);
 			onConnect = new action*[hits];
 			tempOnConnect = new char*[hits];
 			for (int i = 0; i < hits; i++){
@@ -228,7 +265,6 @@ bool action::setParameter(char * buffer)
 				stats[i].hitState.i = 0;
 			}
 		} else {
-			stats = NULL;
 			onConnect = NULL;
 		}
 		state = new cancelField[hits+1];
@@ -373,6 +409,14 @@ bool action::setParameter(char * buffer)
 			stats[i].chip = atoi(token);
 		}
 		return 1;
+	} else if (!strcmp("Prorate", token)) {
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			if(savedBuffer[0] == '+')
+				CHStats[i].prorate = atof(token);
+			else stats[i].prorate = atof(token);
+		}
+		return 1;
 	} else if (!strcmp("Push", token)) {
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
@@ -457,6 +501,27 @@ bool action::setParameter(char * buffer)
 		guardLength = atoi(token); 
 		guardLength = guardLength - guardStart;
 		return 1;
+	} else if (!strcmp("Follow", token)) {
+		token = strtok(NULL, "\t: \n-");
+		followStart = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		followEnd = atoi(token); 
+
+		token = strtok(NULL, "\t: \n");
+		followXRate = atoi(token);
+
+		token = strtok(NULL, "\t: \n");
+		followYRate = atoi(token);
+		return 1;
+	} else if (!strcmp("SuperFreeze", token)){
+		token = strtok(NULL, "\t: \n-");
+		freezeFrame = atoi(token); 
+
+		token = strtok(NULL, "\t: \n-");
+		freezeLength = atoi(token); 
+		freezeLength = freezeLength - freezeFrame;
+		return 1;
 	} else if (!strcmp("Armor", token)) {
 		token = strtok(NULL, "\t: \n-");
 		armorStart = atoi(token); 
@@ -468,6 +533,46 @@ bool action::setParameter(char * buffer)
 	} else if (!strcmp("MaxArmor", token)) {
 		token = strtok(NULL, "\t: \n-");
 		armorHits = atoi(token); 
+		return 1;
+	} else if(!strcmp("SpawnPosition", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnPosX = atoi(token);
+
+		token = strtok(NULL, "\t: \n");
+		spawnPosY = atoi(token);
+		return 1;
+	} else if(!strcmp("Track", token)){
+		token = strtok(NULL, "\t: \n");
+		for(unsigned int i = 0; i < strlen(token) + 1; i++){
+			switch(token[i]){
+			case 'x': 
+				spawnTrackX = true;
+				break;
+			case 'y':
+				spawnTrackY = true;
+				break;
+			case 'f':
+				spawnTrackFloor = true;
+				break;
+			}
+		}
+		return 1;
+	} else if(!strcmp("SpawnsOn", token)){
+		token = strtok(NULL, "\t: \n");
+		spawnFrame = atoi(token);
+		return 1;
+	} else if(!strcmp("Lifespan", token)){
+		token = strtok(NULL, "\t: \n");
+		lifespan = atoi(token);
+		return 1;
+	} else if(!strcmp("Allegiance", token)){
+		token = strtok(NULL, "\t: \n");
+		allegiance = atoi(token);
+		return 1;
+	} else if(!strcmp("Payload", token)){
+		token = strtok(NULL, "\t: \n");
+		tempPayload = new char[strlen(token)+1];
+		strcpy(tempPayload, token);
 		return 1;
 	} else return 0;
 }
@@ -552,6 +657,9 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'm':
 			if(!counter) modifier = 1;
 			break;
+		case 'f':
+			if(!counter) track = 1;
+			break;
 		default:
 			break;
 		}
@@ -590,52 +698,43 @@ bool action::check(SDL_Rect &p, int meter[])
 	return 1;
 }
 
-void action::pollRects(SDL_Rect &c, SDL_Rect* &r, int &rc, SDL_Rect* &b, int &hc, int f, int cFlag)
+void action::pollRects(int f, int cFlag, SDL_Rect &c, std::vector<SDL_Rect> &r, std::vector<SDL_Rect> &b)
 {
-	if(modifier && basis) basis->pollRects(c, r, rc, b, hc, currentFrame, connectFlag);
+	if(modifier && basis) basis->pollRects(currentFrame, connectFlag, c, r, b);
 	else {
 		if(f >= frames) f = frames-1;
-		if(rc > 0 && r) delete [] r;
-		if(hc > 0 && b) delete [] b;
-		rc = regComplexity[f];
-		hc = hitComplexity[f];
-		r = new SDL_Rect[rc];
-		b = new SDL_Rect[hc];
 
 		c.x = collision[f].x; c.w = collision[f].w;
 		c.y = collision[f].y; c.h = collision[f].h;
 
-		SDL_Rect * tempreg = hitreg[f];
-		for(int i = 0; i < rc; i++){
-			r[i].x = tempreg[i].x; r[i].w = tempreg[i].w;
-			r[i].y = tempreg[i].y; r[i].h = tempreg[i].h;
+		r.clear();
+		for(unsigned int i = 0; i < hitreg[f].size(); i++){
+			SDL_Rect reg;
+			reg.x = hitreg[f][i].x; reg.w = hitreg[f][i].w;
+			reg.y = hitreg[f][i].y; reg.h = hitreg[f][i].h;
+			r.push_back(reg);
 		}
-		SDL_Rect * temphit = hitbox[f];
-		for(int i = 0; i < hc; i++){
+		b.clear();
+		for(unsigned int i = 0; i < hitbox[f].size(); i++){
 			if(cFlag > calcCurrentHit(f)) {
-				b[i].x = 0; b[i].w = 0;
-				b[i].y = 0; b[i].h = 0;
+				i = hitbox[f].size();
 			} else {
-				b[i].x = temphit[i].x; b[i].w = temphit[i].w;
-				b[i].y = temphit[i].y; b[i].h = temphit[i].h;
+				SDL_Rect hit;
+				hit.x = hitbox[f][i].x; hit.w = hitbox[f][i].w;
+				hit.y = hitbox[f][i].y; hit.h = hitbox[f][i].h;
+				b.push_back(hit);
 			}
 		}
 	}
 }
 
-void action::pollDelta(SDL_Rect *& d, int & dc, int f)
+std::vector<SDL_Rect> action::pollDelta(int f)
 {
-	if(modifier && basis) basis->pollDelta(d, dc, currentFrame);
-	else{
-		if(f >= frames) f = frames-1;
-		dc = deltaComplexity[f];
-		d = new SDL_Rect[dc];
-		SDL_Rect * tempdelta = delta[f];
-		for(int i = 0; i < dc; i++){
-			d[i].x = tempdelta[i].x; d[i].w = tempdelta[i].w;
-			d[i].y = tempdelta[i].y; d[i].h = tempdelta[i].h;
-		}
-	}
+	if(modifier && basis){ 
+		std::vector<SDL_Rect> ret = basis->pollDelta(currentFrame);
+		for(SDL_Rect i:delta[f]) ret.push_back(i);
+		return ret;
+	} else return delta[f];
 }
 
 int action::displace(int x, int &y, int f)
@@ -671,6 +770,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.stick = CHStats[c].stick;
 			s.ghostHit = CHStats[c].ghostHit;
 			s.noConnect = stats[c].noConnect || CHStats[c].noConnect;
+			s.prorate = CHStats[c].prorate;
 		} else {
 			s.launch = stats[c].launch;
 			s.hover = stats[c].hover;
@@ -680,6 +780,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.stick = stats[c].stick;
 			s.ghostHit = stats[c].ghostHit;
 			s.noConnect = stats[c].noConnect;
+			s.prorate = stats[c].prorate;
 		}
 		s.hitsProjectile = stats[c].hitsProjectile;
 		s.turnsProjectile = stats[c].turnsProjectile;
@@ -821,6 +922,8 @@ char * action::request(int code, int i)
 		return tempOnConnect[i];
 	case 3:
 		return tempAttempt;
+	case 4:
+		return tempPayload;
 	case 5:
 		return tempRiposte;
 	case 6:

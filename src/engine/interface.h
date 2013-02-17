@@ -102,6 +102,7 @@ public:
 	int combo[2];
 	int damage[2];
 	bool illegit[2];
+	float prorate[2];
 	chart *stats;
 	int numRounds;
 	int grav;	//Gravitational constant. 
@@ -127,6 +128,7 @@ public:
 
 	int timer;
 	bool roundEnd:1;
+	bool killTimer:1;
 	int endTimer;
 };
 #endif

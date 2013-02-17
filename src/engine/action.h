@@ -14,7 +14,7 @@
 class avatar;
 class instance;
 struct hStat{
-	hStat() : damage(0), chip(0), stun(0), pause(-1), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile(0), turnsProjectile(0), killsProjectile(0), noConnect(0) {}
+	hStat() : damage(0), chip(0), stun(0), pause(-1), push(0), lift(0), untech(0), blowback(0), hover(0), launch(0), ghostHit(0), wallBounce(0), floorBounce(0), slide(0), stick(0), hitsProjectile(0), turnsProjectile(0), killsProjectile(0), noConnect(0), prorate(1.0) {}
 	int damage;	/*How much damage the hit does*/
 	int chip;	/*How much damage the hit does if blocked*/
 	int stun;	/*How many frames of stun the hit causes*/
@@ -34,6 +34,7 @@ struct hStat{
 	bool turnsProjectile:1;
 	bool killsProjectile:1;
 	bool noConnect:1;
+	float prorate;
 	blockField blockMask;
 	cancelField hitState;
 };
@@ -54,14 +55,14 @@ public:
 	virtual void init(int) {}
 	virtual void playSound(int);
 	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
-	virtual void generate(const char*, const char*) {}
+	virtual void generate(const char*, const char*);
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
-	virtual int arbitraryPoll(int q, int f) {return 0;}
+	virtual int arbitraryPoll(int q, int f);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.
-	virtual void pollRects(SDL_Rect&, SDL_Rect*&, int&, SDL_Rect*&, int&, int, int);
-	virtual void pollDelta(SDL_Rect *&, int&, int);
+	virtual void pollRects(int, int, SDL_Rect&, std::vector<SDL_Rect>&, std::vector<SDL_Rect>&);
+	virtual std::vector<SDL_Rect> pollDelta(int);
 	virtual int displace(int, int&, int);
 	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
@@ -69,7 +70,7 @@ public:
 	virtual void step(int *&, int&, int&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
-	virtual instance * spawn() { return NULL; }
+	virtual instance * spawn();
 	virtual int takeHit(hStat&, int, int&, int&, int&); 
 
 	virtual void feed(action *, int, int);
@@ -79,16 +80,20 @@ public:
 	virtual void draw(int);
 	virtual void drawBoxen(int, int, int);
 
-	hStat *stats, *CHStats;
+	std::vector<hStat> stats, CHStats;
 	int stop;
 	int throwinvuln;
 	bool crouch:1;
 	bool hittable:1;
 	bool hidesMeter:1;
+	bool track:1;
 	int armorStart; int armorLength;
 	int armorHits;
 	int armorCounter;
 	int guardStart; int guardLength;
+	int freezeFrame; int freezeLength;
+	int followStart; int followEnd;
+	int followXRate; int followYRate;
 
 	//Properties of a hit. These will only exist for actions that hit.
 	
@@ -149,13 +154,8 @@ public:
 	char * tempRiposte;
 	char * tempOnHold;
 
-	SDL_Rect * collision;   //This will be an array of rects that are the collision boxes for the action per frame
-	SDL_Rect ** hitbox;     //Same but for hitboxes
-	SDL_Rect ** hitreg;     //Same but for hitreg boxes
-	SDL_Rect ** delta;       //Same but for position on the screen.
-	int * hitComplexity;
-	int * regComplexity;
-	int * deltaComplexity;
+	std::vector<SDL_Rect> collision;   //This will be an array of rects that are the collision boxes for the action per frame
+	std::vector<std::vector<SDL_Rect> > hitreg, hitbox, delta;       //Same but for position on the screen.
 
 	std::vector<int> width, height;
 	std::vector<GLuint> sprite;
@@ -165,6 +165,18 @@ public:
 	virtual bool setParameter(char*);
 	virtual void parseProperties(char*, bool);
 	virtual void zero();
+
+	//Projectile stuff;
+	avatar * payload;
+	char * tempPayload;
+	int spawnFrame;
+	int spawnPosX;
+	int spawnPosY;
+	int lifespan;
+	int allegiance;
+	bool spawnTrackX:1;
+	bool spawnTrackY:1;
+	bool spawnTrackFloor:1;
 };
 
 class hitstun : virtual public action {
@@ -257,23 +269,6 @@ public:
 	airLooping(const char*);
 };
 
-class super : public special {
-public:
-	super() {}
-	super(const char*);
-	virtual int arbitraryPoll(int, int);
-	virtual bool setParameter(char*);
-	int freezeFrame;
-	int freezeLength;
-};
-
-class airSuper : public airMove, public super {
-public:
-	airSuper() {}
-	airSuper(const char* n) {build(n); }
-	virtual bool setParameter(char*);
-};
-
 class mash : virtual public action {
 public:
 	mash() {}
@@ -302,38 +297,6 @@ public:
 	virtual bool setParameter(char *n);
 	void build(const char *n) {werf::build(n);}
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
-};
-
-class summon : virtual public action {
-public:
-	summon() {}
-	summon(const char*);
-	virtual int arbitraryPoll(int, int);
-	virtual bool setParameter(char*);
-	virtual void generate(const char*, const char*);
-	virtual char* request(int, int);
-	instance * spawn();
-	virtual void zero();
-
-	avatar * payload;
-	char * tempPayload;
-	int spawnFrame;
-	int spawnPosX;
-	int spawnPosY;
-	int lifespan;
-	int allegiance;
-	bool spawnTrackX:1;
-	bool spawnTrackY:1;
-	bool spawnTrackFloor:1;
-};
-
-class airSummon : virtual public airMove, virtual public summon {
-public:
-	airSummon() {}
-	airSummon(const char*);
-	virtual void zero();
-	virtual bool setParameter(char*);
-	virtual char* request(int, int);
 };
 
 class releaseCheck : virtual public action {

@@ -62,5 +62,5 @@ wD = hD
 %4E = h4E
 236B214B = h4B
 236B236B = h6B
-!214E = h214E
+%214E = h214E
 #Moves

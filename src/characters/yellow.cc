@@ -35,10 +35,10 @@ void yellow::tick(int *& meter)
 	}
 }
 
-void yellow::step(action *& cMove, int &f, int &freeze, int &connectFlag, int &hitFlag, int *& meter)
+void yellow::step(status &current, int *& meter)
 {
 	if(meter[4] < 0) meter[4]++;
-	character::step(cMove, f, freeze, connectFlag, hitFlag, meter);
+	character::step(current, meter);
 }
 
 action * yellow::createMove(char * fullName)
@@ -90,9 +90,9 @@ void yellow::drawMeters(int ID, int hidden, int * meter)
 	glRectf((GLfloat)(c1.x), (GLfloat)(c1.y), (GLfloat)(c1.x + c1.w), (GLfloat)(c1.y + c1.h));
 }
 
-int yellow::takeHit(action *& cMove, hStat & s, int blockType, int &frame, int &connectFlag, int &hitFlag, int &hitType, bool &aerial, int *& meter)
+int yellow::takeHit(status& current, hStat & s, int blockType, int &hitType, int *& meter)
 {
-	int x = character::takeHit(cMove, s, blockType, frame, connectFlag, hitFlag, hitType, aerial, meter);
+	int x = character::takeHit(current, s, blockType, hitType, meter);
 	if(hitType == 1 && meter[4] > 0) meter[4] = 0;
 	return x;
 }

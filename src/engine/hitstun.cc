@@ -8,7 +8,8 @@ void hitstun::init(int n)
 
 void hitstun::step(int *& meter, int &f, int &c, int &h)
 {
-	if(counter <= 0){ 
+	if(counter <= 0){
+		f = frames-1;
 		action::step(meter, f, c, h);
 	} else {
 		if(f < frames - 1) action::step(meter, f, c, h);

@@ -230,30 +230,24 @@ bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 	return 1;
 }
 
-int aux::defineRectArray(char * definition, SDL_Rect *& array)
+std::vector<SDL_Rect> aux::defineRectArray(char * definition)
 {
-	int complexity = 1;
-	unsigned int d = strlen(definition);
-	for(unsigned int i = 0; i < d; i++){
-		if(definition[i] == '\t') complexity++;
-	}
-	array = new SDL_Rect[complexity];
-	std::vector<char *> coordinate(complexity*4);
-	coordinate[0] = strtok(definition, ",\n\t ");
-	for(int i = 0; i < complexity*4; i+=4){
-		if(i != 0) coordinate[i] = strtok(NULL, ", \n\t");
-		coordinate[i + 1] = strtok(NULL, ", \n\t");
-		coordinate[i + 2] = strtok(NULL, ", \n\t");
-		coordinate[i + 3] = strtok(NULL, ", \n\t");
-	}
+	std::vector<SDL_Rect> ret;
+	std::vector<char *> coordinate;
+	char * token;
+	coordinate.push_back(strtok(definition, ", \n\t"));
+	while(token = strtok(NULL, ", \n\t"))
+		coordinate.push_back(token);
 
-	for(int i = 0; i < complexity*4; i+=4){
-		array[i/4].x = atoi(coordinate[i]);
-		array[i/4].y = atoi(coordinate[i + 1]);
-		array[i/4].w = atoi(coordinate[i + 2]);
-		array[i/4].h = atoi(coordinate[i + 3]);
+	for(unsigned int i = 0; i < coordinate.size(); i+=4){
+		SDL_Rect t;
+		t.x = atoi(coordinate[i]);
+		t.y = atoi(coordinate[i + 1]);
+		t.w = atoi(coordinate[i + 2]);
+		t.h = atoi(coordinate[i + 3]);
+		ret.push_back(t);
 	}
-	return complexity;
+	return ret;
 }
 
 GLuint aux::surface_to_texture(SDL_Surface * source)

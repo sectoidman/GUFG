@@ -320,8 +320,8 @@ void player::drawMeters(int n)
 	}
 	glFlush();
 	int h = 0;
-	if(cMove){
-		if(cMove->hidesMeter) h = cMove->cost;
+	if(current.move){
+		if(current.move->hidesMeter) h = current.move->cost;
 	}
 	pick()->drawMeters(ID, h, meter);
 	glFlush();
@@ -361,7 +361,7 @@ void instance::drawBoxen()
 		glTranslatef(collision.x, -collision.y, 0);
 		glRectf(0.0f, 0.0f, (GLfloat)(collision.w), (GLfloat)(-collision.h));
 	glPopMatrix();
-	for(int i = 0; i < regComplexity; i++){
+	for(unsigned int i = 0; i < hitreg.size(); i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glNormal3f(0.0f, 0.0f, 1.0f);
@@ -370,7 +370,7 @@ void instance::drawBoxen()
 			glRectf(0.0f, 0.0f, (GLfloat)(hitreg[i].w), (GLfloat)(-hitreg[i].h));
 		glPopMatrix();
 	}
-	for(int i = 0; i < hitComplexity; i++){
+	for(unsigned int i = 0; i < hitbox.size(); i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, (GLfloat)(ID - 1.0f)/2.0f, 0.5f);
 		glPushMatrix();
@@ -385,23 +385,23 @@ void instance::drawBoxen()
 void instance::draw()
 {
 	int realPosY = collision.y;
-	int realPosX = posX;
+	int realPosX = current.posX;
 	glEnable(GL_TEXTURE_2D);
 	if(spriteCheck()){
-		for(int i = 0; i < hitComplexity; i++){
-			if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-			if(facing == 1){
-				if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
-			} else {
-				if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
-			}
-		}
-		for(int i = 0; i < regComplexity; i++){
+		for(unsigned int i = 0; i < hitreg.size(); i++){
 			if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
-			if(facing == 1){
+			if(current.facing == 1){
 				if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
 			} else {
 				if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+			}
+		}
+		for(unsigned int i = 0; i < hitbox.size(); i++){
+			if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
+			if(current.facing == 1){
+				if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+			} else {
+				if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
 			}
 		}
 		if(secondInstance)
@@ -409,8 +409,8 @@ void instance::draw()
 		glPushMatrix();
 			glTranslatef(realPosX, -realPosY, 0);
 			glPushMatrix();
-				glScalef(facing, 1.0, 1.0);
-				pick()->draw(cMove, currentFrame);
+				glScalef(current.facing, 1.0, 1.0);
+				pick()->draw(current.move, current.frame);
 			glPopMatrix();
 		glPopMatrix();
 	}
@@ -439,8 +439,8 @@ void player::drawHitParticle()
 			break;
 		}
 		glPushMatrix();
-			glTranslatef(posX, -collision.y, 0.0f);
-			glRectf((GLfloat)(-10*facing), (GLfloat)(-collision.h), (GLfloat)(50 * facing), (GLfloat)(-collision.h - 40));
+			glTranslatef(current.posX, -collision.y, 0.0f);
+			glRectf((GLfloat)(-10*current.facing), (GLfloat)(-collision.h), (GLfloat)(50 * current.facing), (GLfloat)(-collision.h - 40));
 		glPopMatrix();
 		particleLife--;
 	} else blockType = 0;
@@ -525,7 +525,7 @@ void action::draw(int f)
 
 bool instance::spriteCheck()
 {
-	if(cMove) return cMove->spriteCheck(currentFrame);
+	if(current.move) return current.move->spriteCheck(current.frame);
 	else return 0;
 }
 bool avatar::spriteCheck(action *& cMove, int f)
@@ -550,7 +550,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 	SDL_Surface * image = NULL;
 	int maxY = move->collision[frame].y + move->collision[frame].h, 
 	    maxX = move->collision[frame].x + move->collision[frame].w;
-	for(int i = 0; i < move->regComplexity[frame]; i++){
+	for(unsigned int i = 0; i < move->hitreg[frame].size(); i++){
 		if(move->hitreg[frame][i].y < realPosY) 
 			realPosY = move->hitreg[frame][i].y;
 		if(move->hitreg[frame][i].x < realPosX) 
@@ -560,7 +560,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 		if(move->hitreg[frame][i].y + move->hitreg[frame][i].h > maxY)
 			maxY = move->hitreg[frame][i].y + move->hitreg[frame][i].h;
 	}
-	for(int i = 0; i < move->hitComplexity[frame]; i++){
+	for(unsigned int i = 0; i < move->hitbox[frame].size(); i++){
 		if(move->hitbox[frame][i].y < realPosY) 
 			realPosY = move->hitbox[frame][i].y;
 		if(move->hitbox[frame][i].x < realPosX) 
@@ -614,12 +614,12 @@ void interface::writeImage(const char * movename, int frame, action * move)
 void action::drawBoxen(int frame, int x, int y){
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(-collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(-collision[frame].y - collision[frame].h - y));
-	for(int i = 0; i < regComplexity[frame]; i++){
+	for(unsigned int i = 0; i < hitreg[frame].size(); i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
 		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(-hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(-hitreg[frame][i].y - hitreg[frame][i].h - y));
 	}
-	for(int i = 0; i < hitComplexity[frame]; i++){
+	for(unsigned int i = 0; i < hitbox[frame].size(); i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
 		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(-hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(-hitbox[frame][i].y - hitbox[frame][i].h - y));

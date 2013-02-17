@@ -5,6 +5,7 @@ Frames: 12 : 5 : 3 : 4
 Check: 5
 State: 256 : 8700
 Damage: 9
+Prorate: .95
 Stun: 11
 Untech: 8
 Push: 4

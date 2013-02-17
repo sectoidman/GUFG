@@ -8,7 +8,7 @@ public:
 	action * createMove(char*);
 	void tick(int *&);
 	int * generateMeter();
-	void step(action *&, int&, int&, int&, int&, int*&);
+	void step(status&, int*&);
 	void init(int *&);
 	instance * backup;
 };
@@ -22,7 +22,7 @@ public:
 	void execute(action *, int *&, int&, int&, int&);
 };
 
-class redSuper : virtual public super{
+class redSuper : virtual public special{
 public:
 	redSuper();
 	~redSuper();

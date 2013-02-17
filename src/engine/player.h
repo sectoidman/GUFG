@@ -15,22 +15,13 @@ public:
 	virtual ~instance();
 	virtual avatar * pick() { return v; }
 
-	SDL_Rect *hitbox, *hitreg, collision, *momentum;
-	int hitComplexity, regComplexity, momentumComplexity;
+	SDL_Rect collision;
+	std::vector<SDL_Rect> hitbox, hitreg, momentum;
 	bool secondInstance;
-	int posX, posY;
-	int facing;
-	int deltaX, deltaY; 
 	int ID;
 	int inputBuffer[30];
-	int currentFrame;
-	int freeze;
-	action * cMove;
-	action * bMove;
-	action * sMove;
-	int connectFlag, hitFlag;
-	bool dead:1;
-	int throwInvuln;
+	void checkFacing(instance*);
+	virtual void neutralize();
 	virtual bool acceptTarget(instance*);
 	virtual bool CHState() { return 0; }
 	virtual void init();
@@ -40,8 +31,6 @@ public:
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
 	virtual void invertVectors(int);
-	virtual void addVector(SDL_Rect&);
-	virtual void removeVector(int);
 	virtual void pullVolition();
 	virtual void setPosition(int, int);
 	virtual void updateRects();
@@ -53,17 +42,18 @@ public:
 	virtual void pushInput(std::vector<bool>);
 	virtual int passSignal(int);
 	virtual int dragBG(int, int);
+	virtual void follow(instance*);
 	void enforceAttractor(attractor*);
 	int middle();
 	void flip();
 
-	bool aerial;
+	status current;
+
 	int * meter;
 	int particleType;
 	int blockType;
 	int counter;
 	bool boxen:1;
-	bool rCorner, lCorner;
 protected:
 	avatar * v;
 };
@@ -104,7 +94,6 @@ public:
 
 	/*Helper functions for "resolve" tick*/
 	virtual void checkBlocking();
-	virtual void checkFacing(player*);
 	virtual void checkCorners(int, int);
 	virtual void enforceFloor(int);
 	virtual void getThrown(action*, int, int);

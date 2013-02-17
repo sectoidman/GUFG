@@ -19,17 +19,17 @@ public:
 	bool spriteCheck(action *&, int);
 	virtual void draw(action *&, int);//Pass sprite information up.
 	virtual action * createMove(char*);
-	virtual action * hook(int[40], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 	virtual void build(const char*, const char*);
 	virtual void processMove(action * m);
 	virtual void sortMove(action *, char*);
-	virtual void prepHooks(int, action *&, action *&, action *&, int[], std::vector<int>, std::vector<bool>, SDL_Rect &, int&, int&, int&, bool, bool, int*&);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(status&, action *&, int[], std::vector<int>, std::vector<bool>, SDL_Rect &, bool, int*&);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
+	virtual action * hook(int[], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 	virtual bool death(action *&, int, int) { return 0; }
-	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&) { return 0; }
+	virtual int takeHit(status&, hStat&, int, int&, int*&) { return 0; }
 	virtual void getName(const char*, const char*);
-	virtual void connect(action *&, action *&, action *&, hStat&, int&, int, int*&);
-	virtual void step(action *&, int&, int&, int&, int&, int*&);
+	virtual void connect(status&, int*&);
+	virtual void step(status&, int*&);
 	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
 	virtual void tick(int *&) {}
@@ -62,8 +62,8 @@ public:
 	virtual void resetAirOptions(int *&);
 	virtual void land(action *&, int &, int &, int &, int *&);
 	virtual void sortMove(action *, char*);
-	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
-	virtual action * hook(int[40], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
+	virtual int takeHit(status&, hStat&, int, int&, int*&);
+	virtual action * hook(int[], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
 
 	looping * dead;
 	action * airNeutral;
@@ -85,7 +85,7 @@ public:
 	projectile() {}
 	virtual void build(const char*, const char*);
 	virtual int acceptTarget(action*, int);
-	virtual int takeHit(action *&, hStat&, int, int&, int&, int&, int&, bool&, int*&);
+	virtual int takeHit(status&, hStat&, int, int&, int*&);
 	virtual bool turn(int&);
 
 	virtual void processMove(action * m);
