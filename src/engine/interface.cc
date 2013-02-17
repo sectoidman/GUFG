@@ -1197,7 +1197,11 @@ void interface::resolveHits()
 					break;
 				}
 			} else { 
-				if(things[(i+1)%2]->aerial) residual.x = -2;
+				if(things[(i+1)%2]->current.aerial){
+					if(P[(i+1)%2]->current.rCorner || P[(i+1)%2]->current.lCorner) residual.x -= combo[i];
+					if(P[(i+1)%2]->stick) residual.x -= s[i].push/2 + combo[i];
+					residual.x -= 2;
+				}
 				else {
 					if(combo[i] > 1) residual.x = -3*(abs(combo[i]-1));
 					if(things[(i+1)%2]->particleType == -2) residual.x -= push[i];
