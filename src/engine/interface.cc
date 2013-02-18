@@ -526,7 +526,7 @@ void interface::resolve()
 
 void interface::cleanup()
 {
-	if(select[0] && select[1]) print();
+	//if(select[0] && select[1]) print();
 	if(!pMenu){
 		if(!rMenu && select[0] && select[1]){
 			for(unsigned int i = 0; i < things.size(); i++){
