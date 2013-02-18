@@ -76,7 +76,10 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			if (!current.reversal && current.frame + 6 > cMove->frames && cMove != r && cMove->frames > 10) {
 				int l = 0, m = 0;
 				current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
-				if(r == current.reversal || cMove == current.reversal) current.reversal = NULL;
+				if(current.reversal){
+					if(current.reversal->state[0].b.neutral) 
+						current.reversal = NULL;
+				}
 			}
 		}
 	}
