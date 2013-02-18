@@ -90,7 +90,7 @@ void player::roundInit()
 {
 	char buffer[200];
 	instance::init();
-	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->neutralize(current, current.move, meter);
 	if(v) pick()->init(meter);
 	if(record){
 		sprintf(buffer, "%i-%s.sh", ID, pick()->name);
@@ -555,6 +555,11 @@ void instance::follow(instance *other){
 	}
 }
 
+void instance::print()
+{
+	std::cout << "Player" << ID << ": " << current.move->name << ": " << current.frame << '\n';
+}
+
 void instance::step()
 {
 	action * m = current.move;
@@ -575,7 +580,7 @@ void instance::step()
 			current.move = current.move->basis;
 		} else {
 			if(current.move->next) current.move = current.move->next;
-			else pick()->neutralize(current.move, current.aerial, meter);
+			else pick()->neutralize(current, current.move, meter);
 			current.frame = 0;
 			current.connect = 0;
 			current.hit = 0;
@@ -585,7 +590,7 @@ void instance::step()
 
 void instance::neutralize()
 {
-	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->neutralize(current, current.move, meter);
 }
 
 void instance::flip()
@@ -655,7 +660,7 @@ void instance::pushInput(std::vector<bool> axis)
 	}
 }
 
-void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun)
+void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool& dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = current.move;
@@ -666,11 +671,15 @@ void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p,
 		if(dummyMove->throwinvuln == 1 && current.throwInvuln <= 0) current.throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;
 	}
-	if(!dryrun){ 
+	if(dryrun){
+		if(current.reversalFlag){
+			if(current.frame != n || dummyMove != save) dryrun = 0;
+		}
+		current.move = save;
+	} else {
 		current.move = dummyMove;
-		if(current.frame != n || current.move != save) current.move->playSound(ID);
+		if(current.frame != n || dummyMove != save) current.move->playSound(ID);
 	}
-	else current.move = save;
 }
 
 void instance::pullVolition()
@@ -883,7 +892,7 @@ void player::getThrown(action *toss, int x, int y)
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, current.frame)*xSign + abs(x), toss->arbitraryPoll(26, current.frame) + y);
-	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->neutralize(current, current.move, meter);
 	pick()->takeHit(current, dummy, 0, particleType, meter);
 	updateRects();
 }

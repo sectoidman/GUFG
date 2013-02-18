@@ -22,7 +22,7 @@ interface::interface()
 	killTimer = false;
 	shortcut = false;
 	continuous = false;
-	analytics = false;
+	analytics = true;
 	scripting = false;
 	pauseEnabled = false;
 	single = false;
@@ -223,7 +223,7 @@ void interface::matchInit()
 	if(!select[0] || !select[1]){
 		Mix_VolumeMusic(100);
 		Mix_PlayMusic(menuMusic, -1);
-		printf("Please select a character:\n");
+		printf("\n");
 	}
 	while (SDL_PollEvent(&event));
 }
@@ -355,6 +355,16 @@ void interface::runTimer()
 	} else if(!killTimer || timer > 99 * 60)timer--;
 }
 
+void gameInstance::print()
+{
+	std::cout << "\x1b[A" << "\x1b[A";
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < 80; j++) std::cout << " ";
+		std::cout << ('\n');
+	}
+	for(player* i:P) i->print();
+}
+
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
@@ -376,14 +386,21 @@ void interface::resolve()
 		} else {
 			for(unsigned int i = 0; i < things.size(); i++) 
 				things[i]->pushInput(currentFrame[things[i]->ID - 1].axis);
-			things[1]->getMove(currentFrame[1].pos, currentFrame[1].neg, prox, 1);
+			for(unsigned int i = 0; i < P.size(); i++){ 
+				bool test = 1;
+				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
+				if(test == 0){ 
+					P[i]->checkFacing(P[(i+1)%2]);
+				}
+			}
 			for(unsigned int i = 0; i < things.size(); i++){
 				if(i < P.size()){
 					if(things[(i+1)%2]->current.aerial) prox.y = 1;
 					else prox.y = 0;
 					prox.x = things[(i+1)%2]->current.throwInvuln;
 				}
-				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, 0);
+				bool d = 0;
+				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, d);
 			}
 		}
 		if(analytics){
@@ -516,6 +533,7 @@ void interface::resolve()
 
 void interface::cleanup()
 {
+	//if(select[0] && select[1]) print();
 	if(!pMenu){
 		if(!rMenu && select[0] && select[1]){
 			for(unsigned int i = 0; i < things.size(); i++){
@@ -1197,7 +1215,11 @@ void interface::resolveHits()
 					break;
 				}
 			} else { 
-				if(things[(i+1)%2]->current.aerial) residual.x = -2;
+				if(things[(i+1)%2]->current.aerial){
+					if(P[(i+1)%2]->current.rCorner || P[(i+1)%2]->current.lCorner) residual.x -= combo[i];
+					if(P[(i+1)%2]->stick) residual.x -= s[i].push/2 + combo[i];
+					residual.x -= 2;
+				}
 				else {
 					if(combo[i] > 1) residual.x = -3*(abs(combo[i]-1));
 					if(things[(i+1)%2]->particleType == -2) residual.x -= push[i];
@@ -1220,6 +1242,7 @@ void interface::resolveHits()
 		things[i]->current.throwInvuln--;
 		P[i]->hover--;
 	}
+
 	for(unsigned int i = 0; i < P.size(); i++) {
 		if(things[i]->meter[0] <= 0 && endTimer >= 5 * 60){ 
 			i = 2;
