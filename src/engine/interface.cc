@@ -386,14 +386,19 @@ void interface::resolve()
 		} else {
 			for(unsigned int i = 0; i < things.size(); i++) 
 				things[i]->pushInput(currentFrame[things[i]->ID - 1].axis);
-			things[1]->getMove(currentFrame[1].pos, currentFrame[1].neg, prox, 1);
+			for(unsigned int i = 0; i < P.size(); i++){ 
+				bool test = 1;
+				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
+				if(!test) P[i]->checkFacing(P[i+1%2]);
+			}
 			for(unsigned int i = 0; i < things.size(); i++){
 				if(i < P.size()){
 					if(things[(i+1)%2]->current.aerial) prox.y = 1;
 					else prox.y = 0;
 					prox.x = things[(i+1)%2]->current.throwInvuln;
 				}
-				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, 0);
+				bool d = 0;
+				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, d);
 			}
 		}
 		if(analytics){

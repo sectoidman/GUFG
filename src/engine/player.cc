@@ -660,7 +660,7 @@ void instance::pushInput(std::vector<bool> axis)
 	}
 }
 
-void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun)
+void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool& dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = current.move;
@@ -671,11 +671,13 @@ void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p,
 		if(dummyMove->throwinvuln == 1 && current.throwInvuln <= 0) current.throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;
 	}
-	if(!dryrun){ 
+	if(dryrun){
+		if(current.frame != n || current.move != save) dryrun = !dryrun;
+		current.move = save;
+	} else {
 		current.move = dummyMove;
 		if(current.frame != n || current.move != save) current.move->playSound(ID);
 	}
-	else current.move = save;
 }
 
 void instance::pullVolition()
