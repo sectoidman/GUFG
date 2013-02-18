@@ -389,7 +389,9 @@ void interface::resolve()
 			for(unsigned int i = 0; i < P.size(); i++){ 
 				bool test = 1;
 				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
-				if(!test) P[i]->checkFacing(P[i+1%2]);
+				if(test == 0){ 
+					P[i]->checkFacing(P[(i+1)%2]);
+				}
 			}
 			for(unsigned int i = 0; i < things.size(); i++){
 				if(i < P.size()){

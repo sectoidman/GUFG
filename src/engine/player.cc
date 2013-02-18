@@ -672,11 +672,13 @@ void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p,
 		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;
 	}
 	if(dryrun){
-		if(current.frame != n || current.move != save) dryrun = !dryrun;
+		if(current.reversalFlag){
+			if(current.frame != n || dummyMove != save) dryrun = 0;
+		}
 		current.move = save;
 	} else {
 		current.move = dummyMove;
-		if(current.frame != n || current.move != save) current.move->playSound(ID);
+		if(current.frame != n || dummyMove != save) current.move->playSound(ID);
 	}
 }
 
