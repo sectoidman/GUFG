@@ -177,12 +177,23 @@ void avatar::build(const char* directory, const char* file)
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
 
-			m = createMove(buffer);
-			processMove(m);
+			if(!(m = searchByName(buffer))){
+				m = createMove(buffer);
+				movesByName.push_back(m);
+				processMove(m);
+			}
 			sortMove(m, buffer2);
 		}
 	}
 	read.close();
+	movesByName.clear();
+}
+
+action * avatar::searchByName(char *search)
+{
+	for(action *i:movesByName) 
+		if(!strcmp(i->name, search)) return i;
+	return NULL;
 }
 
 void avatar::sortMove(action * m, char* buffer)

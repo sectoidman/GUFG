@@ -389,7 +389,7 @@ void interface::resolve()
 			for(unsigned int i = 0; i < P.size(); i++){ 
 				bool test = 1;
 				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
-				if(test == 0){ 
+				if(!test && !P[i]->current.aerial){ 
 					P[i]->checkFacing(P[(i+1)%2]);
 				}
 			}

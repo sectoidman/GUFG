@@ -42,6 +42,8 @@ public:
 	action * die;
 	action * neutral;
 	bool headless;
+	std::vector<action*> movesByName;
+	action * searchByName(char*);
 };
 
 class character : virtual public avatar{
