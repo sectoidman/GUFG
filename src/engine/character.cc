@@ -47,10 +47,11 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			if(current.reversal->check(p, meter)){
 				if(!dryrun) current.reversal->execute(neutral, meter, current.frame, current.connect, current.hit);
 				cMove = current.reversal;
+				current.reversalFlag = true;
 				if(!dryrun) current.reversal = NULL;
 			}
 		}
-		else neutralize(cMove, current.aerial, meter);
+		else neutralize(current, cMove, meter);
 	}
 	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, current.connect, current.hit, current.aerial);
 	if(t == NULL){
@@ -72,7 +73,9 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			if(!dryrun) current.bufferedMove = NULL;
 		} else {
 			action * r;
-			neutralize(r, current.aerial, meter);
+			bool l = current.reversalFlag;
+			neutralize(current, r, meter);
+			current.reversalFlag = l;
 			if (!current.reversal && current.frame + 6 > cMove->frames && cMove != r && cMove->frames > 10) {
 				int l = 0, m = 0;
 				current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
@@ -81,6 +84,7 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 		}
 	}
 	if(t != NULL) {
+		current.reversalFlag = false;
 		if(current.freeze > 0){
 			if(current.bufferedMove == NULL){ 
 				if(!dryrun) current.bufferedMove = t;
@@ -108,15 +112,17 @@ action * character::hook(int inputBuffer[30], int i, int f, int * meter, std::ve
 	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag, aerial);
 }
 
-void avatar::neutralize(action *& cMove, bool aerial, int *& meter)
+void avatar::neutralize(status &current, action *& cMove, int *& meter)
 {
 	cMove = neutral;
+	current.reversalFlag = false;
 }
 
-void character::neutralize(action *& cMove, bool aerial, int *& meter)
+void character::neutralize(status &current, action *& cMove, int *& meter)
 {
-	if(aerial) cMove = airNeutral;
+	if(current.aerial) cMove = airNeutral;
 	else cMove = neutral;
+	current.reversalFlag = false;
 }
 
 void avatar::getName(const char* directory, const char* file)

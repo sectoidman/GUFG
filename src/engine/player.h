@@ -46,6 +46,7 @@ public:
 	void enforceAttractor(attractor*);
 	int middle();
 	void flip();
+	void print();
 
 	status current;
 

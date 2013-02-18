@@ -22,7 +22,7 @@ interface::interface()
 	killTimer = false;
 	shortcut = false;
 	continuous = false;
-	analytics = false;
+	analytics = true;
 	scripting = false;
 	pauseEnabled = false;
 	single = false;
@@ -223,7 +223,7 @@ void interface::matchInit()
 	if(!select[0] || !select[1]){
 		Mix_VolumeMusic(100);
 		Mix_PlayMusic(menuMusic, -1);
-		printf("Please select a character:\n");
+		printf("\n");
 	}
 	while (SDL_PollEvent(&event));
 }
@@ -353,6 +353,16 @@ void interface::runTimer()
 			else roundInit();
 		}
 	} else if(!killTimer || timer > 99 * 60)timer--;
+}
+
+void gameInstance::print()
+{
+	std::cout << "\x1b[A" << "\x1b[A";
+	for(int i = 0; i < 2; i++){
+		for(int j = 0; j < 80; j++) std::cout << " ";
+		std::cout << ('\n');
+	}
+	for(player* i:P) i->print();
 }
 
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
@@ -516,6 +526,7 @@ void interface::resolve()
 
 void interface::cleanup()
 {
+	if(select[0] && select[1]) print();
 	if(!pMenu){
 		if(!rMenu && select[0] && select[1]){
 			for(unsigned int i = 0; i < things.size(); i++){

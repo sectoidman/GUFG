@@ -28,6 +28,7 @@ public:
 	virtual void genInput();
 	script *oldReplay;
 	unsigned int replayIterator;
+	virtual void print();
 
 //Input layer stuff. Players, inputs, etc.
 	std::vector<instance*> things;

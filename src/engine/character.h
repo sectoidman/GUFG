@@ -33,7 +33,7 @@ public:
 	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
 	virtual void tick(int *&) {}
-	virtual void neutralize(action *&, bool, int*&);
+	virtual void neutralize(status&, action*&, int*&);
 	virtual bool turn(int&) { return 0; }
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	actionTrie * head;	//Trie for ground actions
@@ -55,7 +55,7 @@ public:
 	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
 
 	virtual int comboState(action *);
-	virtual void neutralize(action *&, bool, int*&);
+	virtual void neutralize(status&, action*&, int*&);
 	virtual void drawMeters(int, int, int*);
 	virtual void init(int *&);
 	virtual int checkBlocking(action *&, int[], int&, int&, bool);
