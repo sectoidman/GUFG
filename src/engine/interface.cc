@@ -1184,7 +1184,7 @@ void interface::resolveHits()
 					ths.ghostHit = true;
 					ths.stun = 0;
 					ths.push = s[hitBy[i]].push;
-					if(things[i]->current.aerial) ths.push += s[hitBy[i]].blowback;
+					if(things[i]->current.aerial) ths.push += s[hitBy[i]].blowback*5;
 					things[hitBy[i]]->takeHit(combo[i], ths, prox);
 				}
 			}
