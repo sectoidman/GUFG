@@ -60,5 +60,6 @@ struct status{
 	int connect, hit;
 	bool dead:1;
 	int throwInvuln;
+	bool reversalFlag:1;
 };
 #endif
