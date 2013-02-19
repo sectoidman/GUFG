@@ -406,6 +406,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	case 9:
 		for(int i = 1; i < 5; i++){
 			if(input[i] % 3 > 0){
+				ret = 2;
 				if(aerial){
 					if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
 						airBlock->init(st);
@@ -423,7 +424,6 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 							cMove = crouchBlock;
 						}
 					}
-					ret = 2;
 				}
 				i = 9;
 			}
