@@ -1180,12 +1180,12 @@ void interface::resolveHits()
 			if(i < P.size() && hitBy[i] < (int)P.size()){
 				if(things[i]->particleType == -2){
 					hStat ths;
-					ths.damage = s[hitBy[i]].chip;
+					ths.damage = 1+s[hitBy[i]].chip;
 					ths.ghostHit = true;
 					ths.stun = 0;
 					ths.push = s[hitBy[i]].push;
 					if(things[i]->current.aerial) ths.push += s[hitBy[i]].blowback*5;
-					things[hitBy[i]]->takeHit(combo[i], ths, prox);
+					P[(things[hitBy[i]]->ID)-1]->takeHit(combo[i], ths, prox);
 				}
 			}
 			if(i < P.size() && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
