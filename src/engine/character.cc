@@ -404,31 +404,26 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	case 3:
 	case 6:
 	case 9:
-		for(int i = 1; i < 7; i++){
-			if(input[i] % 3 == 1){
-				for(int j = i+1; j < 8; j++){
-					if(input[j] % 3 == 2){
-						if(aerial){
-							if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
-								airBlock->init(st);
-								cMove = airBlock;
-							}
-						} else {
-							if(input[0] > 3){ 
-								if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
-									standBlock->init(st);
-									cMove = standBlock;
-								}
-							} else {
-								if(crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
-									crouchBlock->init(st);
-									cMove = crouchBlock;
-								}
-							}
-							ret = 2;
-							j = 10;
+		for(int i = 1; i < 5; i++){
+			if(input[i] % 3 > 0){
+				if(aerial){
+					if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
+						airBlock->init(st);
+						cMove = airBlock;
+					}
+				} else {
+					if(input[0] > 3){ 
+						if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
+							standBlock->init(st);
+							cMove = standBlock;
+						}
+					} else {
+						if(crouchBlock->cancel(cMove, connectFlag, hitFlag)) {
+							crouchBlock->init(st);
+							cMove = crouchBlock;
 						}
 					}
+					ret = 2;
 				}
 				i = 9;
 			}
