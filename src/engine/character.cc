@@ -405,7 +405,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	case 6:
 	case 9:
 		for(int i = 1; i < 5; i++){
-			if(input[i] % 3 == 1){
+			if(input[i] % 3 == 2){
 				ret = 2;
 				if(aerial){
 					if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
