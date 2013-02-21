@@ -79,7 +79,10 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			if (!current.reversal && current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) {
 				int l = 0, m = 0;
 				current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
-				if(r == current.reversal) current.reversal = NULL;
+				if(current.reversal){
+					if(current.reversal->state[0].b.neutral) 
+						current.reversal = NULL;
+				}
 			}
 		}
 	}
@@ -174,12 +177,23 @@ void avatar::build(const char* directory, const char* file)
 		if(!commentFlag){
 			strcpy(buffer2, buffer);
 
-			m = createMove(buffer);
-			processMove(m);
+			if(!(m = searchByName(buffer))){
+				m = createMove(buffer);
+				movesByName.push_back(m);
+				processMove(m);
+			}
 			sortMove(m, buffer2);
 		}
 	}
 	read.close();
+	movesByName.clear();
+}
+
+action * avatar::searchByName(char *search)
+{
+	for(action *i:movesByName) 
+		if(!strcmp(i->name, search)) return i;
+	return NULL;
 }
 
 void avatar::sortMove(action * m, char* buffer)
@@ -392,6 +406,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	case 9:
 		for(int i = 1; i < 5; i++){
 			if(input[i] % 3 > 0){
+				ret = 2;
 				if(aerial){
 					if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
 						airBlock->init(st);
@@ -409,7 +424,6 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 							cMove = crouchBlock;
 						}
 					}
-					ret = 2;
 				}
 				i = 9;
 			}

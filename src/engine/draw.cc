@@ -211,7 +211,7 @@ void interface::drawHUD()
 		}
 		if(P[i]->current.reversalFlag && P[i]->current.frame + 5 < P[i]->current.move->frames){
 			glColor4f(1.0, 0.0, 0.0, 1.0);
-			drawGlyph("Reversal", 100+800*i, 600, 600, 35, 0+2*i);
+			drawGlyph("Autolink", 100+800*i, 600, 600, 35, 0+2*i);
 			glColor4f(1.0, 1.0, 1.0, 1.0);
 		}
 		if(combo[i] > 1){

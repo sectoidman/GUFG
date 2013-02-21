@@ -389,7 +389,7 @@ void interface::resolve()
 			for(unsigned int i = 0; i < P.size(); i++){ 
 				bool test = 1;
 				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
-				if(test == 0){ 
+				if(!test && !P[i]->current.aerial){ 
 					P[i]->checkFacing(P[(i+1)%2]);
 				}
 			}
@@ -1177,15 +1177,18 @@ void interface::resolveHits()
 			s[hitBy[i]].damage *= prorate[things[hitBy[i]]->ID-1];
 			if(actuallyDoesDamage && s[hitBy[i]].damage == 0) s[hitBy[i]].damage = 1;
 			hit[hitBy[i]] = things[i]->takeHit(combo[things[hitBy[i]]->ID-1], s[hitBy[i]], prox);
-			if(i < P.size() && hitBy[i] < (int)P.size()){
+			if(i < P.size()){
 				if(things[i]->particleType == -2){
 					hStat ths;
-					ths.damage = s[hitBy[i]].chip;
+					ths.damage = s[hitBy[i]].chip ? s[hitBy[i]].chip : 1;
 					ths.ghostHit = true;
 					ths.stun = 0;
 					ths.push = s[hitBy[i]].push;
-					if(things[i]->current.aerial) ths.push += s[hitBy[i]].blowback;
-					things[hitBy[i]]->takeHit(combo[i], ths, prox);
+					if(things[i]->current.aerial){ 
+						if(P[things[hitBy[i]]->ID-1]->current.aerial) ths.push += s[hitBy[i]].blowback*5;
+						else ths.push += s[hitBy[i]].blowback;
+					}
+					P[things[hitBy[i]]->ID-1]->takeHit(combo[i], ths, prox);
 				}
 			}
 			if(i < P.size() && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];

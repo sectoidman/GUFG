@@ -817,7 +817,6 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(current.aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
 		v.x *= current.facing;
-		momentum.push_back(v);
 		if(particleType == -1){ 
 			v.x /= 5;
 			v.y /= 5;
@@ -827,6 +826,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 			v.y = 0;
 			current.freeze = 0;
 		}
+		momentum.push_back(v);
 		if(current.aerial && s.hover) hover = s.hover;
 		else hover = 0;
 		if(current.aerial && s.wallBounce) elasticX = true;
