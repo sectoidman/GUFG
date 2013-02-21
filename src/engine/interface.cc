@@ -94,6 +94,7 @@ void interface::createPlayers()
 		configMenu[i] = 0;
 		things.push_back(P[i]);
 		P[i]->boxen = false;
+		P[i]->sprite = true;
 	}
 }
 
@@ -898,6 +899,13 @@ void interface::mainMenu(int ID)
 				}
 				break;
 			case 7:
+				if(P[ID]->boxen && P[ID]->sprite) P[ID]->sprite = false;
+				else if(P[ID]->boxen){
+					P[ID]->sprite = true;
+					P[ID]->boxen = false;
+				} else P[ID]->boxen = true;
+				break;
+			case 8:
 				gameover = 1;
 				break;
 			}
@@ -1184,10 +1192,11 @@ void interface::resolveHits()
 					ths.ghostHit = true;
 					ths.stun = 0;
 					ths.push = s[hitBy[i]].push;
-					if(things[i]->current.aerial){ 
+					if(things[i]->current.aerial){
 						if(P[things[hitBy[i]]->ID-1]->current.aerial) ths.push += s[hitBy[i]].blowback*5;
 						else ths.push += s[hitBy[i]].blowback;
 					}
+					printf("%i\n", ths.push);
 					P[things[hitBy[i]]->ID-1]->takeHit(combo[i], ths, prox);
 				}
 			}

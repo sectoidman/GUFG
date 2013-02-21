@@ -83,25 +83,36 @@ void interface::drawMainMenu(int ID)
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 1)*0.4);
 	if(analytics) sprintf(buffer, "Replay");
 	else sprintf(buffer, "No Replay");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 310, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 290, 40, 2*ID);
+
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 2)*0.4);
-	drawGlyph("Key Config", 20 + 1260*ID, 300, 350, 40, 2*ID);
+	drawGlyph("Key Config", 20 + 1260*ID, 300, 330, 40, 2*ID);
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 3)*0.4);
-	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 390, 40, 2*ID);
+	drawGlyph("Exit Menu", 20 + 1260*ID, 300, 370, 40, 2*ID);
+
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 4)*0.4);
 	if(shortcut) sprintf(buffer, "Rematch");
 	else sprintf(buffer, "Reselect");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 430, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 410, 40, 2*ID);
+
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 5)*0.4);
 	if(scripting) sprintf(buffer, "Scripts on");
 	else sprintf(buffer, "Scripts off");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 470, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 450, 40, 2*ID);
+
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 6)*0.4);
 	if(pauseEnabled) sprintf(buffer, "Pause on");
 	else sprintf(buffer, "Pause off");
-	drawGlyph(buffer, 20 + 1260*ID, 300, 510, 40, 2*ID);
+	drawGlyph(buffer, 20 + 1260*ID, 300, 490, 40, 2*ID);
+
 	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 7)*0.4);
-	drawGlyph("Quit Game", 20 + 1260*ID, 300, 550, 40, 2*ID);
+	if(P[ID]->boxen && P[ID]->sprite) sprintf(buffer, "Both");
+	else if(P[ID]->boxen) sprintf(buffer, "Boxen");
+	else sprintf(buffer, "Sprites");
+	drawGlyph(buffer, 20 + 1260*ID, 300, 530, 40, 2*ID);
+
+	glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(menu[ID] == 8)*0.4);
+	drawGlyph("Quit Game", 20 + 1260*ID, 300, 570, 40, 2*ID);
 	glDisable( GL_TEXTURE_2D );
 	glColor4f(1.0, 1.0, 1.0, 1.0f);
 }
@@ -392,7 +403,7 @@ void instance::draw()
 	int realPosY = collision.y;
 	int realPosX = current.posX;
 	glEnable(GL_TEXTURE_2D);
-	if(spriteCheck()){
+	if(spriteCheck() && sprite){
 		for(unsigned int i = 0; i < hitreg.size(); i++){
 			if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
 			if(current.facing == 1){
