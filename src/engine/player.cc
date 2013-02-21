@@ -825,6 +825,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(particleType == -2){
 			v.x = 0;
 			v.y = 0;
+			current.freeze = 0;
 		}
 		if(current.aerial && s.hover) hover = s.hover;
 		else hover = 0;
