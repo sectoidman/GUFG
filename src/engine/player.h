@@ -55,6 +55,7 @@ public:
 	int blockType;
 	int counter;
 	bool boxen:1;
+	bool sprite:1;
 protected:
 	avatar * v;
 };

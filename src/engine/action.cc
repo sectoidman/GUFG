@@ -205,6 +205,7 @@ void action::loadMisc(const char *n)
 			height.push_back(temp->h);
 			sprite.push_back(aux::surface_to_texture(temp));
 		}
+		SDL_FreeSurface(temp);
 	}
 	sprintf(fname, "content/characters/%s.ogg", n);
 	soundClip = Mix_LoadWAV(fname);

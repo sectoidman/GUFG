@@ -64,7 +64,6 @@ public:
 	virtual void pollRects(int, int, SDL_Rect&, std::vector<SDL_Rect>&, std::vector<SDL_Rect>&);
 	virtual std::vector<SDL_Rect> pollDelta(int);
 	virtual int displace(int, int&, int);
-	Mix_Chunk *soundClip;
 	virtual void pollStats(hStat&, int, bool);
 	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&, int&, int&);
@@ -76,11 +75,15 @@ public:
 	virtual void feed(action *, int, int);
 	virtual char* request(int, int);
 
-	bool CHState(int);
 	virtual void draw(int);
 	virtual void drawBoxen(int);
+	virtual bool CHState(int);
+
+	virtual bool window(int);
+	int calcCurrentHit(int);
 
 	std::vector<hStat> stats, CHStats;
+	Mix_Chunk *soundClip;
 	int stop;
 	int throwinvuln;
 	bool crouch:1;
@@ -145,8 +148,6 @@ public:
 	int distortSpawn;
 	int attemptStart, attemptEnd;
 	int displaceX, displaceY, displaceFrame;
-	bool window(int);
-	int calcCurrentHit(int);
 
 	char * tempNext;
 	char ** tempOnConnect;

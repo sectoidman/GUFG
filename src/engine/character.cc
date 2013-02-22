@@ -405,7 +405,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	case 6:
 	case 9:
 		for(int i = 1; i < 5; i++){
-			if(input[i] % 3 > 0){
+			if(input[i] % 3 == 2){
 				ret = 2;
 				if(aerial){
 					if(airBlock->cancel(cMove, connectFlag, hitFlag)) {
@@ -504,11 +504,11 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 			}
 		}
 	} else if (hitType == -1) {
-		if(meter[1] + 6 < 300) meter[1] += 12;
+		if(meter[1] + 6 < 300) meter[1] += 10;
 		else meter[1] = 300;
 	}
 	if (hitType > -2) {
-		if(meter[1] + 1 < 300) meter[1] += 3;
+		if(meter[1] + 1 < 300) meter[1] += 2;
 		else meter[1] = 300;
 	}
 	return freeze;
