@@ -421,7 +421,9 @@ void instance::draw()
 	}
 	glDisable(GL_TEXTURE_2D);
 	if(!spriteCheck() || boxen){
-		drawBoxen();
+		if(!current.move || current.frame > current.move->frames)
+			pick()->neutral->drawBoxen(0);
+		else drawBoxen();
 	}
 }
 
@@ -607,7 +609,10 @@ void interface::writeImage(const char * movename, int frame, action * move)
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
 
-	move->drawBoxen(frame, x, y - h);
+	glPushMatrix();
+		glTranslatef(-x, -(y-h), 0.0);
+		move->drawBoxen(frame);
+	glPopMatrix();
 
 	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 
@@ -616,18 +621,18 @@ void interface::writeImage(const char * movename, int frame, action * move)
 	if(SDL_SaveBMP(image, fname)) printf("You dun fucked up\n");
 }
 
-void action::drawBoxen(int frame, int x, int y){
+void action::drawBoxen(int frame){
 	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-	glRectf((GLfloat)(collision[frame].x - x), (GLfloat)(-collision[frame].y - y), (GLfloat)(collision[frame].x + collision[frame].w - x), (GLfloat)(-collision[frame].y - collision[frame].h - y));
+	glRectf((GLfloat)(collision[frame].x), (GLfloat)(-collision[frame].y), (GLfloat)(collision[frame].x + collision[frame].w), (GLfloat)(-collision[frame].y - collision[frame].h));
 	for(unsigned int i = 0; i < hitreg[frame].size(); i++){
 		glFlush();
 		glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitreg[frame][i].x - x), (GLfloat)(-hitreg[frame][i].y - y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w - x), (GLfloat)(-hitreg[frame][i].y - hitreg[frame][i].h - y));
+		glRectf((GLfloat)(hitreg[frame][i].x), (GLfloat)(-hitreg[frame][i].y), (GLfloat)(hitreg[frame][i].x + hitreg[frame][i].w), (GLfloat)(-hitreg[frame][i].y - hitreg[frame][i].h));
 	}
 	for(unsigned int i = 0; i < hitbox[frame].size(); i++){
 		glFlush();
 		glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
-		glRectf((GLfloat)(hitbox[frame][i].x - x), (GLfloat)(-hitbox[frame][i].y - y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w - x), (GLfloat)(-hitbox[frame][i].y - hitbox[frame][i].h - y));
+		glRectf((GLfloat)(hitbox[frame][i].x), (GLfloat)(-hitbox[frame][i].y), (GLfloat)(hitbox[frame][i].x + hitbox[frame][i].w), (GLfloat)(-hitbox[frame][i].y - hitbox[frame][i].h));
 	}
 	glFlush();
 }

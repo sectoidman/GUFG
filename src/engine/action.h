@@ -78,7 +78,7 @@ public:
 
 	bool CHState(int);
 	virtual void draw(int);
-	virtual void drawBoxen(int, int, int);
+	virtual void drawBoxen(int);
 
 	std::vector<hStat> stats, CHStats;
 	int stop;

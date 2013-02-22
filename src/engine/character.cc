@@ -504,10 +504,11 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 			}
 		}
 	} else if (hitType == -1) {
-		if(meter[1] + 6 < 300) meter[1] += 6;
+		if(meter[1] + 6 < 300) meter[1] += 12;
 		else meter[1] = 300;
-	} else if (hitType > -2) {
-		if(meter[1] + 1 < 300) meter[1] += 1;
+	}
+	if (hitType > -2) {
+		if(meter[1] + 1 < 300) meter[1] += 3;
 		else meter[1] = 300;
 	}
 	return freeze;

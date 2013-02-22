@@ -535,6 +535,10 @@ void interface::cleanup()
 {
 	//if(select[0] && select[1]) print();
 	if(!pMenu){
+		for(unsigned int i = 0; i < P.size(); i++) {
+			things[i]->current.throwInvuln--;
+			P[i]->hover--;
+		}
 		if(!rMenu && select[0] && select[1]){
 			for(unsigned int i = 0; i < things.size(); i++){
 				things[i]->step();
@@ -1239,11 +1243,6 @@ void interface::resolveHits()
 	}
 	if(connect[0] || connect[1]){
 		resolveCollision();
-	}
-
-	for(unsigned int i = 0; i < P.size(); i++) {
-		things[i]->current.throwInvuln--;
-		P[i]->hover--;
 	}
 
 	for(unsigned int i = 0; i < P.size(); i++) {
