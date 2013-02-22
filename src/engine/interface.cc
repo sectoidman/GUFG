@@ -1196,11 +1196,10 @@ void interface::resolveHits()
 						if(P[things[hitBy[i]]->ID-1]->current.aerial) ths.push += s[hitBy[i]].blowback*5;
 						else ths.push += s[hitBy[i]].blowback;
 					}
-					printf("%i\n", ths.push);
 					P[things[hitBy[i]]->ID-1]->takeHit(combo[i], ths, prox);
 				}
+				if(s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
 			}
-			if(i < P.size() && s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
 			if(hit[hitBy[i]] == 1){ 
 				things[hitBy[i]]->current.hit = things[hitBy[i]]->current.connect;
 				prorate[things[hitBy[i]]->ID-1] *= s[hitBy[i]].prorate;
