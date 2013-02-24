@@ -406,7 +406,7 @@ void interface::resolve()
 		}
 		if(analytics){
 			for(unsigned int i = 0; i < replay->command.size(); i++){
-				replay->command[i].push_back(currentFrame[i]);
+				replay->push(i, currentFrame[i]);
 			}
 		}
 		for(unsigned int i = 0; i < P.size(); i++){
@@ -419,7 +419,7 @@ void interface::resolve()
 				}
 				currentFrame[i].pos[5] = 0;
 				currentFrame[i].neg[5] = 0;
-				P[i]->record->command[0].push_back(currentFrame[i]);
+				P[i]->record->push(currentFrame[i]);
 				if(P[i]->current.facing == -1){
 					temp = currentFrame[i].axis[3];
 					currentFrame[i].axis[3] = currentFrame[i].axis[2];
@@ -863,8 +863,8 @@ void interface::mainMenu(int ID)
 		menu[ID]++;
 		counter[ID] = 10;
 	}
-	if(menu[ID] > 7) menu[ID] = 1;
-	else if(menu[ID] < 1) menu[ID] = 7;
+	if(menu[ID] > 8) menu[ID] = 1;
+	else if(menu[ID] < 1) menu[ID] = 8;
 	for(unsigned int i = 0; i < currentFrame[ID].pos.size()-1; i++){
 		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
 			switch(menu[ID]){
