@@ -68,7 +68,7 @@ bool script::genEvent(int p, int f, frame &t)
 			t.neg[i] = 0;
 		}
 	}
-	if(command[p][f].n.i != 5) printf("%i: %i\n", p, command[p][f].n.i);
+	printf("%i: %i\n", p, command[p][f].n.i);
 
 	if(command[p][f].n.raw.Start) t.pos[5] = 1;
 	else t.pos[5] = 0;
@@ -102,7 +102,7 @@ void script::push(int p, frame t)
 	if(t.axis[2]) t.n.raw.dir--;
 	if(t.axis[3]) t.n.raw.dir++;
 
-	printf("%i: %i\n", p, t.n.i);
+	printf("%i\n", t.n.i);
 	command[p].push_back(t);
 }
 
@@ -158,8 +158,10 @@ void script::write(char * name)
 		return;
 	}
 	scribe << selection.size() << " " << command[0][0].pos.size() << '\n';
-	for(unsigned int i = 0; i < selection.size(); i++) 
-		scribe << selection[i] << " ";
+	for(unsigned int i = 0; i < selection.size(); i++){
+		scribe << selection[i];
+		if(i == 0) scribe << " ";
+	}
 	scribe << '\n';
 	for(unsigned int i = 0; i < command[0].size(); i++){
 		for(unsigned int j = 0; j < command.size(); j++){

@@ -224,7 +224,7 @@ void interface::matchInit()
 	if(!select[0] || !select[1]){
 		Mix_VolumeMusic(100);
 		Mix_PlayMusic(menuMusic, -1);
-		printf("\n");
+		//printf("\n");
 	}
 	while (SDL_PollEvent(&event));
 }
@@ -296,17 +296,18 @@ void interface::runTimer()
 					if(P[0]->rounds == P[1]->rounds);
 					else if(P[0]->rounds == numRounds){ 
 						P[0]->wins++;
-						printf("P1: %i wins\n", P[0]->wins);
+						//printf("P1: %i wins\n", P[0]->wins);
 					} else {
 						P[1]->wins++;
-						printf("P2: %i wins\n", P[1]->wins);
+						//printf("P2: %i wins\n", P[1]->wins);
 					}
 					if(P[0]->rounds == P[1]->rounds);
 					else{
 						if(P[0]->rounds == numRounds) stats->recordWin(selection[0], selection[1]);
 						else stats->recordWin(selection[1], selection[0]);
 					}
-					printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
+					//printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
+					printf("\n");
 				}
 				if(shortcut) rMenu = 1;
 				else{
@@ -404,27 +405,23 @@ void interface::resolve()
 				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, d);
 			}
 		}
-		if(analytics){
-			for(unsigned int i = 0; i < replay->command.size(); i++){
-				replay->push(i, currentFrame[i]);
-			}
-		}
 		for(unsigned int i = 0; i < P.size(); i++){
+			int temp;
+			if(P[i]->current.facing == -1){
+				temp = currentFrame[i].axis[3];
+				currentFrame[i].axis[3] = currentFrame[i].axis[2];
+				currentFrame[i].axis[2] = temp;
+			}
+			if(analytics) replay->push(i, currentFrame[i]);
 			if(P[i]->record){
-				int temp;
-				if(P[i]->current.facing == -1){
-					temp = currentFrame[i].axis[3];
-					currentFrame[i].axis[3] = currentFrame[i].axis[2];
-					currentFrame[i].axis[2] = temp;
-				}
 				currentFrame[i].pos[5] = 0;
 				currentFrame[i].neg[5] = 0;
 				P[i]->record->push(currentFrame[i]);
-				if(P[i]->current.facing == -1){
-					temp = currentFrame[i].axis[3];
-					currentFrame[i].axis[3] = currentFrame[i].axis[2];
-					currentFrame[i].axis[2] = temp;
-				}
+			}
+			if(P[i]->current.facing == -1){
+				temp = currentFrame[i].axis[3];
+				currentFrame[i].axis[3] = currentFrame[i].axis[2];
+				currentFrame[i].axis[2] = temp;
 			}
 		}
 	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
@@ -840,6 +837,7 @@ void interface::cSelectMenu()
 	}
 
 	if(select[0] && select[1]){
+		std::cout << "2 6\n" << selection[0] << " " << selection[1] << '\n';
 		P[0]->characterSelect(selection[0]);
 		P[1]->characterSelect(selection[1]);
 		if(analytics){
