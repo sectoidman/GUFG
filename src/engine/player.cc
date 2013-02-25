@@ -652,6 +652,10 @@ int instance::passSignal(int sig)
 
 void instance::pushInput(unsigned int i)
 {
+	if(current.facing == -1){
+		if(i % 3 == 0) i -= 2;
+		else if(i % 3 == 1) i += 2; 
+	}
 	inputBuffer[0] = i;
 	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];
@@ -768,8 +772,8 @@ void player::readEvent(SDL_Event & event, frame &t)
 	unsigned int d = 5;
 	if(t.axis[0]) d += 3;
 	if(t.axis[1]) d -= 3;
-	if(t.axis[2]) d -= current.facing;
-	if(t.axis[3]) d += current.facing;
+	if(t.axis[2]) d--;
+	if(t.axis[3]) d++;
 	t.n.raw.dir = d;
 }
 
