@@ -374,46 +374,7 @@ void interface::resolve()
 	else if(rMenu) rematchMenu();
 	else if(pMenu) pauseMenu();
 	else {
-		if(timer > 99 * 60){
-			for(unsigned int i = 0; i < P.size(); i++){
-				if(timer == 106 * 60) things[i]->inputBuffer[0] = 0;
-				else if(timer == 106 * 60 - 1) things[i]->inputBuffer[0] = i;
-				else if(timer == 106 * 60 - 2) things[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
-				else if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
-				else if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
-				else(things[i]->inputBuffer[0] = 5);
-				for(int j:currentFrame[i].pos) j = 0;
-				for(int j:currentFrame[i].neg) j = 0;
-			}
-		} else {
-			for(unsigned int i = 0; i < things.size(); i++)
-				things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
-			for(unsigned int i = 0; i < P.size(); i++){ 
-				bool test = 1;
-				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
-				if(!test && !P[i]->current.aerial){ 
-					P[i]->checkFacing(P[(i+1)%2]);
-				}
-			}
-			for(unsigned int i = 0; i < things.size(); i++){
-				if(i < P.size()){
-					if(things[(i+1)%2]->current.aerial) prox.y = 1;
-					else prox.y = 0;
-					prox.x = things[(i+1)%2]->current.throwInvuln;
-				}
-				bool d = 0;
-				things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, d);
-			}
-		}
-		for(unsigned int i = 0; i < P.size(); i++){
-			currentFrame[i].pos[5] = 0;
-			currentFrame[i].neg[5] = 0;
-			if(analytics)
-				replay->push(i, currentFrame[i]);
-			if(P[i]->record) 
-				P[i]->record->push(currentFrame[i]);
-		}
-
+		resolveInputs();
 		for(instance *i:things) i->updateRects();
 
 		resolveThrows();
@@ -474,6 +435,49 @@ void interface::resolve()
 
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
+	}
+}
+
+void interface::resolveInputs()
+{
+	if(timer > 99 * 60){
+		for(unsigned int i = 0; i < P.size(); i++){
+			if(timer == 106 * 60) things[i]->inputBuffer[0] = 0;
+			else if(timer == 106 * 60 - 1) things[i]->inputBuffer[0] = i;
+			else if(timer == 106 * 60 - 2) things[i]->inputBuffer[0] = selection[(i+1)%2] / 10;
+			else if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
+			else if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
+			else(things[i]->inputBuffer[0] = 5);
+			for(int j:currentFrame[i].pos) j = 0;
+			for(int j:currentFrame[i].neg) j = 0;
+		}
+	} else {
+		for(unsigned int i = 0; i < things.size(); i++)
+			things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
+		for(unsigned int i = 0; i < P.size(); i++){ 
+			bool test = 1;
+			P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
+			if(!test && !P[i]->current.aerial){ 
+				P[i]->checkFacing(P[(i+1)%2]);
+			}
+		}
+		for(unsigned int i = 0; i < things.size(); i++){
+			if(i < P.size()){
+				if(things[(i+1)%2]->current.aerial) prox.y = 1;
+				else prox.y = 0;
+				prox.x = things[(i+1)%2]->current.throwInvuln;
+			}
+			bool d = 0;
+			things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, d);
+		}
+	}
+	for(unsigned int i = 0; i < P.size(); i++){
+		currentFrame[i].pos[5] = 0;
+		currentFrame[i].neg[5] = 0;
+		if(analytics)
+			replay->push(i, currentFrame[i]);
+		if(P[i]->record) 
+			P[i]->record->push(currentFrame[i]);
 	}
 }
 

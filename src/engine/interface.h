@@ -59,6 +59,7 @@ public:
 
 /*The main game loop runs readInput() and resolve() each exactly once per frame loop.*/
 	void resolve();		/*The main loop of the game*/
+	void resolveInputs();
 	void resolvePhysics();
 	void resolveCollision();
 	void resolveHits();
