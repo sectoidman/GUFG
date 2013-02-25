@@ -131,6 +131,7 @@ public:
 	GLuint selectScreen; 
 	SDL_Rect wheel;
 
+	std::vector<std::vector<int> > buttons;
 	int timer;
 	bool roundEnd:1;
 	bool killTimer:1;

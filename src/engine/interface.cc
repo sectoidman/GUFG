@@ -439,6 +439,7 @@ void interface::resolveInputs()
 			for(int j:currentFrame[i].neg) j = 0;
 		}
 	} else {
+		
 		for(unsigned int i = 0; i < things.size(); i++)
 			things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
 		for(unsigned int i = 0; i < P.size(); i++){ 
@@ -1098,6 +1099,17 @@ void interface::resolveCollision()
 			things[i]->current.deltaY = 0; 
 		}
 	}
+
+	for(player *i:P){
+		i->enforceFloor(floor);
+		i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
+	}
+
+	//Some issues arise if you don't have this second pass
+	if (aux::checkCollision(P[0]->collision, P[1]->collision))
+		unitCollision(P[0], P[1]);
+	prox.w = abs(things[0]->current.posX - things[1]->current.posX);
+	prox.h = abs(things[0]->current.posY - things[1]->current.posY);
 }
 
 void interface::resolveThrows()
