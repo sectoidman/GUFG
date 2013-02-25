@@ -650,11 +650,9 @@ int instance::passSignal(int sig)
 	}
 }
 
-void instance::pushInput(std::vector<bool> axis)
+void instance::pushInput(unsigned int i)
 {
-	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*current.facing + axis[3]*current.facing;
-	inputBuffer[0] = temp;
-
+	inputBuffer[0] = i;
 	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];
 	}
@@ -751,7 +749,7 @@ void controller::readEvent(SDL_Event & event, frame &t)
 	int effect = tap(event);
 	if(effect != 0){
 		for(int i = 0; i < 4; i++){
-			if(abs(effect) & (1 << i)){ 
+			if(abs(effect) & (1 << i)){
 				t.axis[i] = (effect > 0);
 			}
 		}
@@ -762,6 +760,17 @@ void controller::readEvent(SDL_Event & event, frame &t)
 			}
 		}
 	}
+}
+
+void player::readEvent(SDL_Event & event, frame &t)
+{
+	controller::readEvent(event, t);
+	unsigned int d = 5;
+	if(t.axis[0]) d += 3;
+	if(t.axis[1]) d -= 3;
+	if(t.axis[2]) d -= current.facing;
+	if(t.axis[3]) d += current.facing;
+	t.n.raw.dir = d;
 }
 
 void instance::connect(int combo, hStat & s)

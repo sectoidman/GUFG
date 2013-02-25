@@ -386,8 +386,8 @@ void interface::resolve()
 				for(int j:currentFrame[i].neg) j = 0;
 			}
 		} else {
-			for(unsigned int i = 0; i < things.size(); i++) 
-				things[i]->pushInput(currentFrame[things[i]->ID - 1].axis);
+			for(unsigned int i = 0; i < things.size(); i++)
+				things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
 			for(unsigned int i = 0; i < P.size(); i++){ 
 				bool test = 1;
 				P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
@@ -406,35 +406,13 @@ void interface::resolve()
 			}
 		}
 		for(unsigned int i = 0; i < P.size(); i++){
-			int temp;
-			if(P[i]->current.facing == -1){
-				temp = currentFrame[i].axis[3];
-				currentFrame[i].axis[3] = currentFrame[i].axis[2];
-				currentFrame[i].axis[2] = temp;
-			}
-			if(analytics) replay->push(i, currentFrame[i]);
-			if(P[i]->record){
-				currentFrame[i].pos[5] = 0;
-				currentFrame[i].neg[5] = 0;
+			currentFrame[i].pos[5] = 0;
+			currentFrame[i].neg[5] = 0;
+			if(analytics)
+				replay->push(i, currentFrame[i]);
+			if(P[i]->record) 
 				P[i]->record->push(currentFrame[i]);
-			}
-			if(P[i]->current.facing == -1){
-				temp = currentFrame[i].axis[3];
-				currentFrame[i].axis[3] = currentFrame[i].axis[2];
-				currentFrame[i].axis[2] = temp;
-			}
 		}
-	/*Current plan for this function: Once I've got everything reasonably functionally abstracted into player members,
-	the idea is to do the procedure as follows:
-		1. Update to current rectangles. Since the actual step is part of the draw routine, this should happen first.
-		2. Figure out all deltas that should currently apply to sprite spritions. Basically move the sprites to where
-		   they'd be if there were no collision rules.
-		3. Check for things like hits and blocks. Enact all the effects of these, including stun, damage, etc.
-		4. Check for collision against the opponent or against boundaries such as the floor or the corners.
-		   Haven't decided if there should be a cieling yet.
-		5. Apply any changes to deltas that need to be made before the next frame
-		6. Initialize sprites.
-	*/
 
 		for(instance *i:things) i->updateRects();
 
@@ -760,7 +738,7 @@ void interface::readInput()
 	if(scripting || oldReplay) genInput();
 	for(SDL_Event i:events){
 		for(unsigned int j = 0; j < p.size(); j++){
-			if(!p[j]->currentMacro) p[j]->readEvent(i, currentFrame[j]);
+			if(!p[j]->currentMacro) P[j]->readEvent(i, currentFrame[j]);
 		}
 	}
 }

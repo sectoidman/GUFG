@@ -39,7 +39,7 @@ public:
 	virtual void combineDelta();
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
-	virtual void pushInput(std::vector<bool>);
+	virtual void pushInput(unsigned int);
 	virtual int passSignal(int);
 	virtual int dragBG(int, int);
 	virtual void follow(instance*);
@@ -72,6 +72,7 @@ public:
 	virtual void characterSelect(int);
 	virtual void drawHitParticle();
 
+	virtual void readEvent(SDL_Event &, frame &);
 	virtual void land();
 	virtual void readScripts();
 	virtual void enforceGravity(int, int);

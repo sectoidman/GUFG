@@ -68,7 +68,7 @@ bool script::genEvent(int p, int f, frame &t)
 			t.neg[i] = 0;
 		}
 	}
-	printf("%i: %i\n", p, command[p][f].n.i);
+	//printf("%i: %i\n", p, command[p][f].n.i);
 
 	if(command[p][f].n.raw.Start) t.pos[5] = 1;
 	else t.pos[5] = 0;
@@ -95,12 +95,6 @@ void script::push(int p, frame t)
 	if(t.neg[4] == 1) t.n.raw.E = -1;
 	if(t.pos[5] == 1) t.n.raw.Start = true;
 	else t.n.raw.Start = false;
-
-	t.n.raw.dir = 5;
-	if(t.axis[0]) t.n.raw.dir += 3;
-	if(t.axis[1]) t.n.raw.dir -= 3;
-	if(t.axis[2]) t.n.raw.dir--;
-	if(t.axis[3]) t.n.raw.dir++;
 
 	printf("%i\n", t.n.i);
 	command[p].push_back(t);
