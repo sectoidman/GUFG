@@ -421,31 +421,7 @@ void interface::resolve()
 
 		for(instance *i:things) i->updateRects();
 
-		for(unsigned int i = 0; i < things.size(); i++){
-			if(!things[i]->current.freeze){
-				if(things[i]->current.move->stop & 4);
-				else { 
-					things[i]->pullVolition();
-					if(things[i]->ID) things[i]->follow(things[(things[i]->ID)%2]);
-					things[i]->combineDelta();
-					things[i]->enforceGravity(grav, floor);
-				}
-				for(unsigned int j = 0; j < globals.size(); j++){
-					if(globals[j]->ID != things[i]->ID){
-						if(i < P.size()){
-							if(globals[j]->effectCode & 1){
-								things[i]->enforceAttractor(globals[j]);
-							}
-						} else {
-							if(globals[j]->effectCode & 2){
-								things[i]->enforceAttractor(globals[j]);
-							}
-						}
-					}
-				}
-			}
-		}
-
+		resolvePhysics();
 		/*Really rudimentary camera logic. Really just scrolls the background (Which characters are drawn relative to)
 		 *appropriately, attempting to adjust to approximately be looking at the point in the middle of the two characters.
 		 */
@@ -496,14 +472,36 @@ void interface::resolve()
 			}
 		}
 
-		for(unsigned int i = 0; i < things.size(); i++){
-			if(!things[i]->hitbox.empty()){
-				if(!freeze) P[(things[i]->ID)%2]->checkBlocking();
-			}
-		}
-
 		//Check if moves hit. This will probably be a function at some point
 		resolveHits();
+	}
+}
+
+void interface::resolvePhysics()
+{
+	for(unsigned int i = 0; i < things.size(); i++){
+		if(!things[i]->current.freeze){
+			if(things[i]->current.move->stop & 4);
+			else { 
+				things[i]->pullVolition();
+				if(things[i]->ID) things[i]->follow(things[(things[i]->ID)%2]);
+				things[i]->combineDelta();
+				things[i]->enforceGravity(grav, floor);
+			}
+			for(unsigned int j = 0; j < globals.size(); j++){
+				if(globals[j]->ID != things[i]->ID){
+					if(i < P.size()){
+						if(globals[j]->effectCode & 1){
+							things[i]->enforceAttractor(globals[j]);
+						}
+					} else {
+						if(globals[j]->effectCode & 2){
+							things[i]->enforceAttractor(globals[j]);
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -1128,6 +1126,11 @@ void interface::resolveHits()
 		hitBy[i] = -1;
 	}
 	SDL_Rect residual = {0, 0, 1, 0};
+	for(unsigned int i = 0; i < things.size(); i++){
+		if(!things[i]->hitbox.empty()){
+			if(!freeze) P[(things[i]->ID)%2]->checkBlocking();
+		}
+	}
 	for(unsigned int i = 0; i < things.size(); i++){
 		for(int m = (int)things.size()-1; m >= 0; m--){
 			if(m != (int)i && !taken[m] && !connect[i]){
