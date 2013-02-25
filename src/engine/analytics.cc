@@ -40,38 +40,8 @@ bool script::genEvent(int p, int f, frame &t)
 	if(command.empty() || (unsigned int)p >= command.size()) return 0;
 	if(command[p].empty() || (unsigned int)f >= command[p].size()) return 0;
 
-	for(bool i:t.axis) i = 0;
-	if(command[p][f].n.raw.dir > 6){
-		t.axis[0] = true;
-		t.axis[1] = false;
-	} else if(command[p][f].n.raw.dir < 4){
-		t.axis[1] = true;
-		t.axis[0] = false;
-	}
-	if(command[p][f].n.raw.dir % 3 == 1){
-		t.axis[2] = true;
-		t.axis[3] = false;
-	} else if(command[p][f].n.raw.dir % 3 == 0) {
-		t.axis[3] = true;
-		t.axis[2] = false;
-	}
-
-	for(int i = 0; i < 5; i++){
-		if(command[p][f].n.i & (1 << (i*2+4))){
-			t.pos[i] = 1;
-			t.neg[i] = 0;
-		} else if(command[p][f].n.i & (1 << (i*2+5))) {
-			t.pos[i] = 0;
-			t.neg[i] = 1;
-		} else {
-			t.pos[i] = 0;
-			t.neg[i] = 0;
-		}
-	}
 	//printf("%i: %i\n", p, command[p][f].n.i);
-
-	if(command[p][f].n.raw.Start) t.pos[5] = 1;
-	else t.pos[5] = 0;
+	t.n.i = command[p][f].n.i;
 	return 1;
 }
 

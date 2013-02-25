@@ -10,6 +10,7 @@
 player::player()
 {
 	meter = NULL;
+	name = NULL;
 	init();
 }
 
@@ -17,6 +18,7 @@ player::player(int id)
 {
 	ID = id;
 	meter = NULL;
+	name = NULL;
 	init();
 	wins = 0;
 }
@@ -775,6 +777,11 @@ void player::readEvent(SDL_Event & event, frame &t)
 	if(t.axis[2]) d--;
 	if(t.axis[3]) d++;
 	t.n.raw.dir = d;
+	for(int i = 0; i < 5; i++){
+		if(t.pos[i]) t.n.i += 1 << 4+2*i;
+		else if(t.pos[i]) t.n.i += 2 << 4+2*i;
+	}
+	if(t.pos[5]) t.n.raw.Start = true;
 }
 
 void instance::connect(int combo, hStat & s)

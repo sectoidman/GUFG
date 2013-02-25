@@ -76,12 +76,15 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			bool l = current.reversalFlag;
 			neutralize(current, r, meter);
 			current.reversalFlag = l;
-			if (!current.reversal && current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) {
-				int l = 0, m = 0;
-				current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
-				if(current.reversal){
-					if(current.reversal->state[0].b.neutral) 
-						current.reversal = NULL;
+			int st = current.move->arbitraryPoll(1, 0);
+			if (!current.reversal){
+				if((current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) || (st < 10 && st > 0)) {
+					int l = 0, m = 0;
+					current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
+					if(current.reversal){
+						if(current.reversal->state[0].b.neutral) 
+							current.reversal = NULL;
+					}
 				}
 			}
 		}

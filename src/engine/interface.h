@@ -62,6 +62,8 @@ public:
 	void resolveInputs();
 	void resolvePhysics();
 	void resolveCollision();
+	void resolveCamera();
+	void resolveCombos();
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();

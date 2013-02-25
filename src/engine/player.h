@@ -92,6 +92,7 @@ public:
 	bool stick;
 	int hover;
 
+	char * name;
 
 	int particleLife;
 

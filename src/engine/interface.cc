@@ -370,72 +370,59 @@ void gameInstance::print()
 /*Main function for a frame. This resolves character spritions, background scrolling, and hitboxes*/
 void interface::resolve()
 {
-	if(!select[0] || !select[1]) cSelectMenu(); 
+	if(!select[0] || !select[1]) cSelectMenu();
 	else if(rMenu) rematchMenu();
 	else if(pMenu) pauseMenu();
 	else {
 		resolveInputs();
 		for(instance *i:things) i->updateRects();
-
 		resolveThrows();
 		doSuperFreeze();
-
 		for(instance *i:things) i->updateRects();
-
 		resolvePhysics();
-		/*Really rudimentary camera logic. Really just scrolls the background (Which characters are drawn relative to)
-		 *appropriately, attempting to adjust to approximately be looking at the point in the middle of the two characters.
-		 */
-		int dx = things[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + things[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
-		/*If a character leaves the camera boundaries, follow them immediately*/
-		if(!dx){
-			dx = -(((bg.x + screenWidth/2) - things[0]->current.posX) + ((bg.x + screenWidth/2) - things[1]->current.posX));
-			dx /= 10;
-			/*Otherwise follow the middle at a rate of (disparity from middle view)/10.
-			 *Chosen by trial and error, this rate feels most natural
-			 */
-		}
-		dragBG(dx);
-		for(player *i:P){
-			i->enforceFloor(floor);
-			i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
-		}
-
+		resolveCamera();
 		resolveCollision();
-
-		for(unsigned int i = 0; i < things.size(); i++){
-			if(things[i]->current.move->track) 
-				things[i]->checkFacing(P[(things[i]->ID)%2]);
-			else if (i < 2){
-				if(things[i]->current.move->state[things[i]->current.connect].i & 1 && P[i]->current.move != P[i]->pick()->airNeutral){
-					things[i]->checkFacing(P[(things[i]->ID)%2]);
-				}
-			}
-		}
-
-		for(unsigned int i = 0; i < P.size(); i++){
-			if(!things[i]->current.aerial) { things[i]->current.deltaX = 0; things[i]->current.deltaY = 0; }
-
-			if(!roundEnd){
-				switch (P[i]->pick()->comboState(things[i]->current.move)){ 
-				case -2: 
-					illegit[(i+1)%2] = 1;
-					break;
-				case 0:
-					combo[(i+1)%2] = 0;
-					damage[(i+1)%2] = 0;
-					prorate[(i+1)%2] = 1.0;
-					P[i]->elasticX = 0;
-					P[i]->elasticY = 0;
-					illegit[(i+1)%2] = 0;
-					break;
-				}
-			}
-		}
-
-		//Check if moves hit. This will probably be a function at some point
+		resolveCombos();
 		resolveHits();
 	}
+}
+
+void interface::resolveCombos()
+{
+	for(unsigned int i = 0; i < P.size(); i++){
+		if(!roundEnd){
+			switch (P[i]->pick()->comboState(things[i]->current.move)){ 
+			case -2: 
+				illegit[(i+1)%2] = 1;
+				break;
+			case 0:
+				combo[(i+1)%2] = 0;
+				damage[(i+1)%2] = 0;
+				prorate[(i+1)%2] = 1.0;
+				P[i]->elasticX = 0;
+				P[i]->elasticY = 0;
+				illegit[(i+1)%2] = 0;
+				break;
+			}
+		}
+	}
+}
+
+void interface::resolveCamera()
+{
+	/*Really rudimentary camera logic. Really just scrolls the background (Which characters are drawn relative to)
+	 *appropriately, attempting to adjust to approximately be looking at the point in the middle of the two characters.
+	 */
+	int dx = things[1]->dragBG(bg.x + wall, bg.x + screenWidth - wall) + things[0]->dragBG(bg.x + wall, bg.x + screenWidth - wall);
+	/*If a character leaves the camera boundaries, follow them immediately*/
+	if(!dx){
+		dx = -(((bg.x + screenWidth/2) - things[0]->current.posX) + ((bg.x + screenWidth/2) - things[1]->current.posX));
+		dx /= 10;
+		/*Otherwise follow the middle at a rate of (disparity from middle view)/10.
+		 *Chosen by trial and error, this rate feels most natural
+		 */
+	}
+	dragBG(dx);
 }
 
 void interface::resolveInputs()
@@ -817,7 +804,7 @@ void interface::cSelectMenu()
 	}
 
 	if(select[0] && select[1]){
-		std::cout << "2 6\n" << selection[0] << " " << selection[1] << '\n';
+		//std::cout << "2 6\n" << selection[0] << " " << selection[1] << '\n';
 		P[0]->characterSelect(selection[0]);
 		P[1]->characterSelect(selection[1]);
 		if(analytics){
@@ -1088,10 +1075,29 @@ void gameInstance::unitCollision(instance *a, instance *b)
 
 void interface::resolveCollision()
 {
+	for(player *i:P){
+		i->enforceFloor(floor);
+		i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
+	}
+
 	if (aux::checkCollision(P[0]->collision, P[1]->collision))
 		unitCollision(P[0], P[1]);
 	prox.w = abs(things[0]->current.posX - things[1]->current.posX);
 	prox.h = abs(things[0]->current.posY - things[1]->current.posY);
+
+	for(unsigned int i = 0; i < things.size(); i++){
+		if(things[i]->current.move->track)
+			things[i]->checkFacing(P[(things[i]->ID)%2]);
+		else if (i < 2){
+			if(things[i]->current.move->state[things[i]->current.connect].i & 1 && P[i]->current.move != P[i]->pick()->airNeutral){
+				things[i]->checkFacing(P[(things[i]->ID)%2]);
+			}
+		}
+		if(i < 2 && !things[i]->current.aerial) {
+			things[i]->current.deltaX = 0; 
+			things[i]->current.deltaY = 0; 
+		}
+	}
 }
 
 void interface::resolveThrows()
