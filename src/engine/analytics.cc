@@ -82,6 +82,7 @@ void script::push(frame t)
 
 void script::push(int p, frame t)
 {
+	int x = t.n.raw.dir;
 	t.n.i = 0;
 	if(t.pos[0] == 1) t.n.raw.A = 1;
 	if(t.neg[0] == 1) t.n.raw.A = -1;
@@ -95,8 +96,9 @@ void script::push(int p, frame t)
 	if(t.neg[4] == 1) t.n.raw.E = -1;
 	if(t.pos[5] == 1) t.n.raw.Start = true;
 	else t.n.raw.Start = false;
+	t.n.raw.dir = x;
 
-	printf("%i\n", t.n.i);
+	//printf("%i\n", t.n.i);
 	command[p].push_back(t);
 }
 
