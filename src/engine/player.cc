@@ -909,6 +909,9 @@ void instance::setPosition(int x, int y)
 void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
+	momentum.clear();
+	current.deltaX = 0;
+	current.deltaY = 0;
 	hStat dummy;
 	dummy.stun = 1;
 	dummy.ghostHit = 1;

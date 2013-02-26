@@ -20,6 +20,7 @@ struct inputContainer {
 	int D:2;
 	int E:2;
 	bool Start:1;
+	bool player:1;
 };
 
 typedef union {
