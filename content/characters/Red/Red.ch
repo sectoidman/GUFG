@@ -21,11 +21,11 @@ Red
 ?ForwardTech = a6 a9 a3
 ?StopTech = a8
 #Moves
-$%DB = hDB h63214D
+$!DB = hDB h63214D
 %jDAcancel = aDA
 %DAcancel = hDA
-$%DBcancel = hDB
-$%jDBcancel = aDB
+$!DBcancel = hDB
+$!jDBcancel = aDB
 A = hA
 B = hB
 C = hC
