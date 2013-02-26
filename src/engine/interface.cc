@@ -139,7 +139,7 @@ void interface::loadMisc()
 	gameInstance::loadMisc();
 	char buffer[200];
 	selectScreen = aux::load_texture("content/menu/Select.png");
-	menuMusic = Mix_LoadMUS("content/sound/Menu.ogg");
+	menuMusic = Mix_LoadMUS("content/menu/menu.ogg");
 	announceWinner = new Mix_Chunk*[numChars + 1];
 	for(int i = 0; i < numChars + 1; i++){
 		sprintf(buffer, "content/sound/announcer/Win%i.ogg", i);
