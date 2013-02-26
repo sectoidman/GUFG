@@ -1271,6 +1271,9 @@ void interface::doSuperFreeze()
 		if(go[i] > 0){ 
 			P[(i+1)%2]->checkBlocking();
 			things[(i+1)%2]->current.freeze += go[i];
+			if(things[i]->current.move->arbitraryPoll(32, 0)){
+				for(unsigned int j = 2; j < things.size(); j++) things[j]->current.freeze += go[i];
+			}
 		}
 	}
 	if(go[0] > 0 || go[1] > 0)
