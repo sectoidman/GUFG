@@ -307,7 +307,6 @@ void interface::runTimer()
 						else stats->recordWin(selection[1], selection[0]);
 					}
 					//printf("Matchup: %f\n", stats->matchup(selection[0], selection[1]));
-					printf("\n");
 				}
 				if(shortcut) rMenu = 1;
 				else{
