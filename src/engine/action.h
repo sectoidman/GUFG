@@ -107,7 +107,8 @@ public:
 
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
-	cancelField *state, allowed;
+	std::vector<cancelField> state; 
+	cancelField allowed;
 	int xRequisite, yRequisite;
 
 	int frames;	//Number of frames.

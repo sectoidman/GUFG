@@ -453,7 +453,6 @@ void interface::resolveInputs()
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		currentFrame[i].buttons[5] = 0;
 		if(analytics)
 			replay->push(i, currentFrame[i]);
 		if(P[i]->record) 
@@ -526,8 +525,10 @@ void interface::cleanup()
 		for(unsigned int j = 0; j < currentFrame[i].buttons.size(); j++){
 			if(currentFrame[i].buttons[j] != 0) currentFrame[i].buttons[j]++;
 		}
+		currentFrame[i].n.raw.Start = 0;
+		currentFrame[i].buttons[5] = 0;
+		if(counter[i] > 0) counter[i]--;
 	}
-	for(unsigned int i = 0; i < P.size(); i++) if(counter[i] > 0) counter[i]--;
 }
 
 void interface::resolveSummons()
@@ -712,8 +713,9 @@ void interface::readInput()
 				}
 			}
 		}
-		for(unsigned int i = 0; i < P.size(); i++){
-			for(int j:currentFrame[i].axis) j = 0;
+		for(frame i:currentFrame){
+			for(int j:i.axis) j = 0;
+			i.n.i = 0;
 		}
 	}
 	if(scripting || oldReplay) genInput();

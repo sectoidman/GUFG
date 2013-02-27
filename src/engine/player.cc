@@ -771,7 +771,6 @@ void controller::readEvent(SDL_Event & event, frame &t)
 void player::readEvent(SDL_Event & event, frame &t)
 {
 	controller::readEvent(event, t);
-	t.n.i = 0;
 	unsigned int d = 5;
 	if(t.axis[0]) d += 3;
 	if(t.axis[1]) d -= 3;

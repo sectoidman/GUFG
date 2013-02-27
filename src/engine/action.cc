@@ -17,7 +17,6 @@ action::action(const char * n) : frames(0), hits(0)
 action::~action()
 {
 	if(!this) return;
-	if(state) delete [] state;
 	if(gain) delete [] gain;
 	if(distortion) delete distortion;
 	if(totalStartup) delete [] totalStartup;
@@ -268,7 +267,8 @@ bool action::setParameter(char * buffer)
 		} else {
 			onConnect = NULL;
 		}
-		state = new cancelField[hits+1];
+		state = std::vector<cancelField> (hits+1);
+		for(cancelField i:state) i.i = 0;
 		gain = new int[hits+1];
 		for(int i = 0; i < hits+1; i++)
 			gain[i] = 0;
@@ -796,7 +796,9 @@ bool action::cancel(action * x, int& c, int &h)
 	if(x == NULL) return 1;
 	if(c > x->hits || h > x->hits) return 0;
 	if(x->modifier && x->basis){
-		if(x->basis == NULL) return 1;
+		if(x->basis == NULL){ 
+			return 1;
+		}
 		r.i = x->basis->state[x->connectFlag].i;
 		if(x->hitFlag > 0 && x->hitFlag == x->connectFlag){ 
 			r.i = r.i + x->basis->stats[x->hitFlag - 1].hitState.i;

@@ -43,6 +43,7 @@ public:
 	action * neutral;
 	bool headless;
 	std::vector<action*> movesByName;
+	std::vector<char*> moveNames;
 	action * searchByName(char*);
 };
 

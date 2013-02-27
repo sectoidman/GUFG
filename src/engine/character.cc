@@ -183,7 +183,6 @@ void avatar::build(const char* directory, const char* file)
 
 			if(!(m = searchByName(buffer))){
 				m = createMove(buffer);
-				movesByName.push_back(m);
 				processMove(m);
 			}
 			sortMove(m, buffer2);
