@@ -678,12 +678,12 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool action::activate(std::vector<int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
-	for(unsigned int i = 0; i < pos.size(); i++){
+	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
-			if(pos[i] < minHold) return 0;
-			if(maxHold && pos[i] > maxHold) return 0;
+			if(inputs[i] < minHold) return 0;
+			if(maxHold && inputs[i] > maxHold) return 0;
 		}
 	}
 	if(t > tolerance) return 0;

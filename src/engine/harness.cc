@@ -52,8 +52,8 @@ void arcadeHarness::initContainers()
 {
 	for(frame i:currentFrame){
 		for(bool j:i.axis) j = false;
-		for(int j:i.pos) j = 0;
-		for(bool j:i.neg) j = false;
+		for(int j:i.buttons) j = 0;
+		i.n.i = 0;
 	}
 	for(int& i:counter) i = 0;
 }
@@ -63,8 +63,7 @@ void arcadeHarness::initContainers(int players, int buttons)
 	for(int i = 0; i < players; i++){
 		frame temp;
 		for(int j = 0; j < buttons; j++){
-			temp.pos.push_back(0);
-			temp.neg.push_back(0);
+			temp.buttons.push_back(0);
 		}
 		for(int j = 0; j < 4; j++)
 			temp.axis.push_back(0);
@@ -72,3 +71,4 @@ void arcadeHarness::initContainers(int players, int buttons)
 		currentFrame.push_back(temp);
 	}
 }
+

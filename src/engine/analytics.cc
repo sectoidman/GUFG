@@ -27,8 +27,7 @@ bool script::test()
 	for(int i = 0; i < 4; i++)
 		l.axis.push_back(0);
 	for(int i = 4; i < 6; i++){
-		l.pos.push_back(0);
-		l.neg.push_back(0);
+		l.buttons.push_back(0);
 	}
 	l.n.i = 0;
 	l.n.raw.dir = 5;
@@ -52,23 +51,6 @@ void script::push(frame t)
 
 void script::push(int p, frame t)
 {
-	int x = t.n.raw.dir;
-	t.n.i = 0;
-	if(t.pos[0] == 1) t.n.raw.A = 1;
-	if(t.neg[0] == 1) t.n.raw.A = -1;
-	if(t.pos[1] == 1) t.n.raw.B = 1;
-	if(t.neg[1] == 1) t.n.raw.B = -1;
-	if(t.pos[2] == 1) t.n.raw.C = 1;
-	if(t.neg[2] == 1) t.n.raw.C = -1;
-	if(t.pos[3] == 1) t.n.raw.D = 1;
-	if(t.neg[3] == 1) t.n.raw.D = -1;
-	if(t.pos[4] == 1) t.n.raw.E = 1;
-	if(t.neg[4] == 1) t.n.raw.E = -1;
-	if(t.pos[5] == 1) t.n.raw.Start = true;
-	else t.n.raw.Start = false;
-	t.n.raw.dir = x;
-
-	//printf("%i\n", t.n.i);
 	command[p].push_back(t);
 }
 
@@ -123,7 +105,7 @@ void script::write(char * name)
 		scribe.close();
 		return;
 	}
-	scribe << selection.size() << " " << command[0][0].pos.size() << '\n';
+	scribe << selection.size() << " " << command[0][0].buttons.size() << '\n';
 	for(unsigned int i = 0; i < selection.size(); i++){
 		scribe << selection[i];
 		if(i == 0) scribe << " ";

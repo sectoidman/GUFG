@@ -15,11 +15,11 @@ negNormal::negNormal(const char * n)
 	build(n);
 }
 
-bool negNormal::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool negNormal::activate(std::vector<int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
-	for(unsigned int i = 0; i < pos.size(); i++){
+	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
-			if(!neg[i]) return 0;
+			if(inputs[i] != -1) return 0;
 		}
 	}
 	if(t > tolerance) return 0;
@@ -27,11 +27,11 @@ bool negNormal::activate(std::vector<int> pos, std::vector<bool> neg, int patter
 	return check(p, meter);
 }
 
-bool special::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool special::activate(std::vector<int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
-	for(unsigned int i = 0; i < pos.size(); i++){
+	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
-			if(pos[i] != 1 && !neg[i]) return 0;
+			if(abs(inputs[i]) != 1) return 0;
 		}
 	}
 	if(t > tolerance) return 0;
@@ -39,13 +39,13 @@ bool special::activate(std::vector<int> pos, std::vector<bool> neg, int pattern,
 	return check(p, meter);
 }
 
-bool mash::activate(std::vector <int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool mash::activate(std::vector <int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
 	int go = 0;
-	if(action::activate(pos, neg, pattern, t, f, meter, p)){
-		for(unsigned int i = 0; i < pos.size(); i++){
-			if(pos[i] >= minHold){
-				if(pos[i] <= maxHold || !maxHold) go++;
+	if(action::activate(inputs, pattern, t, f, meter, p)){
+		for(unsigned int i = 0; i < inputs.size(); i++){
+			if(inputs[i] >= minHold){
+				if(inputs[i] <= maxHold || !maxHold) go++;
 			}
 		}
 		if(go >= buttons) return 1;
@@ -53,9 +53,9 @@ bool mash::activate(std::vector <int> pos, std::vector<bool> neg, int pattern, i
 	return 0;
 }
 
-bool releaseCheck::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p){
-	for(unsigned int i = 0; i < pos.size(); i++){
-		if(pos[i] > 0) return 0;
+bool releaseCheck::activate(std::vector<int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p){
+	for(unsigned int i = 0; i < inputs.size(); i++){
+		if(inputs[i] > 0) return 0;
 	}
 	return check(p, meter);
 }

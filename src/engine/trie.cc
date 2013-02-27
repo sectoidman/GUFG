@@ -81,7 +81,7 @@ actionTrie::~actionTrie()
 	}
 }
 
-action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, std::vector<int> pos, std::vector<bool> neg, action * c, SDL_Rect &prox, int &cFlag, int &hFlag)
+action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, std::vector<int> buttons, action * c, SDL_Rect &prox, int &cFlag, int &hFlag)
 {
 	actionTrie * test = NULL;
 	action * result = NULL;
@@ -89,15 +89,15 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, 
 	for(j = i; j < 30; j++){
 		if(inputBuffer[j] < 10) test = child[inputBuffer[j]];
 		if(test != NULL){
-			if (first < 0) result = test->actionHook(inputBuffer, j, j, r, pos, neg, c, prox, cFlag, hFlag);
-			else result = test->actionHook(inputBuffer, j, first, r, pos, neg, c, prox, cFlag, hFlag);
+			if (first < 0) result = test->actionHook(inputBuffer, j, j, r, buttons, c, prox, cFlag, hFlag);
+			else result = test->actionHook(inputBuffer, j, first, r, buttons, c, prox, cFlag, hFlag);
 			if(result != NULL) return result;
 		}
 	}
 	if(fish.size() != 0){
 		for(unsigned int k = 0; k < fish.size(); k++){
 			if(fish[k] != NULL){
-				if(fish[k]->activate(pos, neg, pattern[k], i, first, r, prox) == 1){
+				if(fish[k]->activate(buttons, pattern[k], i, first, r, prox) == 1){
 					if(fish[k]->cancel(c, cFlag, hFlag)){
 						return fish[k];
 					}

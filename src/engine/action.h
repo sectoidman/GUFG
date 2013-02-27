@@ -54,7 +54,7 @@ public:
 	virtual void execute(action *, int *&, int&, int&, int&);
 	virtual void init(int) {}
 	virtual void playSound(int);
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*);
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
@@ -197,7 +197,7 @@ class special : virtual public action {
 public:
 	special() {}
 	special(const char*);
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class negNormal : virtual public action {
@@ -205,14 +205,14 @@ public:
 	negNormal() {}
 	negNormal(const char *);
 	virtual void zero();
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -276,7 +276,7 @@ public:
 	mash(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
 	virtual void zero();
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int buttons;
 };
 
@@ -304,6 +304,6 @@ class releaseCheck : virtual public action {
 public:
 	releaseCheck() {}
 	releaseCheck(const char* n) {build(n); }
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 #endif

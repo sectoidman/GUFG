@@ -162,12 +162,8 @@ void interface::loadMisc()
 /*Initialize SDL and openGL, creating a window, among other things*/
 bool gameInstance::screenInit()
 {
-	if(scalingFactor == 1.0){ 
-		w = screenWidth; h = screenHeight;
-	} else {
-		h = 450; w = 800;
-	}
-	if(screen){ 
+	w = screenWidth*sf; h = screenHeight*sf;
+	if(screen){
 		SDL_FreeSurface(screen);
 		screen = NULL;
 	}
@@ -434,16 +430,14 @@ void interface::resolveInputs()
 			else if(timer == 106 * 60 - 3) things[i]->inputBuffer[0] = selection[(i+1)%2] % 10;
 			else if(timer == 106 * 60 - 4) things[i]->inputBuffer[0] = 0;
 			else(things[i]->inputBuffer[0] = 5);
-			for(int j:currentFrame[i].pos) j = 0;
-			for(int j:currentFrame[i].neg) j = 0;
+			for(int j:currentFrame[i].buttons) j = 0;
 		}
 	} else {
-		
 		for(unsigned int i = 0; i < things.size(); i++)
 			things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
-		for(unsigned int i = 0; i < P.size(); i++){ 
+		for(unsigned int i = 0; i < P.size(); i++){
 			bool test = 1;
-			P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
+			P[i]->getMove(currentFrame[i].buttons, prox, test);
 			if(!test && !P[i]->current.aerial){ 
 				P[i]->checkFacing(P[(i+1)%2]);
 			}
@@ -455,12 +449,11 @@ void interface::resolveInputs()
 				prox.x = things[(i+1)%2]->current.throwInvuln;
 			}
 			bool d = 0;
-			things[i]->getMove(currentFrame[things[i]->ID - 1].pos, currentFrame[things[i]->ID - 1].neg, prox, d);
+			things[i]->getMove(currentFrame[things[i]->ID - 1].buttons, prox, d);
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		currentFrame[i].pos[5] = 0;
-		currentFrame[i].neg[5] = 0;
+		currentFrame[i].buttons[5] = 0;
 		if(analytics)
 			replay->push(i, currentFrame[i]);
 		if(P[i]->record) 
@@ -522,7 +515,7 @@ void interface::cleanup()
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		if(currentFrame[i].pos[5] == 1 && counter[i] <= 0){
+		if(currentFrame[i].n.raw.Start && counter[i] <= 0){
 			if(pauseEnabled && !roundEnd){
 				if(pMenu) pMenu = 0;
 				else pMenu = 1;
@@ -530,9 +523,8 @@ void interface::cleanup()
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++){
-		for(unsigned int j = 0; j < currentFrame[i].pos.size(); j++){
-			if(currentFrame[i].pos[j] > 0) currentFrame[i].pos[j]++;
-			currentFrame[i].neg[j] = 0;
+		for(unsigned int j = 0; j < currentFrame[i].buttons.size(); j++){
+			if(currentFrame[i].buttons[j] != 0) currentFrame[i].buttons[j]++;
 		}
 	}
 	for(unsigned int i = 0; i < P.size(); i++) if(counter[i] > 0) counter[i]--;
@@ -785,11 +777,11 @@ void interface::cSelectMenu()
 					counter[i] = 10;
 				}
 				for(int j = 0; j < 5; j++){
-					if(currentFrame[i].pos[j] == 1 && !select[i]){
+					if(currentFrame[i].buttons[j] == 1 && !select[i]){
 						select[i] = 1;
 					}
 				}
-				if(currentFrame[i].pos[5] == 1){
+				if(currentFrame[i].n.raw.Start){
 					if(!select[i]) menu[i] = 3;
 					else select[i] = 0;
 					counter[i] = 10;
@@ -830,8 +822,8 @@ void interface::mainMenu(int ID)
 	}
 	if(menu[ID] > 8) menu[ID] = 1;
 	else if(menu[ID] < 1) menu[ID] = 8;
-	for(unsigned int i = 0; i < currentFrame[ID].pos.size()-1; i++){
-		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
+	for(unsigned int i = 0; i < currentFrame[ID].buttons.size()-1; i++){
+		if(currentFrame[ID].buttons[i] == 1 && !counter[ID]){
 			switch(menu[ID]){
 			case 1:
 				if(analytics)
@@ -881,7 +873,7 @@ void interface::mainMenu(int ID)
 			counter[ID] = 10;
 		}
 	}
-	if(currentFrame[ID].pos[5] == 1 && !counter[ID]){ 
+	if(currentFrame[ID].n.raw.Start && !counter[ID]){ 
 		counter[ID] = 10;
 		menu[ID] = 0;
 	}
@@ -898,8 +890,8 @@ void interface::keyConfig(int ID)
 	}
 	if(configMenu[ID] > 7) configMenu[ID] = 1;
 	else if(configMenu[ID] < 1) configMenu[ID] = 7;
-	for(unsigned int i = 0; i < currentFrame[ID].pos.size()-1; i++){
-		if(currentFrame[ID].pos[i] == 1 && !counter[ID]){
+	for(unsigned int i = 0; i < currentFrame[ID].buttons.size()-1; i++){
+		if(currentFrame[ID].buttons[i] == 1 && !counter[ID]){
 			switch(configMenu[ID]){
 			case 1:
 				glDisable( GL_TEXTURE_2D );
@@ -916,7 +908,7 @@ void interface::keyConfig(int ID)
 			counter[ID] = 10;
 		}
 	}
-	if(currentFrame[ID].pos[5] == 1 && !counter[ID]){ 
+	if(currentFrame[ID].n.raw.Start == 1 && !counter[ID]){ 
 		counter[ID] = 10;
 		configMenu[ID] = 0;
 		menu[ID] = 0;
@@ -951,8 +943,8 @@ void interface::pauseMenu()
 		}
 		if(pMenu > 3) pMenu = 1;
 		else if(pMenu < 1) pMenu = 3;
-		for(unsigned int i = 0; i < currentFrame[j].pos.size()-1; i++){
-			if(currentFrame[j].pos[i] == 1){
+		for(unsigned int i = 0; i < currentFrame[j].buttons.size()-1; i++){
+			if(currentFrame[j].buttons[i] == 1){
 				switch(pMenu){
 				case 1:
 					pMenu = 0;
@@ -977,7 +969,7 @@ void interface::pauseMenu()
 				j = 2;
 			}
 		}
-		if(currentFrame[j].pos[5] == 1 && !counter[j]) pMenu = 0;
+		if(currentFrame[j].n.raw.Start && !counter[j]) pMenu = 0;
 	}
 }
 
@@ -993,8 +985,8 @@ void interface::rematchMenu()
 		}
 		if(rMenu > 3) rMenu = 1;
 		else if(rMenu < 1) rMenu = 3;
-		for(unsigned int i = 0; i < currentFrame[j].pos.size(); i++){
-			if(currentFrame[j].pos[i] == 1){
+		for(unsigned int i = 0; i < currentFrame[j].buttons.size(); i++){
+			if(currentFrame[j].buttons[i] == 1){
 				switch(rMenu){
 				case 1:
 					Mix_HaltMusic();
