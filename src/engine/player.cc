@@ -654,10 +654,6 @@ int instance::passSignal(int sig)
 
 void instance::pushInput(unsigned int i)
 {
-	if(current.facing == -1){
-		if(i % 3 == 0) i -= 2;
-		else if(i % 3 == 1) i += 2; 
-	}
 	inputBuffer[0] = i;
 	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];

@@ -439,7 +439,12 @@ void interface::resolveInputs()
 			for(int j:currentFrame[i].neg) j = 0;
 		}
 	} else {
-		
+		for(unsigned int i = 0; i < currentFrame.size(); i++){
+			if(P[i]->current.facing == -1){
+				if(currentFrame[i].n.raw.dir % 3 == 0) currentFrame[i].n.raw.dir -= 2;
+				else if(currentFrame[i].n.raw.dir % 3 == 1) currentFrame[i].n.raw.dir += 2; 
+			}
+		}
 		for(unsigned int i = 0; i < things.size(); i++)
 			things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
 		for(unsigned int i = 0; i < P.size(); i++){ 

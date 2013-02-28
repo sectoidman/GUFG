@@ -28,7 +28,7 @@ typedef union {
 	int i;
 } inputs;
 
-struct frame {
+class frame {
 	inputs n;
 	std::vector<bool> axis;
 	std::vector<bool> neg;
