@@ -93,7 +93,7 @@ public:
 	int armorStart; int armorLength;
 	int armorHits;
 	int armorCounter;
-	int guardStart; int guardLength;
+	int guardStart; int guardLength; int guardType;
 	int freezeFrame; int freezeLength;
 	int followStart; int followEnd;
 	int followXRate; int followYRate;

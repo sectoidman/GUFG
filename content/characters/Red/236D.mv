@@ -6,7 +6,9 @@ Check: 128
 State: 2048
 Gain: 0
 Cost: 0
-Blocks: 0
+Autoguard: 0 - 4
+GuardType: -1
+Blocks: 7
 Properties: 
 #0
 $C	18 0 106 330

@@ -28,6 +28,7 @@ action::~action()
 
 void action::zero()
 {
+	guardType = 0;
 	attemptStart = 0;
 	attemptEnd = 0;
 	holdCheck = -1;
@@ -502,6 +503,10 @@ bool action::setParameter(char * buffer)
 		guardLength = atoi(token); 
 		guardLength = guardLength - guardStart;
 		return 1;
+	} else if (!strcmp("GuardType", token)) {
+		token = strtok(NULL, "\t: \n");
+		guardType = atoi(token);
+		return 1;
 	} else if (!strcmp("Follow", token)) {
 		token = strtok(NULL, "\t: \n-");
 		followStart = atoi(token); 
@@ -939,8 +944,9 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 	if(modifier && basis) return basis->takeHit(s, b, f, c, h);
 	else{
 		if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
+			printf("%i\n", guardType);
 			if(riposte != NULL) return -5;
-			else return 0;
+			else return guardType;
 		}
 		else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
 			s.stun = 0;

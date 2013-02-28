@@ -812,7 +812,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	action * temp = NULL;
 	if(s.damage > 0){
 		if(combo >= s.damage) s.damage = 1;
-		else s.damage -= combo; 
+		else s.damage -= combo;
 	}
 	s.untech -= combo;
 	int f;
@@ -841,7 +841,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 			v.x /= 5;
 			v.y /= 5;
 		}
-		if(particleType == -2){
+		if(particleType <= -2){
 			v.x = 0;
 			v.y = 0;
 			current.freeze = 0;
@@ -858,7 +858,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(current.aerial && s.stick) stick = true;
 		else stick = false;
 	}
-	if(current.move == pick()->die){ 
+	if(current.move == pick()->die){
 		current.bufferedMove = NULL;
 		current.frame = 0;
 		current.connect = 0;
@@ -867,7 +867,9 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	updateRects();
 	if(s.ghostHit) return 0;
 	else if(particleType == 1) return particleType;
-	else return -1;
+	else { 
+		return -1;
+	}
 }
 
 void instance::invertVectors(int operation)
