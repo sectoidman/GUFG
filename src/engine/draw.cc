@@ -458,6 +458,8 @@ void player::drawHitParticle()
 		case -2:
 			glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
 			break;
+		case -5:
+			glColor4f(0.4f, 0.4f, 0.4f, 0.5f);
 		}
 		glPushMatrix();
 			glTranslatef(current.posX, -collision.y, 0.0f);

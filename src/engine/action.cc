@@ -944,7 +944,6 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 	if(modifier && basis) return basis->takeHit(s, b, f, c, h);
 	else{
 		if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
-			printf("%i\n", guardType);
 			if(riposte != NULL) return -5;
 			else return guardType;
 		}
