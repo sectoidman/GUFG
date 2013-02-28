@@ -17,9 +17,7 @@ action::action(const char * n) : frames(0), hits(0)
 action::~action()
 {
 	if(!this) return;
-	if(gain) delete [] gain;
 	if(distortion) delete distortion;
-	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
 	if(next) delete next;
 	if(onConnect) delete [] onConnect;
@@ -269,9 +267,8 @@ bool action::setParameter(char * buffer)
 		}
 		state = std::vector<cancelField> (hits+1);
 		for(cancelField i:state) i.i = 0;
-		gain = new int[hits+1];
-		for(int i = 0; i < hits+1; i++)
-			gain[i] = 0;
+		gain = std::vector<int> (hits+1);
+		for(int i:gain) i = 0;
 		return 1;
 	} else if (!strcmp("Riposte", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -367,11 +364,8 @@ bool action::setParameter(char * buffer)
 		frames = atoi(token);
 		int startup, countFrames = -1;
 		if(hits > 0) {
-			totalStartup = new int[hits];
-			active = new int[hits];
-		} else {
-			totalStartup = NULL;
-			active = NULL;
+			totalStartup = std::vector<int> (hits);
+			active = std::vector<int> (hits);
 		}
 
 		for(int i = 0; i < hits; i++){

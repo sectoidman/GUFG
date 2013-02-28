@@ -113,15 +113,15 @@ public:
 
 	int frames;	//Number of frames.
 	int hits;
-	int * totalStartup;
-	int * active;
+	std::vector<int> totalStartup;
+	std::vector<int> active;
 	bool fch:1;
 	bool dies:1;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	char * name;
 	int cost;
-	int * gain;
+	std::vector<int> gain;
 
 	//Tolerance refers to the individual size of the input buffer allowed for this action.
 	//Default is 30 (The entire input buffer)
