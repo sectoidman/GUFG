@@ -439,15 +439,16 @@ void interface::resolveInputs()
 			for(int j:currentFrame[i].neg) j = 0;
 		}
 	} else {
+		int flop[2] = {0, 0};
 		for(unsigned int i = 0; i < currentFrame.size(); i++){
 			if(P[i]->current.facing == -1){
-				if(currentFrame[i].n.raw.dir % 3 == 0) currentFrame[i].n.raw.dir -= 2;
-				else if(currentFrame[i].n.raw.dir % 3 == 1) currentFrame[i].n.raw.dir += 2; 
+				if(currentFrame[i].n.raw.dir % 3 == 0) flop[i] -= 2;
+				else if(currentFrame[i].n.raw.dir % 3 == 1) flop[i] += 2; 
 			}
 		}
 		for(unsigned int i = 0; i < things.size(); i++)
-			things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir);
-		for(unsigned int i = 0; i < P.size(); i++){ 
+			things[i]->pushInput(currentFrame[things[i]->ID - 1].n.raw.dir + flop[things[i]->ID -1]);
+		for(unsigned int i = 0; i < P.size(); i++){
 			bool test = 1;
 			P[i]->getMove(currentFrame[i].pos, currentFrame[i].neg, prox, test);
 			if(!test && !P[i]->current.aerial){ 
