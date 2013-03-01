@@ -1204,7 +1204,7 @@ void interface::resolveHits()
 			}
 			P[(i+1)%2]->enforceFloor(floor);
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
-			if(things[i]->current.facing * things[hitby[i]]->current.facing == 1) things[i]->invertVectors(1);
+			if(things[i]->current.facing * things[hitBy[i]]->current.facing == 1) things[i]->invertVectors(1);
 			if(i < P.size()) damage[(i+1)%2] += health - P[i]->meter[0];
 		}
 	}
