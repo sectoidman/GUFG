@@ -4,13 +4,13 @@ utility::utility(const char * n)
 	build(n);
 }
 
-bool utility::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int * meter, SDL_Rect &p)
+bool utility::activate(std::vector<int> inputs, int pattern, int t, int f, int * meter, SDL_Rect &p)
 {
-	for(unsigned int i = 0; i < pos.size(); i++){
+	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
-			if(pos[i] < minHold) return 0;
-			if(maxHold && pos[i] > maxHold) return 0;
-		} else if(pos[i] == 1) return 0;
+			if(inputs[i] < minHold) return 0;
+			if(maxHold && inputs[i] > maxHold) return 0;
+		} else if(inputs[i] == 1) return 0;
 	}
 	if(t > tolerance) return 0;
 	if(f > activation) return 0;

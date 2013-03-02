@@ -27,7 +27,7 @@ public:
 	virtual void init();
 	virtual void step();
 
-	virtual void getMove(std::vector<int>, std::vector<bool>, SDL_Rect&, bool&);
+	virtual void getMove(std::vector<int>, SDL_Rect&, bool&);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
 	virtual void invertVectors(int);

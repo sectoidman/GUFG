@@ -660,13 +660,13 @@ void instance::pushInput(unsigned int i)
 	}
 }
 
-void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool& dryrun)
+void instance::getMove(std::vector<int> buttons, SDL_Rect &p, bool& dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = current.move;
 	save = current.move;
 	int n = current.frame;
-	pick()->prepHooks(current, dummyMove, inputBuffer, down, up, p, dryrun, meter);
+	pick()->prepHooks(current, dummyMove, inputBuffer, buttons, p, dryrun, meter);
 	if(dummyMove){
 		if(dummyMove->throwinvuln == 1 && current.throwInvuln <= 0) current.throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;
@@ -752,13 +752,20 @@ void controller::readEvent(SDL_Event & event, frame &t)
 	if(effect != 0){
 		for(int i = 0; i < 4; i++){
 			if(abs(effect) & (1 << i)){
-				t.axis[i] = (effect > 0);
+				if(effect > 0) t.axis[i] = 1;
+				else{
+					t.axis[i] = 0;
+					if(effect < 0){
+						if(i%2 == 0) t.axis[i+1] = 0;
+						else t.axis[i-1] = 0;
+					}
+				}
 			}
 		}
-		for(unsigned int i = 0; i < t.pos.size(); i++){
+		for(unsigned int i = 0; i < t.buttons.size(); i++){
 			if(abs(effect) & (1 << (i + 4))){
-				t.pos[i] = (effect > 0);
-				t.neg[i] = (effect < 0);
+				if(effect > 0) t.buttons[i] = 1;
+				else if(effect < 0) t.buttons[i] = -1;
 			}
 		}
 	}
@@ -772,12 +779,10 @@ void player::readEvent(SDL_Event & event, frame &t)
 	if(t.axis[1]) d -= 3;
 	if(t.axis[2]) d--;
 	if(t.axis[3]) d++;
+	if(t.buttons[5] == 1) t.n.raw.Start = true;
+	else t.n.raw.Start = false;
 	t.n.raw.dir = d;
-	for(int i = 0; i < 5; i++){
-		if(t.pos[i]) t.n.i += 1 << 4+2*i;
-		else if(t.pos[i]) t.n.i += 2 << 4+2*i;
-	}
-	if(t.pos[5]) t.n.raw.Start = true;
+	t.n.raw.Player = ID%2;
 }
 
 void instance::connect(int combo, hStat & s)

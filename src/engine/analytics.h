@@ -20,7 +20,7 @@ struct inputContainer {
 	int D:2;
 	int E:2;
 	bool Start:1;
-	bool player:1;
+	bool Player:1; //What player the local client thinks it is
 };
 
 typedef union {
@@ -31,8 +31,7 @@ typedef union {
 struct frame {
 	inputs n;
 	std::vector<bool> axis;
-	std::vector<bool> neg;
-	std::vector<int> pos;
+	std::vector<int> buttons;
 };
 
 class script {

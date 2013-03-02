@@ -177,13 +177,12 @@ int controller::tap(SDL_Event temp)
 			break;
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
-			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
-			   input[i]->trigger.jaxis.value == temp.jaxis.value)
-				ret = input[i]->effect;
-			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
-			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
-			   input[i]->trigger.jaxis.value == 0)
-				ret = -input[i]->effect;
+			   input[i]->trigger.jaxis.axis == temp.jaxis.axis){
+				if(input[i]->trigger.jaxis.value == temp.jaxis.value)
+					ret = input[i]->effect;
+				else if(input[i]->trigger.jaxis.value == 0)
+					ret = -input[i]->effect;
+			}
 			break;
 		}
 	}
