@@ -88,6 +88,7 @@ public:
 	int throwinvuln;
 	bool crouch:1;
 	bool hittable:1;
+	bool linkable:1;
 	bool hidesMeter:1;
 	bool track:1;
 	int armorStart; int armorLength;

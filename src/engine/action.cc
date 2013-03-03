@@ -25,6 +25,7 @@ action::~action()
 
 void action::zero()
 {
+	linkable = 0;
 	guardType = 0;
 	attemptStart = 0;
 	attemptEnd = 0;
@@ -101,6 +102,9 @@ instance * action::spawn()
 int action::arbitraryPoll(int q, int f)
 {
 	switch(q){
+	case 1:
+		if(linkable) return 3;
+		else break;
 	case 2:
 		if(f == freezeFrame) return freezeLength;
 		else break;
@@ -656,6 +660,9 @@ void action::parseProperties(char * buffer, bool counter)
 			break;
 		case 'm':
 			if(!counter) modifier = 1;
+			break;
+		case 'l':
+			if(!counter) linkable = 1;
 			break;
 		case 'f':
 			if(!counter) track = 1;
