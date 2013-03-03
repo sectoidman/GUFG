@@ -108,15 +108,15 @@ action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, std::vecto
 	return head->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
 }
 
-action * avatar::moveSignal(int)
-{
-	return NULL;
-}
-
 action * character::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
 	else return avatar::hook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag, aerial);
+}
+
+action * avatar::moveSignal(int)
+{
+	return NULL;
 }
 
 void avatar::neutralize(status &current, action *& cMove, int *& meter)
@@ -416,7 +416,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 						cMove = airBlock;
 					}
 				} else {
-					if(input[0] > 3){ 
+					if(input[0] > 3){
 						if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
 							standBlock->init(st);
 							cMove = standBlock;

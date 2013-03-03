@@ -20,7 +20,6 @@ action::~action()
 	if(distortion) delete distortion;
 	if(name) delete [] name;
 	if(next) delete next;
-	if(onConnect) delete [] onConnect;
 }
 
 void action::zero()
@@ -260,19 +259,16 @@ bool action::setParameter(char * buffer)
 		if(hits > 0){
 			stats = std::vector<hStat> (hits);
 			CHStats = std::vector<hStat> (hits);
-			onConnect = new action*[hits];
-			tempOnConnect = new char*[hits];
-			for (int i = 0; i < hits; i++){
-				onConnect[i] = NULL;
-				tempOnConnect[i] = NULL;
-				stats[i].hitState.i = 0;
-			}
-		} else {
-			onConnect = NULL;
+			onConnect = std::vector <action*> (hits);
+			tempOnConnect = std::vector <char*> (hits);
+			for(action* i:onConnect) i = NULL;
+			for(char* i:tempOnConnect) i = NULL;
+			for(unsigned int i = 0; i < stats.size(); i++) stats[i].hitState.i = 0;
+			for(unsigned int i = 0; i < CHStats.size(); i++) CHStats[i].hitState.i = 0;
 		}
 		state = std::vector<cancelField> (hits+1);
-		for(cancelField i:state) i.i = 0;
 		gain = std::vector<int> (hits+1);
+		for(unsigned int i = 0; i < state.size(); i++) state[i].i = 0;
 		for(int i:gain) i = 0;
 		return 1;
 	} else if (!strcmp("Riposte", token)) {
@@ -384,10 +380,13 @@ bool action::setParameter(char * buffer)
 		}
 		return 1;
 	} else if (!strcmp("State", token)) {
+		printf("%s ", name);
 		for(int i = 0; i < hits+1; i++){
 			token = strtok(NULL, "\t: \n");
 			state[i].i = atoi(token);
+			printf("%i ", state[i].i);
 		}
+		printf("\n");
 		return 1;
 	} else if (!strcmp("HitAllows", token)) {
 		for(int i = 0; i < hits; i++){
@@ -796,9 +795,10 @@ void action::pollStats(hStat & s, int f, bool CH)
 	}
 }
 
-bool action::cancel(action * x, int& c, int &h)
+bool action::cancel(action *& x, int& c, int &h)
 {
 	cancelField r;
+	r.i = 0;
 	if(x == NULL) return 1;
 	if(c > x->hits || h > x->hits) return 0;
 	if(x->modifier && x->basis){
@@ -812,7 +812,7 @@ bool action::cancel(action * x, int& c, int &h)
 		x = basis;
 	} else {
 		r.i = x->state[c].i;
-		if(h > 0 && h == c){ 
+		if(h > 0 && h == c){
 			r.i = r.i + x->stats[h - 1].hitState.i;
 		}
 	}
@@ -821,8 +821,9 @@ bool action::cancel(action * x, int& c, int &h)
 			if(c == 0) return 0;
 			else if(allowed.b.chain1) return 1;
 			else return 0;
+		} else {
+			return 1;
 		}
-		else return 1;
 	}
 	return 0;
 }

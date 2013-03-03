@@ -65,7 +65,7 @@ public:
 	virtual std::vector<SDL_Rect> pollDelta(int);
 	virtual int displace(int, int&, int);
 	virtual void pollStats(hStat&, int, bool);
-	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
+	virtual bool cancel(action*&, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&, int&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
@@ -136,7 +136,7 @@ public:
 	int minHold, maxHold;
 
 	action * next;
-	action ** onConnect;
+	std::vector<action *> onConnect;
 	action * onHold;
 	action * attempt;
 	action * riposte;
@@ -152,7 +152,7 @@ public:
 	int displaceX, displaceY, displaceFrame;
 
 	char * tempNext;
-	char ** tempOnConnect;
+	std::vector<char *> tempOnConnect;
 	char * tempAttempt;
 	char * tempRiposte;
 	char * tempOnHold;
