@@ -1178,12 +1178,6 @@ void interface::resolveHits()
 		}
 	}
 
-	for(unsigned int i = 0; i < things.size(); i++){
-		if(connect[i]){
-			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(i < P.size() && things[i]->current.move->allowed.i < 128 && !things[i]->current.aerial) P[i]->checkFacing(P[(i+1)%2]);
-		}
-	}
 
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
@@ -1215,6 +1209,20 @@ void interface::resolveHits()
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 			if(things[i]->current.facing * things[hitBy[i]]->current.facing == 1) things[i]->invertVectors(1);
 			if(i < P.size()) damage[(i+1)%2] += health - P[i]->meter[0];
+		}
+	}
+
+	for(unsigned int i = 0; i < things.size(); i++){
+		if(connect[i]){
+			things[i]->connect(combo[things[i]->ID-1], s[i]);
+			if(!things[i]->current.aerial){~$
+				for(int j = 0; j < 6; j++){$
+					if(2 << j & things[i]->current.move->state[things[i]->current.hit].i){
+						P[i]->checkFacing(P[(i+1)%2]);
+						break;
+					}
+				}
+			}
 		}
 	}
 
