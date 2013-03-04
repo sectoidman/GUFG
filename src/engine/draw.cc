@@ -418,7 +418,7 @@ void instance::draw()
 	glEnable(GL_TEXTURE_2D);
 
 	if(sprite && sCheck){
-		if(current.move->offX != 0) realPosX += current.move->offX;
+		if(current.move->offX != 0) realPosX += current.move->offX*current.facing;
 		else{
 			if(collision.x < realPosX) realPosX = collision.x;
 			if(current.facing == 1){
