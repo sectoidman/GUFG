@@ -429,7 +429,7 @@ void instance::draw()
 					if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
 				}
 			} else {
-				if(collision.x + collision.w < realPosX) realPosX = collision.x + collision.w;
+				if(collision.x + collision.w > realPosX) realPosX = collision.x + collision.w;
 				for(unsigned int i = 0; i < hitreg.size(); i++){
 					if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
 				}
