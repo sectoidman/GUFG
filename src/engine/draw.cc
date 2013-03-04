@@ -215,7 +215,7 @@ void interface::drawHUD()
 	char buffer[200];
 	if(timer / 60 > 99) sprintf(buffer, "99");
 	else if(timer / 60 < 10){
-		glColor4f(1.0, 1.0, 0.0, 0.0);
+		glColor4f(1.0, 0.0, 0.0, 1.0);
 		sprintf(buffer, "0%i", timer / 60);
 	}
 	else sprintf(buffer, "%i", timer / 60);
