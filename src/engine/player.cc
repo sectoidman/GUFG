@@ -751,8 +751,14 @@ void controller::readEvent(SDL_Event & event, frame &t)
 	int effect = tap(event);
 	if(effect != 0){
 		for(int i = 0; i < 4; i++){
-			if(abs(effect) & (1 << i)){ 
-				t.axis[i] = (effect > 0);
+			if(abs(effect) & (1 << i)){
+				if(effect > 0){
+					t.axis[i] = 1;
+				} else {
+					t.axis[i] = 0;
+				}
+				if(i%2 == 0) t.axis[i+1] = 0;
+				else t.axis[i-1] = 0;
 			}
 		}
 		for(unsigned int i = 0; i < t.pos.size(); i++){
