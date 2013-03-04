@@ -214,17 +214,20 @@ void interface::drawHUD()
 
 	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	for(unsigned int i = 0; i < P.size(); i++){
-		drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
+		if(P[i]->name) drawGlyph(P[i]->name, 100+800*i, 600, 30, 40, 0+2*i);
+		else drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(P[i]->record){
 			glColor4f(0.5, 1.0, 1.0, 0.7);
 			drawGlyph("Recording", 100+800*i, 600, 200, 55, 0+2*i);
 			glColor4f(1.0, 1.0, 1.0, 1.0);
 		}
+		/*
 		if(P[i]->current.reversalFlag && P[i]->current.frame + 5 < P[i]->current.move->frames){
 			glColor4f(1.0, 0.0, 0.0, 1.0);
 			drawGlyph("Autolink", 100+800*i, 600, 600, 35, 0+2*i);
 			glColor4f(1.0, 1.0, 1.0, 1.0);
 		}
+		//*/
 		if(combo[i] > 1){
 			glColor4f(1.0, 1.0-.5*illegit[i], 1.0-.5*illegit[i], 1.0);
 			sprintf(buffer, "%i hits", combo[i]);
@@ -455,6 +458,8 @@ void player::drawHitParticle()
 		case -2:
 			glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
 			break;
+		case -5:
+			glColor4f(0.4f, 0.4f, 0.4f, 0.5f);
 		}
 		glPushMatrix();
 			glTranslatef(current.posX, -collision.y, 0.0f);

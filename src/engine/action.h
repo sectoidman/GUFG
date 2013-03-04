@@ -54,7 +54,7 @@ public:
 	virtual void execute(action *, int *&, int&, int&, int&);
 	virtual void init(int) {}
 	virtual void playSound(int);
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*);
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
 	virtual action * blockSuccess();
@@ -65,7 +65,7 @@ public:
 	virtual std::vector<SDL_Rect> pollDelta(int);
 	virtual int displace(int, int&, int);
 	virtual void pollStats(hStat&, int, bool);
-	virtual bool cancel(action*, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
+	virtual bool cancel(action*&, int&, int&); //Cancel allowed activate. Essentially: is action Lvalue allowed given the current state of action Rvalue?
 	virtual void step(int *&, int&, int&, int&);
 	virtual action * land(int &f, int &h, int &c) { return this; }
 	virtual action * connect(int *&, int&, int);
@@ -88,12 +88,13 @@ public:
 	int throwinvuln;
 	bool crouch:1;
 	bool hittable:1;
+	bool linkable:1;
 	bool hidesMeter:1;
 	bool track:1;
 	int armorStart; int armorLength;
 	int armorHits;
 	int armorCounter;
-	int guardStart; int guardLength;
+	int guardStart; int guardLength; int guardType;
 	int freezeFrame; int freezeLength;
 	int followStart; int followEnd;
 	int followXRate; int followYRate;
@@ -107,20 +108,21 @@ public:
 
 	//Cancel states, as defined in masks.h. Eventually this will probably be an array.
 
-	cancelField *state, allowed;
+	std::vector<cancelField> state; 
+	cancelField allowed;
 	int xRequisite, yRequisite;
 
 	int frames;	//Number of frames.
 	int hits;
-	int * totalStartup;
-	int * active;
+	std::vector<int> totalStartup;
+	std::vector<int> active;
 	bool fch:1;
 	bool dies:1;
 
 	//SDL_Surface *sprite, *hit, *hitreg, *collision;
 	char * name;
 	int cost;
-	int * gain;
+	std::vector<int> gain;
 
 	//Tolerance refers to the individual size of the input buffer allowed for this action.
 	//Default is 30 (The entire input buffer)
@@ -134,7 +136,7 @@ public:
 	int minHold, maxHold;
 
 	action * next;
-	action ** onConnect;
+	std::vector<action *> onConnect;
 	action * onHold;
 	action * attempt;
 	action * riposte;
@@ -150,7 +152,7 @@ public:
 	int displaceX, displaceY, displaceFrame;
 
 	char * tempNext;
-	char ** tempOnConnect;
+	std::vector<char *> tempOnConnect;
 	char * tempAttempt;
 	char * tempRiposte;
 	char * tempOnHold;
@@ -197,7 +199,7 @@ class special : virtual public action {
 public:
 	special() {}
 	special(const char*);
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class negNormal : virtual public action {
@@ -205,14 +207,14 @@ public:
 	negNormal() {}
 	negNormal(const char *);
 	virtual void zero();
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class utility : virtual public action {
 public:
 	utility() {}
 	utility(const char *);
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 
 class looping : virtual public utility {
@@ -276,7 +278,7 @@ public:
 	mash(const char* n) {build(n); }
 	virtual bool setParameter(char *n);
 	virtual void zero();
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	int buttons;
 };
 
@@ -304,6 +306,6 @@ class releaseCheck : virtual public action {
 public:
 	releaseCheck() {}
 	releaseCheck(const char* n) {build(n); }
-	virtual bool activate(std::vector<int>, std::vector<bool>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
+	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 };
 #endif

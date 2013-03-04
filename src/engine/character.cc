@@ -39,7 +39,7 @@ character::~character()
 	}
 }
 
-void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun, int *& meter)
+void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> buttons, SDL_Rect &p, bool dryrun, int *& meter)
 {
 	action * t = NULL;
 	if(!current.move || (current.frame == 0 && current.move->state[current.connect].b.neutral)){
@@ -53,7 +53,7 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 		}
 		else neutralize(current, cMove, meter);
 	}
-	t = hook(inputBuffer, 0, -1, meter, down, up, cMove, p, current.connect, current.hit, current.aerial);
+	t = hook(inputBuffer, 0, -1, meter, buttons, cMove, p, current.connect, current.hit, current.aerial);
 	if(t == NULL){
 		if(cMove->window(current.frame)){
 			if(cMove->attempt->check(p, meter)){
@@ -61,7 +61,7 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			}
 		}
 		else if(cMove->holdFrame == current.frame){
-			if(cMove->onHold->activate(down, up, cMove->holdCheck, 0, 0, meter, p)){
+			if(cMove->onHold->activate(buttons, cMove->holdCheck, 0, 0, meter, p)){
 				t = cMove->onHold;
 			}
 		}
@@ -76,12 +76,16 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			bool l = current.reversalFlag;
 			neutralize(current, r, meter);
 			current.reversalFlag = l;
-			if (!current.reversal && current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) {
-				int l = 0, m = 0;
-				current.reversal = hook(inputBuffer, 0, -1, meter, down, up, r, p, l, m, current.aerial);
-				if(current.reversal){
-					if(current.reversal->state[0].b.neutral) 
-						current.reversal = NULL;
+			int st = 0;
+			if(current.move) st = current.move->arbitraryPoll(1, 0);
+			if (!current.reversal){
+				if((current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) || (st < 10 && st > 0)) {
+					int l = 0, m = 0;
+					current.reversal = hook(inputBuffer, 0, -1, meter, buttons, r, p, l, m, current.aerial);
+					if(current.reversal){
+						if(current.reversal->state[0].b.neutral) 
+							current.reversal = NULL;
+					}
 				}
 			}
 		}
@@ -99,20 +103,20 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 	}
 }
 
-action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> down, std::vector<bool> up, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
-	return head->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
+	return head->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
+}
+
+action * character::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+{
+	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
+	else return avatar::hook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag, aerial);
 }
 
 action * avatar::moveSignal(int)
 {
 	return NULL;
-}
-
-action * character::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> down, std::vector<bool> up, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
-{
-	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag);
-	else return avatar::hook(inputBuffer, 0, -1, meter, down, up, c, p, cFlag, hFlag, aerial);
 }
 
 void avatar::neutralize(status &current, action *& cMove, int *& meter)
@@ -179,7 +183,6 @@ void avatar::build(const char* directory, const char* file)
 
 			if(!(m = searchByName(buffer))){
 				m = createMove(buffer);
-				movesByName.push_back(m);
 				processMove(m);
 			}
 			sortMove(m, buffer2);
@@ -413,7 +416,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 						cMove = airBlock;
 					}
 				} else {
-					if(input[0] > 3){ 
+					if(input[0] > 3){
 						if(standBlock->cancel(cMove, connectFlag, hitFlag)) {
 							standBlock->init(st);
 							cMove = standBlock;
@@ -504,11 +507,12 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 			}
 		}
 	} else if (hitType == -1) {
-		if(meter[1] + 6 < 300) meter[1] += 10;
+		if(meter[1] + 6 < 300) meter[1] += 12;
 		else meter[1] = 300;
 	}
-	if (hitType > -2) {
-		if(meter[1] + 1 < 300) meter[1] += 2;
+	if (hitType == 1) meter[1] += 2;
+	else if (hitType > -2) {
+		if(meter[1] + 1 < 300) meter[1] += 3;
 		else meter[1] = 300;
 	}
 	return freeze;

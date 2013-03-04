@@ -17,17 +17,15 @@ action::action(const char * n) : frames(0), hits(0)
 action::~action()
 {
 	if(!this) return;
-	if(state) delete [] state;
-	if(gain) delete [] gain;
 	if(distortion) delete distortion;
-	if(totalStartup) delete [] totalStartup;
 	if(name) delete [] name;
 	if(next) delete next;
-	if(onConnect) delete [] onConnect;
 }
 
 void action::zero()
 {
+	linkable = 0;
+	guardType = 0;
 	attemptStart = 0;
 	attemptEnd = 0;
 	holdCheck = -1;
@@ -103,6 +101,9 @@ instance * action::spawn()
 int action::arbitraryPoll(int q, int f)
 {
 	switch(q){
+	case 1:
+		if(linkable) return 3;
+		else break;
 	case 2:
 		if(f == freezeFrame) return freezeLength;
 		else break;
@@ -258,20 +259,17 @@ bool action::setParameter(char * buffer)
 		if(hits > 0){
 			stats = std::vector<hStat> (hits);
 			CHStats = std::vector<hStat> (hits);
-			onConnect = new action*[hits];
-			tempOnConnect = new char*[hits];
-			for (int i = 0; i < hits; i++){
-				onConnect[i] = NULL;
-				tempOnConnect[i] = NULL;
-				stats[i].hitState.i = 0;
-			}
-		} else {
-			onConnect = NULL;
+			onConnect = std::vector <action*> (hits);
+			tempOnConnect = std::vector <char*> (hits);
+			for(action* i:onConnect) i = NULL;
+			for(char* i:tempOnConnect) i = NULL;
+			for(unsigned int i = 0; i < stats.size(); i++) stats[i].hitState.i = 0;
+			for(unsigned int i = 0; i < CHStats.size(); i++) CHStats[i].hitState.i = 0;
 		}
-		state = new cancelField[hits+1];
-		gain = new int[hits+1];
-		for(int i = 0; i < hits+1; i++)
-			gain[i] = 0;
+		state = std::vector<cancelField> (hits+1);
+		gain = std::vector<int> (hits+1);
+		for(unsigned int i = 0; i < state.size(); i++) state[i].i = 0;
+		for(int i:gain) i = 0;
 		return 1;
 	} else if (!strcmp("Riposte", token)) {
 		token = strtok(NULL, "\t: \n");
@@ -367,11 +365,8 @@ bool action::setParameter(char * buffer)
 		frames = atoi(token);
 		int startup, countFrames = -1;
 		if(hits > 0) {
-			totalStartup = new int[hits];
-			active = new int[hits];
-		} else {
-			totalStartup = NULL;
-			active = NULL;
+			totalStartup = std::vector<int> (hits);
+			active = std::vector<int> (hits);
 		}
 
 		for(int i = 0; i < hits; i++){
@@ -385,10 +380,13 @@ bool action::setParameter(char * buffer)
 		}
 		return 1;
 	} else if (!strcmp("State", token)) {
+		printf("%s ", name);
 		for(int i = 0; i < hits+1; i++){
 			token = strtok(NULL, "\t: \n");
 			state[i].i = atoi(token);
+			printf("%i ", state[i].i);
 		}
+		printf("\n");
 		return 1;
 	} else if (!strcmp("HitAllows", token)) {
 		for(int i = 0; i < hits; i++){
@@ -501,6 +499,10 @@ bool action::setParameter(char * buffer)
 		token = strtok(NULL, "\t: \n-");
 		guardLength = atoi(token); 
 		guardLength = guardLength - guardStart;
+		return 1;
+	} else if (!strcmp("GuardType", token)) {
+		token = strtok(NULL, "\t: \n");
+		guardType = atoi(token);
 		return 1;
 	} else if (!strcmp("Follow", token)) {
 		token = strtok(NULL, "\t: \n-");
@@ -658,6 +660,9 @@ void action::parseProperties(char * buffer, bool counter)
 		case 'm':
 			if(!counter) modifier = 1;
 			break;
+		case 'l':
+			if(!counter) linkable = 1;
+			break;
 		case 'f':
 			if(!counter) track = 1;
 			break;
@@ -678,12 +683,12 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(std::vector<int> pos, std::vector<bool> neg, int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool action::activate(std::vector<int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p)
 {
-	for(unsigned int i = 0; i < pos.size(); i++){
+	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
-			if(pos[i] < minHold) return 0;
-			if(maxHold && pos[i] > maxHold) return 0;
+			if(inputs[i] < minHold) return 0;
+			if(maxHold && inputs[i] > maxHold) return 0;
 		}
 	}
 	if(t > tolerance) return 0;
@@ -790,13 +795,16 @@ void action::pollStats(hStat & s, int f, bool CH)
 	}
 }
 
-bool action::cancel(action * x, int& c, int &h)
+bool action::cancel(action *& x, int& c, int &h)
 {
 	cancelField r;
+	r.i = 0;
 	if(x == NULL) return 1;
 	if(c > x->hits || h > x->hits) return 0;
 	if(x->modifier && x->basis){
-		if(x->basis == NULL) return 1;
+		if(x->basis == NULL){ 
+			return 1;
+		}
 		r.i = x->basis->state[x->connectFlag].i;
 		if(x->hitFlag > 0 && x->hitFlag == x->connectFlag){ 
 			r.i = r.i + x->basis->stats[x->hitFlag - 1].hitState.i;
@@ -804,7 +812,7 @@ bool action::cancel(action * x, int& c, int &h)
 		x = basis;
 	} else {
 		r.i = x->state[c].i;
-		if(h > 0 && h == c){ 
+		if(h > 0 && h == c){
 			r.i = r.i + x->stats[h - 1].hitState.i;
 		}
 	}
@@ -813,8 +821,9 @@ bool action::cancel(action * x, int& c, int &h)
 			if(c == 0) return 0;
 			else if(allowed.b.chain1) return 1;
 			else return 0;
+		} else {
+			return 1;
 		}
-		else return 1;
 	}
 	return 0;
 }
@@ -940,7 +949,7 @@ int action::takeHit(hStat & s, int b, int &f, int &c, int &h)
 	else{
 		if(s.blockMask.i & blockState.i && f > guardStart && f < guardStart + guardLength){
 			if(riposte != NULL) return -5;
-			else return 0;
+			else return guardType;
 		}
 		else if (f > armorStart && f < armorStart + armorLength && (armorHits < 1 || armorHits < armorCounter)){
 			s.stun = 0;
