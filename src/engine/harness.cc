@@ -26,7 +26,6 @@ void harness::processInput(SDL_Event &event)
 	case SDL_KEYDOWN:
 	case SDL_KEYUP:
 		switch (event.key.keysym.sym) {
-		case SDLK_q:
 		case SDLK_ESCAPE:
 			gameover = 1;
 			break;
