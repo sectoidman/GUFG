@@ -412,24 +412,39 @@ void instance::drawBoxen()
 
 void instance::draw()
 {
-	int realPosY = collision.y;
+	int realPosY = current.posY;
 	int realPosX = current.posX;
+	bool sCheck = spriteCheck();
 	glEnable(GL_TEXTURE_2D);
-	if(spriteCheck() && sprite){
-		for(unsigned int i = 0; i < hitreg.size(); i++){
-			if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
+
+	if(sprite && sCheck){
+		if(current.move->offX != 0) realPosX += current.move->offX;
+		else{
+			if(collision.x < realPosX) realPosX = collision.x;
 			if(current.facing == 1){
-				if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+				for(unsigned int i = 0; i < hitreg.size(); i++){
+					if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
+				}
+				for(unsigned int i = 0; i < hitbox.size(); i++){
+					if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
+				}
 			} else {
-				if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+				for(unsigned int i = 0; i < hitreg.size(); i++){
+					if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
+				}
+				for(unsigned int i = 0; i < hitbox.size(); i++){
+					if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+				}
 			}
 		}
-		for(unsigned int i = 0; i < hitbox.size(); i++){
-			if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
-			if(current.facing == 1){
-				if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
-			} else {
-				if(hitbox[i].x + hitbox[i].w > realPosX) realPosX = hitbox[i].x + hitbox[i].w;
+		if(current.move->offY != 0) realPosY += current.move->offY;
+		else{
+			if(collision.y < realPosY) realPosY = collision.y;
+			for(unsigned int i = 0; i < hitreg.size(); i++){
+				if(hitreg[i].y < realPosY) realPosY = hitreg[i].y;
+			}
+			for(unsigned int i = 0; i < hitbox.size(); i++){
+				if(hitbox[i].y < realPosY) realPosY = hitbox[i].y;
 			}
 		}
 		if(secondInstance)
@@ -443,7 +458,7 @@ void instance::draw()
 		glPopMatrix();
 	}
 	glDisable(GL_TEXTURE_2D);
-	if(!spriteCheck() || boxen){
+	if(!sCheck || boxen){
 		if(!current.move || current.frame > current.move->frames)
 			pick()->neutral->drawBoxen(0);
 		else drawBoxen();

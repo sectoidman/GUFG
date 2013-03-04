@@ -91,13 +91,13 @@ public:
 	bool linkable:1;
 	bool hidesMeter:1;
 	bool track:1;
-	int armorStart; int armorLength;
-	int armorHits;
-	int armorCounter;
-	int guardStart; int guardLength; int guardType;
-	int freezeFrame; int freezeLength;
-	int followStart; int followEnd;
-	int followXRate; int followYRate;
+	int armorStart, armorLength;
+	int armorHits, armorCounter;
+	int guardStart, guardLength, guardType;
+	int freezeFrame, freezeLength;
+	int followStart, followEnd;
+	int followXRate, followYRate;
+	int offX, offY;
 
 	//Properties of a hit. These will only exist for actions that hit.
 	

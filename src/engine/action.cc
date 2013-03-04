@@ -24,6 +24,8 @@ action::~action()
 
 void action::zero()
 {
+	offX = 0;
+	offY = 0;
 	linkable = 0;
 	guardType = 0;
 	attemptStart = 0;
@@ -101,9 +103,6 @@ instance * action::spawn()
 int action::arbitraryPoll(int q, int f)
 {
 	switch(q){
-	case 1:
-		if(linkable) return 3;
-		else break;
 	case 2:
 		if(f == freezeFrame) return freezeLength;
 		else break;
@@ -243,6 +242,12 @@ bool action::setParameter(char * buffer)
 
 		token = strtok(NULL, "\t: \n");
 		yRequisite = atoi(token); 
+		return 1;
+	} else if (!strcmp("Offset", token)) {
+		token = strtok(NULL, "\t: \n");
+		offX = atoi(token);
+		token = strtok(NULL, "\t: \n");
+		offY = atoi(token);
 		return 1;
 	} else if (!strcmp("Hold", token)) {
 		token = strtok(NULL, "\t: \n-");
