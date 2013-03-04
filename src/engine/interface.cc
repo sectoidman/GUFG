@@ -1215,8 +1215,8 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(!things[i]->current.aerial){~$
-				for(int j = 0; j < 6; j++){$
+			if(!things[i]->current.aerial){
+				for(int j = 0; j < 6; j++){
 					if(2 << j & things[i]->current.move->state[things[i]->current.hit].i){
 						P[i]->checkFacing(P[(i+1)%2]);
 						break;
