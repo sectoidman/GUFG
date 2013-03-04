@@ -420,8 +420,8 @@ void instance::draw()
 	if(sprite && sCheck){
 		if(current.move->offX != 0) realPosX += current.move->offX*current.facing;
 		else{
-			if(collision.x < realPosX) realPosX = collision.x;
 			if(current.facing == 1){
+				if(collision.x < realPosX) realPosX = collision.x;
 				for(unsigned int i = 0; i < hitreg.size(); i++){
 					if(hitreg[i].x < realPosX) realPosX = hitreg[i].x;
 				}
@@ -429,6 +429,7 @@ void instance::draw()
 					if(hitbox[i].x < realPosX) realPosX = hitbox[i].x;
 				}
 			} else {
+				if(collision.x + collision.w < realPosX) realPosX = collision.x + collision.w;
 				for(unsigned int i = 0; i < hitreg.size(); i++){
 					if(hitreg[i].x + hitreg[i].w > realPosX) realPosX = hitreg[i].x + hitreg[i].w;
 				}
