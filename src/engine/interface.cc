@@ -976,6 +976,7 @@ void interface::pauseMenu()
 					break;
 				}
 				j = 2;
+				break;
 			}
 		}
 		if(currentFrame[j].n.raw.Start && !counter[j]) pMenu = 0;
