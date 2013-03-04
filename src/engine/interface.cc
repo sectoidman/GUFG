@@ -20,7 +20,7 @@ interface::interface()
 	numChars = 2;
 	stats = new chart(numChars);
 	killTimer = false;
-	shortcut = false;
+	shortcut = true;
 	continuous = false;
 	analytics = true;
 	scripting = false;
@@ -1003,10 +1003,10 @@ void interface::rematchMenu()
 					matchInit();
 					break;
 				case 2:
-					for(unsigned int i = 0; i < P.size(); i++){
-						delete P[i]->pick();
-						select[i] = 0;
-						delete [] things[i]->meter;
+					for(unsigned int k = 0; k < P.size(); k++){
+						delete P[k]->pick();
+						select[k] = 0;
+						delete [] things[k]->meter;
 					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
@@ -1019,7 +1019,8 @@ void interface::rematchMenu()
 					gameover = 1;
 					break;
 				}
-				j = 2;
+				j = P.size();
+				break;
 			}
 		}
 	}
