@@ -214,10 +214,14 @@ void interface::drawHUD()
 {
 	char buffer[200];
 	if(timer / 60 > 99) sprintf(buffer, "99");
-	else if(timer / 60 < 10) sprintf(buffer, "0%i", timer / 60);
+	else if(timer / 60 < 10){
+		glColor4f(1.0, 1.0, 0.0, 0.0);
+		sprintf(buffer, "0%i", timer / 60);
+	}
 	else sprintf(buffer, "%i", timer / 60);
 
 	drawGlyph(buffer, 700, 200, 0, 90, 1);
+	glColor4f(1.0, 1.0, 1.0, 1.0);
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(P[i]->name) drawGlyph(P[i]->name, 100+800*i, 600, 30, 40, 0+2*i);
 		else drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
