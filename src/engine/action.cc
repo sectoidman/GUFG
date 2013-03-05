@@ -68,8 +68,8 @@ void action::zero()
 	riposte = NULL;
 	basis = NULL;
 	onHold = NULL;
-	hittable = 0;
-	modifier = 0;
+	hittable = false;
+	modifier = false;
 	payload = NULL;
 	spawnFrame = 0;
 	spawnTrackY = 0;
