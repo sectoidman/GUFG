@@ -1211,11 +1211,11 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
+			if(hit[i] == 1){ 
+				things[i]->current.hit = things[i]->current.connect;
+				prorate[things[i]->ID-1] *= s[i].prorate;
+			}
 			if(!things[i]->current.aerial){
-				if(hit[i] == 1){ 
-					things[i]->current.hit = things[i]->current.connect;
-					prorate[things[i]->ID-1] *= s[i].prorate;
-				}
 				for(int j = 0; j < 6; j++){
 					if(2 << j & things[i]->current.move->state[things[i]->current.hit].i){
 						P[i]->checkFacing(P[(i+1)%2]);
