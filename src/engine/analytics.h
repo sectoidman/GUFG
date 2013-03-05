@@ -12,10 +12,26 @@ public:
 	~chart();
 };
 
+struct inputContainer {
+	unsigned int dir:4;
+	int A:2;
+	int B:2;
+	int C:2;
+	int D:2;
+	int E:2;
+	bool Start:1;
+	bool Player:1; //What player the local client thinks it is
+};
+
+typedef union {
+	inputContainer raw;
+	int i;
+} inputs;
+
 struct frame {
+	inputs n;
 	std::vector<bool> axis;
-	std::vector<bool> neg;
-	std::vector<int> pos;
+	std::vector<int> buttons;
 };
 
 class script {
@@ -24,6 +40,8 @@ public:
 	script(char*);
 	void init(int);
 	void init(std::vector<int>);
+	void push(int i, frame);
+	void push(frame);
 	std::vector<std::vector<frame> > command;
 	std::vector<int> selection;
 	bool test();

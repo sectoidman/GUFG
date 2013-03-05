@@ -7,7 +7,7 @@ State: 512
 Gain: 0
 Cost: 0
 Blocks: 2
-Properties: sST
+Properties: T
 #0 
 $C	10 0 110 330
 $R	10 0 110 330

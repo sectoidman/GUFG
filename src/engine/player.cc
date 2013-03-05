@@ -10,6 +10,7 @@
 player::player()
 {
 	meter = NULL;
+	name = NULL;
 	init();
 }
 
@@ -17,6 +18,7 @@ player::player(int id)
 {
 	ID = id;
 	meter = NULL;
+	name = NULL;
 	init();
 	wins = 0;
 }
@@ -90,7 +92,7 @@ void player::roundInit()
 {
 	char buffer[200];
 	instance::init();
-	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->neutralize(current, current.move, meter);
 	if(v) pick()->init(meter);
 	if(record){
 		sprintf(buffer, "%i-%s.sh", ID, pick()->name);
@@ -555,6 +557,11 @@ void instance::follow(instance *other){
 	}
 }
 
+void instance::print()
+{
+	std::cout << "Player" << ID << ": " << current.move->name << ": " << current.frame << '\n';
+}
+
 void instance::step()
 {
 	action * m = current.move;
@@ -575,7 +582,7 @@ void instance::step()
 			current.move = current.move->basis;
 		} else {
 			if(current.move->next) current.move = current.move->next;
-			else pick()->neutralize(current.move, current.aerial, meter);
+			else pick()->neutralize(current, current.move, meter);
 			current.frame = 0;
 			current.connect = 0;
 			current.hit = 0;
@@ -585,7 +592,7 @@ void instance::step()
 
 void instance::neutralize()
 {
-	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->neutralize(current, current.move, meter);
 }
 
 void instance::flip()
@@ -645,32 +652,34 @@ int instance::passSignal(int sig)
 	}
 }
 
-void instance::pushInput(std::vector<bool> axis)
+void instance::pushInput(unsigned int i)
 {
-	int temp = 5 + axis[0]*3 - axis[1]*3 - axis[2]*current.facing + axis[3]*current.facing;
-	inputBuffer[0] = temp;
-
+	inputBuffer[0] = i;
 	for(int i = 29; i > 0; i--){
 		inputBuffer[i] = inputBuffer[i-1];
 	}
 }
 
-void instance::getMove(std::vector<int> down, std::vector<bool> up, SDL_Rect &p, bool dryrun)
+void instance::getMove(std::vector<int> buttons, SDL_Rect &p, bool& dryrun)
 {
 	action * dummyMove, *save;
 	dummyMove = current.move;
 	save = current.move;
 	int n = current.frame;
-	pick()->prepHooks(current, dummyMove, inputBuffer, down, up, p, dryrun, meter);
+	pick()->prepHooks(current, dummyMove, inputBuffer, buttons, p, dryrun, meter);
 	if(dummyMove){
 		if(dummyMove->throwinvuln == 1 && current.throwInvuln <= 0) current.throwInvuln = 1;
 		if(dummyMove->throwinvuln == 2) current.throwInvuln = 6;
 	}
-	if(!dryrun){ 
+	if(dryrun){
+		if(current.reversalFlag){
+			if(current.frame != n || dummyMove != save) dryrun = 0;
+		}
+		current.move = save;
+	} else {
 		current.move = dummyMove;
-		if(current.frame != n || current.move != save) current.move->playSound(ID);
+		if(current.frame != n || dummyMove != save) current.move->playSound(ID);
 	}
-	else current.move = save;
 }
 
 void instance::pullVolition()
@@ -742,17 +751,37 @@ void controller::readEvent(SDL_Event & event, frame &t)
 	int effect = tap(event);
 	if(effect != 0){
 		for(int i = 0; i < 4; i++){
-			if(abs(effect) & (1 << i)){ 
-				t.axis[i] = (effect > 0);
+			if(abs(effect) & (1 << i)){
+				if(effect > 0){
+					t.axis[i] = 1;
+				} else {
+					t.axis[i] = 0;
+				}
+				if(i%2 == 0) t.axis[i+1] = 0;
+				else t.axis[i-1] = 0;
 			}
 		}
-		for(unsigned int i = 0; i < t.pos.size(); i++){
+		for(unsigned int i = 0; i < t.buttons.size(); i++){
 			if(abs(effect) & (1 << (i + 4))){
-				t.pos[i] = (effect > 0);
-				t.neg[i] = (effect < 0);
+				if(effect > 0) t.buttons[i] = 1;
+				else if(effect < 0) t.buttons[i] = -1;
 			}
 		}
 	}
+}
+
+void player::readEvent(SDL_Event & event, frame &t)
+{
+	controller::readEvent(event, t);
+	unsigned int d = 5;
+	if(t.axis[0]) d += 3;
+	if(t.axis[1]) d -= 3;
+	if(t.axis[2]) d--;
+	if(t.axis[3]) d++;
+	if(t.buttons[5] == 1) t.n.raw.Start = true;
+	else t.n.raw.Start = false;
+	t.n.raw.dir = d;
+	t.n.raw.Player = ID%2;
 }
 
 void instance::connect(int combo, hStat & s)
@@ -783,7 +812,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	action * temp = NULL;
 	if(s.damage > 0){
 		if(combo >= s.damage) s.damage = 1;
-		else s.damage -= combo; 
+		else s.damage -= combo;
 	}
 	s.untech -= combo;
 	int f;
@@ -808,15 +837,16 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(current.aerial) v.x = -(s.push/5 + s.blowback);
 		else v.x = -s.push;
 		v.x *= current.facing;
-		momentum.push_back(v);
 		if(particleType == -1){ 
 			v.x /= 5;
 			v.y /= 5;
 		}
-		if(particleType == -2){
+		if(particleType <= -2){
 			v.x = 0;
 			v.y = 0;
+			current.freeze = 0;
 		}
+		momentum.push_back(v);
 		if(current.aerial && s.hover) hover = s.hover;
 		else hover = 0;
 		if(current.aerial && s.wallBounce) elasticX = true;
@@ -828,7 +858,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		if(current.aerial && s.stick) stick = true;
 		else stick = false;
 	}
-	if(current.move == pick()->die){ 
+	if(current.move == pick()->die){
 		current.bufferedMove = NULL;
 		current.frame = 0;
 		current.connect = 0;
@@ -837,7 +867,9 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	updateRects();
 	if(s.ghostHit) return 0;
 	else if(particleType == 1) return particleType;
-	else return -1;
+	else { 
+		return -1;
+	}
 }
 
 void instance::invertVectors(int operation)
@@ -879,11 +911,14 @@ void instance::setPosition(int x, int y)
 void player::getThrown(action *toss, int x, int y)
 {
 	int xSign = x / abs(x);
+	momentum.clear();
+	current.deltaX = 0;
+	current.deltaY = 0;
 	hStat dummy;
 	dummy.stun = 1;
 	dummy.ghostHit = 1;
 	setPosition(toss->arbitraryPoll(27, current.frame)*xSign + abs(x), toss->arbitraryPoll(26, current.frame) + y);
-	pick()->neutralize(current.move, current.aerial, meter);
+	pick()->neutralize(current, current.move, meter);
 	pick()->takeHit(current, dummy, 0, particleType, meter);
 	updateRects();
 }

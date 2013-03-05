@@ -22,9 +22,9 @@ public:
 	virtual void build(const char*, const char*);
 	virtual void processMove(action * m);
 	virtual void sortMove(action *, char*);
-	virtual void prepHooks(status&, action *&, int[], std::vector<int>, std::vector<bool>, SDL_Rect &, bool, int*&);	//Take input from the game and propagate it to the appropriate actionTrie.
+	virtual void prepHooks(status&, action *&, int[], std::vector<int>, SDL_Rect &, bool, int*&);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
-	virtual action * hook(int[], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
+	virtual action * hook(int[], int, int, int*, std::vector<int>, action *, SDL_Rect&, int&, int&, bool);
 	virtual bool death(action *&, int, int) { return 0; }
 	virtual int takeHit(status&, hStat&, int, int&, int*&) { return 0; }
 	virtual void getName(const char*, const char*);
@@ -33,7 +33,7 @@ public:
 	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
 	virtual void tick(int *&) {}
-	virtual void neutralize(action *&, bool, int*&);
+	virtual void neutralize(status&, action*&, int*&);
 	virtual bool turn(int&) { return 0; }
 	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
 	actionTrie * head;	//Trie for ground actions
@@ -42,6 +42,9 @@ public:
 	action * die;
 	action * neutral;
 	bool headless;
+	std::vector<action*> movesByName;
+	std::vector<char*> moveNames;
+	action * searchByName(char*);
 };
 
 class character : virtual public avatar{
@@ -55,7 +58,7 @@ public:
 	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
 
 	virtual int comboState(action *);
-	virtual void neutralize(action *&, bool, int*&);
+	virtual void neutralize(status&, action*&, int*&);
 	virtual void drawMeters(int, int, int*);
 	virtual void init(int *&);
 	virtual int checkBlocking(action *&, int[], int&, int&, bool);
@@ -63,7 +66,7 @@ public:
 	virtual void land(action *&, int &, int &, int &, int *&);
 	virtual void sortMove(action *, char*);
 	virtual int takeHit(status&, hStat&, int, int&, int*&);
-	virtual action * hook(int[], int, int, int*, std::vector<int>, std::vector<bool>, action *, SDL_Rect&, int&, int&, bool);
+	virtual action * hook(int[], int, int, int*, std::vector<int>, action *, SDL_Rect&, int&, int&, bool);
 
 	looping * dead;
 	action * airNeutral;

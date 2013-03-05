@@ -158,32 +158,42 @@ int controller::tap(SDL_Event temp)
 	for(unsigned int i = 0; i < input.size(); i++){
 		switch(temp.type){
 		case SDL_KEYUP:
-			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
-				ret = -(input[i]->effect);
+			if(input[i]->trigger.type == SDL_KEYDOWN){
+				if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
+					ret = -(input[i]->effect);
+			}
 			break;
 		case SDL_KEYDOWN:
-			if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
-				ret = input[i]->effect;
+			if(input[i]->trigger.type == SDL_KEYDOWN){
+				if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
+					ret = input[i]->effect;
+			}
 			break;
 		case SDL_JOYBUTTONUP:
-			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
-			   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-				ret = -(input[i]->effect);
+			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
+				if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
+				   input[i]->trigger.jbutton.button == temp.jbutton.button) 
+					ret = -(input[i]->effect);
+			}
 			break;
 		case SDL_JOYBUTTONDOWN:
-			if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
-			   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-				ret = input[i]->effect;
+			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
+				if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
+				   input[i]->trigger.jbutton.button == temp.jbutton.button) 
+					ret = input[i]->effect;
+			}
 			break;
 		case SDL_JOYAXISMOTION:
-			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
-			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
-			   input[i]->trigger.jaxis.value == temp.jaxis.value)
-				ret = input[i]->effect;
-			if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
-			   input[i]->trigger.jaxis.axis == temp.jaxis.axis &&
-			   input[i]->trigger.jaxis.value == 0)
-				ret = -input[i]->effect;
+			if(input[i]->trigger.type == SDL_JOYAXISMOTION){
+				if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
+				   input[i]->trigger.jaxis.axis == temp.jaxis.axis){
+					if(input[i]->trigger.jaxis.value == temp.jaxis.value){
+						ret = input[i]->effect;
+					} else {
+						if(temp.jaxis.value == 0) return -input[i]->effect;
+					}
+				}
+			}
 			break;
 		}
 	}

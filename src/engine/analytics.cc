@@ -27,9 +27,10 @@ bool script::test()
 	for(int i = 0; i < 4; i++)
 		l.axis.push_back(0);
 	for(int i = 4; i < 6; i++){
-		l.pos.push_back(0);
-		l.neg.push_back(0);
+		l.buttons.push_back(0);
 	}
+	l.n.i = 0;
+	l.n.raw.dir = 5;
 	return genEvent(0, 0, l);
 }
 
@@ -37,12 +38,20 @@ bool script::genEvent(int p, int f, frame &t)
 {
 	if(command.empty() || (unsigned int)p >= command.size()) return 0;
 	if(command[p].empty() || (unsigned int)f >= command[p].size()) return 0;
-	for(int i = 0; i < 4; i++) t.axis[i] = command[p][f].axis[i];
-	for(unsigned int i = 0; i < command[p][f].pos.size(); i++){
-		t.pos[i] = !(!(command[p][f].pos[i]));
-		t.neg[i] = command[p][f].neg[i];
-	}
+
+	//printf("%i: %i\n", p, command[p][f].n.i);
+	t.n.i = command[p][f].n.i;
 	return 1;
+}
+
+void script::push(frame t)
+{
+	push(0, t);
+}
+
+void script::push(int p, frame t)
+{
+	command[p].push_back(t);
 }
 
 script::script(char* filename)
@@ -70,21 +79,7 @@ void script::load(char* filename)
 	while(!read.eof()){
 		for(int i = 0; i < players; i++){
 			frame temp;
-			bool a;
-			for(int j = 0; j < 4; j++){
-				read >> a;
-				temp.axis.push_back(a);
-			}
-			int p;
-			for(int j = 0; j < buttons; j++){
-				read >> p;
-				temp.pos.push_back(p);
-			}
-			bool n;
-			for(int j = 0; j < buttons; j++){
-				read >> n;
-				temp.neg.push_back(n);
-			}
+			read >> temp.n.i;
 			command[i].push_back(temp);
 		}
 	}
@@ -110,16 +105,15 @@ void script::write(char * name)
 		scribe.close();
 		return;
 	}
-	scribe << selection.size() << " " << command[0][0].pos.size() << '\n';
-	for(unsigned int i = 0; i < selection.size(); i++) 
-		scribe << selection[i] << " ";
+	scribe << selection.size() << " " << command[0][0].buttons.size() << '\n';
+	for(unsigned int i = 0; i < selection.size(); i++){
+		scribe << selection[i];
+		if(i == 0) scribe << " ";
+	}
 	scribe << '\n';
 	for(unsigned int i = 0; i < command[0].size(); i++){
 		for(unsigned int j = 0; j < command.size(); j++){
-			for(unsigned int k = 0; k < command[j][i].axis.size(); k++) scribe << command[j][i].axis[k] << " ";
-			for(unsigned int k = 0; k < command[j][i].pos.size(); k++) scribe << command[j][i].pos[k] << " ";
-			for(unsigned int k = 0; k < command[j][i].neg.size(); k++) scribe << command[j][i].neg[k] << " ";
-			scribe << '\n';
+			scribe << command[j][i].n.i << '\n';
 		}
 	}
 	scribe << '\n';

@@ -4,6 +4,7 @@
 void hitstun::init(int n)
 {
 	counter = n;
+	if(next != NULL) next->init(n - frames);
 }
 
 void hitstun::step(int *& meter, int &f, int &c, int &h)

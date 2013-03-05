@@ -27,7 +27,7 @@ public:
 	virtual void init();
 	virtual void step();
 
-	virtual void getMove(std::vector<int>, std::vector<bool>, SDL_Rect&, bool);
+	virtual void getMove(std::vector<int>, SDL_Rect&, bool&);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
 	virtual void invertVectors(int);
@@ -39,13 +39,14 @@ public:
 	virtual void combineDelta();
 	virtual bool spriteCheck();
 	virtual void connect(int, hStat&);
-	virtual void pushInput(std::vector<bool>);
+	virtual void pushInput(unsigned int);
 	virtual int passSignal(int);
 	virtual int dragBG(int, int);
 	virtual void follow(instance*);
 	void enforceAttractor(attractor*);
 	int middle();
 	void flip();
+	void print();
 
 	status current;
 
@@ -54,6 +55,7 @@ public:
 	int blockType;
 	int counter;
 	bool boxen:1;
+	bool sprite:1;
 protected:
 	avatar * v;
 };
@@ -70,6 +72,7 @@ public:
 	virtual void characterSelect(int);
 	virtual void drawHitParticle();
 
+	virtual void readEvent(SDL_Event &, frame &);
 	virtual void land();
 	virtual void readScripts();
 	virtual void enforceGravity(int, int);
@@ -89,6 +92,7 @@ public:
 	bool stick;
 	int hover;
 
+	char * name;
 
 	int particleLife;
 
