@@ -19,7 +19,7 @@ linux.Program('../gufg', backend_src + [gufg_src])
 
 #Clang
 cl = '.clang'
-clang = linux.Clone(CXX='clang', LIBS=libs+['GL', 'GLU', 'm', 'stdc++'])
+clang = linux.Clone(CXX='clang++', LIBS=libs+['GL', 'GLU', 'm'], CXXFLAGS=flags+["-stdlib=libc++"])
 clang_backend = [clang.Object(name+cl, name) for name in backend_src]
 clang.Program('../bmpout-clang', clang_backend + clang.Object(bmpout_src+cl, bmpout_src))
 clang.Program('../gufg-clang', clang_backend + clang.Object(gufg_src+cl, gufg_src))
