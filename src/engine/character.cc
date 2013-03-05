@@ -42,8 +42,8 @@ character::~character()
 void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> buttons, SDL_Rect &p, bool dryrun, int *& meter)
 {
 	action * t = NULL;
-	if(!current.move || (current.frame == 0 && current.move->state[current.connect].b.neutral)){
-		if(current.reversal){
+	if(current.move && current.reversal){
+		if(current.move->state[current.hit].i & current.reversal->allowed.i){
 			if(current.reversal->check(p, meter)){
 				if(!dryrun) current.reversal->execute(neutral, meter, current.frame, current.connect, current.hit);
 				cMove = current.reversal;
@@ -51,8 +51,8 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 				if(!dryrun) current.reversal = NULL;
 			}
 		}
-		else neutralize(current, cMove, meter);
 	}
+	else if(!current.move) neutralize(current, cMove, meter);
 	t = hook(inputBuffer, 0, -1, meter, buttons, cMove, p, current.connect, current.hit, current.aerial);
 	if(t == NULL){
 		if(cMove->window(current.frame)){
