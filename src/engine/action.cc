@@ -864,7 +864,8 @@ int action::calcCurrentHit(int frame)
 action * action::connect(int *& meter, int &c, int f)
 {
 	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
-	else{
+	else if (hits == 0) return NULL;
+	else {
 		c = calcCurrentHit(f)+1;
 		if(meter[1] + gain[c] < 300) meter[1] += gain[c];
 		else meter[1] = 300;
