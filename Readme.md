@@ -36,6 +36,8 @@ The current version of GUFG is currently only known to successfully build and ru
       `ln -s /usr/lib{,64}/libc++.so
        ln -s /usr/lib{,64}/libc++.so.1
        ln -s /usr/lib{,64}/libc++.so.1.0`
+    * Few Linux distributions provide `libcxx` packages, but it's very easy to build.
+      Moreover, it's primarily useful for figuring out why the Mac builds are failing.
   3. Clone the repository and build the targets 'gufg-clang' and 'bmpout-clang'.
 
 ###Building on Mac OS X
