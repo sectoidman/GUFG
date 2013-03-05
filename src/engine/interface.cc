@@ -1201,10 +1201,6 @@ void interface::resolveHits()
 				}
 				if(s[hitBy[i]].stun) combo[(i+1)%2] += hit[hitBy[i]];
 			}
-			if(hit[hitBy[i]] == 1){ 
-				things[hitBy[i]]->current.hit = things[hitBy[i]]->current.connect;
-				prorate[things[hitBy[i]]->ID-1] *= s[hitBy[i]].prorate;
-			}
 			P[(i+1)%2]->enforceFloor(floor);
 			P[(i+1)%2]->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 			if(things[i]->current.facing * things[hitBy[i]]->current.facing == 1) things[i]->invertVectors(1);
@@ -1216,6 +1212,10 @@ void interface::resolveHits()
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
 			if(!things[i]->current.aerial){
+				if(hit[i] == 1){ 
+					things[i]->current.hit = things[i]->current.connect;
+					prorate[things[i]->ID-1] *= s[i].prorate;
+				}
 				for(int j = 0; j < 6; j++){
 					if(2 << j & things[i]->current.move->state[things[i]->current.hit].i){
 						P[i]->checkFacing(P[(i+1)%2]);

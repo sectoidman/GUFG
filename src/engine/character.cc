@@ -79,7 +79,7 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 			int st = 0;
 			if(current.move) st = current.move->arbitraryPoll(1, 0);
 			if (!current.reversal){
-				if((current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) || (st < 10 && st > 0)) {
+				if((current.frame + 10 > cMove->frames && current.frame > 5 && cMove != r) || (st < 10 && st > 0) || current.move->linkable) {
 					int l = 0, m = 0;
 					current.reversal = hook(inputBuffer, 0, -1, meter, buttons, r, p, l, m, current.aerial);
 					if(current.reversal){
@@ -488,6 +488,7 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 	}
 	if(dead == true){
 		die->init(s.stun+s.untech);
+		die->execute(current.move, meter, current.frame, current.connect, current.hit);
 		current.move = die;
 		current.aerial = true;
 	} else if (hitType == 1){

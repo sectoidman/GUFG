@@ -68,8 +68,8 @@ void action::zero()
 	riposte = NULL;
 	basis = NULL;
 	onHold = NULL;
-	hittable = 0;
-	modifier = 0;
+	hittable = false;
+	modifier = false;
 	payload = NULL;
 	spawnFrame = 0;
 	spawnTrackY = 0;
@@ -864,7 +864,8 @@ int action::calcCurrentHit(int frame)
 action * action::connect(int *& meter, int &c, int f)
 {
 	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
-	else{
+	else if (hits == 0) return NULL;
+	else {
 		c = calcCurrentHit(f)+1;
 		if(meter[1] + gain[c] < 300) meter[1] += gain[c];
 		else meter[1] = 300;
@@ -895,7 +896,7 @@ void action::execute(action * last, int *& meter, int &f, int &c, int &h)
 		basis = last;
 		currentFrame = f;
 		connectFlag = c;
-		hitFlag = f;
+		hitFlag = h;
 	}
 	f = 0;
 	c = 0;
