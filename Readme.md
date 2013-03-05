@@ -32,6 +32,10 @@ The current version of GUFG is currently only known to successfully build and ru
 ###Building On Linux with Clang
   1. Install all the dependencies above, plus Clang and LLVM.
   2. Build and install [libcxx](http://libcxx.llvm.org/).
+    * You may need to make some additional symlinks for the libs to be found:
+      `ln -s /usr/lib{,64}/libc++.so
+       ln -s /usr/lib{,64}/libc++.so.1
+       ln -s /usr/lib{,64}/libc++.so.1.0`
   3. Clone the repository and build the targets 'gufg-clang' and 'bmpout-clang'.
 
 ###Building on Mac OS X
