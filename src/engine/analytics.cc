@@ -113,8 +113,9 @@ void script::write(char * name)
 	scribe << '\n';
 	for(unsigned int i = 0; i < command[0].size(); i++){
 		for(unsigned int j = 0; j < command.size(); j++){
-			scribe << command[j][i].n.i << '\n';
+			scribe << command[j][i].n.i;
 		}
+		scribe << '\n';
 	}
 	scribe << '\n';
 	scribe.close();

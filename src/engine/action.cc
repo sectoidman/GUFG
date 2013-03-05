@@ -385,13 +385,10 @@ bool action::setParameter(char * buffer)
 		}
 		return 1;
 	} else if (!strcmp("State", token)) {
-		printf("%s ", name);
 		for(int i = 0; i < hits+1; i++){
 			token = strtok(NULL, "\t: \n");
 			state[i].i = atoi(token);
-			printf("%i ", state[i].i);
 		}
-		printf("\n");
 		return 1;
 	} else if (!strcmp("HitAllows", token)) {
 		for(int i = 0; i < hits; i++){
