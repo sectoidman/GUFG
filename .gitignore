@@ -4,7 +4,10 @@
 dist/
 gufg
 gufg-win
+gufg-clang
 bmpout
+bmpout-clang
+bmpout-win
 replay
 .data/
 .config/
