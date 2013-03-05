@@ -39,6 +39,12 @@ The current version of GUFG is currently only known to successfully build and ru
     * Few Linux distributions provide `libcxx` packages, but it's very easy to build.
       Moreover, it's primarily useful for figuring out why the Mac builds are failing.
   3. Clone the repository and build the targets 'gufg-clang' and 'bmpout-clang'.
+    * The build currently succeeds for bmpout and gufg.
+    * Bmpout works (probably perfectly).
+    * GUFG loads up the character select screen.
+      * For some reason, both characters supply an initial input to open up the menu. This seems to be a weird artifact.
+      * The game works! With no changes to chrono usage!
+      * However, the game segfaults on building yellow.
 
 ###Building on Mac OS X
   * This currently doesn't work.
