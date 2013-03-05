@@ -895,7 +895,7 @@ void action::execute(action * last, int *& meter, int &f, int &c, int &h)
 		basis = last;
 		currentFrame = f;
 		connectFlag = c;
-		hitFlag = f;
+		hitFlag = h;
 	}
 	f = 0;
 	c = 0;

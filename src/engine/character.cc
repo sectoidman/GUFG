@@ -488,6 +488,7 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 	}
 	if(dead == true){
 		die->init(s.stun+s.untech);
+		die->execute(current.move, meter, current.frame, current.connect, current.hit);
 		current.move = die;
 		current.aerial = true;
 	} else if (hitType == 1){
