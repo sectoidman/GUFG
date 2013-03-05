@@ -17,6 +17,15 @@ linux = Environment(LIBS=libs+['GL', 'GLU'], CXXFLAGS=flags)
 linux.Program('../bmpout', backend_src + [bmpout_src])
 linux.Program('../gufg', backend_src + [gufg_src])
 
+#Clang
+cl = '.clang'
+clang = linux.Clone(CXX='clang', LIBS=libs+['GL', 'GLU', 'm', 'stdc++'])
+clang_backend = [clang.Object(name+cl, name) for name in backend_src]
+clang.Program('../bmpout-clang', clang_backend + clang.Object(bmpout_src+cl, bmpout_src))
+clang.Program('../gufg-clang', clang_backend + clang.Object(gufg_src+cl, gufg_src))
+
+
+
 #Windows-specific environment, code objects, and programs
 w = '.wo'
 wpath = '/usr/x86_64-w64-mingw32/sys-root/mingw/'
