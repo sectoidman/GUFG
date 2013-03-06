@@ -566,6 +566,7 @@ void instance::step()
 {
 	action * m = current.move;
 	if(pick()->death(current.move, current.frame, counter)) current.dead = true;
+	if(current.connect < 0) current.connect = 0;
 	if(m != current.move){
 		current.frame = 0;
 		current.connect = 0;

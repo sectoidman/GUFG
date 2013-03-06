@@ -98,7 +98,6 @@ action * actionTrie::actionHook(int inputBuffer[30], int i, int first, int * r, 
 		for(unsigned int k = 0; k < fish.size(); k++){
 			if(fish[k] != NULL){
 				if(fish[k]->activate(buttons, pattern[k], i, first, r, prox) == 1){
-					if(c->state[cFlag].i == 33 || c->state[cFlag].i == 49) printf("%i\n", c->state[cFlag].i);
 					if(fish[k]->cancel(c, cFlag, hFlag)){
 						return fish[k];
 					}
