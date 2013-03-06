@@ -349,7 +349,7 @@ void interface::runTimer()
 			}
 			else roundInit();
 		}
-	} else if(!killTimer || timer > 99 * 60)timer--;
+	} else if(!killTimer || timer > 99 * 60) timer--;
 }
 
 void gameInstance::print()
@@ -516,6 +516,7 @@ void interface::cleanup()
 				else globals[i]->length--;
 			}
 			resolveSummons();
+			summonAttractors();
 			if(!roundEnd) checkWin();
 			runTimer();
 		}
@@ -541,7 +542,6 @@ void interface::cleanup()
 void interface::resolveSummons()
 {
 	action * temp;
-	attractor * tvec = NULL, * avec = NULL;
 	instance * larva;
 	int x, y, f;
 	for(unsigned int i = 0; i < things.size(); i++){
@@ -584,6 +584,11 @@ void interface::resolveSummons()
 			}
 		}
 	}
+}
+
+void interface::summonAttractors()
+{
+	attractor * tvec = NULL, * avec = NULL;
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(things[i]->current.move && things[i]->current.frame == things[i]->current.move->distortSpawn) tvec = things[i]->current.move->distortion;
 		if(tvec != NULL){ 

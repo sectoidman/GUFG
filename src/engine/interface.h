@@ -67,6 +67,7 @@ public:
 	void resolveHits();
 	void resolveThrows();
 	void resolveSummons();
+	void summonAttractors();
 	void draw();		/*The primary function in charge of drawing things on the screen.*/
 	void drawHUD();
 	void drawGame();
