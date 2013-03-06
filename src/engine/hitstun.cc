@@ -18,11 +18,6 @@ void hitstun::step(int *& meter, int &f, int &c, int &h)
 	}
 }
 
-action * hitstun::blockSuccess(int st){
-	if(st > 0) init(st);
-	return this;
-}
-
 int hitstun::takeHit(hStat& s, int b, int& f, int& c, int& h)
 {
 	if(!s.stun) return 1;
