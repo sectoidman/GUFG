@@ -1,47 +1,36 @@
-import os
-
 #Source files
-engine_src = Glob("engine/*.cc", strings=True)
-char_src = Glob("characters/*.cc", strings=True)
-backend_src = engine_src + char_src
-bmpout_src = "bmp.cc"
-gufg_src = "game.cc"
-
-#Common flags and libraries
-flags = ["-O2", "-g", "-std=c++11",
-         "-Wall", "-Wno-parentheses", "-Wno-unused-but-set-variable"]
-libs = ['SDL','SDLmain','SDL_image','SDL_mixer', 'glut']
-
-#Linux-specific environment, code objects, and programs
-linux = Environment(LIBS=libs+['GL', 'GLU'], CXXFLAGS=flags)
-linux.Program('../bmpout', backend_src + [bmpout_src])
-linux.Program('../gufg', backend_src + [gufg_src])
-
-#Clang
-cl = '.clang'
-clang = linux.Clone(CXX='clang++', LIBS=libs+['GL', 'GLU', 'm', 'c++'], CXXFLAGS=flags+["-stdlib=libc++"])
-clang_backend = [clang.Object(name+cl, name) for name in backend_src]
-clang.Program('../bmpout-clang', clang_backend + clang.Object(bmpout_src+cl, bmpout_src))
-clang.Program('../gufg-clang', clang_backend + clang.Object(gufg_src+cl, gufg_src))
+engine = Glob("engine/*.cc", strings=True)
+characters = Glob("characters/*.cc", strings=True)
+backend = engine + characters
+bmpout = "bmp.cc"
+gufg = "game.cc"
 
 
 
-#Windows-specific environment, code objects, and programs
-w = '.wo'
-wpath = '/usr/x86_64-w64-mingw32/sys-root/mingw/'
-wcpppath = wpath+'include/'
-wlibpath = wpath+'lib/'
-wflags = flags+['-mwindows']
-windows = Environment(ENV=os.environ,
-                      CPPPATH=wcpppath,
-                      CXX="x86_64-w64-mingw32-gcc",
-                      LIBS=libs+['mingw32', 'opengl32', 'glu32', 'stdc++'],
-                      LIBPATH=wlibpath)
-windows_backend = [windows.Object(name+w, name, CXXFLAGS=wflags)\
-                   for name in backend_src]
-windows.Program('../gufg-win', windows_backend +
-                windows.Object(gufg_src+w, gufg_src, CXXFLAGS=wflags),
-                CXXFLAGS=wflags)
+base = Environment(CXXFLAGS=["-O2",
+                             "-std=c++11",
+                             "-g", "-Wall"],
+                   LIBS=['SDL',
+                         'SDLmain',
+                         'SDL_image',
+                         'SDL_mixer',
+                         'glut'])
 
-#Build only linux version by default
+gcc = base.Clone()
+gcc.Replace(CXX="g++")
+gcc.Append(LIBS=['GL', 'GLU'],
+           CXXFLAGS=["-Wno-parentheses",
+                     "-Wno-unused-but-set-variable"])
+
+
+clang = base.Clone()
+clang.Replace(CXX="clang++")
+clang.Append(LIBS=['GL', 'GLU', 'm', 'c++'],
+             CXXFLAGS=["-stdlib=libc++"])
+
+for k, env in {"":gcc, ".cl":clang}.items():
+  b = [env.Object(name+k+".o", name) for name in backend]
+  env.Program("../gufg"+k, b + env.Object(gufg+k+".o", gufg))
+  env.Program("../bmpout"+k, b + env.Object(bmpout+k+".o", bmpout))
+
 Default("../gufg")
