@@ -28,7 +28,15 @@ clang.Replace(CXX="clang++")
 clang.Append(LIBS=['GL', 'GLU', 'm', 'c++'],
              CXXFLAGS=["-stdlib=libc++"])
 
-for k, env in {"":gcc, ".cl":clang}.items():
+
+mac = clang.Clone()
+mac.Prepend(DYLD_LIBRARY_PATH=["/usr/local/lib"],
+            CXXFLAGS=["-nostdinc++",
+                      "-L/usr/local/lib",
+                      "-I/usr/local/include/c++"
+                      "-D___MAC_OSX"])
+
+for k, env in {"":gcc, ".cl":clang, ".osx":mac}.items():
   b = [env.Object(name+k+".o", name) for name in backend]
   env.Program("../gufg"+k, b + env.Object(gufg+k+".o", gufg))
   env.Program("../bmpout"+k, b + env.Object(bmpout+k+".o", bmpout))
