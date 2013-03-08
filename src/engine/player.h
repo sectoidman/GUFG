@@ -7,7 +7,7 @@
 #include "controller.h"
 #ifndef PLAYER
 #define PLAYER
-class frame;
+struct frame;
 class instance{
 public:
 	instance();

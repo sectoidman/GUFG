@@ -4,7 +4,7 @@
 class chart{
 public:
 	chart(int);
-	std::vector<std::vector<int>> wins;
+	std::vector<std::vector<int> > wins;
 	void recordWin(int, int);
 	float matchup(int, int);
 	void write();
@@ -20,7 +20,7 @@ struct inputContainer {
 	int D:2;
 	int E:2;
 	bool Start:1;
-	bool Player:1; //What player the local client thinks it is
+//	bool Player:1; //What player the local client thinks it is
 };
 
 typedef union {
@@ -42,7 +42,7 @@ public:
 	void init(std::vector<int>);
 	void push(int i, frame);
 	void push(frame);
-	std::vector<std::vector<frame>> command;
+	std::vector<std::vector<frame> > command;
 	std::vector<int> selection;
 	bool test();
 	bool genEvent(int, int, frame&);

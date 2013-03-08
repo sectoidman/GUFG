@@ -1097,7 +1097,7 @@ void interface::resolveCollision()
 		if(things[i]->current.move->track)
 			things[i]->checkFacing(P[(things[i]->ID)%2]);
 		else if (i < 2){
-			if(things[i]->current.move->state[things[i]->current.connect].i & 1 && P[i]->current.move != P[i]->pick()->airNeutral){
+			if(things[i]->current.move->state[things[i]->current.connect].i & 1 && !things[i]->current.aerial){
 				things[i]->checkFacing(P[(things[i]->ID)%2]);
 			}
 		}

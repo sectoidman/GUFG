@@ -6,9 +6,9 @@
 #include "session.h"
 #include "thing.h"
 #include "auxil.h"
-#define _USE_MATH_DEFINES
+#define  M_PI 3.14159265358979323846 //FUCK YOU MINGW
 #include "interface.h"
-#include <math.h>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -62,8 +62,8 @@ void interface::drawCSelect()
 	for(int i = 0; i < 2; i++){
 		if(!menu[i]){
 			sprintf(buffer, "P%i", i+1);
-			x = ((float)screenWidth/2.0 + ((float)screenHeight/3.0) * cos(((M_PI*2.0)/(float)numChars)*(float)selection[i]+M_PI/4.0)) - 100.0;
-			y = ((float)screenHeight/2.0 + ((float)screenHeight/3.0) * sin(((M_PI*2.0)/(float)numChars)*(float)selection[i]+M_PI/4.0));
+			x = ((float)screenWidth/2.0 + ((float)screenHeight/3.0) * cos(((M_PI*2.0)/(float)numChars)*(float)selection[i]+M_PI/4.0+M_PI/2.0)) - 100.0;
+			y = ((float)screenHeight/2.0 + ((float)screenHeight/3.0) * sin(((M_PI*2.0)/(float)numChars)*(float)selection[i]+M_PI/4.0+M_PI/2.0));
 			glColor4f(0.0, 0.3+i*0.3, 0.3+(1-i)*0.3, 1.0-select[i]*0.5);
 			drawGlyph(buffer, x, 200, y, 50, i*2);
 		}
@@ -453,7 +453,7 @@ void instance::draw()
 		glPushMatrix();
 			glTranslatef(realPosX, -realPosY, 0);
 			glPushMatrix();
-				glScalef(current.facing, 1.0, 1.0);
+				glScalef((float)current.facing, 1.0, 1.0);
 				pick()->draw(current.move, current.frame);
 			glPopMatrix();
 		glPopMatrix();
@@ -585,7 +585,8 @@ bool avatar::spriteCheck(action *& cMove, int f)
 bool action::spriteCheck(int f)
 {
 	if(modifier && basis) basis->spriteCheck(currentFrame);
-	if(sprite[f] != 0) {
+	if(sprite.empty()) return 0;
+	else if(sprite[f] != 0) {
 		return 1;
 	}
 	else return 0;

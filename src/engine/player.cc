@@ -648,8 +648,7 @@ int instance::passSignal(int sig)
 		} else return 0;
 		break;
 	default:
-		return pick()->passSignal(sig);
-		break;
+		return 0;
 	}
 }
 
@@ -782,7 +781,7 @@ void player::readEvent(SDL_Event & event, frame &t)
 	if(t.buttons[5] == 1) t.n.raw.Start = true;
 	else t.n.raw.Start = false;
 	t.n.raw.dir = d;
-	t.n.raw.Player = ID%2;
+	//t.n.raw.Player = ID%2;
 }
 
 void instance::connect(int combo, hStat & s)
@@ -822,7 +821,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	f = instance::takeHit(combo, s, p);
 	current.freeze = f;
 	if(particleType != 1){
-		temp = current.move->blockSuccess();
+		temp = current.move->blockSuccess(s.stun);
 	}
 	if(temp && temp != current.move && temp->check(p, meter)){
 		combo = 0;

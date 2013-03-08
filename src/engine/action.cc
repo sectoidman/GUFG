@@ -184,7 +184,7 @@ void action::build(const char * n)
 		}
 	}
 	read.close();
-	unsigned int b = SDL_WasInit(SDL_INIT_VIDEO);
+	unsigned int b = 0;//SDL_WasInit(SDL_INIT_VIDEO);
 	if(b != 0)
 		loadMisc(n); 
 }
@@ -872,9 +872,9 @@ action * action::connect(int *& meter, int &c, int f)
 	}
 }
 
-action * action::blockSuccess()
+action * action::blockSuccess(int n)
 {
-	if(modifier && basis) return basis->blockSuccess();
+	if(modifier && basis) return basis->blockSuccess(n);
 	if(riposte) return riposte;
 	else return this;
 }

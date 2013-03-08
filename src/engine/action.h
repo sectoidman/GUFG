@@ -57,7 +57,7 @@ public:
 	virtual bool activate(std::vector<int>, int, int, int, int[], SDL_Rect&); //Check to see if the action is possible right now.
 	virtual void generate(const char*, const char*);
 	virtual bool check(SDL_Rect&, int[]); //Check to see if the action is possible right now.
-	virtual action * blockSuccess();
+	virtual action * blockSuccess(int);
 	virtual int arbitraryPoll(int q, int f);
 
 	//Return the relevant information needed for interface::resolve(), then step to the next frame.

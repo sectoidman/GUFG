@@ -11,7 +11,6 @@ class instance;
 class avatar {
 public:
 	avatar() {}
-	virtual int passSignal(int) { return 0; }
 	virtual void setParam(int, int) {}
 	virtual int * generateMeter();
 	virtual void init(int*&) = 0;

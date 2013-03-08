@@ -2,7 +2,7 @@
 #include <vector>
 #ifndef CONTROLLER
 #define CONTROLLER
-class frame;
+struct frame;
 class script;
 struct keySetting{
 	keySetting();
