@@ -42,7 +42,8 @@ mac.Append(CXXFLAGS=["-D___MAC_OSX"],
           FRAMEWORKS=["OpenGL", "SDL", "SDL_image", "SDL_mixer", "Cocoa"])
 
 for k, env in {"":gcc, ".cl":clang, ".osx":mac}.items():
-  b = [env.Object(name+k+".o", name) for name in backend]
+  b = [env.Object(name+k+".o", name) for name in backend] +\
+      [env.Object("SDLMain.m")] if k == ".osx" else []
   env.Program("../gufg"+k, b + env.Object(gufg+k+".o", gufg))
   env.Program("../bmpout"+k, b + env.Object(bmpout+k+".o", bmpout))
 
