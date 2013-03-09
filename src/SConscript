@@ -34,11 +34,11 @@ clang.Append(LIBS=['GL', 'GLU', 'm', 'c++'],
 
 mac = base.Clone()
 mac.Replace(CXX="clang++")
-mac.Prepend(DYLD_LIBRARY_PATH=["/usr/local/lib"])
-mac.Append(CXXFLAGS=["-I/usr/local/include/c++",
-                      "-D___MAC_OSX"],
+mac.Prepend(CPPPATH=["/usr/local/include/c++"],
+            DYLD_LIBRARY_PATH=["/usr/local/lib"])
+mac.Append(CXXFLAGS=["-D___MAC_OSX"],
           LDFLAGS=["-L/usr/local/lib"],
-          LIBS=["c++", "m", "SDLmain"],
+          LIBS=["c++", "m"],
           FRAMEWORKS=["OpenGL", "SDL", "SDL_image", "SDL_mixer", "Cocoa"])
 
 for k, env in {"":gcc, ".cl":clang, ".osx":mac}.items():
