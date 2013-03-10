@@ -5,7 +5,7 @@
  */
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include "sdl-compat.h"
 #include <vector>
 #include "auxil.h"
 #include "masks.h"

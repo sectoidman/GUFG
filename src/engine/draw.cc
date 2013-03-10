@@ -12,10 +12,9 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #include <SDL/SDL_opengl.h>
 #include <vector>
+#include "gl-compat.h"
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);

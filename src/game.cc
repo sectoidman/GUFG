@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <assert.h>
 
-#undef main //Stupid windows. This may not actually fix anything.
 int main(int argc, char* argv[])
 {
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
