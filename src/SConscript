@@ -52,8 +52,7 @@ def AddSDLMain(k):
     return []
 
 for k, env in {"":gcc, ".cl":clang, ".osx":mac}.items():
-  sdlmain = AddSDLMain(k)
-  b = [env.Object(name+k+".o", name) for name in backend+sdlmain]
+  b=[env.Object(name+k+".o", name) for name in backend+AddSDLMain(k)]
   env.Program("../gufg"+k, b + env.Object(gufg+k+".o", gufg))
   env.Program("../bmpout"+k, b + env.Object(bmpout+k+".o", bmpout))
 
