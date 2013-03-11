@@ -12,10 +12,9 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #include <SDL/SDL_opengl.h>
 #include <vector>
+#include "gl-compat.h"
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -656,7 +655,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 		move->drawBoxen(frame);
 	glPopMatrix();
 
-	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
+	glReadPixels(0, 0, w, h, GL_RGBA, GUFG_TEXTURE_MODE, image->pixels);
 
 	SDL_GL_SwapBuffers();
 

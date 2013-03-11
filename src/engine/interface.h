@@ -7,7 +7,7 @@
  *Licensed under MIT OSI: Additional information in the file "COPYING"
  */
 #include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include "sdl-compat.h"
 #include <stdio.h>
 #include <vector>
 #include "analytics.h"

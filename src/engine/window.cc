@@ -1,6 +1,5 @@
 #include "window.h"
-#include <GL/glu.h>
-#include <GL/glut.h>
+#include "gl-compat.h"
 window::window()
 {
 	screen = NULL;

@@ -1,6 +1,6 @@
 #include "harness.h"
 #include "window.h"
-#include <GL/glu.h>
+#include "gl-compat.h"
 harness::harness()
 {
 	gameover = false;
