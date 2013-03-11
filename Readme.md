@@ -58,14 +58,14 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
               `libstdc++` (and `libstdc++-static`) and `clang`.
               * Binary distributions known to provide
                 sufficiently recent packages include
-                [Fedora 18](doc/libcxx-fedora.md) and Arch Linux.
+                [Fedora 18](doc/libcxx-fedora.sh) and Arch Linux.
           * Mac OS X:
             * `libcxx` is a system package, but we use features
               not yet supported by the version installed in 10.8.
             * The existing library is necessary to boot,
               so we do not advise installing a more recent version
               of `libcxx` system-wide.
-            * Instead, it can be [installed](doc/libcxx-mac.md)
+            * Instead, it can be [installed](doc/libcxx-mac.sh)
               in `/usr/local/`, where our build will find it.
 
 
