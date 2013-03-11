@@ -23,6 +23,8 @@ void red::tick(std::vector<int>& metre)
 void red::step(status& current, std::vector<int>& metre)
 {
 	if(metre[5] > 0) metre[5]--;
+	temporalBuffer.push_back(current);
+	if(temporalBuffer.size() > 120) temporalBuffer.erase(temporalBuffer.begin());
 	character::step(current, metre);
 }
 
@@ -79,6 +81,11 @@ void redCancel::execute(action * last, std::vector<int>& meter, int &f, int &c, 
 	action::execute(last, meter, f, c, h);
 }
 
+int redCancel::arbitraryPoll(int q, int f)
+{
+	if(q == 33) return 1;
+	else return action::arbitraryPoll(q, f);
+}
 int redSuper::arbitraryPoll(int q, int f)
 {
 	if(q == 31) return 11;

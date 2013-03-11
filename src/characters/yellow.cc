@@ -109,6 +109,13 @@ flashSummon::flashSummon(const char * n)
 	build(n);
 }
 
+void flashSummon::zero()
+{
+	flashMeterGain = 0;
+	action::zero();
+	uFlag = 0;
+}
+
 bool flashStep::setParameter(char * buffer)
 {
 	char savedBuffer[100];
