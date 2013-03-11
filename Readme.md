@@ -17,26 +17,31 @@ GUFG is an open-source,
 The current version of GUFG can be easily built on Linux and Mac OS X.
 
 1. Install the dependencies:
+
   a) [SDL](http://www.libsdl.org/download-1.2.php),
      [SDL\_image](http://www.libsdl.org/projects/SDL_image/) and
      [SDL\_mixer](http://www.libsdl.org/projects/SDL_mixer/)
       * Linux: Available in most distributions.
       * Mac OS X: Framework packages on website.
-  b) [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux) and 
+
+  b) [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux) and
      [GLUT](http://freeglut.sourceforge.net/)
       * Linux: Available in most distributions (`mesa`, `freeglut`).
       * Mac OS X: System component.
-  d) [SCons](http://www.scons.org/)
+
+  c) [SCons](http://www.scons.org/)
       * Linux: Available in most distributions.
       * Mac OS X: In [MacPorts](http://www.macports.org/) and
                      [Homebrew](http://mxcl.github.com/homebrew/),
                   or install from source.
-  e) Basic build software
+
+  d) Basic build software
       * Linux: Most distributions have a meta-package. For example:
         * Fedora: `su -c "yum groupinstall 'Development Tools'"`
         * Ubuntu: `su -c "apt-get install build-essential"`
       * Mac OS X: You must use clang++. See below.
-  f) Compiling with clang++ (Required on Max OS X, optional on Linux):
+
+  e) Compiling with clang++ (Required on Max OS X, optional on Linux):
       1. [clang](http://clang.llvm.org/)
           * Linux: Available in most distributions.
           * Mac OS X: Component of XCode, in the App Store.
