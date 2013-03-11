@@ -1,59 +1,53 @@
 #Source files
-engine = Glob("engine/*.cc", strings=True)
-characters = Glob("characters/*.cc", strings=True)
+engine = Glob('engine/*.cc', strings=True)
+characters = Glob('characters/*.cc', strings=True)
 backend = engine + characters
-bmpout = "bmp.cc"
-gufg = "game.cc"
+bmpout = 'bmp.cc'
+gufg = 'game.cc'
 
+base = Environment(CXXFLAGS=['-O2',
+                             '-std=c++11',
+                             '-g', '-Wall'])
 
-
-base = Environment(CXXFLAGS=["-O2",
-                             "-std=c++11",
-                             "-g", "-Wall"])
- 
 linux = base.Clone()
 linux.Append(LIBS=['SDL',
                    'SDLmain',
                    'SDL_image',
                    'SDL_mixer'])
 
-
-
 gcc = linux.Clone()
-gcc.Replace(CXX="g++")
-gcc.Append(LIBS=['GL', 'GLU', "glut"],
-           CXXFLAGS=["-Wno-parentheses",
-                     "-Wno-unused-but-set-variable"])
-
+gcc.Replace(CXX='g++')
+gcc.Append(LIBS=['GL', 'GLU', 'glut'],
+           CXXFLAGS=['-Wno-parentheses',
+                     '-Wno-unused-but-set-variable'])
 
 clang = linux.Clone()
-clang.Replace(CXX="clang++")
+clang.Replace(CXX='clang++')
 clang.Append(LIBS=['GL', 'GLU', 'm', 'c++'],
-             CXXFLAGS=["-stdlib=libc++"])
-
+             CXXFLAGS=['-stdlib=libc++'])
 
 mac = base.Clone()
-mac.Replace(CXX="clang++")
-mac.Prepend(CPPPATH=["/usr/local/include/c++"],
-            DYLD_LIBRARY_PATH=["/usr/local/lib"])
-mac.Append(CXXFLAGS=["-D___MAC_OSX"],
-          LDFLAGS=["-L/usr/local/lib"],
-          LIBS=["c++", "m"],
-          FRAMEWORKS=["OpenGL",
-                      "SDL",
-                      "SDL_image",
-                      "SDL_mixer",
-                      "Cocoa"])
+mac.Replace(CXX='clang++')
+mac.Prepend(CPPPATH=['/usr/local/include/c++'],
+            DYLD_LIBRARY_PATH=['/usr/local/lib'])
+mac.Append(CXXFLAGS=['-D___MAC_OSX'],
+          LDFLAGS=['-L/usr/local/lib'],
+          LIBS=['c++', 'm'],
+          FRAMEWORKS=['OpenGL',
+                      'SDL',
+                      'SDL_image',
+                      'SDL_mixer',
+                      'Cocoa'])
 
 def AddSDLMain(k):
-  if k == ".osx":
-    return ["SDLMain.m"]
+  if k == '.osx':
+    return ['SDLMain.m']
   else:
     return []
 
-for k, env in {"":gcc, ".cl":clang, ".osx":mac}.items():
-  b=[env.Object(name+k+".o", name) for name in backend+AddSDLMain(k)]
-  env.Program("../gufg"+k, b + env.Object(gufg+k+".o", gufg))
-  env.Program("../bmpout"+k, b + env.Object(bmpout+k+".o", bmpout))
+for k, env in {'':gcc, '.cl':clang, '.osx':mac}.items():
+  b=[env.Object(name+k+'.o', name) for name in backend+AddSDLMain(k)]
+  env.Program('../gufg'+k, b + env.Object(gufg+k+'.o', gufg))
+  env.Program('../bmpout'+k, b + env.Object(bmpout+k+'.o', bmpout))
 
-Default("../gufg")
+Default('../gufg')
