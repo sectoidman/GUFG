@@ -6,3 +6,4 @@ bmpout*
 replay*
 .data/
 .config/
+.scons/*{,/*{,/*{,/*}}}.pyc
