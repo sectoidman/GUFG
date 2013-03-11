@@ -4,15 +4,15 @@ GUFG is an open-source,
            gameplay-focused,
            deterministic,
            2D fighting game engine
-        developed from the bottom up.
-
-The game is built using C++, SDL, and OpenGL.
+        developed from the ground up and
+        built using C++, SDL, and OpenGL.
 
 ##Building and testing GUFG on Linux and Mac OS X
 
 ### Windows build?
-    * We had a Windows build working, using CMake.
-    * We are trying to get it working using SCons.
+
+* We had a Windows build working, using CMake.
+* We are trying to get it working using SCons.
 
 The current version of GUFG can be easily built on Linux and Mac OS X.
 
