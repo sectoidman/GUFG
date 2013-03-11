@@ -8,7 +8,11 @@ GUFG is an open-source,
 
 The game is built using C++, SDL, and OpenGL.
 
-##Building and testing GUFG
+##Building and testing GUFG on Linux and Mac OS X
+
+### Windows build?
+    * We had a Windows build working, using CMake.
+    * We are trying to get it working using SCons.
 
 The current version of GUFG can be easily built on Linux and Mac OS X.
 
@@ -56,11 +60,10 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
               so we do not advise installing a more recent version
               of `libcxx` system-wide.
             * Instead, it can be [installed](docs/libcxx-mac.md)
-              in `/usr/local/`.
+              in `/usr/local/`, where our build will find it.
 
 2. Clone this repository
-  (`git clone git@github.com:Advael/GUFG.git`) 
-    and `cd` to it.
+  (`git clone git@github.com:Advael/GUFG.git`) and `cd` to it.
 
 3. Run `scons` to build the game. Targets:
    * `bmpout`,
@@ -73,32 +76,12 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
    * `bmpout.osx` and `gufg.osx`,
       executables which build (only) on Max OS X, and
       are also compiled with clang++.
-###Building On Linux with clang++
-  1. Install all the dependencies above, plus Clang and LLVM.
-  2. Build and install [libcxx](http://libcxx.llvm.org/).
-    * You may need to make some additional symlinks for the libs to be found:
-      `ln -s /usr/lib{,64}/libc++.so
-       ln -s /usr/lib{,64}/libc++.so.1
-       ln -s /usr/lib{,64}/libc++.so.1.0`
-    * Few Linux distributions provide `libcxx` packages, but it's very easy to build.
-      Moreover, it's primarily useful for figuring out why the Mac builds are failing.
-  3. Clone the repository and build the targets 'gufg-clang' and 'bmpout-clang'.
-    * The build currently succeeds for bmpout and gufg.
-    * Bmpout works (probably perfectly).
-    * GUFG loads up the character select screen.
-      * For some reason, both characters supply an initial input to open up the menu. This seems to be a weird artifact.
-      * The game works! With no changes to chrono usage!
-      * However, the game segfaults on building yellow.
 
-###Building on Mac OS X
-  * This currently doesn't work.
-
-###Building for Windows
-  * To cross compile for Windows (valid Fedora package names given):
-      * mingw64-gcc-c++
-      * mingw64-SDL
-      * mingw64-SDL_image
-      * mingw64-SDL_mixer
-      * mingw64-freeglut
-  * This currently doesn't work.
-  * Windows build used to succeed with CMake.
+## Running the game
+* `cd` into the folder containing the game.
+   Character assets are loaded relative to this folder.
+* `./gufg` (or `gufg.cl` or `gufg.osx`)
+  * Start up the game.
+  * Arguments:
+    * `eleven`: Play an unlimited time match.
+    * `<replay file name>`: Playback a saved replay.
