@@ -29,11 +29,8 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
       * Linux: Available in most distributions (`mesa`, `freeglut`).
       * Mac OS X: System component.
 
-  c) [`SCons`](http://www.scons.org/)
-      * Linux: Available in most distributions.
-      * Mac OS X: In [MacPorts](http://www.macports.org/) and
-                     [Homebrew](http://mxcl.github.com/homebrew/),
-                  or install from source.
+  c) [`Python`](http://www.python.org/).
+      Installed on most Linux distributions and Mac OS X by default.
 
   d) Basic build software
       * Linux: Most distributions have a meta-package. For example:
@@ -73,7 +70,7 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
   (`git clone git@github.com:Advael/GUFG.git`) and `cd` to it.
 
 
-3. Run `scons` to build the game. Targets:
+3. Run `./scons` to build the game. Targets:
    * `bmpout`,
       a utility program which generates bitmap images of
       character collision and hitboxes for moves.
