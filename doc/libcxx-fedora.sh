@@ -1,5 +1,5 @@
-#Installing `libcxx` on Fedora 18
-```
+#!/bin/bash
+
 su -c "yum install libstdc++-static clang"
 git clone git://github.com/llvm-mirror/libcxx.git
 mkdir libcxx-build; cd libcxx-build
@@ -15,4 +15,3 @@ cmake -DLIBCXX_CXX_ABI=libsupc++ \
       ../libcxx
 make
 su -c "make install"
-```
