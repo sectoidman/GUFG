@@ -7,27 +7,26 @@ red::red()
 	backup = new instance;
 }
 
-int * red::generateMeter()
+std::vector<int> red::generateMeter()
 {
-	int * meter;
-	meter = new int[6];
+	std::vector<int> meter (6);
 	return meter;
 }
 
-void red::tick(int *& metre)
+void red::tick(std::vector<int>& metre)
 {
 	character::tick(metre);
 	if(metre[4] < 540) metre[4]++;
 	if(metre[4] < 0) metre[4] = 0;
 }
 
-void red::step(status& current, int *& metre)
+void red::step(status& current, std::vector<int>& metre)
 {
 	if(metre[5] > 0) metre[5]--;
 	character::step(current, metre);
 }
 
-void red::init(int *& metre)
+void red::init(std::vector<int>& metre)
 {
 	character::init(metre);
 	metre[4] = 540;
@@ -63,7 +62,7 @@ redCancel::redCancel(const char* n)
 	build(n); 
 }
 
-bool redCancel::check(SDL_Rect& p, int meter[])
+bool redCancel::check(SDL_Rect& p, std::vector<int> meter)
 {
 //	if(meter[1] < cost) return 0;
 //	if(meter[4] < 270) return 0;
@@ -71,7 +70,7 @@ bool redCancel::check(SDL_Rect& p, int meter[])
 	return action::check(p, meter);
 }
 
-void redCancel::execute(action * last, int *& meter, int &f, int &c, int &h)
+void redCancel::execute(action * last, std::vector<int>& meter, int &f, int &c, int &h)
 {
 	meter[2] = 1;
 	meter[3] = 1;

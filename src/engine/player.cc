@@ -9,7 +9,6 @@
 #include "analytics.h"
 player::player()
 {
-	meter = NULL;
 	name = NULL;
 	init();
 }
@@ -17,7 +16,6 @@ player::player()
 player::player(int id)
 {
 	ID = id;
-	meter = NULL;
 	name = NULL;
 	init();
 	wins = 0;
@@ -25,7 +23,6 @@ player::player(int id)
 
 instance::instance()
 {
-	meter = NULL;
 	init();
 }
 
@@ -926,7 +923,6 @@ void player::getThrown(action *toss, int x, int y)
 
 instance::~instance()
 {
-	if(meter) delete [] meter;
 }
 
 player::~player(){}

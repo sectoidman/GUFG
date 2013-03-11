@@ -50,7 +50,7 @@ public:
 
 	status current;
 
-	int * meter;
+	std::vector<int> meter;
 	int particleType;
 	int blockType;
 	int counter;

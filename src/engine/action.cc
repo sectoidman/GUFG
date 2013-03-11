@@ -685,7 +685,7 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(std::vector<int> inputs, int pattern, int t, int f, int meter[], SDL_Rect &p)
+bool action::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
 {
 	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
@@ -698,7 +698,7 @@ bool action::activate(std::vector<int> inputs, int pattern, int t, int f, int me
 	return check(p, meter);
 }
 
-bool action::check(SDL_Rect &p, int meter[])
+bool action::check(SDL_Rect &p, std::vector<int> meter)
 {
 	if(cost > meter[1]) return 0;
 	if(xRequisite > 0 && p.w > xRequisite) return 0;
@@ -830,7 +830,7 @@ bool action::cancel(action *& x, int& c, int &h)
 	return 0;
 }
 
-void action::step(int *& meter, int &f, int &connectFlag, int &hitFlag)
+void action::step(std::vector<int>& meter, int &f, int &connectFlag, int &hitFlag)
 {
 	if(f == 0){
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
@@ -858,7 +858,7 @@ int action::calcCurrentHit(int frame)
 	return b;
 }
 
-action * action::connect(int *& meter, int &c, int f)
+action * action::connect(std::vector<int>& meter, int &c, int f)
 {
 	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
 	else if (hits == 0) return NULL;
@@ -884,7 +884,7 @@ void action::playSound(int channel)
 	Mix_PlayChannel(channel, soundClip, 0);
 }
 
-void action::execute(action * last, int *& meter, int &f, int &c, int &h)
+void action::execute(action * last, std::vector<int> & meter, int &f, int &c, int &h)
 {
 	armorCounter = 0;
 	meter[1] -= cost;

@@ -39,7 +39,7 @@ character::~character()
 	}
 }
 
-void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> buttons, SDL_Rect &p, bool dryrun, int *& meter)
+void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> buttons, SDL_Rect &p, bool dryrun, std::vector<int> & meter)
 {
 	action * t = NULL;
 	if(current.move && current.reversal){
@@ -103,12 +103,12 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 	}
 }
 
-action * avatar::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * avatar::hook(int inputBuffer[30], int i, int f, std::vector<int> meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	return head->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
 }
 
-action * character::hook(int inputBuffer[30], int i, int f, int * meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * character::hook(int inputBuffer[30], int i, int f, std::vector<int> meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
 	else return avatar::hook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag, aerial);
@@ -119,13 +119,13 @@ action * avatar::moveSignal(int)
 	return NULL;
 }
 
-void avatar::neutralize(status &current, action *& cMove, int *& meter)
+void avatar::neutralize(status &current, action *& cMove, std::vector<int> & meter)
 {
 	cMove = neutral;
 	current.reversalFlag = false;
 }
 
-void character::neutralize(status &current, action *& cMove, int *& meter)
+void character::neutralize(status &current, action *& cMove, std::vector<int> & meter)
 {
 	if(current.aerial) cMove = airNeutral;
 	else cMove = neutral;
@@ -388,7 +388,7 @@ instance * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(status &current, int *& meter)
+void avatar::connect(status &current, std::vector<int>& meter)
 {
 	action * t = current.move->connect(meter, current.connect, current.frame);
 	if(t != NULL){
@@ -466,7 +466,7 @@ int character::checkBlocking(action *& cMove, int input[], int &connectFlag, int
 	return ret;
 }
 
-int character::takeHit(status &current, hStat & s, int blockType, int &hitType, int *& meter)
+int character::takeHit(status &current, hStat & s, int blockType, int &hitType, std::vector<int>& meter)
 {
 	bool dead = false;
 	int freeze = 0;
@@ -519,21 +519,20 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 	return freeze;
 }
 
-int * avatar::generateMeter()
+std::vector<int> avatar::generateMeter()
 {
-	int * meter;
-	meter = new int[4];
+	std::vector<int> meter(4);
 	return meter;
 }
 
-void character::init(int *& meter)
+void character::init(std::vector<int>& meter)
 {
 	meter[0] = 600;
 	meter[1] = 0;
 	resetAirOptions(meter);
 }
 
-void character::resetAirOptions(int *& meter)
+void character::resetAirOptions(std::vector<int>& meter)
 {
 	meter[2] = 1;
 	meter[3] = 1;
@@ -544,7 +543,7 @@ int avatar::acceptTarget(action * c, int f)
 	return 1;
 }
 
-void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag, int *& meter)
+void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag, std::vector<int> & meter)
 {
 	if(cMove->allowed.b.block){
 		standBlock->init(airBlock->counter);
@@ -556,7 +555,7 @@ void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag
 	resetAirOptions(meter);
 }
 
-void avatar::step(status &current, int *& meter)
+void avatar::step(status &current, std::vector<int> & meter)
 {
 	if(current.freeze <= 0) {
 		current.move->step(meter, current.frame, current.connect, current.hit);

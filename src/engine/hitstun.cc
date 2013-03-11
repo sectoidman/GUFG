@@ -7,7 +7,7 @@ void hitstun::init(int n)
 	if(next != NULL) next->init(n - frames);
 }
 
-void hitstun::step(int *& meter, int &f, int &c, int &h)
+void hitstun::step(std::vector<int>& meter, int &f, int &c, int &h)
 {
 	if(counter <= 0){
 		f = frames-1;

@@ -354,7 +354,7 @@ void player::drawMeters(int n)
 	glFlush();
 }
 
-void character::drawMeters(int ID, int hidden, int * meter)
+void character::drawMeters(int ID, int hidden, std::vector<int> meter)
 {
 	SDL_Rect m;
 	SDL_Rect h;

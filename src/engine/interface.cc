@@ -967,7 +967,7 @@ void interface::pauseMenu()
 					for(unsigned int i = 0; i < P.size(); i++){
 						delete P[i]->pick();
 						select[i] = 0;
-						delete [] things[i]->meter;
+						things[i]->meter.clear();
 					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
@@ -1012,7 +1012,7 @@ void interface::rematchMenu()
 					for(unsigned int k = 0; k < P.size(); k++){
 						delete P[k]->pick();
 						select[k] = 0;
-						delete [] things[k]->meter;
+						things[k]->meter.clear();
 					}
 					Mix_HaltMusic();
 					Mix_FreeMusic(matchMusic);
