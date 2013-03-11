@@ -39,14 +39,15 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
       * Linux: Most distributions have a meta-package. For example:
         * Fedora: `su -c "yum groupinstall 'Development Tools'"`
         * Ubuntu: `su -c "apt-get install build-essential"`
-      * Mac OS X: You must use clang++. See below.
+      * Mac OS X: Use `clang++`. See below.
 
-  e) Compiling with clang++ (Required on Max OS X, optional on Linux):
-      1. [clang](http://clang.llvm.org/)
+  e) Compiling with `clang++`
+    (Required on Max OS X, optional on Linux):
+      1. [`clang`](http://clang.llvm.org/)
           * Linux: Available in most distributions.
           * Mac OS X: Component of XCode, in the App Store.
-      2. [libcxx](http://libcxx.llvm.org/)
-          * Requires [`cmake`](http://www.cmake.org/) to build
+      2. [`libcxx`](http://libcxx.llvm.org/)
+          * Requires [cmake](http://www.cmake.org/) to build
             (available in most distributions,
              Mac OS X package available).
           * Linux:
@@ -67,8 +68,10 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
             * Instead, it can be [installed](docs/libcxx-mac.md)
               in `/usr/local/`, where our build will find it.
 
+
 2. Clone this repository
   (`git clone git@github.com:Advael/GUFG.git`) and `cd` to it.
+
 
 3. Run `scons` to build the game. Targets:
    * `bmpout`,
@@ -86,7 +89,6 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
 * `cd` into the folder containing the game.
    Character assets are loaded relative to this folder.
 * `./gufg` (or `gufg.cl` or `gufg.osx`)
-  * Start up the game.
   * Arguments:
     * `eleven`: Play an unlimited time match.
     * `<replay file name>`: Playback a saved replay.
