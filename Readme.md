@@ -18,18 +18,18 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
 
 1. Install the dependencies:
 
-  a) [SDL](http://www.libsdl.org/download-1.2.php),
-     [SDL\_image](http://www.libsdl.org/projects/SDL_image/) and
-     [SDL\_mixer](http://www.libsdl.org/projects/SDL_mixer/)
+  a) [`SDL`](http://www.libsdl.org/download-1.2.php),
+     [`SDL\_image`](http://www.libsdl.org/projects/SDL_image/) and
+     [`SDL\_mixer`](http://www.libsdl.org/projects/SDL_mixer/)
       * Linux: Available in most distributions.
       * Mac OS X: Framework packages on website.
 
-  b) [OpenGL](http://www.opengl.org/wiki/Getting_Started#Linux) and
-     [GLUT](http://freeglut.sourceforge.net/)
+  b) [`OpenGL`](http://www.opengl.org/wiki/Getting_Started#Linux) and
+     [`GLUT`](http://freeglut.sourceforge.net/)
       * Linux: Available in most distributions (`mesa`, `freeglut`).
       * Mac OS X: System component.
 
-  c) [SCons](http://www.scons.org/)
+  c) [`SCons`](http://www.scons.org/)
       * Linux: Available in most distributions.
       * Mac OS X: In [MacPorts](http://www.macports.org/) and
                      [Homebrew](http://mxcl.github.com/homebrew/),
@@ -47,7 +47,7 @@ The current version of GUFG can be easily built on Linux and Mac OS X.
           * Linux: Available in most distributions.
           * Mac OS X: Component of XCode, in the App Store.
       2. [`libcxx`](http://libcxx.llvm.org/)
-          * Requires [cmake](http://www.cmake.org/) to build
+          * Requires [`cmake`](http://www.cmake.org/) to build
             (available in most distributions,
              Mac OS X package available).
           * Linux:
