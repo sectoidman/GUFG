@@ -7,24 +7,32 @@ gufg = 'game.cc'
 
 base = Environment(CXXFLAGS=['-O2',
                              '-std=c++11',
-                             '-g', '-Wall'])
-
+                             '-g', '-Wall',
+                             '-Wno-parentheses',
+                            '-Wno-unused-but-set-variable'])
 linux = base.Clone()
 linux.Append(LIBS=['SDL',
                    'SDLmain',
                    'SDL_image',
                    'SDL_mixer'])
-
 gcc = linux.Clone()
 gcc.Replace(CXX='g++')
-gcc.Append(LIBS=['GL', 'GLU', 'glut'],
-           CXXFLAGS=['-Wno-parentheses',
-                     '-Wno-unused-but-set-variable'])
+gcc.Append(LIBS=['GL', 'GLU', 'glut'])
+
 
 clang = linux.Clone()
 clang.Replace(CXX='clang++')
 clang.Append(LIBS=['GL', 'GLU', 'm', 'c++'],
              CXXFLAGS=['-stdlib=libc++'])
+
+libcxxpath= 'extern/libcxx/include'
+std_inside = linux.Clone()
+std_inside.Replace(CXX='clang++')
+std_inside.Append(LIBS=['GL', 'GLU', 'm', 'rt', 'pthread'],
+                 CXXFLAGS=['-nostdinc++'])
+std_inside.Prepend(CPPPATH=[libcxxpath])
+
+
 
 mac = base.Clone()
 mac.Replace(CXX='clang++')
@@ -39,14 +47,40 @@ mac.Append(CXXFLAGS=['-D___MAC_OSX'],
                       'SDL_mixer',
                       'Cocoa'])
 
-def AddSDLMain(k):
-  if k == '.osx':
+mac_std_inside = mac.Clone()
+mac_std_inside.Replace(LIBS=['m', 'pthread'], LDFLAGS=[])
+mac_std_inside.Append(CXXFLAGS=['-nostdinc++'], CPPPATH=[libcxxpath])
+
+def AddExtras(k):
+  if k in ['.osx', '.sosx']:
     return ['SDLMain.m']
+  if k in ['.s', '.sosx']:
+    return ['extern/libcxx/src/'+cpp+'.cpp' for cpp in \
+             ['chrono',
+              'condition_variable',
+              'exception',
+              'future',
+              'ios',
+              'iostream',
+              'locale',
+              'memory',
+              'mutex',
+              'new',
+              'stdexcept',
+              'string',
+              'system_error',
+              'thread',
+              'typeinfo']]
   else:
     return []
 
-for k, env in {'':gcc, '.cl':clang, '.osx':mac}.items():
-  b=[env.Object(name+k+'.o', name) for name in backend+AddSDLMain(k)]
+for k, env in {'':gcc, '.gcc':gcc,
+               '.cl':clang,
+               '.osx':mac,
+               '.s':std_inside,
+               '.sosx':mac_std_inside
+               }.items():
+  b=[env.Object(name+k+'.o', name) for name in backend+AddExtras(k)]
   env.Program('../gufg'+k, b + env.Object(gufg+k+'.o', gufg))
   env.Program('../bmpout'+k, b + env.Object(bmpout+k+'.o', bmpout))
 
