@@ -33,8 +33,27 @@ bool controller::setKey(int effect, SDL_Event temp)
 {
 	int workingIndex = -1;
 	switch (temp.type){
+	case SDL_JOYHATMOTION:
+		if(temp.jaxis.value != 0){
+			for(unsigned int i = 0; i < input.size(); i++){
+				if(input[i]->trigger.type == temp.type &&
+				   input[i]->trigger.jhat.which == temp.jhat.which &&
+				   input[i]->trigger.jhat.hat == temp.jhat.hat &&
+				   input[i]->trigger.jhat.value == temp.jhat.value){
+					input.erase(input.begin()+i);
+					i = input.size();
+				}
+			}
+			input.push_back(new keySetting);
+			workingIndex = input.size() - 1;
+			input[workingIndex]->trigger.type = temp.type;
+			input[workingIndex]->trigger.jhat.which = temp.jhat.which;
+			input[workingIndex]->trigger.jhat.hat = temp.jhat.hat;
+			input[workingIndex]->trigger.jhat.value = temp.jhat.value;
+		}
+		break;
 	case SDL_JOYAXISMOTION:
-		if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
+		if(temp.jaxis.value != 0){
 			for(unsigned int i = 0; i < input.size(); i++){
 				if(input[i]->trigger.type == temp.type &&
 				   input[i]->trigger.jaxis.which == temp.jaxis.which &&
@@ -97,9 +116,15 @@ bool controller::same(SDL_Event temp)
 	case SDL_JOYBUTTONDOWN:
 		if(input[0]->trigger.type == SDL_JOYAXISMOTION && temp.jbutton.which == input[0]->trigger.jaxis.which) return true;
 		else if(input[0]->trigger.type == SDL_JOYBUTTONDOWN && temp.jbutton.which == input[0]->trigger.jbutton.which) return true;
+		else if(input[0]->trigger.type == SDL_JOYHATMOTION && temp.jhat.which == input[0]->trigger.jhat.which) return true;
 	case SDL_JOYAXISMOTION:
 		if(input[0]->trigger.type == SDL_JOYAXISMOTION && temp.jaxis.which == input[0]->trigger.jaxis.which) return true;
 		else if(input[0]->trigger.type == SDL_JOYBUTTONDOWN && temp.jaxis.which == input[0]->trigger.jbutton.which) return true;
+		else if(input[0]->trigger.type == SDL_JOYHATMOTION && temp.jhat.which == input[0]->trigger.jhat.which) return true;
+	case SDL_JOYHATMOTION:
+		if(input[0]->trigger.type == SDL_JOYAXISMOTION && temp.jaxis.which == input[0]->trigger.jaxis.which) return true;
+		else if(input[0]->trigger.type == SDL_JOYBUTTONDOWN && temp.jaxis.which == input[0]->trigger.jbutton.which) return true;
+		else if(input[0]->trigger.type == SDL_JOYHATMOTION && temp.jhat.which == input[0]->trigger.jhat.which) return true;
 	}
 	return false;
 }
@@ -133,6 +158,12 @@ void controller::swapKey(int effect, SDL_Event temp)
 				i = input.size();
 			}
 			break;
+		case SDL_JOYHATMOTION:
+			if(input[i]->trigger.jhat.hat == temp.jhat.hat && input[i]->trigger.jhat.value == temp.jhat.value){
+				sameKey = i;
+				i = input.size();
+			}
+			break;
 		default:
 			return;
 		}
@@ -160,27 +191,39 @@ int controller::tap(SDL_Event temp)
 		case SDL_KEYUP:
 			if(input[i]->trigger.type == SDL_KEYDOWN){
 				if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
-					ret = -(input[i]->effect);
+					ret -= input[i]->effect;
 			}
 			break;
 		case SDL_KEYDOWN:
 			if(input[i]->trigger.type == SDL_KEYDOWN){
 				if(input[i]->trigger.key.keysym.sym == temp.key.keysym.sym) 
-					ret = input[i]->effect;
+					ret += input[i]->effect;
 			}
 			break;
 		case SDL_JOYBUTTONUP:
 			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
 				if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 				   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-					ret = -(input[i]->effect);
+					ret -= input[i]->effect;
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
 			if(input[i]->trigger.type == SDL_JOYBUTTONDOWN){
 				if(input[i]->trigger.jbutton.which == temp.jbutton.which && 
 				   input[i]->trigger.jbutton.button == temp.jbutton.button) 
-					ret = input[i]->effect;
+					ret += input[i]->effect;
+			}
+			break;
+		case SDL_JOYHATMOTION:
+			if(input[i]->trigger.type == SDL_JOYHATMOTION){
+				if(input[i]->trigger.jhat.which == temp.jhat.which &&
+				   input[i]->trigger.jhat.hat == temp.jhat.hat){
+					if(input[i]->trigger.jhat.value & temp.jhat.value){
+						ret += input[i]->effect;
+					} else {
+						if(temp.jhat.value == 0) ret -= input[i]->effect;
+					}
+				}
 			}
 			break;
 		case SDL_JOYAXISMOTION:
@@ -188,9 +231,9 @@ int controller::tap(SDL_Event temp)
 				if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
 				   input[i]->trigger.jaxis.axis == temp.jaxis.axis){
 					if(input[i]->trigger.jaxis.value == temp.jaxis.value){
-						ret = input[i]->effect;
+						ret += input[i]->effect;
 					} else {
-						if(temp.jaxis.value == 0) return -input[i]->effect;
+						if(temp.jaxis.value == 0) ret -= input[i]->effect;
 					}
 				}
 			}

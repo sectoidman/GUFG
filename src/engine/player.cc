@@ -129,38 +129,44 @@ bool controller::readConfig(int ID)
 		read.close();
 		return 0;
 	} else {
-		char * token;
-		char buffer[30];
+    int temp;
 		do{
 			input.push_back(new keySetting);
-			read.get(buffer, 100, ':'); read.ignore(); 
-			input[i]->trigger.type = atoi(buffer);
-			read.ignore();
-			read.get(buffer, 100, '\n'); read.ignore();
+      read >> temp; 
+      input[i]->trigger.type = temp;
+			read.ignore(2);
 			switch (input[i]->trigger.type){
+			case SDL_JOYHATMOTION:
+				read >> temp;
+				input[i]->trigger.jhat.which = temp;
+				read >> temp;
+				input[i]->trigger.jhat.hat = temp;
+				read >> temp;
+				input[i]->trigger.jhat.value = temp;
+				break;
 			case SDL_JOYAXISMOTION:
-				token = strtok(buffer, " \n");
-				input[i]->trigger.jaxis.which = atoi(token);
-				token = strtok(NULL, " \n");
-				input[i]->trigger.jaxis.axis = atoi(token);
-				token = strtok(NULL, " \n");
-				input[i]->trigger.jaxis.value = atoi(token);
+				read >> temp;
+				input[i]->trigger.jaxis.which = temp;
+				read >> temp;
+				input[i]->trigger.jaxis.axis = temp;
+				read >> temp;
+				input[i]->trigger.jaxis.value = temp;
 				break;
 			case SDL_JOYBUTTONDOWN:
-				token = strtok(buffer, " \n");
-				input[i]->trigger.jbutton.which = atoi(token);
-				token = strtok(NULL, " \n");
-				input[i]->trigger.jbutton.button = atoi(token);
+        read >> temp; 
+			  input[i]->trigger.jbutton.which = temp;
+        read >> temp; 
+				input[i]->trigger.jbutton.button = temp;
 				break;
 			case SDL_KEYDOWN:
-				token = strtok(buffer, " \n");	
-				input[i]->trigger.key.keysym.sym = (SDLKey)atoi(token);
+        read >> temp;
+				input[i]->trigger.key.keysym.sym = (SDLKey)temp;
 				break;
 			default:
 				break;
 			}
-			token = strtok(NULL, " \n");
-			input[i]->effect = atoi(token);
+			read >> temp;
+      input[i]->effect = temp;
 			i++;
 			read.peek();
 		} while(!read.eof());
@@ -188,8 +194,29 @@ bool player::setKey(int effect, SDL_Event temp)
 {
 	int workingIndex = -1;
 	switch (temp.type){
+	case SDL_JOYHATMOTION:
+		if(temp.jhat.value != 0){
+			for(unsigned int i = 0; i < input.size(); i++){
+				if(input[i]->trigger.type == temp.type &&
+				   input[i]->trigger.jhat.which == temp.jhat.which &&
+				   input[i]->trigger.jhat.hat == temp.jhat.hat &&
+				   input[i]->trigger.jhat.value == temp.jhat.value){
+					workingIndex = i;
+					i = input.size();
+				}
+			}
+			if(workingIndex < 0){
+				input.push_back(new keySetting);
+				workingIndex = input.size() - 1;
+				input[workingIndex]->trigger.type = temp.type;
+				input[workingIndex]->trigger.jhat.which = temp.jhat.which;
+				input[workingIndex]->trigger.jhat.hat = temp.jhat.hat;
+				input[workingIndex]->trigger.jhat.value = temp.jhat.value;
+			}
+		}
+		break;
 	case SDL_JOYAXISMOTION:
-		if(temp.jaxis.axis < 6 && temp.jaxis.value != 0){
+		if(temp.jaxis.value != 0){
 			for(unsigned int i = 0; i < input.size(); i++){
 				if(input[i]->trigger.type == temp.type &&
 				   input[i]->trigger.jaxis.which == temp.jaxis.which &&
@@ -259,8 +286,13 @@ void controller::writeConfig(int ID)
 	write.open(fname);
 	for(unsigned int i = 0; i < input.size(); i++){
 		switch(input[i]->trigger.type){
+		case SDL_JOYHATMOTION:
+			if(input[i]->trigger.jhat.value != 0){
+				write << (int)input[i]->trigger.type << " : " << (int)input[i]->trigger.jhat.which << " " << (int)input[i]->trigger.jhat.hat << " " << (int)input[i]->trigger.jhat.value;
+			}
+			break;
 		case SDL_JOYAXISMOTION:
-			if(input[i]->trigger.jaxis.value != 0 && input[i]->trigger.jaxis.axis < 6){
+			if(input[i]->trigger.jaxis.value != 0){
 				write << (int)input[i]->trigger.type << " : " << (int)input[i]->trigger.jaxis.which << " " << (int)input[i]->trigger.jaxis.axis << " " << (int)input[i]->trigger.jaxis.value;
 			}
 			break;
@@ -443,7 +475,7 @@ void player::enforceGravity(int grav, int floor)
 
 void player::checkBlocking()
 {
-	blockType = -pick()->checkBlocking(current.move, inputBuffer, current.connect, current.hit, current.aerial);
+	blockType = -pick()->checkBlocking(current, inputBuffer);
 	updateRects();
 }
 
@@ -620,7 +652,6 @@ void instance::checkFacing(instance * other)
 	} else if (midpoint > comparison){
 		if(current.facing == 1) flip();
 	}
-	updateRects();
 }
 
 int instance::dragBG(int left, int right)
@@ -801,6 +832,7 @@ int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 			current.freeze = 0;
 		}
 	}
+	current.reversal = NULL;
 	return pick()->takeHit(current, s, blockType, particleType, meter);
 }
 
@@ -818,9 +850,10 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	f = instance::takeHit(combo, s, p);
 	current.freeze = f;
 	if(particleType != 1){
-		temp = current.move->blockSuccess(s.stun);
+		temp = current.move->blockSuccess(s.stun, s.isProjectile);
 	}
-	if(temp && temp != current.move && temp->check(p, meter)){
+	SDL_Rect fake = {0, 0, 0, 0};
+	if(temp && temp != current.move && temp->check(fake, meter)){
 		combo = 0;
 		current.bufferedMove = temp;
 		current.freeze = 0;
@@ -843,6 +876,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 			v.x = 0;
 			v.y = 0;
 			current.freeze = 0;
+			meter[4] = 0;
 		}
 		momentum.push_back(v);
 		if(current.aerial && s.hover) hover = s.hover;

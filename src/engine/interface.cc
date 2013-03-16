@@ -260,7 +260,7 @@ void interface::roundInit()
 /*Pretty simple timer modifier*/
 void interface::runTimer()
 {
-	if(P[0]->rounds == 0 && P[1]->rounds == 0 && timer == 99 * 60 + 2){
+	if(P[0]->rounds == 0 && P[1]->rounds == 0 && timer == 101 * 60){
 		Mix_VolumeMusic(100);
 		Mix_PlayMusic(matchMusic,-1);
 	}
@@ -503,6 +503,11 @@ void interface::cleanup()
 			things[i]->current.throwInvuln--;
 			P[i]->hover--;
 		}
+		for(instance *i:things){
+			if(i->current.posX > bg.w + 300 || i->current.posX < -300 || i->current.posY < -300 || i->current.posY > bg.h){
+				i->current.dead = true;
+			}
+		}
 		if(!rMenu && select[0] && select[1]){
 			for(unsigned int i = 0; i < things.size(); i++){
 				things[i]->step();
@@ -512,7 +517,8 @@ void interface::cleanup()
 				}
 			}
 			for(unsigned int i = 0; i < globals.size(); i++){
-				if(globals[i]->length <= 0) globals.erase(globals.begin()+i);
+				if(globals[i]->length <= 0)
+					globals.erase(globals.begin()+i);
 				else globals[i]->length--;
 			}
 			resolveSummons();
@@ -1154,7 +1160,6 @@ void interface::resolveHits()
 		connect[i] = 0;
 		hitBy[i] = -1;
 	}
-	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(!things[i]->hitbox.empty()){
 			if(!freeze) P[(things[i]->ID)%2]->checkBlocking();
@@ -1168,7 +1173,7 @@ void interface::resolveHits()
 						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
 							if(things[i]->acceptTarget(things[m])){
 								connect[i] = 1;
-								things[i]->current.move->pollStats(s[i], things[i]->current.frame, things[m]->CHState());
+								things[i]->pick()->pollStats(s[i], things[i]->current, things[m]->CHState());
 								if(i < P.size()) push[i] = s[i].push;
 								k = things[m]->hitreg.size();
 								j = things[i]->hitbox.size();
@@ -1182,7 +1187,6 @@ void interface::resolveHits()
 			}
 		}
 	}
-
 
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
@@ -1216,14 +1220,14 @@ void interface::resolveHits()
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(connect[i]){
 			things[i]->connect(combo[things[i]->ID-1], s[i]);
-			if(hit[i] == 1){ 
+			if(hit[i] == 1){
 				things[i]->current.hit = things[i]->current.connect;
 				prorate[things[i]->ID-1] *= s[i].prorate;
 			}
 			if(!things[i]->current.aerial){
 				for(int j = 0; j < 6; j++){
 					if(2 << j & things[i]->current.move->state[things[i]->current.hit].i){
-						P[i]->checkFacing(P[(i+1)%2]);
+						P[i]->checkFacing(P[(things[i]->ID)%2]);
 						break;
 					}
 				}
@@ -1231,6 +1235,7 @@ void interface::resolveHits()
 		}
 	}
 
+	SDL_Rect residual = {0, 0, 1, 0};
 	for(unsigned int i = 0; i < P.size(); i++){ 
 		if(connect[i]){
 			if(P[i]->current.aerial){ 
@@ -1282,7 +1287,8 @@ void interface::doSuperFreeze()
 {
 	int go[2] = {0, 0};
 	for(unsigned int i = 0; i < P.size(); i++){
-		go[i] = things[i]->current.move->arbitraryPoll(2, things[i]->current.frame);
+		if(!things[i]->current.move->arbitraryPoll(33, 0) || freeze <= 0)
+			go[i] = things[i]->current.move->arbitraryPoll(2, things[i]->current.frame);
 		if(go[i] > 0){ 
 			P[(i+1)%2]->checkBlocking();
 			things[(i+1)%2]->current.freeze += go[i];

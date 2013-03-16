@@ -16,7 +16,7 @@ public:
 
 class redCancel : virtual public special{
 public:
-	redCancel();
+	redCancel() {}
 	~redCancel();
 	redCancel(const char* n);
 	bool check(SDL_Rect&, std::vector<int>);

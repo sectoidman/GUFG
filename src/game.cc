@@ -17,10 +17,10 @@ int main(int argc, char* argv[])
 	/*GUFG uses the `chrono` component of stdlibc++ to frame lock the game*/
 	const int FPS = 60;
 	typedef std::chrono::duration<float,std::ratio<1,FPS>> frame_t;
-        std::chrono::high_resolution_clock::time_point frameStart;
+	std::chrono::high_resolution_clock::time_point frameStart;
 	interface game;
 	assert(game.screenInit() != false);
-	if(argc > 1){ 
+	if(argc > 1){
 		if(!strcmp(argv[1], "eleven")){ 
 			game.killTimer = true;
 			game.createPlayers();

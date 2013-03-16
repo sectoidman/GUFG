@@ -258,7 +258,7 @@ GLuint aux::surface_to_texture(SDL_Surface * source)
 	GLenum texFormat;
 	GLuint texture;
 	nColors = source->format->BytesPerPixel;
-	if (source->format->Rmask == 0x000000ff)
+  if (source->format->Rmask == 0x000000ff)
 		texFormat = GL_RGBA;
 	else
 		texFormat = GL_BGRA;

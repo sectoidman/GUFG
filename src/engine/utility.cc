@@ -25,7 +25,7 @@ looping::looping(const char * n)
 void looping::step(std::vector<int>& meter, int &f, int &c, int &h)
 {
 	action::step(meter, f, c, h);
-	if(f != 0){
+	if(f && !meter[4]){
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
 		else meter[1] = 300;
 	}

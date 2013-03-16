@@ -20,8 +20,6 @@ public:
 	flashStep(const char*);
 	bool check(SDL_Rect&, std::vector<int>);
 	void execute(action *, std::vector<int>&, int&, int&, int&);
-	bool setParameter(char*);
-	virtual void zero() { flashMeterCost = 0; airMove::zero(); }
 private:
 	int flashMeterCost;
 };

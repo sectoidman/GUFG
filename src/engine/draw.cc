@@ -35,7 +35,6 @@ void interface::drawCSelect()
 	int x, y;
 	glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 	glRectf(0.0f, 0.0f, (GLfloat)screenWidth, (GLfloat)screenHeight);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	for(int i = 0; i < 2; i++){
 		if(configMenu[i]) drawConfigMenu(i);
@@ -43,6 +42,7 @@ void interface::drawCSelect()
 	}
 	glEnable( GL_TEXTURE_2D );
 
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glBindTexture(GL_TEXTURE_2D, selectScreen);
 	glBegin(GL_QUADS);
 		glTexCoord2i(0, 0);
@@ -133,6 +133,9 @@ void interface::drawConfigMenu(int ID)
 	case SDL_JOYAXISMOTION:
 		sprintf(buffer, "Joy %i", p[ID]->input[0]->trigger.jbutton.which);
 		break;
+	case SDL_JOYHATMOTION:
+		sprintf(buffer, "Joy %i", p[ID]->input[0]->trigger.jhat.which);
+		break;
 	}
 	glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == 1)*0.4);
 	drawGlyph(buffer, 20 + 1260*ID, 300, 310, 40, 2*ID);
@@ -156,6 +159,11 @@ void interface::drawConfigMenu(int ID)
 					a = 3;
 					sprintf(buffer, "Axis %i %i", p[ID]->input[j]->trigger.jaxis.axis,
 						p[ID]->input[j]->trigger.jaxis.value);
+					break;
+				case SDL_JOYHATMOTION:
+					a = 4;
+					sprintf(buffer, "Hat %i %i", p[ID]->input[j]->trigger.jhat.hat,
+						p[ID]->input[j]->trigger.jhat.value);
 					break;
 			}
 		}
@@ -356,8 +364,7 @@ void player::drawMeters(int n)
 
 void character::drawMeters(int ID, int hidden, std::vector<int> meter)
 {
-	SDL_Rect m;
-	SDL_Rect h;
+	SDL_Rect m, h, g;
 	if(meter[0] >= 0) h.w = meter[0]; else h.w = 1; 
 
 	if(ID == 1) h.x = 100 + (600 - h.w); 
@@ -366,11 +373,19 @@ void character::drawMeters(int ID, int hidden, std::vector<int> meter)
 	h.y = 10;
 
 	int R = 0, G = 255, B = 0;
-	if(meter[1] >= 0) m.w = (meter[1]+hidden)*2; else m.w = 0; 
-	if(ID == 1) m.x = 100;
-	else m.x = 900 + (600 - m.w);
+	if(meter[1] >= 0) m.w = (meter[1]+hidden)*2; else m.w = 0;
+	if(hidden) g.w = 0; else g.w = meter[4]*2;
+	if(ID == 1){ 
+		m.x = 100;
+		g.x = m.x + m.w;
+	} else {
+		m.x = 900 + (600 - m.w);
+		g.x = m.x - g.w;
+	}
 	m.h = 10; m.y = 860;
+	g.h = 10; g.y = 860;
 
+	G = (m.w == 600) ? 255 : ((m.w / 150) % 2);
 	if(m.w < 300) R = 191;
 	else if(m.w < 600) B = 255;
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -379,6 +394,8 @@ void character::drawMeters(int ID, int hidden, std::vector<int> meter)
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glColor4f((float)R, (float)G, (float)B, 1.0f);
 	glRectf((GLfloat)(m.x), (GLfloat)(m.y), (GLfloat)(m.x + m.w), (GLfloat)(m.y + m.h));
+	glColor4f((float)R, (float)G, (float)B, 0.4f);
+	glRectf((GLfloat)(g.x), (GLfloat)(g.y), (GLfloat)(g.x + g.w), (GLfloat)(g.y + g.h));
 }
 
 void instance::drawBoxen()
