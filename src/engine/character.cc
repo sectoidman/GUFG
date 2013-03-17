@@ -532,11 +532,7 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 
 std::vector<int> avatar::generateMeter()
 {
-<<<<<<< HEAD
-	std::vector<int> meter(4);
-=======
 	std::vector<int> meter(5);
->>>>>>> 04ea2ea... Update to most current engine
 	return meter;
 }
 
