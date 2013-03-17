@@ -1,0 +1,23 @@
+Name: J1
+Buffer: 0 : 0
+Hits: 0
+Frames: 3 : 3
+Check: 508
+State: 1020
+Gain: 0
+Cost: 0
+Blocks: 0
+Offset: -87 : -37
+Properties: 
+#0
+$C	10 30 110 297
+$R	10 30 110 297
+$D	0 0 0 0
+#1
+$C	10 30 110 297
+$R	10 30 110 297
+$D	0 0 0 0
+#2
+$C	10 30 110 297
+$R	10 30 110 297
+$D	0 0 0 0
