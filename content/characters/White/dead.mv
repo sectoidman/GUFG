@@ -1,4 +1,4 @@
-Name: HL
+Name: dead
 Buffer: 0 : 0
 Hits: 0
 Frames: 1 : 1
@@ -7,8 +7,12 @@ State: 0
 Gain: 0
 Cost: 0
 Blocks: 0
-Properties: cT
+Properties: T
 #0
-$C	10 0 110 162
-$R	10 0 110 198
+$C	10 0 100 99
+$R	0 0 0 0
+$D	0 0 0 0
+#1
+$C	10 0 100 99
+$R	0 0 0 0
 $D	0 0 0 0
