@@ -32,7 +32,7 @@ public:
 	void execute(action *, std::vector<int>&, int&, int&, int&);
 	bool setParameter(char*);
 	virtual void zero();
-	void step(std::vector<int>&, int&, int&, int&);
+	void step(std::vector<int>&, status&);
 private:
 	bool uFlag;
 	int flashMeterGain;

@@ -96,6 +96,7 @@ public:
 	std::vector<int> selection;
 	int menu[2];
 	int configMenu[2];
+	int counterHit[2];
 	int rMenu;
 	int pMenu;
 	SDL_Rect bg;

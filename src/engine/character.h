@@ -28,7 +28,7 @@ public:
 	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&) { return 0; }
 	virtual void getName(const char*, const char*);
 	virtual void connect(status&, std::vector<int>&);
-	virtual void pollStats(hStat&, status&, bool);
+	virtual void pollStats(hStat&, status&);
 	virtual void step(status&, std::vector<int>&);
 	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
@@ -60,12 +60,8 @@ public:
 	virtual void neutralize(status&, action*&, std::vector<int>&);
 	virtual void drawMeters(int, int, std::vector<int>);
 	virtual void init(std::vector<int> &);
-<<<<<<< HEAD
-	virtual int checkBlocking(action *&, int[], int&, int&, bool);
-=======
 	virtual int checkBlocking(status&, int[]);
 	virtual void block(status&, int, bool);
->>>>>>> 04ea2ea... Update to most current engine
 	virtual void resetAirOptions(std::vector<int>&);
 	virtual void land(action *&, int &, int &, int &, std::vector<int>&);
 	virtual void sortMove(action *, char*);
@@ -92,10 +88,7 @@ public:
 	projectile() {}
 	virtual void build(const char*, const char*);
 	virtual int acceptTarget(action*, int);
-<<<<<<< HEAD
-=======
-	virtual void pollStats(hStat&, status&, bool);
->>>>>>> 04ea2ea... Update to most current engine
+	virtual void pollStats(hStat&, status&);
 	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&);
 	virtual bool turn(int&);
 

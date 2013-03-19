@@ -57,7 +57,7 @@ struct status{
 	bool aerial;
 	bool rCorner, lCorner;
 	action *move, *bufferedMove, *reversal;
-	int connect, hit;
+	int connect, hit, counter;
 	bool dead:1;
 	int throwInvuln;
 	bool reversalFlag:1;

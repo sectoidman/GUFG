@@ -42,6 +42,7 @@ void instance::init()
 	current.rCorner = 0;
 	current.frame = 0;
 	current.connect = 0;
+	current.counter = 0;
 	current.hit = 0;
 	counter = 0;
 	current.move = NULL;
@@ -800,7 +801,29 @@ void controller::readEvent(SDL_Event & event, frame &t)
 
 void player::readEvent(SDL_Event & event, frame &t)
 {
-	controller::readEvent(event, t);
+	if(event.type == SDL_JOYHATMOTION){
+		for(unsigned int i = 0; i < input.size(); i++){
+			if(input[i]->trigger.jhat.hat == event.jhat.hat &&
+			   input[i]->trigger.jhat.which == event.jhat.which &&
+			   input[i]->trigger.jhat.value > 0){
+				if(event.jhat.value & 1) t.axis[0] = true;
+				else if(event.jhat.value & 4) t.axis[1] = true;
+				else {
+					t.axis[0] = false;
+					t.axis[1] = false;
+				}
+				if(event.jhat.value & 8) t.axis[2] = true;
+				else if(event.jhat.value & 2) t.axis[3] = true;
+				else {
+					t.axis[2] = false;
+					t.axis[3] = false;
+				}
+				break;
+			}
+		}
+	} else {
+		controller::readEvent(event, t);
+	}
 	unsigned int d = 5;
 	if(t.axis[0]) d += 3;
 	if(t.axis[1]) d -= 3;

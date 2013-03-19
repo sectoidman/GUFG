@@ -232,9 +232,14 @@ void interface::drawHUD()
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(P[i]->name) drawGlyph(P[i]->name, 100+800*i, 600, 30, 40, 0+2*i);
 		else drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
+		if(counterHit[i] > 0){
+			glColor4f(1.0, 1.0, 0.5, 0.7);
+			drawGlyph("Counter", 100+1000*i, 400, 200, 55, 0+2*i);
+			glColor4f(1.0, 1.0, 1.0, 1.0);
+		}
 		if(P[i]->record){
 			glColor4f(0.5, 1.0, 1.0, 0.7);
-			drawGlyph("Recording", 100+800*i, 600, 200, 55, 0+2*i);
+			drawGlyph("Recording", 100+1000*i, 600, 200, 55, 0+2*i);
 			glColor4f(1.0, 1.0, 1.0, 1.0);
 		}
 		/*

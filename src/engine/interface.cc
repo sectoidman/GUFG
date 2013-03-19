@@ -91,6 +91,7 @@ void interface::createPlayers()
 		select[i] = 0;
 		selection.push_back(1+i);
 		menu[i] = 0;
+		counterHit[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
 		P[i]->boxen = false;
@@ -247,6 +248,7 @@ void interface::roundInit()
 		prorate[i] = 1.0;
 		damage[i] = 0;
 		illegit[i] = 0;
+		counterHit[i] = 0;
 	}
 
 	grav = -6;
@@ -389,6 +391,7 @@ void interface::resolveCombos()
 			switch (P[i]->pick()->comboState(things[i]->current.move)){ 
 			case -2: 
 				illegit[(i+1)%2] = 1;
+				counterHit[(i+1)%2] = 0;
 				break;
 			case 0:
 				combo[(i+1)%2] = 0;
@@ -397,6 +400,7 @@ void interface::resolveCombos()
 				P[i]->elasticX = 0;
 				P[i]->elasticY = 0;
 				illegit[(i+1)%2] = 0;
+				counterHit[(i+1)%2] = 0;
 				break;
 			}
 		}
@@ -684,7 +688,7 @@ void interface::processInput(SDL_Event &event)
 	for(unsigned int i = 0; i < p.size(); i++){
 		int t = p[i]->tap(event);
 		if(t == 0) t = p[(i+1)%2]->tap(event);
-		if((t < 1 || t > 8) && t < 512){
+		if((t < 1 || t > 8) && (t < 512) && event.type != SDL_JOYHATMOTION){
 			if(p[i]->same(event)){
 				if(configMenu[i] > 1 && configMenu[i] < 7){
 					p[i]->swapKey(1 << (configMenu[i]+2), event);
@@ -700,7 +704,7 @@ void interface::readInput()
 {
 	std::vector<SDL_Event> events;
 	SDL_Event event;
-	for(int i = 0; i < 20; i++){
+	for(int i = 0; i < 35; i++){
 		if(SDL_PollEvent(&event)){
 			events.push_back(event);
 			processInput(event);
@@ -1100,12 +1104,8 @@ void interface::resolveCollision()
 	prox.h = abs(things[0]->current.posY - things[1]->current.posY);
 
 	for(unsigned int i = 0; i < things.size(); i++){
-		if(things[i]->current.move->track)
+		if(things[i]->current.move->track){
 			things[i]->checkFacing(P[(things[i]->ID)%2]);
-		else if (i < 2){
-			if(things[i]->current.move->state[things[i]->current.connect].i & 1 && !things[i]->current.aerial){
-				things[i]->checkFacing(P[(things[i]->ID)%2]);
-			}
 		}
 		if(i < 2 && !things[i]->current.aerial) {
 			things[i]->current.deltaX = 0; 
@@ -1173,7 +1173,9 @@ void interface::resolveHits()
 						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
 							if(things[i]->acceptTarget(things[m])){
 								connect[i] = 1;
-								things[i]->pick()->pollStats(s[i], things[i]->current, things[m]->CHState());
+								things[i]->current.counter = things[m]->CHState();
+								if(things[i]->current.counter > 0) counterHit[things[i]->ID-1] = s[i].stun + (s[i].pause > 0) ? s[i].pause : (s[i].stun/4 + 10);
+								things[i]->pick()->pollStats(s[i], things[i]->current);
 								if(i < P.size()) push[i] = s[i].push;
 								k = things[m]->hitreg.size();
 								j = things[i]->hitbox.size();

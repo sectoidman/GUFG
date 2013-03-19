@@ -22,13 +22,13 @@ looping::looping(const char * n)
 	build(n);
 }
 
-void looping::step(std::vector<int>& meter, int &f, int &c, int &h)
+void looping::step(std::vector<int>& meter, status &current)
 {
-	action::step(meter, f, c, h);
-	if(f && !meter[4]){
+	action::step(meter, current);
+	if(current.frame && !meter[4]){
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
 		else meter[1] = 300;
 	}
-	if(f >= frames) f = 0;
+	if(current.frame >= frames) current.frame = 0;
 }
 

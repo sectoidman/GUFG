@@ -121,8 +121,7 @@ bool flashSummon::setParameter(char * buffer)
 	char savedBuffer[100];
 	strcpy(savedBuffer, buffer);
 
-	char * token = strtok(buffer, "\t: \n-");
-	
+	char * token = strtok(buffer, "\t: \n");
 	if(!strcmp("FlashGain", token)){
 		token = strtok(NULL, "\t: \n-");
 		flashMeterGain = atoi(token); 
@@ -157,11 +156,11 @@ void flashStep::execute(action * last, std::vector<int>& meter, int &f, int &c, 
 	action::execute(last, meter, f, c, h);
 }
 
-void flashSummon::step(std::vector<int>& meter, int &f, int &c, int &h)
+void flashSummon::step(std::vector<int>& meter, status &current)
 {
 	if(uFlag){
-		if(f == frames - 1) meter[5] = 0;
+		if(current.frame == frames - 1) meter[5] = 0;
 	} else meter[5] += flashMeterGain / frames + 1;
 	if(meter[5] > 540) meter[5] = 540;
-	action::step(meter, f, c, h);
+	action::step(meter, current);
 }

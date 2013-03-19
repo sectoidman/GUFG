@@ -26,10 +26,10 @@ int projectile::acceptTarget(action * c, int f)
 	return 0;
 }
 
-void projectile::pollStats(hStat & s, status &current, bool CH)
+void projectile::pollStats(hStat & s, status &current)
 {
 	s.isProjectile = true;
-	current.move->pollStats(s, current.frame, CH);
+	current.move->pollStats(s, current.frame, current.counter);
 }
 
 void projectile::init(std::vector<int>& meter)

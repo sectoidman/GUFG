@@ -23,7 +23,20 @@ void controller::setKey(int effect)
 			for(unsigned int i = 0; i < input.size(); i++){
 				if(input[i]->effect == effect) input.erase(input.begin()+i);
 			}
-			configFlag = setKey(effect, temp);
+			if(temp.type == SDL_JOYHATMOTION) {
+				if(effect == 1){
+					temp.jhat.value = 8;
+					configFlag = setKey(effect, temp);
+					temp.jhat.value = 2;
+					configFlag = setKey(effect << 1, temp);
+					temp.jhat.value = 1;
+					configFlag = setKey(effect << 2, temp);
+					temp.jhat.value = 4;
+					configFlag = setKey(effect << 3, temp);
+				}
+			} else { 
+				configFlag = setKey(effect, temp);
+			}
 		}
 	}
 }
@@ -214,18 +227,6 @@ int controller::tap(SDL_Event temp)
 					ret += input[i]->effect;
 			}
 			break;
-		case SDL_JOYHATMOTION:
-			if(input[i]->trigger.type == SDL_JOYHATMOTION){
-				if(input[i]->trigger.jhat.which == temp.jhat.which &&
-				   input[i]->trigger.jhat.hat == temp.jhat.hat){
-					if(input[i]->trigger.jhat.value & temp.jhat.value){
-						ret += input[i]->effect;
-					} else {
-						if(temp.jhat.value == 0) ret -= input[i]->effect;
-					}
-				}
-			}
-			break;
 		case SDL_JOYAXISMOTION:
 			if(input[i]->trigger.type == SDL_JOYAXISMOTION){
 				if(input[i]->trigger.jaxis.which == temp.jaxis.which &&
@@ -240,5 +241,6 @@ int controller::tap(SDL_Event temp)
 			break;
 		}
 	}
+	if(ret & 1 || ret & 2 || ret & 4 || ret & 8);
 	return ret;
 }

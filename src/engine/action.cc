@@ -404,6 +404,14 @@ bool action::setParameter(char * buffer)
 			else stats[i].damage = atoi(token);
 		}
 		return 1;
+	} else if (!strcmp("Connects", token)) {
+		for(int i = 0; i < hits; i++){
+			token = strtok(NULL, "\t: \n");
+			if(savedBuffer[0] == '+')
+				CHStats[i].connect = atoi(token);
+			else stats[i].connect = atoi(token);
+		}
+		return 1;
 	} else if (!strcmp("Chip", token)) {
 		for(int i = 0; i < hits; i++){
 			token = strtok(NULL, "\t: \n");
@@ -617,10 +625,6 @@ void action::parseProperties(char * buffer, bool counter)
 			if(counter) CHStats[ch].stick = 1;
 			else stats[ch].stick = 1;
 			break;
-		case 'D':
-			if(counter) CHStats[ch].noConnect = 1;
-			else stats[ch].noConnect = 1;
-			break;
 		case 's':
 			if(!counter) stop += 1;
 			break;
@@ -779,6 +783,7 @@ void action::pollStats(hStat & s, int f, bool CH)
 		s.untech = stats[c].untech + CHStats[c].untech * CH;
 		s.blowback = stats[c].blowback + CHStats[c].blowback * CH;
 		s.pause = stats[c].pause + CHStats[c].pause * CH;
+		s.connect = stats[c].connect + CHStats[c].connect * CH;
 		if(CH){
 			s.launch = CHStats[c].launch || stats[c].launch;
 			s.hover = CHStats[c].hover;
@@ -787,7 +792,6 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.slide = CHStats[c].slide;
 			s.stick = CHStats[c].stick;
 			s.ghostHit = CHStats[c].ghostHit;
-			s.noConnect = stats[c].noConnect || CHStats[c].noConnect;
 			s.prorate = CHStats[c].prorate;
 		} else {
 			s.launch = stats[c].launch;
@@ -797,7 +801,6 @@ void action::pollStats(hStat & s, int f, bool CH)
 			s.slide = stats[c].slide;
 			s.stick = stats[c].stick;
 			s.ghostHit = stats[c].ghostHit;
-			s.noConnect = stats[c].noConnect;
 			s.prorate = stats[c].prorate;
 		}
 		s.hitsProjectile = stats[c].hitsProjectile;
@@ -840,13 +843,13 @@ bool action::cancel(action *& x, int& c, int &h)
 	return 0;
 }
 
-void action::step(std::vector<int>& meter, int &f, int &connectFlag, int &hitFlag)
+void action::step(std::vector<int>& meter, status &current)
 {
-	if(!f && !meter[4]){
+	if(!current.frame && !meter[4]){
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
 		else meter[1] = 300;
 	}
-	f++;
+	current.frame++;
 	if(modifier && basis){
 		currentFrame++;
 		if(basis && currentFrame >= basis->frames){
