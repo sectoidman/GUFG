@@ -50,6 +50,7 @@ public:
 	~interface();
 	void readInput();
 	void loadMisc();
+	virtual void loadAssets();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
 	void createPlayers(char*);

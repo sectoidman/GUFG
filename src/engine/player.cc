@@ -393,6 +393,11 @@ void instance::combineDelta()
 	updateRects();
 }
 
+void instance::loadAssets()
+{
+	if(sprite) pick()->loadAssets();
+}
+
 void instance::enforceAttractor(attractor* p)
 {
 	SDL_Rect resultant;

@@ -139,13 +139,14 @@ void negNormal::zero()
 void action::build(const char * n)
 {
 	zero();
+	fileName = std::string(n);
 	ifstream read;
 	char fname[40];
 	char buffer[100];
 	char savedBuffer[100];
 	buffer[0] = '\0';
 
-	sprintf(fname, "content/characters/%s.mv", n);
+	sprintf(fname, "content/characters/%s.mv", fileName.c_str());
 	read.open(fname);
 	assert(!read.fail());
 
@@ -185,17 +186,14 @@ void action::build(const char * n)
 		}
 	}
 	read.close();
-	unsigned int b = SDL_WasInit(SDL_INIT_VIDEO);
-	if(b != 0)
-		loadMisc(n); 
 }
 
-void action::loadMisc(const char *n)
+void action::loadMisc()
 {
 	char fname[40];
 	SDL_Surface *temp;
 	for(int i = 0; i < frames; i++){
-		sprintf(fname, "content/characters/%s#%i.png", n, i);
+		sprintf(fname, "content/characters/%s#%i.png", fileName.c_str(), i);
 		temp = aux::load_image(fname);
 		if(!temp){
 			width.push_back(0);
@@ -208,7 +206,7 @@ void action::loadMisc(const char *n)
 		}
 		SDL_FreeSurface(temp);
 	}
-	sprintf(fname, "content/characters/%s.ogg", n);
+	sprintf(fname, "content/characters/%s.ogg", fileName.c_str());
 	soundClip = Mix_LoadWAV(fname);
 }
 

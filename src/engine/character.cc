@@ -185,7 +185,6 @@ void avatar::build(const char* directory, const char* file)
 		}
 	}
 	read.close();
-	movesByName.clear();
 }
 
 void avatar::sortMove(action * m, char* buffer)
@@ -204,6 +203,14 @@ void avatar::sortMove(action * m, char* buffer)
 				break;
 			}
 		}
+	}
+}
+
+void avatar::loadAssets()
+{
+	for(action *i:moveList){ 
+		if(i->payload) i->payload->loadAssets();
+		i->loadMisc();
 	}
 }
 
@@ -244,9 +251,11 @@ void character::build(const char *directory, const char *file)
 
 	sprintf(buffer, "%s/die", name);
 	die = new untechState(buffer);
+	processMove(die);
 
 	sprintf(buffer, "%s/dead", name);
 	dead = new looping(buffer);
+	processMove(dead);
 	die->feed(dead, 0, 0);
 	die->feed(dead, 1, 0);
 
@@ -256,8 +265,8 @@ void character::build(const char *directory, const char *file)
 
 	sprintf(buffer, "%s/NJ", name);
 	airNeutral = new airLooping(buffer);
-	airNeutral->feed(neutral, 1, 0);
 	processMove(airNeutral);
+	airNeutral->feed(neutral, 1, 0);
 
 	sprintf(buffer, "%s/HS", name);
 	reel = new hitstun(buffer);
@@ -274,9 +283,10 @@ void character::build(const char *directory, const char *file)
 
 	sprintf(buffer, "%s/down", name);
 	down = new utility(buffer);
+	processMove(down);
+
 	untech->feed(down, 1, 0);
 	fall->feed(down, 1, 0);
-	processMove(fall);
 
 	sprintf(buffer, "%s/HL", name);
 	crouchReel = new hitstun(buffer);
@@ -284,12 +294,15 @@ void character::build(const char *directory, const char *file)
 
 	sprintf(buffer, "%s/BH", name);
 	standBlock = new hitstun(buffer);
+	processMove(standBlock);
 
 	sprintf(buffer, "%s/BL", name);
 	crouchBlock = new hitstun(buffer);
+	processMove(crouchBlock);
 
 	sprintf(buffer, "%s/BA", name);
 	airBlock = new hitstun(buffer);	
+	processMove(airBlock);
 
 	sprintf(buffer, "%s/break", name);
 	throwBreak = new utility(buffer);
@@ -306,6 +319,7 @@ void character::build(const char *directory, const char *file)
 
 void avatar::processMove(action * m)
 {
+	moveList.push_back(m);
 	char* temp = NULL;
 	action* t = NULL;
 	for(int i = 0; i < 7; i++){

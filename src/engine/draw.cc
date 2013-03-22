@@ -615,15 +615,15 @@ bool action::spriteCheck(int f)
 
 void interface::writeImage(const char * movename, int frame, action * move)
 {
-	int realPosY = move->collision[frame].y;
+	int realPosY = 0;
 	int realPosX = 0;
 	SDL_Surface * image = NULL;
-	int maxY = move->collision[frame].y + move->collision[frame].h, 
+	int maxY = move->collision[frame].y + move->collision[frame].h,
 	    maxX = move->collision[frame].x + move->collision[frame].w;
 	for(unsigned int i = 0; i < move->hitreg[frame].size(); i++){
-		if(move->hitreg[frame][i].y < realPosY) 
+		if(move->hitreg[frame][i].y < realPosY)
 			realPosY = move->hitreg[frame][i].y;
-		if(move->hitreg[frame][i].x < realPosX) 
+		if(move->hitreg[frame][i].x < realPosX)
 			realPosX = move->hitreg[frame][i].x;
 		if(move->hitreg[frame][i].x + move->hitreg[frame][i].w > maxX)
 			maxX = move->hitreg[frame][i].x + move->hitreg[frame][i].w;
@@ -641,16 +641,17 @@ void interface::writeImage(const char * movename, int frame, action * move)
 			maxY = move->hitbox[frame][i].y + move->hitbox[frame][i].h;
 	}
 	char fname[200];
-	int w = maxX - realPosX;
-	int h = maxY;
+	int w = maxX + realPosX;
+	int h = maxY + realPosY;
 	int x = 0;
 	int y = 0;
 	if(realPosY < 0){ 
 		h -= realPosY;
-		y = realPosY;
+		y = -realPosY;
 	}
 	if(realPosX < 0){
-		x = realPosX;
+		w -= realPosX;
+		x = -realPosX;
 	}
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	Uint32 rmask = 0xff000000;
@@ -673,7 +674,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
 
 	glPushMatrix();
-		glTranslatef(-x, -(y-h), 0.0);
+		glTranslatef(-x, -(y - h), 0.0);
 		move->drawBoxen(frame);
 	glPopMatrix();
 

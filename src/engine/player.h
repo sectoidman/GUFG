@@ -43,6 +43,7 @@ public:
 	virtual int passSignal(int);
 	virtual int dragBG(int, int);
 	virtual void follow(instance*);
+	virtual void loadAssets();
 	void enforceAttractor(attractor*);
 	int middle();
 	void flip();

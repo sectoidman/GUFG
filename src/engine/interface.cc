@@ -94,8 +94,8 @@ void interface::createPlayers()
 		counterHit[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
-		P[i]->boxen = false;
-		P[i]->sprite = true;
+		P[i]->boxen = true;
+		P[i]->sprite = false;
 	}
 }
 
@@ -586,6 +586,9 @@ void interface::resolveSummons()
 						y = things[(things[i]->ID)-1]->current.posY;
 					x += temp->arbitraryPoll(54, things[i]->current.frame)*f;
 					y += temp->arbitraryPoll(55, things[i]->current.frame);
+					if(x > bg.w + 100) x = bg.w + 100;
+					if(y > bg.h - 50) y = bg.h - 50;
+					if(x < -100) x = -100;
 					larva->current.facing = f;
 					larva->setPosition(x, y);
 					things.push_back(larva);
@@ -821,17 +824,27 @@ void interface::cSelectMenu()
 
 	if(select[0] && select[1]){
 		//std::cout << "2 6\n" << selection[0] << " " << selection[1] << '\n';
-		P[0]->characterSelect(selection[0]);
-		P[1]->characterSelect(selection[1]);
+		for(unsigned int i = 0; i < P.size(); i++){
+			P[i]->characterSelect(selection[i]);
+		}
+		loadAssets();
 		if(analytics){
 			replay = new script;
 			replay->init(selection);
 		}
 
-		loadMatchBackground();
 		Mix_HaltMusic();
 
 		roundInit();
+	}
+}
+
+void interface::loadAssets()
+{
+	unsigned int b = SDL_WasInit(SDL_INIT_VIDEO);
+	if(b != 0){
+		for(player *i:P) i->loadAssets();
+		loadMatchBackground();
 	}
 }
 
@@ -1093,13 +1106,55 @@ void gameInstance::unitCollision(instance *a, instance *b)
 
 void interface::resolveCollision()
 {
+	std::vector<SDL_Rect> temp;
+	std::vector<int> dx;
 	for(player *i:P){
 		i->enforceFloor(floor);
 		i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
+		temp.push_back(i->collision);
+		dx.push_back(i->current.deltaX);
+		temp.back().x -= dx.back();
 	}
 
-	if (aux::checkCollision(P[0]->collision, P[1]->collision))
-		unitCollision(P[0], P[1]);
+	unsigned int localMaximum = std::min(temp[0].w, temp[1].w) / 5 - 1;
+	unsigned int j[2] = {0, 0};
+	while(j[0] < abs(dx[0]) || j[1] < abs(dx[1])){
+		if(aux::checkCollision(temp[0], temp[1])){
+			unsigned int k[2] = {j[0], j[1]};
+			while(dx[0] || dx[1]){
+				for(unsigned int i = 0; i < P.size(); i++){
+					if(dx[i]){
+						P[i]->current.posX += temp[i].x - P[i]->collision.x;
+						P[i]->updateRects();
+						dx[i] -= (dx[i] > 0) ? j[i] : -j[i];
+						j[i] = 0;
+					}
+				}
+				unitCollision(P[0], P[1]);
+				for(unsigned int i = 0; i < P.size(); i++){
+					if(localMaximum < abs(dx[i]) - j[i]){
+						j[i] += localMaximum;
+						temp[i].x += (dx[i] > 0) ? localMaximum : -localMaximum;
+					} else {
+						j[i] = abs(dx[i]);
+						temp[i].x += (dx[i] > 0) ? (j[i] - k[i]) : -(j[i] - k[i]);
+					}
+				}
+			}
+		} else {
+			for(unsigned int i = 0; i < P.size(); i++){
+				if(j[i] < abs(dx[i])) {
+					if(dx[i] < 0){
+						temp[i].x--;
+					} else if(dx[i] > 0){
+						temp[i].x++;
+					}
+					j[i]++;
+				}
+			}
+		}
+	}
+
 	prox.w = abs(things[0]->current.posX - things[1]->current.posX);
 	prox.h = abs(things[0]->current.posY - things[1]->current.posY);
 

@@ -27,6 +27,7 @@ public:
 	virtual bool death(action *&, int, int) { return 0; }
 	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&) { return 0; }
 	virtual void getName(const char*, const char*);
+	virtual void loadAssets();
 	virtual void connect(status&, std::vector<int>&);
 	virtual void pollStats(hStat&, status&);
 	virtual void step(status&, std::vector<int>&);
@@ -42,8 +43,8 @@ public:
 	action * die;
 	action * neutral;
 	bool headless;
-	std::vector<action*> movesByName;
-	std::vector<char*> moveNames;
+	std::vector<action*> moveList;
+	std::vector<std::string> moveNames;
 };
 
 class character : virtual public avatar{
