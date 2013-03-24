@@ -35,7 +35,7 @@ int hitstun::takeHit(hStat& s, int b, status& current)
 	return 1;
 }
 
-hitstun::hitstun(const char * n)
+hitstun::hitstun(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }

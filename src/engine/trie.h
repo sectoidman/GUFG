@@ -12,9 +12,12 @@
 #include <fstream>
 #include <vector>
 #include "action.h"
+#include <string>
 
 #ifndef MOVETRIE
 #define MOVETRIE
+
+using std::string;
 /*Move trie class. Essentially a recursive trie-search algorithm that looks for input hooks*/
 
 class actionTrie{
@@ -29,9 +32,8 @@ public:
 	actionTrie * insert(int);
 	actionTrie * insert(int, action*);
 	void insert(action *, int);
-	void insert(action *, char*);
+	void insert(action *, string);
 	unsigned int patternMatch(int[], bool[]);
-	void patternSet(char*);
 private:
 	std::vector<int> pattern;
 };

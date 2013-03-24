@@ -3,11 +3,11 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include "tokenizer.h"
 
-
-airMove::airMove(const char * n)
+airMove::airMove(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
 action * airMove::land(int &f, int &c, int &h)
@@ -18,48 +18,38 @@ action * airMove::land(int &f, int &c, int &h)
 	return landing;
 }
 
-void airMove::build(const char * n)
+void airMove::zero()
 {
-	action::build(n);
-	landing = NULL;
+	landing = nullptr;
+	tempLanding.clear();
+	action::zero();
 }
 
 void airMove::feed(action * c, int code, int i)
 {
 	if(code == 1){ 
 		landing = c;
-		if(tempLanding){ 
-			delete [] tempLanding;
-		}
 	} else action::feed(c, code, i);
 }
 
-char * airMove::request(int code, int i)
+std::string airMove::request(int code, int i)
 {
-	if(code == 1){
-		return tempLanding;
-	}
+	if(code == 1) return tempLanding;
 	else return action::request(code, i); 
 }
 
-bool airMove::setParameter(char * buffer)
+bool airMove::setParameter(string buffer)
 {
-	char savedBuffer[100];
-	strcpy(savedBuffer, buffer);
-
-	char * token = strtok(buffer, "\t: \n");
-
-	if(!strcmp("Landing", token)){
-		token = strtok(NULL, "\t: \n");
-		tempLanding = new char[strlen(token)+1];
-		strcpy(tempLanding, token);
-		return 1;
-	} else return action::setParameter(savedBuffer);
+	tokenizer t(buffer, "\t: \n");
+	if(t() == "Landing"){
+		tempLanding = t("\t: \n");
+		return true;
+	} else return action::setParameter(buffer);
 }
 
-airUtility::airUtility(const char * n)
+airUtility::airUtility(std::string dir, std::string file)
 {
-	airMove::build(n);
+	airMove::build(dir, file);
 }
 
 bool airUtility::check(SDL_Rect &p, std::vector<int> meter) //Check to see if the action is possible right now.
@@ -75,12 +65,12 @@ void airUtility::execute(action * last, std::vector<int>& meter, int &f, int &c,
 	action::execute(last, meter, f, c, h);
 }
 
-airLooping::airLooping(const char * n)
+airLooping::airLooping(std::string dir, std::string file)
 {
-	airMove::build(n);
+	airMove::build(dir, file);
 }
 
-untechState::untechState(const char* n)
+untechState::untechState(std::string dir, std::string file)
 {
-	airMove::build(n);
+	airMove::build(dir, file);
 }

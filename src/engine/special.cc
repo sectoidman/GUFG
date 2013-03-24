@@ -5,14 +5,14 @@
 #include <assert.h>
 using namespace std;
 
-special::special(const char * n)
+special::special(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
-negNormal::negNormal(const char * n)
+negNormal::negNormal(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
 bool negNormal::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
@@ -66,18 +66,13 @@ void mash::zero()
 	buttons = 1;
 }
 
-bool mash::setParameter(char * buffer)
+bool mash::setParameter(string buffer)
 {
-	char savedBuffer[100];
-	strcpy(savedBuffer, buffer);
-
-	char * token = strtok(buffer, "\t: \n-");
-
-	if(!strcmp("Buttons", token)){
-		token = strtok(NULL, "\t: \n-");
-		buttons = atoi(token); 
-		return 1;
-	} else return action::setParameter(savedBuffer);
+	tokenizer t(buffer, "\t: \n-");
+	if(t() == "Buttons"){
+		buttons = stoi(t("\t: \n-"));
+		return true;
+	} else return action::setParameter(buffer);
 }
 
 int werf::arbitraryPoll(int n, int f)
@@ -110,28 +105,19 @@ bool luftigeWerf::check(SDL_Rect &p, std::vector<int> meter)
 	return action::check(p, meter);
 }
 
-bool werf::setParameter(char * buffer)
+bool werf::setParameter(string buffer)
 {
-	char savedBuffer[100];
-	strcpy(savedBuffer, buffer);
-
-	char * token = strtok(buffer, "\t: \n-");
-
-	if (!strcmp("Position", token)){
-		token = strtok(NULL, "\t: \n");
-		startPosX = atoi(token); 
-
-		token = strtok(NULL, "\t: \n");
-		startPosY = atoi(token); 
-		return 1;
-	} else return action::setParameter(savedBuffer);
+	tokenizer t(buffer, "\t: \n-");
+	if (t() == "Position"){
+		startPosX = stoi(t());
+		startPosY = stoi(t("\t: \n"));
+		return true;
+	} else return action::setParameter(buffer);
 }
 
-bool luftigeWerf::setParameter(char * buffer)
+bool luftigeWerf::setParameter(string buffer)
 {
-	char savedBuffer[100];
-	strcpy(savedBuffer, buffer);
-	char * token = strtok(buffer, "\t: \n-");
-	if(!strcmp("Landing", token)) return airMove::setParameter(savedBuffer);
-	else return werf::setParameter(savedBuffer);
+	tokenizer t(buffer, "\t: \n-");
+	if(t() == "Landing") return airMove::setParameter(buffer);
+	else return werf::setParameter(buffer);
 }

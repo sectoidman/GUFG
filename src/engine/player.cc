@@ -7,16 +7,18 @@
 #include <fstream>
 #include "player.h"
 #include "analytics.h"
+#include "tokenizer.h"
+
 player::player()
 {
-	name = NULL;
+	name = nullptr;
 	init();
 }
 
 player::player(int id)
 {
 	ID = id;
-	name = NULL;
+	name = "";
 	init();
 	wins = 0;
 }
@@ -34,6 +36,14 @@ instance::instance(avatar * f)
 	init();
 }
 
+void instance::pollStats(hStat &s)
+{
+	pick()->pollStats(s, current);
+	if(current.rCorner || current.lCorner){
+		s.push *= 3;
+	}
+}
+
 void instance::init()
 {
 	current.deltaX = 0;
@@ -45,9 +55,9 @@ void instance::init()
 	current.counter = 0;
 	current.hit = 0;
 	counter = 0;
-	current.move = NULL;
-	current.bufferedMove = NULL;
-	current.reversal = NULL;
+	current.move = nullptr;
+	current.bufferedMove = nullptr;
+	current.reversal = nullptr;
 	current.freeze = 0;
 	current.aerial = false;
 	current.dead = false;
@@ -67,7 +77,6 @@ void player::init()
 	for(int i = 0; i < 30; i++)
 		inputBuffer[i] = 5;
 
-	/*Yeah yeah, I know, char* to literal conversion. I'm lazy right now. Will fix later. Maybe with cstring*/
 	inputName.push_back("Up");
 	inputName.push_back("Down");
 	inputName.push_back("Left");
@@ -79,9 +88,9 @@ void player::init()
 	inputName.push_back("E");
 	inputName.push_back("Start");
 
-	currentMacro = NULL;
-	record = NULL;
-	v = NULL;
+	currentMacro = nullptr;
+	record = nullptr;
+	v = nullptr;
 	rounds = 0;
 	instance::init();
 }
@@ -93,10 +102,10 @@ void player::roundInit()
 	pick()->neutralize(current, current.move, meter);
 	if(v) pick()->init(meter);
 	if(record){
-		sprintf(buffer, "%i-%s.sh", ID, pick()->name);
+		sprintf(buffer, "%i-%s.sh", ID, pick()->name.c_str());
 		record->write(buffer);
 		delete record;
-		record = NULL;
+		record = nullptr;
 	}
 	elasticX = 0;
 	elasticY = 0;
@@ -311,7 +320,7 @@ void controller::writeConfig(int ID)
 
 void player::characterSelect(int i)
 {
-	v = NULL;
+	v = nullptr;
 	switch(i){
 	case 1:
 		v = new red;
@@ -329,24 +338,22 @@ void player::characterSelect(int i)
 
 void player::readScripts()
 {
-	char buffer[200];
-	char *token;
+        string buffer("");
 	int tempIterator;
-	sprintf(buffer, ".config/%src", v->name);
 	macro.clear();
 	std::ifstream read;
-	read.open(buffer);
+	read.open(".config/"+v->name+"rc");
 	if(read.fail()) return;
 	while(!read.eof()){
 		tempIterator = 0;
-		read.get(buffer, 200, '\n');
-		token = strtok(buffer, " \n");
-		if(!token) return;
-		macro.push_back(new script(token));
-		if(token = strtok(NULL, " \n")){
-			for(unsigned int i = 0; i < strlen(token); i++){
-				if(token[i] >= 'A' && token[i] <= 'E'){
-					tempIterator += 16 << (token[i] - 'A');
+                getline(read, buffer);
+                tokenizer t(buffer, " \n");
+		if(!t().size()) return;
+		macro.push_back(new script(t.current()));
+		if(t().size()){
+			for(char c : t.current()){
+				if(c >= 'A' && c <= 'E'){
+					tempIterator += 16 << (c - 'A');
 				}
 			}
 		}
@@ -357,7 +364,7 @@ void player::readScripts()
 
 void instance::updateRects()
 {
-	if(current.move != NULL) {
+	if(current.move != nullptr) {
 		current.move->pollRects(current.frame, current.connect, collision, hitreg, hitbox);
 		for(unsigned int i = 0; i < hitbox.size(); i++){
 			if(current.facing == -1) hitbox[i].x = current.posX - hitbox[i].x - hitbox[i].w;
@@ -424,18 +431,16 @@ void instance::enforceAttractor(attractor* p)
 		case 0:
 			break;
 		case 1:
-			resultant.x -= yDist/p->radius;
-			resultant.y -= yDist/p->radius;
+			resultant.x *= xDist * p->radius / totalDist;
+			resultant.y *= yDist * p->radius / totalDist;
 			resultant.x *= directionX;
 			resultant.y *= directionY;
 			break;
 		case 2:
-			for(int i = 1; i < xDist/p->radius; i++)
-				resultant.x /= 2;
-			for(int i = 1; i < yDist/p->radius; i++)
-				resultant.y /= 2;
-			resultant.x *= directionX;
-			resultant.y *= directionY;
+			resultant.x *= xDist * p->radius / pow(totalDist, 2);
+			resultant.y *= yDist * p->radius / pow(totalDist, 2);
+			resultant.x*= directionX;
+			resultant.y*= directionY;
 			break;
 		case 3:
 			if(totalDist > p->radius){
@@ -458,7 +463,7 @@ void instance::enforceGravity(int grav, int floor)
 
 	if(collision.y > floor && current.aerial == 0){
 		current.aerial = 1;
-		current.reversal = NULL;
+		current.reversal = nullptr;
 	}
 	else if(current.aerial && !current.freeze){ 
 		momentum.push_back(g);
@@ -471,7 +476,7 @@ void player::enforceGravity(int grav, int floor)
 
 	if(collision.y > floor && current.aerial == 0){
 		current.aerial = 1;
-		current.reversal = NULL;
+		current.reversal = nullptr;
 	}
 	else if(current.aerial && !current.freeze){ 
 		if(hover > 0 && current.deltaY - 6 < 0) g.y = -current.deltaY;
@@ -481,8 +486,10 @@ void player::enforceGravity(int grav, int floor)
 
 void player::checkBlocking()
 {
-	blockType = -pick()->checkBlocking(current, inputBuffer);
-	updateRects();
+	if(current.move->state[current.connect].i & 513){
+		blockType = -pick()->checkBlocking(current, inputBuffer);
+		updateRects();
+	}
 }
 
 void player::enforceFloor(int floor)
@@ -527,6 +534,7 @@ void player::checkCorners(int left, int right)
 	even though we're *checking* collision, we're still *moving* spr*/
 	int lOffset = current.posX - collision.x;
 	int rOffset = current.posX - (collision.x + collision.w);
+	updateRects();
 	if(collision.x <= left){
 		if(elasticX){
 			current.lCorner = 0;
@@ -535,6 +543,7 @@ void player::checkCorners(int left, int right)
 		}
 		if(collision.x <= 50){
 			if(current.facing == 1) current.lCorner = 1;
+			else current.posX++;
 			if (stick) {
 				if(current.move == pick()->untech || current.move == pick()->die){
 					current.deltaX = 0;
@@ -554,6 +563,7 @@ void player::checkCorners(int left, int right)
 		}
 		if(collision.x + collision.w >= 3150){ 
 			if(current.facing == -1) current.rCorner = 1;
+			else(current.posX--);
 			if (stick) {
 				if(current.move == pick()->untech || current.move == pick()->die){
 					current.deltaX = 0;
@@ -575,7 +585,7 @@ void player::land()
 		if(momentum[i].y > 0) momentum.erase(momentum.begin()+i);
 	}
 	pick()->land(current.move, current.frame, current.connect, current.hit, meter);
-	current.reversal = NULL;
+	current.reversal = nullptr;
 	current.aerial = false;
 }
 
@@ -673,7 +683,7 @@ int instance::passSignal(int sig)
 	case 1:
 		action * a; 
 		a = pick()->moveSignal(counter);
-		if(a != NULL){
+		if(a != nullptr){
 			current.move = a;
 			current.frame = 0;
 			current.connect = 0;
@@ -760,7 +770,7 @@ void player::macroCheck(SDL_Event &event)
 	char buffer[200];
 	int effect = tap(event);
 	if(effect > 0){
-		currentMacro = NULL;
+		currentMacro = nullptr;
 		if(effect & 512) search = true;
 	} else if (effect < 0) {
 		if(abs(effect) & 512){
@@ -770,10 +780,10 @@ void player::macroCheck(SDL_Event &event)
 					record = new script();
 					record->init(1);
 				} else {
-					sprintf(buffer, "%i-%s.sh", ID, v->name);
+					sprintf(buffer, "%i-%s.sh", ID, v->name.c_str());
 					record->write(buffer);
 					delete record;
-					record = NULL;
+					record = nullptr;
 				}
 			}
 		}
@@ -846,8 +856,8 @@ void instance::connect(int combo, hStat & s)
 		if(!s.ghostHit) current.freeze = s.stun/4+10;
 	} else current.freeze = s.pause;
 	pick()->connect(current, meter);
-	current.reversal = NULL;
-	if(current.bufferedMove == current.move) current.bufferedMove = NULL;
+	current.reversal = nullptr;
+	if(current.bufferedMove == current.move) current.bufferedMove = nullptr;
 }
 
 int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
@@ -860,14 +870,14 @@ int instance::takeHit(int combo, hStat & s, SDL_Rect &p)
 			current.freeze = 0;
 		}
 	}
-	current.reversal = NULL;
+	current.reversal = nullptr;
 	return pick()->takeHit(current, s, blockType, particleType, meter);
 }
 
 int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 {
 	SDL_Rect v = {0, 0, 1, 0};
-	action * temp = NULL;
+	action * temp = nullptr;
 	if(s.damage > 0){
 		if(combo >= s.damage) s.damage = 1;
 		else s.damage -= combo;
@@ -888,7 +898,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 	} else {
 		particleLife = 8;
 		current.deltaX /= 6;
-		if(current.deltaY < 0) current.deltaY /= 60; 
+		if(current.deltaY < 0) current.deltaY /= 55; 
 		else current.deltaY /= 6;
 		momentum.clear();
 		if(current.aerial) v.y = s.lift;
@@ -919,7 +929,7 @@ int player::takeHit(int combo, hStat & s, SDL_Rect &p)
 		else stick = false;
 	}
 	if(current.move == pick()->die){
-		current.bufferedMove = NULL;
+		current.bufferedMove = nullptr;
 		current.frame = 0;
 		current.connect = 0;
 		current.hit = 0;

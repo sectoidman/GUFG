@@ -10,6 +10,8 @@
 #include <stdio.h>
 #ifndef AUXIL
 #define AUXIL
+
+using std::string;
 class action;
 class aux{
 	private:
@@ -25,7 +27,7 @@ class aux{
 		static SDL_Surface* load_image(std::string filename);
 		static void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination);
 		static bool checkCollision(SDL_Rect, SDL_Rect);
-		static std::vector<SDL_Rect> defineRectArray(char*); 
+		static std::vector<SDL_Rect> defineRectArray(string);
 };
 
 struct attractor{

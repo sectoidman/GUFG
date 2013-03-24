@@ -1,0 +1,18 @@
+Name: NJ
+Buffer: 0 : 0
+Hits: 0
+Frames: 2 : 2
+Check: 1
+State: 1
+Gain: 0
+Cost: 0
+Blocks: 0
+Properties: 
+#0
+$C	10 30 110 286
+$R	10 30 110 286
+$D	0 0 0 0
+#1
+$C	10 30 110 286
+$R	10 30 110 286
+$D	0 0 0 0

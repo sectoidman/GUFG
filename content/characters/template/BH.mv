@@ -1,0 +1,14 @@
+Name: BH
+Buffer: 0 : 0
+Hits: 0
+Frames: 1 : 1
+Check: 513
+State: 512
+Gain: 0
+Cost: 0
+Blocks: 2
+Properties: T
+#0
+$C	10 0 110 270
+$R	10 0 110 330
+$D	0 0 0 0

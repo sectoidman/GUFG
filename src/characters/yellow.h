@@ -5,7 +5,7 @@ class yellow : public character {
 public:
 	yellow();
 	void resetAirOptions(std::vector<int>&);
-	action * createMove(char*);
+	action * createMove(std::string);
 	int takeHit(status&, hStat&, int, int&, std::vector<int>&);
 	void drawMeters(int, int, std::vector<int>);
 	void tick(std::vector<int>&);
@@ -17,7 +17,7 @@ public:
 class flashStep : public airMove {
 public:
 	flashStep();
-	flashStep(const char*);
+	flashStep(std::string, std::string);
 	bool check(SDL_Rect&, std::vector<int>);
 	void execute(action *, std::vector<int>&, int&, int&, int&);
 private:
@@ -27,10 +27,11 @@ private:
 class flashSummon : public special {
 public:
 	flashSummon();
-	flashSummon(const char*);
+	flashSummon(std::string, std::string);
+	int arbitraryPoll(int, int);
 	bool check(SDL_Rect&, std::vector<int>);
 	void execute(action *, std::vector<int>&, int&, int&, int&);
-	bool setParameter(char*);
+	bool setParameter(string);
 	virtual void zero();
 	void step(std::vector<int>&, status&);
 private:

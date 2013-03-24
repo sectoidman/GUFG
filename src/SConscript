@@ -19,7 +19,6 @@ gcc = linux.Clone()
 gcc.Replace(CXX='g++')
 gcc.Append(LIBS=['GL', 'GLU', 'glut'])
 
-
 clang = linux.Clone()
 clang.Replace(CXX='clang++')
 clang.Append(LIBS=['GL', 'GLU', 'm', 'c++'],
@@ -32,13 +31,12 @@ std_inside.Append(LIBS=['GL', 'GLU', 'm', 'rt', 'pthread'],
                  CXXFLAGS=['-nostdinc++'])
 std_inside.Prepend(CPPPATH=[libcxxpath])
 
-
-
 mac = base.Clone()
 mac.Replace(CXX='clang++')
 mac.Prepend(CPPPATH=['/usr/local/include/c++'],
             DYLD_LIBRARY_PATH=['/usr/local/lib'])
 mac.Append(CXXFLAGS=['-D___MAC_OSX'],
+          LD="clang++",
           LDFLAGS=['-L/usr/local/lib'],
           LIBS=['c++', 'm'],
           FRAMEWORKS=['OpenGL',
@@ -53,7 +51,7 @@ mac_std_inside.Append(CXXFLAGS=['-nostdinc++'], CPPPATH=[libcxxpath])
 
 def AddExtras(k):
   if k in ['.osx', '.sosx']:
-    return ['SDLMain.m']
+    return ['extern/SDLMain.m']
   if k in ['.s', '.sosx']:
     return ['extern/libcxx/src/'+cpp+'.cpp' for cpp in \
              ['chrono',

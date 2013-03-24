@@ -1,6 +1,9 @@
 #include "player.h"
+#include <string>
 #ifndef ANALYTICS
 #define ANALYTICS
+
+using std::string;
 class chart{
 public:
 	chart(int);
@@ -37,7 +40,7 @@ struct frame {
 class script {
 public:
 	script() {}
-	script(char*);
+	script(string);
 	void init(int);
 	void init(std::vector<int>);
 	void push(int i, frame);
@@ -46,8 +49,8 @@ public:
 	std::vector<int> selection;
 	bool test();
 	bool genEvent(int, int, frame&);
-	virtual void load(char*);
-	virtual void write(char*);
+	virtual void load(string);
+	virtual void write(string);
 	virtual void write();
 	virtual ~script();
 };

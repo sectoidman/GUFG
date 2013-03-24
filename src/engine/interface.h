@@ -13,12 +13,17 @@
 #include "analytics.h"
 #include "window.h"
 #include "harness.h"
+#include <string>
+
 #ifndef INTERFACE
 #define INTERFACE
+
+using std::string;
+
 class gameInstance : public window, public arcadeHarness{
 public:
 	virtual void resolve() = 0;	/*Every game type requires a resolve loop.*/
-	int drawGlyph(const char *, int, int, int, int, int);
+	int drawGlyph(string, int, int, int, int, int);
 	virtual void loadMisc();
 	virtual bool screenInit();
 	virtual bool screenInit(int, int);
@@ -53,7 +58,7 @@ public:
 	virtual void loadAssets();
 	void processInput(SDL_Event&);	/*Accepts input into input containers, for use by anything that wants it*/
 	void createPlayers();
-	void createPlayers(char*);
+	void createPlayers(string);
 	void startGame();
 	void loadMatchBackground();
 /*Important interface functions that will remain interface functions*/
@@ -91,7 +96,7 @@ public:
 	void doSuperFreeze();
 	void readMatchupChart();
 	void writeMatchupChart();
-	void writeImage(const char*, int, action*);
+	void writeImage(string, int, action*);
 
 	bool select[2];
 	std::vector<int> selection;

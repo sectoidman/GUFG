@@ -35,33 +35,27 @@ void red::init(std::vector<int>& metre)
 	metre[6] = 0;
 }
 
-action * red::createMove(char * fullName)
+action * red::createMove(std::string key)
 {
-	char * token;
-	char type[2] = {fullName[0], fullName[1]};
-	char actionName[151];
-	char buffer[101];
-	strcpy (buffer, fullName);
-
-	token = strtok(fullName, " \t-@?_%$!\n");
-	sprintf(actionName, "%s/%s", name, token);
-
+	tokenizer t(key, " \t-@?_%$!\n");
+        t();
 	action * m;
-	switch(type[0]){
+	switch(key[0]){
 	case '$':
-		if(type[1] == '!') m = new redSuper(actionName);
-		else m = new redCancel(actionName);
+		if(key[1] == '!') m = new redSuper(name, t.current());
+		else m = new redCancel(name, t.current());
 		break;
 	default:
-		m = character::createMove(buffer);
+		m = character::createMove(key);
 		break;
 	}
+	if(m->typeKey == '0') m->typeKey = key[0];
 	return m;
 }
 
-redCancel::redCancel(const char* n) 
-{ 
-	build(n); 
+redCancel::redCancel(std::string dir, std::string file) 
+{
+	build(dir, file); 
 }
 
 bool redCancel::check(SDL_Rect& p, std::vector<int> meter)

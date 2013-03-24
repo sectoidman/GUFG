@@ -15,6 +15,8 @@
 #include <SDL/SDL_opengl.h>
 #include <vector>
 #include "gl-compat.h"
+
+using std::to_string;
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -140,7 +142,7 @@ void interface::drawConfigMenu(int ID)
 	glColor4f(1.0, 1.0, 0.0, 0.4 + (float)(configMenu[ID] == 1)*0.4);
 	drawGlyph(buffer, 20 + 1260*ID, 300, 310, 40, 2*ID);
 	for(i = 2; i < 7; i++){
-		sprintf(buffer, "%s", p[ID]->inputName[i+2]);
+		sprintf(buffer, "%s", p[ID]->inputName[i+2].c_str());
 		glColor4f(0.0, 0.0, 1.0, 0.4 + (float)(configMenu[ID] == i)*0.4);
 		drawGlyph(buffer, 20 + 1230*ID, 300, 310+40*(i-1), 40, 0);
 		int a = 0;
@@ -230,7 +232,7 @@ void interface::drawHUD()
 	drawGlyph(buffer, 700, 200, 0, 90, 1);
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	for(unsigned int i = 0; i < P.size(); i++){
-		if(P[i]->name) drawGlyph(P[i]->name, 100+800*i, 600, 30, 40, 0+2*i);
+		if(P[i]->name.size()) drawGlyph(P[i]->name, 100+800*i, 600, 30, 40, 0+2*i);
 		else drawGlyph(things[i]->pick()->name, 100+800*i, 600, 30, 40, 0+2*i);
 		if(counterHit[i] > 0){
 			glColor4f(1.0, 1.0, 0.5, 0.7);
@@ -284,13 +286,13 @@ void interface::drawHUD()
 	}
 	if(endTimer > 3 * 60 + 29 && endTimer < 4 * 60){ 
 		if(things[0]->meter[0] > things[1]->meter[0]){ 
-			sprintf(buffer, "%s", things[0]->pick()->name);
+			sprintf(buffer, "%s", things[0]->pick()->name.c_str());
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
 			if(endTimer == 4 * 60 - 1)
 				Mix_PlayChannel(3, announceWinner[selection[0]], 0);
 		} else if(things[1]->meter[0] > things[0]->meter[0]){
-			sprintf(buffer, "%s", things[1]->pick()->name);
+			sprintf(buffer, "%s", things[1]->pick()->name.c_str());
 			drawGlyph(buffer, 0, 1600, 300, 150, 1);
 			drawGlyph("Wins", 0, 1600, 450, 150, 1);
 			if(endTimer == 4 * 60 - 1)
@@ -520,15 +522,15 @@ void avatar::draw(action *& cMove, int f)
 	cMove->draw(f);
 }
 
-int gameInstance::drawGlyph(const char * string, int x, int space, int y, int height, int just)
+int gameInstance::drawGlyph(string s, int x, int space, int y, int height, int just)
 {
 	int w, h, width = 0, padding = 0, totalWidth = 0;
 	if(just != 0){
-		for(unsigned int i = 0; i < strlen(string); i++){
-			if(string[i] == ' ') totalWidth += w * sf / 2;
-			else if(string[i] == '\0');
+		for(char c : s){
+			if(c == ' ') totalWidth += w * sf / 2;
+			else if(c == '\0');
 			else{
-				glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
+				glBindTexture(GL_TEXTURE_2D, glyph[toupper(c)]);
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
 				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 				sf = (float)height / (float)h;
@@ -540,10 +542,10 @@ int gameInstance::drawGlyph(const char * string, int x, int space, int y, int he
 	}
 
 	float sf;
-	for(unsigned int i = 0; i < strlen(string); i++){
-		if(string[i] == ' ') x += (float)width / 2.0;
+	for(char c : s){
+		if(c == ' ') x += (float)width / 2.0;
 		else{
-			glBindTexture(GL_TEXTURE_2D, glyph[toupper(string[i])]);
+			glBindTexture(GL_TEXTURE_2D,glyph[toupper(c)]);
 
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
 			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
@@ -599,7 +601,7 @@ bool instance::spriteCheck()
 }
 bool avatar::spriteCheck(action *& cMove, int f)
 {
-	if(cMove == NULL) return 0;
+	if(cMove == nullptr) return 0;
 	else return cMove->spriteCheck(f);
 }
 
@@ -613,11 +615,11 @@ bool action::spriteCheck(int f)
 	else return 0;
 }
 
-void interface::writeImage(const char * movename, int frame, action * move)
+void interface::writeImage(string movename, int frame, action * move)
 {
 	int realPosY = 0;
 	int realPosX = 0;
-	SDL_Surface * image = NULL;
+	SDL_Surface * image = nullptr;
 	int maxY = move->collision[frame].y + move->collision[frame].h,
 	    maxX = move->collision[frame].x + move->collision[frame].w;
 	for(unsigned int i = 0; i < move->hitreg[frame].size(); i++){
@@ -640,7 +642,6 @@ void interface::writeImage(const char * movename, int frame, action * move)
 		if(move->hitbox[frame][i].y + move->hitbox[frame][i].h > maxY)
 			maxY = move->hitbox[frame][i].y + move->hitbox[frame][i].h;
 	}
-	char fname[200];
 	int w = maxX + realPosX;
 	int h = maxY + realPosY;
 	int x = 0;
@@ -668,7 +669,7 @@ void interface::writeImage(const char * movename, int frame, action * move)
 				 rmask, gmask, bmask, amask);
 	screenInit(w, h);
 
-	sprintf(fname, "content/characters/%s#%i.bmp", movename, frame);
+
 
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	glRectf(0.0f, 0.0f, (GLfloat)w, (GLfloat)h);
@@ -682,7 +683,8 @@ void interface::writeImage(const char * movename, int frame, action * move)
 
 	SDL_GL_SwapBuffers();
 
-	if(SDL_SaveBMP(image, fname)) printf("You dun fucked up\n");
+	string f("dump/"+movename+"#"+to_string(frame)+".bmp");
+	if(SDL_SaveBMP(image, f.c_str())) printf("You dun fucked up\n");
 }
 
 void action::drawBoxen(int frame){
@@ -708,10 +710,10 @@ bool gameInstance::screenInit(int w, int h)
 	/*WM stuff*/
 	if(window::screen){ 
 		SDL_FreeSurface(screen);
-		screen = NULL;
+		screen = nullptr;
 	}
 	SDL_WM_SetCaption("GUFG", "GUFG");
-	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
+	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == nullptr)
 		return false;
 	SDL_ShowCursor(SDL_DISABLE);
 

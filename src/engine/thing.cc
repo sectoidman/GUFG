@@ -4,30 +4,30 @@
 #include <assert.h>
 #include <stdio.h>
 #include <cstring>
+#include "tokenizer.h"
 bool model::readModel()
 {
 	return readModel("model.obj");
 }
 
-bool model::readModel(const char * fname)
+bool model::readModel(string fname)
 {
-	char buffer[300];
-	char * token;
+        string buffer;
 	std::ifstream read;
 	read.open(fname);
 	assert(!read.fail());
 	while(!read.eof()){
-		read.getline(buffer, 300);
-		if(token = strtok(buffer, " \n")){
-			if(!strcmp(token, "v")){
+		getline(read, buffer);
+                tokenizer t(buffer, " \n");
+		if(t().size()){
+			if(!t.current().compare("v")){
 				for(int j = 0; j < 3; j++){
-					token = strtok(NULL, " \n");
-					vertices[j].push_back(atof(token));
+					vertices[j].push_back(stof(t()));
 				}
-			} else if(!strcmp(token, "f")){
+			} else if(!t.current().compare("f")){
 				std::vector<int> face;
-				while(token = strtok(NULL, " \n"))
-					face.push_back(atoi(token));
+				while(t().size())
+					face.push_back(stoi(t.current()));
 				if(face.size() > 2 && face.size() < 5) faces.push_back(face);
 			}
 		}

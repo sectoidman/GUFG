@@ -17,10 +17,12 @@ public:
 	virtual action * moveSignal(int);
 	bool spriteCheck(action *&, int);
 	virtual void draw(action *&, int);//Pass sprite information up.
-	virtual action * createMove(char*);
+	virtual action * createMove(std::string);
+	virtual action * dealWithMove(std::string);
+	virtual action * mandateMove(std::string);
 	virtual void build(const char*, const char*);
 	virtual void processMove(action * m);
-	virtual void sortMove(action *, char*);
+	virtual void sortMove(action *, std::string);
 	virtual void prepHooks(status&, action *&, int[], std::vector<int>, SDL_Rect &, bool, std::vector<int>&);	//Take input from the game and propagate it to the appropriate actionTrie.
 	//BRB prepping my hooks
 	virtual action * hook(int[], int, int, std::vector<int>, std::vector<int>, action *, SDL_Rect&, int&, int&, bool);
@@ -36,7 +38,7 @@ public:
 	virtual void tick(std::vector<int>&) {}
 	virtual void neutralize(status&, action*&, std::vector<int>&);
 	virtual bool turn(int&) { return 0; }
-	char * name; //The name of the directory from which the character spawns. This is important for loading into memory
+	std::string name; //The name of the directory from which the character spawns. This is important for loading into memory
 	actionTrie * head;	//Trie for ground actions
 	int lifespan;
 
@@ -65,29 +67,29 @@ public:
 	virtual void block(status&, int, bool);
 	virtual void resetAirOptions(std::vector<int>&);
 	virtual void land(action *&, int &, int &, int &, std::vector<int>&);
-	virtual void sortMove(action *, char*);
+	virtual void sortMove(action *, std::string);
 	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&);
 	virtual action * hook(int[], int, int, std::vector<int>, std::vector<int>, action *, SDL_Rect&, int&, int&, bool);
 
-	looping * dead;
+	action * dead;
 	action * airNeutral;
 	action * crouch;
-	hitstun * reel;
-	untechState * untech;
-	airLooping * fall;
-	utility * down;
-	hitstun * crouchReel;
-	hitstun * crouchBlock;
-	hitstun * standBlock;
-	hitstun * airBlock;
-	utility * throwBreak;
+	action * reel;
+	action * untech;
+	action * fall;
+	action * down;
+	action * crouchReel;
+	action * crouchBlock;
+	action * standBlock;
+	action * airBlock;
+	action * throwBreak;
 };
 
 class projectile : virtual public avatar {
 public:
-	projectile(const char* directory, const char* file);
+	projectile(string, string);
 	projectile() {}
-	virtual void build(const char*, const char*);
+	virtual void build(string, string);
 	virtual int acceptTarget(action*, int);
 	virtual void pollStats(hStat&, status&);
 	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&);

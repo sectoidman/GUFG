@@ -1,7 +1,7 @@
 #include "action.h"
-utility::utility(const char * n)
+utility::utility(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
 bool utility::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
@@ -17,9 +17,9 @@ bool utility::activate(std::vector<int> inputs, int pattern, int t, int f, std::
 	return check(p, meter);
 }
 
-looping::looping(const char * n)
+looping::looping(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
 void looping::step(std::vector<int>& meter, status &current)

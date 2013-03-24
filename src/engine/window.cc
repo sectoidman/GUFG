@@ -2,7 +2,7 @@
 #include "gl-compat.h"
 window::window()
 {
-	screen = NULL;
+	screen = nullptr;
 	h = 450, w = 800;
 }
 
@@ -15,7 +15,7 @@ bool window::screenInit()
 	}
 	/*WM stuff*/
 	SDL_WM_SetCaption("downtop", "downtop");
-	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == NULL)
+	if((screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL)) == nullptr)
 		return false;
 	SDL_ShowCursor(SDL_DISABLE);
 

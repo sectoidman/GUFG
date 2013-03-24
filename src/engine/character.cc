@@ -13,7 +13,7 @@ character::character()
 	//build("genericCharacter", "genericCharacter");
 }
 
-character::character(const char* name)
+character::character(const char * name)
 {
 	head = new actionTrie;
 	airHead = new actionTrie;
@@ -35,26 +35,25 @@ character::~character()
 		delete standBlock;
 		delete airBlock;
 		delete down;
-		if(name) delete [] name;
 	}
 }
 
 void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> buttons, SDL_Rect &p, bool dryrun, std::vector<int> & meter)
 {
-	action * t = NULL;
+	action * t = nullptr;
 	if(current.move && current.reversal){
 		if(current.move->state[current.hit].i & current.reversal->allowed.i){
 			if(current.reversal->check(p, meter)){
 				if(!dryrun) current.reversal->execute(neutral, meter, current.frame, current.connect, current.hit);
 				cMove = current.reversal;
 				current.reversalFlag = true;
-				if(!dryrun) current.reversal = NULL;
+				if(!dryrun) current.reversal = nullptr;
 			}
 		}
 	}
 	else if(!current.move) neutralize(current, cMove, meter);
 	t = hook(inputBuffer, 0, -1, meter, buttons, cMove, p, current.connect, current.hit, current.aerial);
-	if(t == NULL){
+	if(t == nullptr){
 		if(cMove->window(current.frame)){
 			if(cMove->attempt->check(p, meter)){
 				t = cMove->attempt;
@@ -65,12 +64,12 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 				t = cMove->onHold;
 			}
 		}
-		if (current.bufferedMove != NULL && current.freeze <= 0) {
+		if (current.bufferedMove != nullptr && current.freeze <= 0) {
 			if(!dryrun){ 
 				current.bufferedMove->execute(cMove, meter, current.frame, current.connect, current.hit);
 			}
 			cMove = current.bufferedMove;
-			if(!dryrun) current.bufferedMove = NULL;
+			if(!dryrun) current.bufferedMove = nullptr;
 		} else {
 			action * r;
 			bool l = current.reversalFlag;
@@ -82,16 +81,16 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 					current.reversal = hook(inputBuffer, 0, -1, meter, buttons, r, p, l, m, current.aerial);
 					if(current.reversal){
 						if(current.reversal->state[0].b.neutral) 
-							current.reversal = NULL;
+							current.reversal = nullptr;
 					}
 				}
 			}
 		}
 	}
-	if(t != NULL) {
+	if(t != nullptr) {
 		current.reversalFlag = false;
 		if(current.freeze > 0){
-			if(current.bufferedMove == NULL){ 
+			if(current.bufferedMove == nullptr){ 
 				if(!dryrun) current.bufferedMove = t;
 			}
 		} else {
@@ -114,7 +113,7 @@ action * character::hook(int inputBuffer[30], int i, int f, std::vector<int> met
 
 action * avatar::moveSignal(int)
 {
-	return NULL;
+	return nullptr;
 }
 
 void avatar::neutralize(status &current, action *& cMove, std::vector<int> & meter)
@@ -137,11 +136,10 @@ void avatar::getName(const char* directory, const char* file)
 	sprintf(buffer, "content/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
-	assert(!read.fail());
+	if(read.fail()) getName("template", "template");
 
 	read.get(buffer, 50); read.ignore(100, '\n');
-	name = new char[strlen(buffer)+1];
-	strcpy(name, buffer);
+	name = buffer;
 }
 
 int character::comboState(action * c)
@@ -156,52 +154,77 @@ int character::comboState(action * c)
 	return 0;
 }
 
+action * avatar::dealWithMove(std::string input)
+{
+	if(input[0] == '#' || input[0] == '\0') return nullptr;
+	bool replace = false;
+	action * m = createMove(input);
+	for(unsigned int i = 0; i < moveList.size(); i++){
+		if(!moveList[i]->fileName.compare(m->fileName) && moveList[i]->typeKey == m->typeKey){
+			if(m->null){
+				moveList[i]->allowed.i = 0;
+				//std::cout << "Disabling ";
+			} else {
+				char k = m->typeKey;
+				moveList[i]->build(name, m->fileName);
+				m->typeKey = k;
+				processMove(moveList[i]);
+				sortMove(moveList[i], input);
+				//std::cout << "Replacing ";
+			}
+			replace = true;
+			//std::cout << m->fileName + "\n";
+			delete m;
+			m = moveList[i];
+			break;
+		}
+	}
+	if(!replace){
+		if(m->null) delete m;
+		else{
+			//std::cout << "New move " << name + "/" + m->fileName + " created\n";
+			moveList.push_back(m);
+			processMove(m);
+			sortMove(m, input);
+		}
+	}
+	return m;
+}
+
 void avatar::build(const char* directory, const char* file)
 {
 	char buffer[101];
-	char buffer2[101];
-	action * m = NULL;
 	bool commentFlag;
 	std::ifstream read;
 	sprintf(buffer, "content/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
-	assert(!read.fail());
+	if(read.fail()){ 
+		std::cout << directory << "/" << file << " Character definition not found\n";
+		return;
+	}
 
 	read.get(buffer, 50); read.ignore(100, '\n');
 
 	while(!read.eof()){
 		commentFlag = 0;
 		read.get(buffer, 100, '\n'); read.ignore(100, '\n');
-		
-		if(buffer[0] == '#' || buffer[0] == '\0')
-			commentFlag = 1;
-		if(!commentFlag){
-			strcpy(buffer2, buffer);
-
-			m = createMove(buffer);
-			processMove(m);
-			sortMove(m, buffer2);
-		}
+		dealWithMove(buffer);
 	}
 	read.close();
 }
 
-void avatar::sortMove(action * m, char* buffer)
+void avatar::sortMove(action * m, std::string key)
 {
-	char * token;
-	token = strtok(buffer, " \t=~>-&?@%$_!\n");
-	while (token){
-		token = NULL;
-		token = strtok(NULL, " \t=~>-&?@%$_!\n");
-		if(token) {
-			switch (token[0]){
-			case 'h':
-				head->insert(m, token);
-				break;
-			default:
-				break;
-			}
+	tokenizer t(key, " \t=~>-&?@%$_!\n");
+        t();
+	while (t().size()){
+		switch (t.current()[0]){
+		case 'h':
+			head->insert(m, t.current());
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -210,103 +233,88 @@ void avatar::loadAssets()
 {
 	for(action *i:moveList){ 
 		if(i->payload) i->payload->loadAssets();
-		i->loadMisc();
+		i->loadMisc(name);
 	}
 }
 
-void character::sortMove(action * m, char* buffer)
+void character::sortMove(action * m, std::string key)
 {
-	char * token;
-	token = strtok(buffer, " \t=>-&?@%$_!\n");
-	while (token){
-		token = NULL;
-		token = strtok(NULL, " \t=>-&?@%$_!\n");
-		if(token) {
-			switch (token[0]){
-			case 'h':
-				head->insert(m, token);
-				break;
-			case 'a':
-				airHead->insert(m, token);
-				break;
-			default:
-				break;
-			}
+	if(m->null) return;
+	tokenizer t(key, " \t=>-&?@%$_!\n");
+        t();
+	while (t().size()){
+		switch (t.current()[0]){
+		case 'h':
+			head->insert(m, t.current());
+			break;
+		case 'a':
+			airHead->insert(m, t.current());
+			break;
+		default:
+			break;
 		}
 	}
+}
+
+
+action * avatar::mandateMove(std::string key)
+{
+	action * m = createMove(key);
+	if(m->null){ 
+		delete m;
+		std::string temp = name;
+		name = "template";
+		m = createMove(key);
+		name = temp;
+	}
+	assert(!m->null); /*Hopefully this will end up the ONLY assert.
+						It's a well-warranted one though, since if you
+						don't have these moves, you're gonna have a bad 
+						time
+						*/
+	moveList.push_back(m);
+	processMove(m);
+	return m;
 }
 
 void character::build(const char *directory, const char *file)
 {
 	getName(directory, file);
 
-	char buffer[101];
-
-	sprintf(buffer, "%s/NS", name);
-	neutral = new looping(buffer);
-	processMove(neutral);
+	neutral = mandateMove("@NS");
 	dFlag = 0;
 
+	std::string temp = name;
+	name = "template";
+	avatar::build("template", "template");
+	name = temp;
 	avatar::build(directory, file);
 
-	sprintf(buffer, "%s/die", name);
-	die = new untechState(buffer);
-	processMove(die);
-
-	sprintf(buffer, "%s/dead", name);
-	dead = new looping(buffer);
-	processMove(dead);
+	die = mandateMove("`die");
+	dead = mandateMove("@dead");
 	die->feed(dead, 0, 0);
 	die->feed(dead, 1, 0);
 
-	sprintf(buffer, "%s/NL", name);
-	crouch = new looping(buffer);
-	processMove(crouch);
+	crouch = mandateMove("@NL");
 
-	sprintf(buffer, "%s/NJ", name);
-	airNeutral = new airLooping(buffer);
-	processMove(airNeutral);
+	airNeutral = mandateMove("@jN");
 	airNeutral->feed(neutral, 1, 0);
 
-	sprintf(buffer, "%s/HS", name);
-	reel = new hitstun(buffer);
-	processMove(reel);
-
-	sprintf(buffer, "%s/Fall", name);
-	fall = new airLooping(buffer);
-	processMove(fall);
-
-	sprintf(buffer, "%s/UT", name);
-	untech = new untechState(buffer);
+	reel = mandateMove(",HS");
+	fall = mandateMove("@jfall");
+	untech = mandateMove("`UT");
 	untech->feed(fall, 0, 0);
-	processMove(untech);
 
-	sprintf(buffer, "%s/down", name);
-	down = new utility(buffer);
-	processMove(down);
-
+	down = mandateMove("-down");
 	untech->feed(down, 1, 0);
 	fall->feed(down, 1, 0);
 
-	sprintf(buffer, "%s/HL", name);
-	crouchReel = new hitstun(buffer);
-	processMove(crouchReel);
+	crouchReel = mandateMove(",HL");
 
-	sprintf(buffer, "%s/BH", name);
-	standBlock = new hitstun(buffer);
-	processMove(standBlock);
-
-	sprintf(buffer, "%s/BL", name);
-	crouchBlock = new hitstun(buffer);
-	processMove(crouchBlock);
-
-	sprintf(buffer, "%s/BA", name);
-	airBlock = new hitstun(buffer);	
-	processMove(airBlock);
-
-	sprintf(buffer, "%s/break", name);
-	throwBreak = new utility(buffer);
-	processMove(throwBreak);
+	standBlock = mandateMove(",BH");
+	crouchBlock = mandateMove(",BL");
+	airBlock = mandateMove(",BA");
+	throwBreak = mandateMove("break");
 
 	head->insert(5, neutral);
 
@@ -319,79 +327,80 @@ void character::build(const char *directory, const char *file)
 
 void avatar::processMove(action * m)
 {
-	moveList.push_back(m);
-	char* temp = NULL;
-	action* t = NULL;
+	if(m->null) return;
+	std::string temp;
+	action* t = nullptr;
 	for(int i = 0; i < 7; i++){
 		if(i == 2){
 			for(int j = 0; j < m->hits; j++){
 				temp = m->request(i, j);
-				if(temp != NULL){ 
-					t = createMove(temp);
+				if(!temp.empty()){
+					t = dealWithMove(temp);
 					m->feed(t, i, j);
-					processMove(t);
 				}
 			}
 		} else if (i == 4) {
 			temp = m->request(i, 0);
-			if(temp != NULL){
-				m->generate(name, temp);
+			if(!temp.empty()){
+				m->generate(name.c_str(), temp.c_str());
 			}
 		} else {
 			temp = m->request(i, 0);
-			if(temp != NULL){
-				t = createMove(temp);
+			if(!temp.empty()){
+				t = dealWithMove(temp);
 				m->feed(t, i, 0);
-				processMove(t);
 			}
 		}
 	}
 }
 
-action * avatar::createMove(char * fullName)
+action * avatar::createMove(std::string key)
 {
-	char * token;
-	char type[2] = {fullName[0], fullName[1]};
-	char actionName[151];
-
-	token = strtok(fullName, " \t=~>-&?@%$_!^\n");
-	sprintf(actionName, "%s/%s", name, token);
-
+	tokenizer t(key, " \t=`~/\\>-&,?@%$_!^\n");
+        string token = t();
 	action * m;
-	switch(type[0]){
+	switch(key[0]){
 	case '%':
-		if(type[1] == 'j') m = new airSpecial(actionName);
-		else m = new special(actionName);
+		if(key[1] == 'j') m = new airSpecial(name, token);
+		else m = new special(name, token);
 		break;
 	case '~':
-		if(type[1] == 'j') m = new airNegNormal(actionName);
-		else m = new negNormal(actionName);
+		if(key[1] == 'j') m = new airNegNormal(name, token);
+		else m = new negNormal(name, token);
 		break;
 	case '-':
-		if(type[1] == 'j') m = new airUtility(actionName);
-		else m = new utility(actionName);
+		if(key[1] == 'j') m = new airUtility(name, token);
+		else m = new utility(name, token);
 		break;
 	case '@':
-		if(type[1] == 'j') m = new airLooping(actionName);
-		else m = new looping(actionName);
+		if(key[1] == 'j') m = new airLooping(name, token);
+		else m = new looping(name, token);
 		break;
 	case '^':
-		m = new releaseCheck(actionName);
+		m = new releaseCheck(name, token);
 		break;
 	case '?':
-		m = new mash(actionName);
+		m = new mash(name, token);
 		break;
 	case '_':
-		if(type[1] == 'j') m = new luftigeWerf(actionName);
-		else m = new werf(actionName);
+		if(key[1] == 'j') m = new luftigeWerf(name, token);
+		else m = new werf(name, token);
+		break;
+	case '`':
+		m = new untechState(name, token);
+		break;
+	case ',':
+		m = new hitstun(name, token);
 		break;
 	case 'j':
-		m = new airMove(actionName);
+		m = new airMove(name, token);
 		break;
 	default:
-		m = new action(actionName);
+		m = new action(name, token);
+		m->typeKey = 'n';
 		break;
 	}
+	if(m->typeKey == '0') m->typeKey = key[0];
 	return m;
 }
 
@@ -403,7 +412,7 @@ instance * avatar::spawn(action * source)
 void avatar::connect(status &current, std::vector<int>& meter)
 {
 	action * t = current.move->connect(meter, current.connect, current.frame);
-	if(t != NULL){
+	if(t != nullptr){
 		current.bufferedMove = t;
 	}
 }
@@ -573,10 +582,12 @@ void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag
 void avatar::step(status &current, std::vector<int> & meter)
 {
 	int a = 0;
-	if(current.move->hits > 0){
-		a += current.move->stats[current.connect-1].connect;
-		if(current.counter > 0)
-			a += current.move->CHStats[current.connect-1].connect;
+	if(current.move){
+		if(current.move->hits > 0 && current.connect <= current.move->hits){
+			a += current.move->stats[current.connect-1].connect;
+			if(current.counter > 0)
+				a += current.move->CHStats[current.connect-1].connect;
+		}
 	}
 	if(current.freeze <= 0){
 		current.move->step(meter, current);

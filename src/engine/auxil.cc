@@ -12,6 +12,7 @@
 #include "auxil.h"
 #include <vector>
 #include "gl-compat.h"
+#include "tokenizer.h"
 
 using namespace std;
 
@@ -19,12 +20,12 @@ using namespace std;
 SDL_Surface* aux::init_screen(int width, int height, int bpp) {
 	//Initialize all SDL subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
-		return NULL;
+		return nullptr;
 	}
 
 	SDL_Surface* screen = SDL_SetVideoMode(width, height, bpp, SDL_SWSURFACE);
 
-	SDL_WM_SetCaption("Someday soon I'll be a game!", NULL);
+	SDL_WM_SetCaption("Someday soon I'll be a game!", nullptr);
 
 	return screen;
 }
@@ -197,13 +198,13 @@ SDL_Surface* aux::scale2x(SDL_Surface* source) {
 
 // loads an image from a file name and returns it as a surface
 SDL_Surface* aux::load_image(std::string filename) {
-	SDL_Surface* loadedImage    = NULL;
-	SDL_Surface* optimizedImage = NULL;
+	SDL_Surface* loadedImage    = nullptr;
+	SDL_Surface* optimizedImage = nullptr;
 
 	loadedImage = IMG_Load(filename.c_str());
 
 	// if nothing went wrong on load
-	if (loadedImage != NULL) {
+	if (loadedImage != nullptr) {
 		//Create an optimized image
 		optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
 
@@ -220,7 +221,7 @@ void aux::apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destinat
 	offset.x = x;
 	offset.y = y;
 
-	SDL_BlitSurface(source, NULL, destination, &offset);
+	SDL_BlitSurface(source, nullptr, destination, &offset);
 }
 
 bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
@@ -231,21 +232,21 @@ bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 	return 1;
 }
 
-std::vector<SDL_Rect> aux::defineRectArray(char * definition)
+std::vector<SDL_Rect> aux::defineRectArray(string definition)
 {
 	std::vector<SDL_Rect> ret;
-	std::vector<char *> coordinate;
-	char * token;
-	coordinate.push_back(strtok(definition, ", \n\t"));
-	while(token = strtok(NULL, ", \n\t"))
-		coordinate.push_back(token);
+	std::vector<string> coordinate;
+        tokenizer t(definition, " \n\t");
+        coordinate.push_back(t());
+	while(t().size())
+		coordinate.push_back(t.current());
 
 	for(unsigned int i = 0; i < coordinate.size(); i+=4){
 		SDL_Rect t;
-		t.x = atoi(coordinate[i]);
-		t.y = atoi(coordinate[i + 1]);
-		t.w = atoi(coordinate[i + 2]);
-		t.h = atoi(coordinate[i + 3]);
+		t.x = stoi(coordinate[i]);
+		t.y = stoi(coordinate[i + 1]);
+		t.w = stoi(coordinate[i + 2]);
+		t.h = stoi(coordinate[i + 3]);
 		ret.push_back(t);
 	}
 	return ret;
@@ -253,7 +254,7 @@ std::vector<SDL_Rect> aux::defineRectArray(char * definition)
 
 GLuint aux::surface_to_texture(SDL_Surface * source)
 {
-	if(source == NULL) return -1;
+	if(source == nullptr) return -1;
 	GLint nColors;
 	GLenum texFormat;
 	GLuint texture;

@@ -5,6 +5,7 @@
  */
 #include "../charlist.h"
 #include "controller.h"
+#include <string>
 #ifndef PLAYER
 #define PLAYER
 struct frame;
@@ -21,6 +22,7 @@ public:
 	int ID;
 	int inputBuffer[30];
 	void checkFacing(instance*);
+	virtual void pollStats(hStat&);
 	virtual void neutralize();
 	virtual bool acceptTarget(instance*);
 	virtual bool CHState() { return 0; }
@@ -69,7 +71,7 @@ public:
 	virtual character * pick() { return v; }
 
 	int rounds;		//How many rounds has this player won this match?
-	int padding[400];	//More magic. Do not touch
+//	int padding[400];	//More magic. Do not touch
 	virtual void characterSelect(int);
 	virtual void drawHitParticle();
 
@@ -93,7 +95,7 @@ public:
 	bool stick;
 	int hover;
 
-	char * name;
+	string name;
 
 	int particleLife;
 

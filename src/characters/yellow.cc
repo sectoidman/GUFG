@@ -40,29 +40,23 @@ void yellow::step(status &current, std::vector<int>& meter)
 	character::step(current, meter);
 }
 
-action * yellow::createMove(char * fullName)
+action * yellow::createMove(std::string key)
 {
-	char * token;
-	char type[2] = {fullName[0], fullName[1]};
-	char actionName[151];
-	char buffer[101];
-	strcpy (buffer, fullName);
-
-	token = strtok(fullName, " \t-@?_%&$!\n");
-	sprintf(actionName, "%s/%s", name, token);
-
+	tokenizer t(key, " \t-@?_%&$!\n");
+        string token = t.current();
 	action * m;
-	switch(type[0]){
+	switch(key[0]){
 	case '$':
-		m = new flashStep(actionName);
+		m = new flashStep(name, token);
 		break;
 	case '&':
-		m = new flashSummon(actionName);
+		m = new flashSummon(name, token);
 		break;
 	default:
-		m = character::createMove(buffer);
+		m = character::createMove(key);
 		break;
 	}
+	if(m->typeKey == '0') m->typeKey = key[0];
 	return m;
 }
 
@@ -99,14 +93,14 @@ int yellow::takeHit(status& current, hStat & s, int blockType, int &hitType, std
 flashStep::flashStep() {}
 flashSummon::flashSummon() {}
 
-flashStep::flashStep(const char * n)
+flashStep::flashStep(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
-flashSummon::flashSummon(const char * n)
+flashSummon::flashSummon(std::string dir, std::string file)
 {
-	build(n);
+	build(dir, file);
 }
 
 void flashSummon::zero()
@@ -116,17 +110,13 @@ void flashSummon::zero()
 	uFlag = 0;
 }
 
-bool flashSummon::setParameter(char * buffer)
+bool flashSummon::setParameter(string buffer)
 {
-	char savedBuffer[100];
-	strcpy(savedBuffer, buffer);
-
-	char * token = strtok(buffer, "\t: \n");
-	if(!strcmp("FlashGain", token)){
-		token = strtok(NULL, "\t: \n-");
-		flashMeterGain = atoi(token); 
+	tokenizer t(buffer, "\t:+\n");
+	if(t() == "FlashGain"){
+		flashMeterGain = stoi(t("\t:\n"));
 		return 1;
-	} else return action::setParameter(savedBuffer);
+	} else return action::setParameter(buffer);
 }
 
 bool flashStep::check(SDL_Rect& p, std::vector<int> meter)
@@ -138,7 +128,18 @@ bool flashStep::check(SDL_Rect& p, std::vector<int> meter)
 bool flashSummon::check(SDL_Rect& p, std::vector<int> meter)
 {
 	if(meter[5] < 0) return 0;
-	else return action::check(p, meter);
+	if(meter[5] > 0) uFlag = 1;
+	if(uFlag) meter[1] += cost;
+	bool ret = action::check(p, meter);
+	if(uFlag) meter[1] -= cost;
+	uFlag = 0;
+	return ret;
+}
+
+int flashSummon::arbitraryPoll(int q, int f)
+{
+	if(uFlag && q == 2) return 0;
+	else return action::arbitraryPoll(q,f);
 }
 
 void flashSummon::execute(action * last, std::vector<int>& meter, int &f, int &c, int &h)
@@ -146,6 +147,10 @@ void flashSummon::execute(action * last, std::vector<int>& meter, int &f, int &c
 	if(meter[5] > 0) uFlag = 1;
 	else uFlag = 0;
 	action::execute(last, meter, f, c, h);
+	if(uFlag){
+		meter[1] += cost;
+		meter[4] -= cost;
+	}
 }
 
 void flashStep::execute(action * last, std::vector<int>& meter, int &f, int &c, int &h)

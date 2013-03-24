@@ -54,12 +54,12 @@ void script::push(int p, frame t)
 	command[p].push_back(t);
 }
 
-script::script(char* filename)
+script::script(string filename)
 {
 	load(filename);
 }
 
-void script::load(char* filename)
+void script::load(string filename)
 {
 	std::ifstream read;
 	read.open(filename);
@@ -87,19 +87,17 @@ void script::load(char* filename)
 
 void script::write()
 {
-	write(NULL);
+	write("");
 }
 
-void script::write(char * name)
+void script::write(string name)
 {
 	std::ofstream scribe;
-	if(name) scribe.open(name);
+	if(name.size()) scribe.open(name);
 	else{
-		char buffer [200];
 		time_t now = time(0);
-		tm* localTime = localtime(&now);
-		sprintf(buffer, ".data/replays/%s", asctime(localTime));
-		scribe.open(buffer);
+		tm* lT = localtime(&now);
+		scribe.open(string(".data/replays/"+string(asctime(lT))));
 	}
 	if(command[0].size() == 0){
 		scribe.close();

@@ -31,12 +31,12 @@ interface::interface()
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; /*screen{Width,Height} describe the size of the window holding the game.*/
 	screenHeight = 900;
-	screen = NULL;
+	screen = nullptr;
 	bg.w = 3200; /*The screen gives a partial view of the background, which is the area available for character movement.*/
 	bg.h = 1800;
 	floor = 50; /*Value of the floor. This is the maximum distance downward that characters can travel.*/
 	wall = 50; /*The size of the offset at which characters start to scroll the background, and get stuck.*/
-	menuMusic = NULL;
+	menuMusic = nullptr;
 
 	select[0] = 0;
 	select[1] = 0;
@@ -56,19 +56,19 @@ interface::interface()
 	numRounds = 2;
 
 	initContainers(2, 6);
-	oldReplay = NULL;
+	oldReplay = nullptr;
 	replayIterator = 0;
-	replay = NULL;
+	replay = nullptr;
 }
 
-void interface::createPlayers(char* rep)
+void interface::createPlayers(string rep)
 {
 	oldReplay = new script(rep);
 	createPlayers();
 	if(oldReplay->selection.size() != 2){
 		printf("Invalid Replay\n");
 		delete oldReplay;
-		oldReplay = NULL;
+		oldReplay = nullptr;
 	} else {
 		single = true;
 		analytics = false;
@@ -94,8 +94,8 @@ void interface::createPlayers()
 		counterHit[i] = 0;
 		configMenu[i] = 0;
 		things.push_back(P[i]);
-		P[i]->boxen = true;
-		P[i]->sprite = false;
+		P[i]->boxen = false;
+		P[i]->sprite = true;
 	}
 }
 
@@ -166,7 +166,7 @@ bool gameInstance::screenInit()
 	w = screenWidth*sf; h = screenHeight*sf;
 	if(screen){
 		SDL_FreeSurface(screen);
-		screen = NULL;
+		screen = nullptr;
 	}
 	bool ret = window::screenInit();
 	glDisable(GL_DEPTH_TEST);
@@ -197,7 +197,7 @@ void gameInstance::initialConfig(int ID)
 			glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
 			drawGlyph(pident, 0, screenWidth, 300, 80, 1);
 			drawGlyph("Please enter a", 0, screenWidth, 400, 80, 1);
-			sprintf(buffer, "command for %s", p[ID]->inputName[i]);
+			sprintf(buffer, "command for %s", p[ID]->inputName[i].c_str());
 			drawGlyph(buffer, 0, screenWidth, 500, 80, 1);
 			SDL_GL_SwapBuffers();
 			glDisable( GL_TEXTURE_2D );
@@ -269,7 +269,7 @@ void interface::runTimer()
 	int plus;
 	for(unsigned int i = 0; i < P.size(); i++){
 		if(select[i] == true){
-			if(things[i]->current.move != NULL){
+			if(things[i]->current.move != nullptr){
 				plus = (things[i]->current.move->arbitraryPoll(31, things[i]->current.frame));
 				if(plus != 0){
 					timer += plus;
@@ -321,20 +321,20 @@ void interface::runTimer()
 					if(analytics && replay){
 						replay->write();
 						delete replay;
-						replay = NULL;
+						replay = nullptr;
 					}
 					for(player *i:P){
 						if(i->record){
 							char buffer[200];
-							sprintf(buffer, "%i-%s.sh", i->ID, i->pick()->name);
+							sprintf(buffer, "%i-%s.sh", i->ID, i->pick()->name.c_str());
 							i->record->write(buffer);
 							delete i->record;
-							i->record = NULL;
+							i->record = nullptr;
 						}
 					}
 					if(oldReplay){
 						delete oldReplay;
-						oldReplay= NULL;
+						oldReplay= nullptr;
 					}
 					if(single) gameover = true;
 					else{
@@ -601,10 +601,10 @@ void interface::resolveSummons()
 
 void interface::summonAttractors()
 {
-	attractor * tvec = NULL, * avec = NULL;
+	attractor * tvec = nullptr, * avec = nullptr;
 	for(unsigned int i = 0; i < things.size(); i++){
 		if(things[i]->current.move && things[i]->current.frame == things[i]->current.move->distortSpawn) tvec = things[i]->current.move->distortion;
-		if(tvec != NULL){ 
+		if(tvec != nullptr){ 
 			avec = new attractor;
 			avec->x = tvec->x;
 			avec->y = tvec->y;
@@ -629,8 +629,8 @@ void interface::summonAttractors()
 				break;
 			}
 			globals.push_back(avec);
-			avec = NULL;
-			tvec = NULL;
+			avec = nullptr;
+			tvec = nullptr;
 		}
 	}
 }
@@ -661,7 +661,7 @@ void gameInstance::genInput()
 		replayIterator++;
 		if(replayIterator > oldReplay->command[0].size()){
 			delete oldReplay;
-			oldReplay = NULL;
+			oldReplay = nullptr;
 			replayIterator = 0;
 		}
 	} else {
@@ -669,7 +669,7 @@ void gameInstance::genInput()
 			for(unsigned int i = 0; i < P.size(); i++){
 				if(P[i]->currentMacro){
 					if(!P[i]->currentMacro->genEvent(0, P[i]->iterator, currentFrame[i])){
-						P[i]->currentMacro = NULL;
+						P[i]->currentMacro = nullptr;
 					} else {
 						if(P[i]->current.facing == -1){
 							bool s = currentFrame[i].axis[2];
@@ -707,11 +707,9 @@ void interface::readInput()
 {
 	std::vector<SDL_Event> events;
 	SDL_Event event;
-	for(int i = 0; i < 35; i++){
-		if(SDL_PollEvent(&event)){
-			events.push_back(event);
-			processInput(event);
-		}
+	while(SDL_PollEvent(&event)){
+		events.push_back(event);
+		processInput(event);
 	}
 	if(select[0] && select[1]){
 		if(scripting){
@@ -1059,7 +1057,7 @@ interface::~interface()
 {
 	if(select[0]) delete P[0]->pick();
 	if(select[1]) delete P[1]->pick();
-	if(menuMusic != NULL) Mix_FreeMusic(menuMusic);
+	if(menuMusic != nullptr) Mix_FreeMusic(menuMusic);
 	delete stats;
 	SDL_FreeSurface(screen);
 	SDL_Quit();
@@ -1110,7 +1108,6 @@ void interface::resolveCollision()
 	std::vector<int> dx;
 	for(player *i:P){
 		i->enforceFloor(floor);
-		i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 		temp.push_back(i->collision);
 		dx.push_back(i->current.deltaX);
 		temp.back().x -= dx.back();
@@ -1130,6 +1127,7 @@ void interface::resolveCollision()
 						j[i] = 0;
 					}
 				}
+				for(player *i:P) i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 				unitCollision(P[0], P[1]);
 				for(unsigned int i = 0; i < P.size(); i++){
 					if(localMaximum < abs(dx[i]) - j[i]){
@@ -1209,6 +1207,7 @@ void interface::resolveHits()
 	std::vector<bool> taken(things.size());
 	std::vector<int> hitBy(things.size());
 	int push[2];
+	for(player *i:P) i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 	for(unsigned int i = 0; i < things.size(); i++){
 		taken[i] = 0;
 		hit[i] = 0;
@@ -1230,7 +1229,7 @@ void interface::resolveHits()
 								connect[i] = 1;
 								things[i]->current.counter = things[m]->CHState();
 								if(things[i]->current.counter > 0) counterHit[things[i]->ID-1] = s[i].stun + (s[i].pause > 0) ? s[i].pause : (s[i].stun/4 + 10);
-								things[i]->pick()->pollStats(s[i], things[i]->current);
+								things[i]->pollStats(s[i]);
 								if(i < P.size()) push[i] = s[i].push;
 								k = things[m]->hitreg.size();
 								j = things[i]->hitbox.size();
