@@ -1,8 +1,10 @@
 #include <SDL/SDL.h>
-#include <vector>
 #include <string>
-#ifndef CONTROLLER
-#define CONTROLLER
+#include <vector>
+
+#ifndef ___controller
+#define ___controller
+
 using std::string;
 using std::vector;
 

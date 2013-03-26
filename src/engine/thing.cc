@@ -1,10 +1,12 @@
 #include "thing.h"
-#include <iostream>
-#include <fstream>
-#include <assert.h>
-#include <stdio.h>
-#include <cstring>
 #include "tokenizer.h"
+#include <assert.h>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+
+using std::ifstream;
+
 bool model::readModel()
 {
 	return readModel("model.obj");
@@ -12,8 +14,8 @@ bool model::readModel()
 
 bool model::readModel(string fname)
 {
-        string buffer;
-	std::ifstream read;
+    string buffer;
+	ifstream read;
 	read.open(fname);
 	assert(!read.fail());
 	while(!read.eof()){
@@ -25,7 +27,7 @@ bool model::readModel(string fname)
 					vertices[j].push_back(stof(t()));
 				}
 			} else if(!t.current().compare("f")){
-				std::vector<int> face;
+				vector<int> face;
 				while(t().size())
 					face.push_back(stoi(t.current()));
 				if(face.size() > 2 && face.size() < 5) faces.push_back(face);

@@ -1,15 +1,16 @@
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
 #include "action.h"
 #include "player.h"
-#include <assert.h>
 #include "tokenizer.h"
+#include <assert.h>
+#include <fstream>
+#include <iostream>
 
-using namespace std;
+using std::ifstream;
+using std::ofstream;
+
 action::action() {}
 
-action::action(std::string dir, std::string file)
+action::action(string dir, string file)
 {
 	build(dir, file);
 }
@@ -142,7 +143,7 @@ void negNormal::zero()
 	maxHold = 0;
 }
 
-void action::build(std::string dir, std::string n)
+void action::build(string dir, string n)
 {
 	zero();
 	fileName = n;
@@ -187,18 +188,18 @@ void action::build(std::string dir, std::string n)
 				hitbox.push_back(aux::defineRectArray(buffer));
 				if(i == totalStartup[currHit]+active[currHit]) currHit++;
 			} else {
-				std::vector<SDL_Rect> hi;
+				vector<SDL_Rect> hi;
 				hitbox.push_back(hi);
 			}
 		} else {
-			std::vector<SDL_Rect> hi;
+			vector<SDL_Rect> hi;
 			hitbox.push_back(hi);
 		}
 	}
 	read.close();
 }
 
-void action::loadMisc(std::string dir)
+void action::loadMisc(string dir)
 {
 	char fname[1024];
 	SDL_Surface *temp;
@@ -253,16 +254,16 @@ bool action::setParameter(string buffer)
 	} else if (t.current() == "Hits") {
 		hits = stoi(t("\t: \n"));
 		if(hits > 0){
-			stats = std::vector<hStat> (hits);
-			CHStats = std::vector<hStat> (hits);
-			onConnect = std::vector <action*> (hits);
-			tempOnConnect = std::vector <std::string> (hits);
+			stats = vector<hStat> (hits);
+			CHStats = vector<hStat> (hits);
+			onConnect = vector <action*> (hits);
+			tempOnConnect = vector <string> (hits);
 			for(action* i:onConnect) i = nullptr;
 			for(unsigned int i = 0; i < stats.size(); i++) stats[i].hitState.i = 0;
 			for(unsigned int i = 0; i < CHStats.size(); i++) CHStats[i].hitState.i = 0;
 		}
-		state = std::vector<cancelField> (hits+1);
-		gain = std::vector<int> (hits+1);
+		state = vector<cancelField> (hits+1);
+		gain = vector<int> (hits+1);
 		for(unsigned int i = 0; i < state.size(); i++) state[i].i = 0;
 		for(int i:gain) i = 0;
 		return true;
@@ -330,8 +331,8 @@ bool action::setParameter(string buffer)
 		frames = stoi(t("\t: \n"));
 		int startup, countFrames = -1;
 		if(hits > 0) {
-			totalStartup = std::vector<int> (hits);
-			active = std::vector<int> (hits);
+			totalStartup = vector<int> (hits);
+			active = vector<int> (hits);
 		}
 		for(int i = 0; i < hits; i++){
 			startup = stoi(t());
@@ -610,7 +611,7 @@ bool action::window(int f)
 	return 1;
 }
 
-bool action::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
+bool action::activate(vector<int> inputs, int pattern, int t, int f, vector<int> meter, SDL_Rect &p)
 {
 	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
@@ -623,7 +624,7 @@ bool action::activate(std::vector<int> inputs, int pattern, int t, int f, std::v
 	return check(p, meter);
 }
 
-bool action::check(SDL_Rect &p, std::vector<int> meter)
+bool action::check(SDL_Rect &p, vector<int> meter)
 {
 	if(cost && cost > meter[1]){ 
 		return 0;
@@ -633,13 +634,13 @@ bool action::check(SDL_Rect &p, std::vector<int> meter)
 	return 1;
 }
 
-bool special::check(SDL_Rect &p, std::vector<int> meter)
+bool special::check(SDL_Rect &p, vector<int> meter)
 {
 	if(cost > meter[1]) return 0;
 	else return action::check(p, meter);
 }
 
-void action::pollRects(int f, int cFlag, SDL_Rect &c, std::vector<SDL_Rect> &r, std::vector<SDL_Rect> &b)
+void action::pollRects(int f, int cFlag, SDL_Rect &c, vector<SDL_Rect> &r, vector<SDL_Rect> &b)
 {
 	if(modifier && basis) basis->pollRects(currentFrame, connectFlag, c, r, b);
 	else {
@@ -669,10 +670,10 @@ void action::pollRects(int f, int cFlag, SDL_Rect &c, std::vector<SDL_Rect> &r, 
 	}
 }
 
-std::vector<SDL_Rect> action::pollDelta(int f)
+vector<SDL_Rect> action::pollDelta(int f)
 {
 	if(modifier && basis){ 
-		std::vector<SDL_Rect> ret = basis->pollDelta(currentFrame);
+		vector<SDL_Rect> ret = basis->pollDelta(currentFrame);
 		for(SDL_Rect i:delta[f]) ret.push_back(i);
 		return ret;
 	} else return delta[f];
@@ -745,11 +746,9 @@ bool action::cancel(action *& x, int& c, int &h)
 		}
 		x = basis;
 	} else {
-		if(c <= hits){ 
-			r.i = x->state[c].i;
-			if(h > 0 && h == c){
-				r.i = r.i + x->stats[h - 1].hitState.i;
-			}
+		r.i = x->state[c].i;
+		if(h > 0 && h == c){
+			r.i = r.i + x->stats[h - 1].hitState.i;
 		}
 	}
 	if(allowed.i & r.i){
@@ -764,7 +763,7 @@ bool action::cancel(action *& x, int& c, int &h)
 	return 0;
 }
 
-void action::step(std::vector<int>& meter, status &current)
+void action::step(vector<int>& meter, status &current)
 {
 	if(!current.frame && !meter[4]){
 		if(meter[1] + gain[0] < 300) meter[1] += gain[0];
@@ -792,7 +791,7 @@ int action::calcCurrentHit(int frame)
 	return b;
 }
 
-action * action::connect(std::vector<int>& meter, int &c, int f)
+action * action::connect(vector<int>& meter, int &c, int f)
 {
 	if(modifier && basis) return basis->connect(meter, connectFlag, currentFrame);
 	else if (hits == 0) return nullptr;
@@ -822,7 +821,7 @@ void action::playSound(int channel)
 	Mix_PlayChannel(channel, soundClip, 0);
 }
 
-void action::execute(action * last, std::vector<int> & meter, int &f, int &c, int &h)
+void action::execute(action * last, vector<int> & meter, int &f, int &c, int &h)
 {
 	armorCounter = 0;
 	meter[1] -= cost;
@@ -860,7 +859,7 @@ void action::feed(action * c, int code, int i)
 	}
 }
 
-std::string action::request(int code, int i)
+string action::request(int code, int i)
 {
 	switch(code){
 	case 0:

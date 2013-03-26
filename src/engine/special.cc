@@ -1,21 +1,18 @@
 #include "interface.h"
-#include <iostream>
-#include <stdio.h>
 #include <fstream>
-#include <assert.h>
-using namespace std;
+#include <iostream>
 
-special::special(std::string dir, std::string file)
+special::special(string dir, string file)
 {
 	build(dir, file);
 }
 
-negNormal::negNormal(std::string dir, std::string file)
+negNormal::negNormal(string dir, string file)
 {
 	build(dir, file);
 }
 
-bool negNormal::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
+bool negNormal::activate(vector<int> inputs, int pattern, int t, int f, vector<int> meter, SDL_Rect &p)
 {
 	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
@@ -27,7 +24,7 @@ bool negNormal::activate(std::vector<int> inputs, int pattern, int t, int f, std
 	return check(p, meter);
 }
 
-bool special::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
+bool special::activate(vector<int> inputs, int pattern, int t, int f, vector<int> meter, SDL_Rect &p)
 {
 	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(pattern & (1 << i)){
@@ -39,7 +36,7 @@ bool special::activate(std::vector<int> inputs, int pattern, int t, int f, std::
 	return check(p, meter);
 }
 
-bool mash::activate(std::vector <int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p)
+bool mash::activate(vector <int> inputs, int pattern, int t, int f, vector<int> meter, SDL_Rect &p)
 {
 	int go = 0;
 	if(action::activate(inputs, pattern, t, f, meter, p)){
@@ -53,7 +50,7 @@ bool mash::activate(std::vector <int> inputs, int pattern, int t, int f, std::ve
 	return 0;
 }
 
-bool releaseCheck::activate(std::vector<int> inputs, int pattern, int t, int f, std::vector<int> meter, SDL_Rect &p){
+bool releaseCheck::activate(vector<int> inputs, int pattern, int t, int f, vector<int> meter, SDL_Rect &p){
 	for(unsigned int i = 0; i < inputs.size(); i++){
 		if(inputs[i] > 0) return 0;
 	}
@@ -91,14 +88,14 @@ int werf::arbitraryPoll(int n, int f)
 	return action::arbitraryPoll(n, f);
 }
 
-bool werf::check(SDL_Rect &p, std::vector<int> meter)
+bool werf::check(SDL_Rect &p, vector<int> meter)
 {
 	if(p.y != 0) return 0;
 	if(p.x > 0) return 0;
 	return action::check(p, meter);
 }
 
-bool luftigeWerf::check(SDL_Rect &p, std::vector<int> meter)
+bool luftigeWerf::check(SDL_Rect &p, vector<int> meter)
 {
 	if(p.y == 0) return 0;
 	if(p.x > 0) return 0;

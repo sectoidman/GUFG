@@ -1,11 +1,14 @@
-#include <stdio.h>
-#include <cmath>
-#include <fstream>
-#include <assert.h>
-#include <cstdlib>
 #include "character.h"
-#include <iostream>
+#include <assert.h>
+#include <cmath>
+#include <cstdlib>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+
+using std::cout;
+using std::ifstream;
 
 character::character()
 //Character constructor. This loads the whole character into memory so that that we don't have disk reads during gameplay
@@ -38,7 +41,7 @@ character::~character()
 	}
 }
 
-void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], std::vector<int> buttons, SDL_Rect &p, bool dryrun, std::vector<int> & meter)
+void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], vector<int> buttons, SDL_Rect &p, bool dryrun, vector<int> & meter)
 {
 	action * t = nullptr;
 	if(current.move && current.reversal){
@@ -100,12 +103,12 @@ void avatar::prepHooks(status &current, action *& cMove, int inputBuffer[30], st
 	}
 }
 
-action * avatar::hook(int inputBuffer[30], int i, int f, std::vector<int> meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * avatar::hook(int inputBuffer[30], int i, int f, vector<int> meter, vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	return head->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
 }
 
-action * character::hook(int inputBuffer[30], int i, int f, std::vector<int> meter, std::vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
+action * character::hook(int inputBuffer[30], int i, int f, vector<int> meter, vector<int> buttons, action * c, SDL_Rect &p, int &cFlag, int &hFlag, bool aerial)
 {
 	if(aerial) return airHead->actionHook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag);
 	else return avatar::hook(inputBuffer, 0, -1, meter, buttons, c, p, cFlag, hFlag, aerial);
@@ -116,30 +119,28 @@ action * avatar::moveSignal(int)
 	return nullptr;
 }
 
-void avatar::neutralize(status &current, action *& cMove, std::vector<int> & meter)
+void avatar::neutralize(status &current, action *& cMove, vector<int> & meter)
 {
 	cMove = neutral;
 	current.reversalFlag = false;
 }
 
-void character::neutralize(status &current, action *& cMove, std::vector<int> & meter)
+void character::neutralize(status &current, action *& cMove, vector<int> & meter)
 {
 	if(current.aerial) cMove = airNeutral;
 	else cMove = neutral;
 	current.reversalFlag = false;
 }
 
-void avatar::getName(const char* directory, const char* file)
+void avatar::getName(string directory, string file)
 {
-	char buffer[101];
-	std::ifstream read;
-	sprintf(buffer, "content/characters/%s/%s.ch", directory, file);
+	string buffer = "content/characters/" + directory + "/" + file + ".ch";
+	ifstream read;
 
 	read.open(buffer);
 	if(read.fail()) getName("template", "template");
 
-	read.get(buffer, 50); read.ignore(100, '\n');
-	name = buffer;
+	read >> name;
 }
 
 int character::comboState(action * c)
@@ -154,7 +155,7 @@ int character::comboState(action * c)
 	return 0;
 }
 
-action * avatar::dealWithMove(std::string input)
+action * avatar::dealWithMove(string input)
 {
 	if(input[0] == '#' || input[0] == '\0') return nullptr;
 	bool replace = false;
@@ -163,17 +164,17 @@ action * avatar::dealWithMove(std::string input)
 		if(!moveList[i]->fileName.compare(m->fileName) && moveList[i]->typeKey == m->typeKey){
 			if(m->null){
 				moveList[i]->allowed.i = 0;
-				//std::cout << "Disabling ";
+				//cout << "Disabling ";
 			} else {
 				char k = m->typeKey;
 				moveList[i]->build(name, m->fileName);
 				m->typeKey = k;
 				processMove(moveList[i]);
 				sortMove(moveList[i], input);
-				//std::cout << "Replacing ";
+				//cout << "Replacing ";
 			}
 			replace = true;
-			//std::cout << m->fileName + "\n";
+			//cout << m->fileName + "\n";
 			delete m;
 			m = moveList[i];
 			break;
@@ -182,7 +183,7 @@ action * avatar::dealWithMove(std::string input)
 	if(!replace){
 		if(m->null) delete m;
 		else{
-			//std::cout << "New move " << name + "/" + m->fileName + " created\n";
+			//cout << "New move " << name + "/" + m->fileName + " created\n";
 			moveList.push_back(m);
 			processMove(m);
 			sortMove(m, input);
@@ -195,12 +196,12 @@ void avatar::build(const char* directory, const char* file)
 {
 	char buffer[101];
 	bool commentFlag;
-	std::ifstream read;
+	ifstream read;
 	sprintf(buffer, "content/characters/%s/%s.ch", directory, file);
 
 	read.open(buffer);
 	if(read.fail()){ 
-		std::cout << directory << "/" << file << " Character definition not found\n";
+		cout << directory << "/" << file << " Character definition not found\n";
 		return;
 	}
 
@@ -214,7 +215,7 @@ void avatar::build(const char* directory, const char* file)
 	read.close();
 }
 
-void avatar::sortMove(action * m, std::string key)
+void avatar::sortMove(action * m, string key)
 {
 	tokenizer t(key, " \t=~>-&?@%$_!\n");
         t();
@@ -237,7 +238,7 @@ void avatar::loadAssets()
 	}
 }
 
-void character::sortMove(action * m, std::string key)
+void character::sortMove(action * m, string key)
 {
 	if(m->null) return;
 	tokenizer t(key, " \t=>-&?@%$_!\n");
@@ -257,12 +258,12 @@ void character::sortMove(action * m, std::string key)
 }
 
 
-action * avatar::mandateMove(std::string key)
+action * avatar::mandateMove(string key)
 {
 	action * m = createMove(key);
 	if(m->null){ 
 		delete m;
-		std::string temp = name;
+		string temp = name;
 		name = "template";
 		m = createMove(key);
 		name = temp;
@@ -284,7 +285,7 @@ void character::build(const char *directory, const char *file)
 	neutral = mandateMove("@NS");
 	dFlag = 0;
 
-	std::string temp = name;
+	string temp = name;
 	name = "template";
 	avatar::build("template", "template");
 	name = temp;
@@ -328,7 +329,7 @@ void character::build(const char *directory, const char *file)
 void avatar::processMove(action * m)
 {
 	if(m->null) return;
-	std::string temp;
+	string temp;
 	action* t = nullptr;
 	for(int i = 0; i < 7; i++){
 		if(i == 2){
@@ -354,7 +355,7 @@ void avatar::processMove(action * m)
 	}
 }
 
-action * avatar::createMove(std::string key)
+action * avatar::createMove(string key)
 {
 	tokenizer t(key, " \t=`~/\\>-&,?@%$_!^\n");
         string token = t();
@@ -409,7 +410,7 @@ instance * avatar::spawn(action * source)
 	return source->spawn();
 }
 
-void avatar::connect(status &current, std::vector<int>& meter)
+void avatar::connect(status &current, vector<int>& meter)
 {
 	action * t = current.move->connect(meter, current.connect, current.frame);
 	if(t != nullptr){
@@ -482,7 +483,7 @@ void avatar::pollStats(hStat & s, status &current)
 	current.move->pollStats(s, current.frame, current.counter);
 }
 
-int character::takeHit(status &current, hStat & s, int blockType, int &hitType, std::vector<int>& meter)
+int character::takeHit(status &current, hStat & s, int blockType, int &hitType, vector<int>& meter)
 {
 	bool dead = false;
 	int freeze = 0;
@@ -543,13 +544,13 @@ int character::takeHit(status &current, hStat & s, int blockType, int &hitType, 
 	return freeze;
 }
 
-std::vector<int> avatar::generateMeter()
+vector<int> avatar::generateMeter()
 {
-	std::vector<int> meter(5);
+	vector<int> meter(5);
 	return meter;
 }
 
-void character::init(std::vector<int>& meter)
+void character::init(vector<int>& meter)
 {
 	meter[0] = 600;
 	meter[1] = 0;
@@ -557,7 +558,7 @@ void character::init(std::vector<int>& meter)
 	meter[4] = 0;
 }
 
-void character::resetAirOptions(std::vector<int>& meter)
+void character::resetAirOptions(vector<int>& meter)
 {
 	meter[2] = 1;
 	meter[3] = 1;
@@ -568,7 +569,7 @@ int avatar::acceptTarget(action * c, int f)
 	return 1;
 }
 
-void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag, std::vector<int> & meter)
+void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag, vector<int> & meter)
 {
 	if(cMove->allowed.b.block){
 		cMove = standBlock;
@@ -579,7 +580,7 @@ void character::land(action *& cMove, int &frame, int &connectFlag, int &hitFlag
 	resetAirOptions(meter);
 }
 
-void avatar::step(status &current, std::vector<int> & meter)
+void avatar::step(status &current, vector<int> & meter)
 {
 	int a = 0;
 	if(current.move){

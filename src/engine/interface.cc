@@ -1,11 +1,4 @@
-/*Interface class for GUFG.
- *This will run all the main game functions within GUFG.
- *No kidding.
- *Written by Alex Kelly in 2012.
- *Mangled by H Forrest Alexander in the autumn of that same year.
- *I think there's a license somewhere.
- */
-
+/*Copyright Somnambulant Studios 2012*/
 #include "interface.h"
 #include <SDL/SDL_opengl.h>
 #include <algorithm>
@@ -15,6 +8,13 @@
 #include <fstream>
 #include <iostream>
 #include <math.h>
+
+using std::cout;
+using std::ifstream;
+using std::ofstream;
+using std::max;
+using std::min;
+
 interface::interface()
 {
 	numChars = 2;
@@ -26,7 +26,7 @@ interface::interface()
 	scripting = false;
 	pauseEnabled = false;
 	single = false;
-	std::ifstream read;
+	ifstream read;
 
 	/*Initialize some pseudo-constants*/
 	screenWidth = 1600; /*screen{Width,Height} describe the size of the window holding the game.*/
@@ -356,10 +356,10 @@ void interface::runTimer()
 
 void gameInstance::print()
 {
-	std::cout << "\x1b[A" << "\x1b[A";
+	cout << "\x1b[A" << "\x1b[A";
 	for(int i = 0; i < 2; i++){
-		for(int j = 0; j < 80; j++) std::cout << " ";
-		std::cout << ('\n');
+		for(int j = 0; j < 80; j++) cout << " ";
+		cout << ('\n');
 	}
 	for(player* i:P) i->print();
 }
@@ -705,7 +705,7 @@ void interface::processInput(SDL_Event &event)
 
 void interface::readInput()
 {
-	std::vector<SDL_Event> events;
+	vector<SDL_Event> events;
 	SDL_Event event;
 	while(SDL_PollEvent(&event)){
 		events.push_back(event);
@@ -777,7 +777,7 @@ void interface::cSelectMenu()
 {
 	/*The plan is that this is eventually a menu, preferably pretty visual, in which players can select characters.*/
 	if(!initd){ 
-		std::ofstream write;
+		ofstream write;
 		write.open(".config/resolution.conf");
 		write << sf << '\n';
 		write.close();
@@ -821,7 +821,7 @@ void interface::cSelectMenu()
 	}
 
 	if(select[0] && select[1]){
-		//std::cout << "2 6\n" << selection[0] << " " << selection[1] << '\n';
+		//cout << "2 6\n" << selection[0] << " " << selection[1] << '\n';
 		for(unsigned int i = 0; i < P.size(); i++){
 			P[i]->characterSelect(selection[i]);
 		}
@@ -1104,8 +1104,8 @@ void gameInstance::unitCollision(instance *a, instance *b)
 
 void interface::resolveCollision()
 {
-	std::vector<SDL_Rect> temp;
-	std::vector<int> dx;
+	vector<SDL_Rect> temp;
+	vector<int> dx;
 	for(player *i:P){
 		i->enforceFloor(floor);
 		temp.push_back(i->collision);
@@ -1113,7 +1113,7 @@ void interface::resolveCollision()
 		temp.back().x -= dx.back();
 	}
 
-	unsigned int localMaximum = std::min(temp[0].w, temp[1].w) / 5 - 1;
+	unsigned int localMaximum = min(temp[0].w, temp[1].w) / 5 - 1;
 	unsigned int j[2] = {0, 0};
 	while(j[0] < abs(dx[0]) || j[1] < abs(dx[1])){
 		if(aux::checkCollision(temp[0], temp[1])){
@@ -1201,11 +1201,11 @@ void interface::resolveThrows()
 
 void interface::resolveHits()
 {
-	std::vector<hStat> s(things.size());
-	std::vector<int> hit(things.size());
-	std::vector<bool> connect(things.size());
-	std::vector<bool> taken(things.size());
-	std::vector<int> hitBy(things.size());
+	vector<hStat> s(things.size());
+	vector<int> hit(things.size());
+	vector<bool> connect(things.size());
+	vector<bool> taken(things.size());
+	vector<int> hitBy(things.size());
 	int push[2];
 	for(player *i:P) i->checkCorners(bg.x + wall, bg.x + screenWidth - wall);
 	for(unsigned int i = 0; i < things.size(); i++){
@@ -1220,12 +1220,12 @@ void interface::resolveHits()
 		}
 	}
 	for(unsigned int i = 0; i < things.size(); i++){
-		for(int m = (int)things.size()-1; m >= 0; m--){
-			if(m != (int)i && !taken[m] && !connect[i]){
-				for(unsigned int j = 0; j < things[i]->hitbox.size(); j++){
-					for(unsigned int k = 0; k < things[m]->hitreg.size(); k++){
-						if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
-							if(things[i]->acceptTarget(things[m])){
+		for(int m = things.size()-1; m >= 0; m--){
+			for(unsigned int j = 0; j < things[i]->hitbox.size(); j++){
+				for(unsigned int k = 0; k < things[m]->hitreg.size(); k++){
+					if(aux::checkCollision(things[i]->hitbox[j], things[m]->hitreg[k])){
+						if(things[i]->acceptTarget(things[m])){
+							if(m != (int)i && !taken[m] && !connect[i]){
 								connect[i] = 1;
 								things[i]->current.counter = things[m]->CHState();
 								if(things[i]->current.counter > 0) counterHit[things[i]->ID-1] = s[i].stun + (s[i].pause > 0) ? s[i].pause : (s[i].stun/4 + 10);
@@ -1243,6 +1243,7 @@ void interface::resolveHits()
 			}
 		}
 	}
+
 
 	for(unsigned int i = 0; i < things.size(); i++){ 
 		if(taken[i]){
@@ -1354,6 +1355,6 @@ void interface::doSuperFreeze()
 		}
 	}
 	if(go[0] > 0 || go[1] > 0)
-		freeze = std::max(go[0], go[1]);
+		freeze = max(go[0], go[1]);
 }
 

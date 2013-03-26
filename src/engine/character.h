@@ -1,75 +1,74 @@
-/*Header file for character class in project Ground Up Fighting Game
- *
- *Written by Alex Kelly in 2012
- *Under MIT OSI license, see "COPYING" for details
- */
-#include <SDL/SDL.h>
+/*Copyright Somnambulent Studios 2012-2013*/
 #include "trie.h"
-#ifndef CHARACTER
-#define CHARACTER
+#include <SDL/SDL.h>
+
+#ifndef ___character
+#define ___character
+
+using std::string;
+using std::vector;
+
 class instance;
 class avatar {
 public:
 	avatar() {}
 	virtual void setParam(int, int) {}
-	virtual std::vector<int> generateMeter();
-	virtual void init(std::vector<int>&) = 0;
+	virtual vector<int> generateMeter();
+	virtual void init(vector<int>&) = 0;
 	virtual action * moveSignal(int);
 	bool spriteCheck(action *&, int);
-	virtual void draw(action *&, int);//Pass sprite information up.
-	virtual action * createMove(std::string);
-	virtual action * dealWithMove(std::string);
-	virtual action * mandateMove(std::string);
+	virtual void draw(action *&, int);
+	virtual action * createMove(string);
+	virtual action * dealWithMove(string);
+	virtual action * mandateMove(string);
 	virtual void build(const char*, const char*);
 	virtual void processMove(action * m);
-	virtual void sortMove(action *, std::string);
-	virtual void prepHooks(status&, action *&, int[], std::vector<int>, SDL_Rect &, bool, std::vector<int>&);	//Take input from the game and propagate it to the appropriate actionTrie.
-	//BRB prepping my hooks
-	virtual action * hook(int[], int, int, std::vector<int>, std::vector<int>, action *, SDL_Rect&, int&, int&, bool);
+	virtual void sortMove(action *, string);
+	virtual void prepHooks(status&, action *&, int[], vector<int>, SDL_Rect &, bool, vector<int>&);
+	virtual action * hook(int[], int, int, vector<int>, vector<int>, action *, SDL_Rect&, int&, int&, bool);
 	virtual bool death(action *&, int, int) { return 0; }
-	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&) { return 0; }
-	virtual void getName(const char*, const char*);
+	virtual int takeHit(status&, hStat&, int, int&, vector<int>&) { return 0; }
+	virtual void getName(string, string);
 	virtual void loadAssets();
-	virtual void connect(status&, std::vector<int>&);
+	virtual void connect(status&, vector<int>&);
 	virtual void pollStats(hStat&, status&);
-	virtual void step(status&, std::vector<int>&);
+	virtual void step(status&, vector<int>&);
 	virtual int acceptTarget(action*, int);
 	virtual instance * spawn(action*);
-	virtual void tick(std::vector<int>&) {}
-	virtual void neutralize(status&, action*&, std::vector<int>&);
+	virtual void tick(vector<int>&) {}
+	virtual void neutralize(status&, action*&, vector<int>&);
 	virtual bool turn(int&) { return 0; }
-	std::string name; //The name of the directory from which the character spawns. This is important for loading into memory
-	actionTrie * head;	//Trie for ground actions
+	string name;
+	actionTrie * head;
 	int lifespan;
 
 	action * die;
 	action * neutral;
 	bool headless;
-	std::vector<action*> moveList;
-	std::vector<std::string> moveNames;
+	vector<action*> moveList;
+	vector<string> moveNames;
 };
 
 class character : virtual public avatar{
 public:
 	bool dFlag:1;
 	character(const char*);
-	actionTrie * airHead;	//Trie for air actions
-	character();		//Load the entire character into memory. This should happen once per player per match.
-	virtual ~character();	//Free stuff
+	actionTrie * airHead;
+	character();
+	virtual ~character();
 
-	virtual void build(const char*, const char*);//This will *eventually* be the function that parses the character constructor file.
-
+	virtual void build(const char*, const char*);
 	virtual int comboState(action *);
-	virtual void neutralize(status&, action*&, std::vector<int>&);
-	virtual void drawMeters(int, int, std::vector<int>);
-	virtual void init(std::vector<int> &);
+	virtual void neutralize(status&, action*&, vector<int>&);
+	virtual void drawMeters(int, int, vector<int>);
+	virtual void init(vector<int> &);
 	virtual int checkBlocking(status&, int[]);
 	virtual void block(status&, int, bool);
-	virtual void resetAirOptions(std::vector<int>&);
-	virtual void land(action *&, int &, int &, int &, std::vector<int>&);
-	virtual void sortMove(action *, std::string);
-	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&);
-	virtual action * hook(int[], int, int, std::vector<int>, std::vector<int>, action *, SDL_Rect&, int&, int&, bool);
+	virtual void resetAirOptions(vector<int>&);
+	virtual void land(action *&, int &, int &, int &, vector<int>&);
+	virtual void sortMove(action *, string);
+	virtual int takeHit(status&, hStat&, int, int&, vector<int>&);
+	virtual action * hook(int[], int, int, vector<int>, vector<int>, action *, SDL_Rect&, int&, int&, bool);
 
 	action * dead;
 	action * airNeutral;
@@ -92,11 +91,11 @@ public:
 	virtual void build(string, string);
 	virtual int acceptTarget(action*, int);
 	virtual void pollStats(hStat&, status&);
-	virtual int takeHit(status&, hStat&, int, int&, std::vector<int>&);
+	virtual int takeHit(status&, hStat&, int, int&, vector<int>&);
 	virtual bool turn(int&);
 
 	virtual void processMove(action * m);
 	virtual bool death(action *&, int, int);
-	virtual void init(std::vector<int>&);
+	virtual void init(vector<int>&);
 };
 #endif

@@ -1,6 +1,9 @@
 #include "action.h"
 #include <math.h>
-void hitstun::step(std::vector<int>& meter, status &current)
+
+using std::max;
+
+void hitstun::step(vector<int>& meter, status &current)
 {
 	if(current.counter >= 0){
 		current.frame = frames-1;
@@ -28,14 +31,14 @@ int hitstun::takeHit(hStat& s, int b, status& current)
 			return -1;
 		case 0:
 			current.frame = 0;
-			current.counter = -(s.stun - std::max(1, s.stun/14));
+			current.counter = -(s.stun - max(1, s.stun/14));
 			return 0;
 		}
 	}
 	return 1;
 }
 
-hitstun::hitstun(std::string dir, std::string file)
+hitstun::hitstun(string dir, string file)
 {
 	build(dir, file);
 }

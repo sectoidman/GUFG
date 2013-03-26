@@ -1,8 +1,10 @@
+#include "harness.h"
 #include "thing.h"
 #include "window.h"
-#include "harness.h"
-#ifndef SESSION_INCLUDED
-#define SESSION_INCLUDED
+
+#ifndef ___session
+#define ___session
+
 class session : public window, public harness{
 public:
 	virtual void init();

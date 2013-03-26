@@ -1,22 +1,18 @@
-/*Drawing routines for project: Ground Up Fighting Game
- *
- *Written by Alex Kelly in 2012, under MIT OSI
- *For detailed license information, see the file COPYING in this directory
- */
+/*Copyright Somnambulent Studios 2012-2013*/
+#include "auxil.h"
+#include "gl-compat.h"
+#include "interface.h"
 #include "session.h"
 #include "thing.h"
-#include "auxil.h"
-#define  M_PI 3.14159265358979323846 //FUCK YOU MINGW
-#include "interface.h"
+#include <SDL/SDL_opengl.h>
 #include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <SDL/SDL_opengl.h>
 #include <vector>
-#include "gl-compat.h"
 
 using std::to_string;
+
 void interface::draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -349,7 +345,7 @@ void interface::drawRematchMenu()
 
 void player::drawMeters(int n)
 {
-	std::vector<SDL_Rect> r (n);
+	vector<SDL_Rect> r (n);
 	for(int i = 0; i < n; i++){
 		r[i].y = 24; r[i].w = 20; r[i].h = 10;
 		if(ID == 1) r[i].x = 680 - 24 * i; 
@@ -369,7 +365,7 @@ void player::drawMeters(int n)
 	glFlush();
 }
 
-void character::drawMeters(int ID, int hidden, std::vector<int> meter)
+void character::drawMeters(int ID, int hidden, vector<int> meter)
 {
 	SDL_Rect m, h, g;
 	if(meter[0] >= 0) h.w = meter[0]; else h.w = 1; 
@@ -679,7 +675,7 @@ void interface::writeImage(string movename, int frame, action * move)
 		move->drawBoxen(frame);
 	glPopMatrix();
 
-	glReadPixels(0, 0, w, h, GL_RGBA, GUFG_TEXTURE_MODE, image->pixels);
+	glReadPixels(0, 0, w, h, GL_RGBA, ___gufg_tex_mode, image->pixels);
 
 	SDL_GL_SwapBuffers();
 

@@ -1,11 +1,10 @@
 #include "action.h"
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
-#include <math.h>
 #include "tokenizer.h"
+#include <fstream>
+#include <iostream>
+#include <math.h>
 
-airMove::airMove(std::string dir, std::string file)
+airMove::airMove(string dir, string file)
 {
 	build(dir, file);
 }
@@ -32,7 +31,7 @@ void airMove::feed(action * c, int code, int i)
 	} else action::feed(c, code, i);
 }
 
-std::string airMove::request(int code, int i)
+string airMove::request(int code, int i)
 {
 	if(code == 1) return tempLanding;
 	else return action::request(code, i); 
@@ -47,30 +46,30 @@ bool airMove::setParameter(string buffer)
 	} else return action::setParameter(buffer);
 }
 
-airUtility::airUtility(std::string dir, std::string file)
+airUtility::airUtility(string dir, string file)
 {
 	airMove::build(dir, file);
 }
 
-bool airUtility::check(SDL_Rect &p, std::vector<int> meter) //Check to see if the action is possible right now.
+bool airUtility::check(SDL_Rect &p, vector<int> meter) //Check to see if the action is possible right now.
 {
 	if(abs(delta[0][0].y) > abs(delta[0][0].x) && meter[2] < 1) return 0;
 	else if(abs(delta[0][0].y) < abs(delta[0][0].x) && meter[3] < 1) return 0;
 	return action::check(p, meter);
 }
 
-void airUtility::execute(action * last, std::vector<int>& meter, int &f, int &c, int &h){
+void airUtility::execute(action * last, vector<int>& meter, int &f, int &c, int &h){
 	if(abs(delta[0][0].y) > abs(delta[0][0].x)) meter[2]--;
 	else if(abs(delta[0][0].y) < abs(delta[0][0].x)) meter[3]--;
 	action::execute(last, meter, f, c, h);
 }
 
-airLooping::airLooping(std::string dir, std::string file)
+airLooping::airLooping(string dir, string file)
 {
 	airMove::build(dir, file);
 }
 
-untechState::untechState(std::string dir, std::string file)
+untechState::untechState(string dir, string file)
 {
 	airMove::build(dir, file);
 }

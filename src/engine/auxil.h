@@ -1,17 +1,16 @@
-/*Header file for some utility functions used in "GUFG",
- *Written by Ashley Fisher in 2012 for her project, "Picoclash",
- *and used with her permission
- */
-
+/*Copyright Ashley Fisher 2012
+ *Modified with permission by Somnambulent Studios, 2012-2013*/
 #include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
 #include <string>
 #include <vector>
-#include <SDL/SDL_opengl.h>
-#include <stdio.h>
-#ifndef AUXIL
-#define AUXIL
+
+#ifndef ___auxil
+#define ___auxil
 
 using std::string;
+using std::vector;
+
 class action;
 class aux{
 	private:
@@ -19,15 +18,15 @@ class aux{
 		static void bilinear_scale  (SDL_Surface* source, SDL_Surface* destination);
 		static SDL_Surface* scale2x(SDL_Surface* source);
 	public:
-		static GLuint load_texture(std::string filename); 
+		static GLuint load_texture(string filename); 
 		static GLuint surface_to_texture(SDL_Surface* source);
 		static SDL_Surface* init_screen(int width, int height, int bpp);
 		static void update_screen(SDL_Surface* source, SDL_Surface* destination);
 
-		static SDL_Surface* load_image(std::string filename);
+		static SDL_Surface* load_image(string filename);
 		static void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination);
 		static bool checkCollision(SDL_Rect, SDL_Rect);
-		static std::vector<SDL_Rect> defineRectArray(string);
+		static vector<SDL_Rect> defineRectArray(string);
 };
 
 struct attractor{

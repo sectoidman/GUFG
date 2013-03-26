@@ -1,4 +1,5 @@
 #include "interface.h"
+
 projectile::projectile(string directory, string file)
 {
 	head = new actionTrie;
@@ -30,7 +31,7 @@ void projectile::pollStats(hStat & s, status &current)
 		s.pause = 4;
 }
 
-void projectile::init(std::vector<int>& meter)
+void projectile::init(vector<int>& meter)
 {
 	meter[0] = 600;
 	meter[1] = 0;
@@ -56,7 +57,7 @@ bool projectile::turn(int &ID)
 	return 1;
 }
 
-int projectile::takeHit(status &current, hStat &s, int blockType, int &hitType, std::vector<int>& meter)
+int projectile::takeHit(status &current, hStat &s, int blockType, int &hitType, vector<int>& meter)
 {
 	if(s.killsProjectile || current.move->hittable){ 
 		die->execute(current.move, meter, current.frame, current.connect, current.hit);

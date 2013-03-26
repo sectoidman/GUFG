@@ -1,5 +1,6 @@
 #include "window.h"
 #include "gl-compat.h"
+
 window::window()
 {
 	screen = nullptr;

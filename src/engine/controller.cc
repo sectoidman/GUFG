@@ -1,4 +1,5 @@
 #include "controller.h"
+
 keySetting::keySetting()
 {
 	trigger.type = 0;

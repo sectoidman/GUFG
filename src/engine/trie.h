@@ -1,24 +1,15 @@
-/*Header file for "action" class in project Ground Up Fighting Game
- *
- *Written by Alex Kelly in 2012.
- *Licensed under MIT OSI, see "COPYING" for details
- */
-
-
+/*Copyright Somnambulent Studios 2012-2013*/
+#include "action.h"
 #include <SDL/SDL.h>
 #include <cstring>
-#include <stdio.h>
-#include <iostream>
 #include <fstream>
-#include <vector>
-#include "action.h"
+#include <iostream>
+//#include <stdio.h>
 #include <string>
+#include <vector>
 
-#ifndef MOVETRIE
-#define MOVETRIE
-
-using std::string;
-/*Move trie class. Essentially a recursive trie-search algorithm that looks for input hooks*/
+#ifndef ___move_trie
+#define ___move_trie
 
 class actionTrie{
 public:
@@ -26,15 +17,15 @@ public:
 	actionTrie(action*);
 	actionTrie(action*, int);
 	~actionTrie();
-	action * actionHook(int[40], int, int, std::vector<int>, std::vector<int>, action *, SDL_Rect&, int&, int&);
+	action * actionHook(int[40], int, int, vector<int>, vector<int>, action *, SDL_Rect&, int&, int&);
 	actionTrie * child[10];
-	std::vector<action*> fish; //Because it's what a hook catches! Okay, this name probably needs to change.
+	vector<action*> fish;
 	actionTrie * insert(int);
 	actionTrie * insert(int, action*);
 	void insert(action *, int);
 	void insert(action *, string);
 	unsigned int patternMatch(int[], bool[]);
 private:
-	std::vector<int> pattern;
+	vector<int> pattern;
 };
 #endif

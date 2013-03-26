@@ -1,5 +1,6 @@
-#ifndef MASKS
-#define MASKS
+#ifndef ___masks
+#define ___masks
+
 //A 6-bit field to keep track of block states.
 struct blockBits{
 	bool low:1;

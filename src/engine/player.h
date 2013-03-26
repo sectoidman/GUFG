@@ -1,13 +1,11 @@
-/*Header file for "Player" class in project Ground Up Fighting Game
- *
- *Written by Alex Kelly in 2012
- *Under MIT OSI license, see the file "COPYING" for details
- */
+/*Copyright Somnambulent Studios 2012-2013*/
 #include "../charlist.h"
 #include "controller.h"
 #include <string>
-#ifndef PLAYER
-#define PLAYER
+
+#ifndef ___player
+#define ___player
+
 struct frame;
 class instance{
 public:
@@ -17,7 +15,7 @@ public:
 	virtual avatar * pick() { return v; }
 
 	SDL_Rect collision;
-	std::vector<SDL_Rect> hitbox, hitreg, momentum;
+	vector<SDL_Rect> hitbox, hitreg, momentum;
 	bool secondInstance;
 	int ID;
 	int inputBuffer[30];
@@ -29,7 +27,7 @@ public:
 	virtual void init();
 	virtual void step();
 
-	virtual void getMove(std::vector<int>, SDL_Rect&, bool&);
+	virtual void getMove(vector<int>, SDL_Rect&, bool&);
 	virtual int takeHit(int, hStat&, SDL_Rect&);
 	virtual void enforceGravity(int, int);
 	virtual void invertVectors(int);
@@ -53,7 +51,7 @@ public:
 
 	status current;
 
-	std::vector<int> meter;
+	vector<int> meter;
 	int particleType;
 	int blockType;
 	int counter;

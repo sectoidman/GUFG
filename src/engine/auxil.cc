@@ -1,24 +1,18 @@
-/*Some SDL-related utility functions written by Ashley Fisher, c. 2012, for project "picoclash".
- *Used in project "GUFG" with her permission.
- */
-
-#include <math.h>
+/*Copyright Somnambulent Studios 2012*/
+#include "auxil.h"
+#include "gl-compat.h"
+#include "sdl-compat.h"
+#include "tokenizer.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_opengl.h>
-#include "sdl-compat.h"
-#include <string>
-#include <iostream>
 #include <cmath>
-#include "auxil.h"
+#include <iostream>
+#include <math.h>
+#include <string>
 #include <vector>
-#include "gl-compat.h"
-#include "tokenizer.h"
 
-using namespace std;
 
-// intitializes the screen and returns it (returns null if something went wrong)
 SDL_Surface* aux::init_screen(int width, int height, int bpp) {
-	//Initialize all SDL subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
 		return nullptr;
 	}
@@ -197,7 +191,7 @@ SDL_Surface* aux::scale2x(SDL_Surface* source) {
 }
 
 // loads an image from a file name and returns it as a surface
-SDL_Surface* aux::load_image(std::string filename) {
+SDL_Surface* aux::load_image(string filename) {
 	SDL_Surface* loadedImage    = nullptr;
 	SDL_Surface* optimizedImage = nullptr;
 
@@ -232,10 +226,10 @@ bool aux::checkCollision(SDL_Rect a, SDL_Rect b)
 	return 1;
 }
 
-std::vector<SDL_Rect> aux::defineRectArray(string definition)
+vector<SDL_Rect> aux::defineRectArray(string definition)
 {
-	std::vector<SDL_Rect> ret;
-	std::vector<string> coordinate;
+	vector<SDL_Rect> ret;
+	vector<string> coordinate;
         tokenizer t(definition, " \n\t");
         coordinate.push_back(t());
 	while(t().size())
@@ -268,7 +262,7 @@ GLuint aux::surface_to_texture(SDL_Surface * source)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, nColors, source->w, source->h, 0, texFormat, GUFG_TEXTURE_MODE, source->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, nColors, source->w, source->h, 0, texFormat, ___gufg_tex_mode, source->pixels);
 	return texture;
 }
 

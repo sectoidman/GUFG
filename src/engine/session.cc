@@ -1,8 +1,8 @@
 #include "session.h"
-#include <assert.h>
+
 void session::init()
 {
-	assert(screenInit());
+	screenInit();
 	harness::init();
 	camInit();
 }
@@ -20,7 +20,6 @@ void session::camInit()
 
 void session::processInput(SDL_Event &event)
 {
-	/*Do stuff with event*/
 	switch (event.type){
 	case SDL_KEYDOWN:
 	case SDL_KEYUP:

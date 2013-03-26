@@ -1,13 +1,14 @@
-#include <stdio.h>
-#include <iostream>
-#include <SDL/SDL.h>
-#include <unistd.h>
-#include <math.h>
-#include <stdlib.h>
-#include <fstream>
-#include "player.h"
 #include "analytics.h"
+#include "player.h"
 #include "tokenizer.h"
+#include <SDL/SDL.h>
+#include <fstream>
+#include <iostream>
+#include <math.h>
+
+using std::ifstream;
+using std::ofstream;
+using std::cout;
 
 player::player()
 {
@@ -67,8 +68,8 @@ void instance::init()
 bool instance::acceptTarget(instance * m)
 {
 	if(m->ID == ID) return 0;
-	else if(m->current.move->hittable) return 1;
-	else return m->pick()->acceptTarget(current.move, current.frame);
+	if(m->current.move->hittable) return 1;
+	return m->pick()->acceptTarget(current.move, current.frame);
 }
 
 void player::init()
@@ -132,7 +133,7 @@ bool controller::readConfig(int ID)
 {
 	char fname[30];
 	sprintf(fname, ".config/p%i.conf", ID);
-	std::ifstream read;
+	ifstream read;
 	int i = 0;
 	read.open(fname);
 	if(read.fail()) {
@@ -292,7 +293,7 @@ void controller::writeConfig(int ID)
 {
 	char fname[30];
 	sprintf(fname, ".config/p%i.conf", ID);
-	std::ofstream write;
+	ofstream write;
 	write.open(fname);
 	for(unsigned int i = 0; i < input.size(); i++){
 		switch(input[i]->trigger.type){
@@ -338,16 +339,16 @@ void player::characterSelect(int i)
 
 void player::readScripts()
 {
-        string buffer("");
+	string buffer("");
 	int tempIterator;
 	macro.clear();
-	std::ifstream read;
+	ifstream read;
 	read.open(".config/"+v->name+"rc");
 	if(read.fail()) return;
 	while(!read.eof()){
 		tempIterator = 0;
-                getline(read, buffer);
-                tokenizer t(buffer, " \n");
+		getline(read, buffer);
+		tokenizer t(buffer, " \n");
 		if(!t().size()) return;
 		macro.push_back(new script(t.current()));
 		if(t().size()){
@@ -604,7 +605,7 @@ void instance::follow(instance *other){
 
 void instance::print()
 {
-	std::cout << "Player" << ID << ": " << current.move->name << ": " << current.frame << '\n';
+	cout << "Player" << ID << ": " << current.move->name << ": " << current.frame << '\n';
 }
 
 void instance::step()
@@ -704,9 +705,10 @@ void instance::pushInput(unsigned int i)
 	}
 }
 
-void instance::getMove(std::vector<int> buttons, SDL_Rect &p, bool& dryrun)
+void instance::getMove(vector<int> buttons, SDL_Rect &p, bool& dryrun)
 {
 	action * dummyMove, *save;
+	if(!current.move) neutralize();
 	dummyMove = current.move;
 	save = current.move;
 	int n = current.frame;
@@ -746,7 +748,7 @@ void instance::pullVolition()
 	setPosition(current.posX + current.facing*dx, current.posY);
 	if(current.freeze < 1){
 		if(current.frame < current.move->frames){
-			std::vector<SDL_Rect> temp = current.move->pollDelta(current.frame);
+			vector<SDL_Rect> temp = current.move->pollDelta(current.frame);
 			for(unsigned int i = 0; i < temp.size(); i++){
 				temp[i].x *= current.facing;
 				if(temp[i].x || temp[i].y || temp[i].h){

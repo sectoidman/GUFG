@@ -3,7 +3,6 @@
 #ifndef ___tokenizer
 #define ___tokenizer
 
-
 using std::string;
 
 struct tokenizer
